@@ -1,0 +1,21 @@
+<header class="site-header" [class.is-scrolled]="isScrolled" (keydown.escape)="closeMenu()">
+  <a routerLink="/" class="brand-mark" (click)="closeMenu()">
+    <img src="images/images-utils/hotel-identity/logo-transparent.png" alt="Atlan Suites" class="brand-logo" />
+  </a>
+  <nav id="main-nav" class="header-navigation" [class.is-open]="menuOpen" aria-label="Main navigation">
+  <ul class="main-nav">
+    <li><a routerLink="/" (click)="closeMenu()">Home</a></li>
+    <li><a routerLink="/" fragment="video-section" (click)="closeMenu()">The hotel</a></li>
+    <li><a routerLink="/" fragment="rooms-section" (click)="closeMenu()">Suites</a></li>
+    <li><a routerLink="/" fragment="experiences-section" (click)="closeMenu()">Experiences</a></li>
+    <li><span aria-disabled="true" title="Coming soon">Services</span></li>
+  </ul>
+</nav>
+  <div class="header-actions">
+    <button class="glass-button" type="button" disabled title="Coming soon">Login <span aria-hidden="true">↗</span></button>
+    <button class="glass-button" type="button" disabled title="Coming soon">Book now <span aria-hidden="true">↗</span></button>
+    <button class="nav-toggle" type="button" [attr.aria-label]="menuOpen ? 'Close menu' : 'Open menu'" [attr.aria-expanded]="menuOpen" aria-controls="main-nav" (click)="toggleMenu()">
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
