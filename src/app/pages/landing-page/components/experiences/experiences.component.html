@@ -1,0 +1,54 @@
+<section class="experiences-section" id="experiences-section" aria-labelledby="experiences-title">
+  <span class="experiences-watermark" aria-hidden="true">Experiences</span>
+
+  <div class="experiences-layout">
+    <article class="experience-feature-card fade-in">
+      <img
+        src="https://cache.marriott.com/is/image/marriotts7prod/rz-dpssw-bejana-restaurant-16761:Classic-Hor?wid=1200&fit=constrain"
+        alt="Sunset Catamaran"
+      />
+      <div class="experience-feature-overlay"></div>
+      <div class="experience-feature-content">
+        <p class="eyebrow">Featured experience</p>
+        <h3>Sunset<br />Catamaran</h3>
+        <p>Every evening at 5:30 pm</p>
+      </div>
+    </article>
+
+    <header class="experience-info fade-in">
+      <p class="eyebrow">Dining, wellness and adventure</p>
+      <h2 class="section-title" id="experiences-title">Experiences</h2>
+      <p class="section-text">
+        Choose the rhythm of your day, from first light on the reef to dinner on the sand.
+      </p>
+    </header>
+
+    <div class="experience-grid">
+      @for (experience of experiences; track experience.title) {
+        <article class="experience-card fade-in" tabindex="0">
+          <div class="experience-card-inner">
+            <div class="experience-card-face experience-card-front">
+              <img [src]="experience.imageUrl" [alt]="experience.imageAlt" loading="lazy" />
+              <div class="experience-card-overlay"></div>
+              <div class="experience-card-content">
+                <p class="eyebrow">{{ experience.category }}</p>
+                <h3>{{ experience.title }}</h3>
+                <p>{{ experience.schedule }}</p>
+              </div>
+            </div>
+            <div class="experience-card-face experience-card-back">
+              <p class="eyebrow">{{ experience.title }}</p>
+              <h3>{{ experience.tagline }}</h3>
+              <p>{{ experience.description }}</p>
+              <ul>
+                @for (highlight of experience.highlights; track highlight) {
+                  <li>{{ highlight }}</li>
+                }
+              </ul>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

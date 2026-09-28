@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -8,6 +8,8 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+  // La landing lo oculta mientras el video del hotel ocupa toda la pantalla.
+  @Input() isHidden = false;
   menuOpen = false;
   isScrolled = false;
 

@@ -1,4 +1,4 @@
-<header class="site-header" [class.is-scrolled]="isScrolled" (keydown.escape)="closeMenu()">
+<header class="site-header" [class.is-scrolled]="isScrolled" [class.is-hidden]="isHidden" (keydown.escape)="closeMenu()">
   <a routerLink="/" class="brand-mark" (click)="closeMenu()">
     <img src="images/images-utils/hotel-identity/logo-transparent.png" alt="Atlan Suites" class="brand-logo" />
   </a>
