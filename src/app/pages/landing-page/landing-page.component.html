@@ -1,3 +1,17 @@
-<app-header />
-<main id="main-content"></main>
+<div
+  class="scroll-progress"
+  role="progressbar"
+  aria-label="Page scroll progress"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  [attr.aria-valuenow]="scrollProgress.toFixed(0)"
+  [style.width.%]="scrollProgress"
+></div>
+<app-header [isHidden]="isHeaderHidden" />
+<main id="main-content">
+  <app-hero />
+  <app-hotel-video (fullscreenChange)="isHeaderHidden = $event" />
+  <app-suites />
+  <app-experiences />
+</main>
 <app-footer />

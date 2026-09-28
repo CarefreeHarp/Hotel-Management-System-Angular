@@ -1,0 +1,43 @@
+:host { display: block; }
+p, ul { margin: 0; padding: 0; }
+.rooms-section { position: relative; overflow: hidden; padding: var(--gap-section) var(--pad-inline); background: radial-gradient(circle at 45% 75%, #3f4751 0%, #242a31 37%, #171b20 100%); color: var(--color-text-light); }
+.rooms-watermark { position: absolute; top: 1.5rem; left: clamp(1.5rem, 5vw, 4rem); font-family: var(--font-display); font-size: clamp(7rem, 16vw, 15rem); line-height: .72; letter-spacing: -.06em; text-transform: uppercase; color: rgba(244,246,248,.035); pointer-events: none; user-select: none; }
+.rooms-heading-row, .room-carousel { position: relative; z-index: 1; }
+.rooms-heading-row { display: grid; grid-template-columns: 1fr; gap: 1.5rem; min-height: clamp(300px, 36vw, 430px); }
+.rooms-intro { padding-left: 1.25rem; border-left: 1px solid rgba(244,246,248,.25); }
+.rooms-title { font-size: clamp(3rem, 5.4vw, 5rem); line-height: 1.02; letter-spacing: -.035em; text-transform: uppercase; }
+.rooms-description { max-width: 38ch; padding: 1rem 0 1rem 1.35rem; border-left: 1px solid rgba(244,246,248,.32); }
+.rooms-description .eyebrow { display: block; margin-bottom: .8rem; font-size: .58rem; color: var(--color-text-muted); }
+.rooms-description p { font-family: var(--font-display); font-size: clamp(1.2rem, 2vw, 1.6rem); line-height: 1.28; color: rgba(244,246,248,.88); }
+
+.room-carousel { width: 100%; max-width: 1800px; margin: clamp(2.75rem, 5vw, 5rem) auto 0; padding: 0 2.75rem; }
+.carousel-inner { overflow: hidden; padding-block: 1.25rem; margin-block: -1.25rem; }
+.suite-carousel-track { display: flex; gap: 1.5rem; transition: transform .55s var(--ease); will-change: transform; }
+.suite-carousel-track .room-card { flex: 0 0 calc((100% - 3rem) / 3); min-width: 0; }
+.carousel-control-prev, .carousel-control-next { position: absolute; top: 50%; z-index: 2; display: grid; width: 3rem; height: 3rem; padding: 0; place-items: center; border: 0; background: transparent; transform: translateY(-50%); cursor: pointer; }
+.carousel-control-prev { left: -.65rem; }
+.carousel-control-next { right: -.65rem; }
+.carousel-control-prev span, .carousel-control-next span { color: var(--color-text-light); font-size: 2.25rem; line-height: 1; transition: color .2s ease, transform .2s ease; }
+.carousel-control-prev:hover:enabled span, .carousel-control-next:hover:enabled span { color: var(--color-gold); transform: scale(1.14); }
+.carousel-control-prev:disabled, .carousel-control-next:disabled { cursor: default; opacity: .3; }
+.rooms-empty { color: var(--color-text-muted); }
+
+.room-card { perspective: 1400px; }
+.room-card:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 4px; }
+.room-card-inner { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 6px; transform-style: preserve-3d; transition: transform .7s var(--ease); }
+.room-card:hover .room-card-inner, .room-card:focus-within .room-card-inner { transform: rotateY(180deg); }
+.room-card-face { position: absolute; inset: 0; display: flex; overflow: hidden; flex-direction: column; border-radius: 6px; backface-visibility: hidden; }
+.room-card-front img { width: 100%; height: 100%; object-fit: cover; }
+.room-card-back { padding: 1.25rem; background: var(--color-charcoal); transform: rotateY(180deg); gap: .35rem; }
+.room-card-back-text { font-size: clamp(1rem, 1.35vw, 1.28rem); opacity: .9; margin-bottom: 1.1rem; line-height: 1.5; }
+.room-card-list { display: flex; flex-direction: column; gap: .55rem; list-style: none; opacity: .84; }
+.room-card-list li::before { content: '— '; color: var(--color-gold); }
+.room-card-name { margin: .8rem 0 0; font-family: var(--font-display); font-size: clamp(1.2rem, 2vw, 1.6rem); line-height: 1.28; }
+
+@media (min-width: 1024px) {
+  .rooms-heading-row { grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: end; }
+  .rooms-intro { grid-column: span 5; }
+  .rooms-description { grid-column: 8 / span 4; }
+}
+@media (max-width: 1023px) { .suite-carousel-track .room-card { flex-basis: calc((100% - 1.5rem) / 2); } }
+@media (max-width: 639px) { .room-carousel { padding-inline: 2.25rem; } .suite-carousel-track .room-card { flex-basis: 100%; } }

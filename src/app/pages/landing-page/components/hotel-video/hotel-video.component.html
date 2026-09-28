@@ -1,0 +1,10 @@
+<section class="video-section" id="video-section" aria-labelledby="hotel-title">
+  <h2 class="sr-only" id="hotel-title">{{ eyebrow }}</h2>
+  <video #hotelVideo class="scroll-video" muted playsinline preload="auto" [attr.aria-label]="videoLabel">
+    <source src="images/landing-page/Hotel_video.mp4" type="video/mp4" />
+  </video>
+  <aside class="video-view-card">
+    <span class="eyebrow">{{ eyebrow }}</span>
+    <h3>{{ title }}</h3>
+  </aside>
+</section>

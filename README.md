@@ -20,14 +20,14 @@ The previous application uses Spring Boot and Thymeleaf. This frontend runs inde
 | Area | Completed | Remaining |
 | --- | --- | --- |
 | Project setup | Angular 19, standalone components, SCSS, strict TypeScript and routing; SSR disabled | — |
-| Landing page | Header with integrated navigation and footer | Migrate the remaining content and interactions |
+| Landing page | Header, hero, hotel video, suites carousel, experiences and footer, with the scroll progress bar and fade-in animations | — |
 | Domain models | Ten entity interfaces and four string enums | — |
 | Room-type pages | Routes and empty list, detail and shared create/edit page components | Implement their templates and behavior |
-| Mock data and service | Services directory reserved | Create the hardcoded collection and CRUD service |
+| Mock data and service | `RoomTypeService` with the five room types from the Spring Boot `DataLoader` and CRUD methods | — |
 | Room-type CRUD | Component scaffolding | List, view, create, edit and delete; form validation |
 | Integration | Build and type-check commands available | Connect the screens to the service and verify the complete flow |
 
-Only the landing page currently displays the header and footer. Its main content and the other routed page templates are empty. Login, booking and services controls remain disabled; landing section links target content that is still pending migration.
+Only the landing page currently displays the header and footer. The other routed page templates are empty. Login, booking and services controls remain disabled. The suites carousel reads its room types from `RoomTypeService`, so changes made through the service appear on the landing page while the application is running; reloading the page restores the hardcoded data.
 
 ## Technology
 
@@ -91,6 +91,7 @@ Run `make` without arguments to start the development server (equivalent to `mak
 
 ```text
 public/images/                         Original logo and social images
+  landing-page/                        Hero photo and hotel video
 src/app/
   components/                          Shared UI components
     header/                            Header and integrated navigation
@@ -99,13 +100,19 @@ src/app/
     enums/                             Domain status values
   pages/                               Routed screens
     landing-page/
+      components/                      Landing sections
+        hero/
+        hotel-video/
+        suites/                        Room-type carousel
+        experiences/
     room-type-detail/
     room-type-form-page/               Shared create/edit page
     room-type-table-page/
       components/                      Components exclusive to this page
         page-title/
         room-type-table/
-  services/                            Reserved for mock-data and CRUD services
+  services/
+    room-type.service.ts               Hardcoded room types and CRUD methods
   app.component.html                   Root router outlet
   app.component.scss
   app.component.ts
@@ -117,7 +124,7 @@ docs/images/                           README illustrations
 - **Components** provide reusable pieces of a screen. The header and footer are rendered by the landing page only.
 - **Pages** compose the screens selected by the router. Components exclusive to a page live inside that page's own `components/` directory.
 - **Models** define the shape of domain data. Interfaces do not create records or store data.
-- **Services** will manage the hardcoded collection and expose the operations used by pages. This directory currently contains only `.gitkeep`.
+- **Services** keep the hardcoded collection in a private array and expose the operations used by pages. Components receive them with `inject()` and never change the array directly.
 
 The root component renders `<router-outlet />`, where Angular displays the page for the current URL.
 
@@ -127,7 +134,7 @@ Routes are declared in [app.routes.ts](src/app/app.routes.ts).
 
 | URL | Page | Current state |
 | --- | --- | --- |
-| `/` | `LandingPageComponent` | Header, empty main content and footer |
+| `/` | `LandingPageComponent` | Complete landing page |
 | `/room-types` | `RoomTypeTablePageComponent` | Empty scaffold |
 | `/room-types/new` | `RoomTypeFormPageComponent` | Empty scaffold for creation |
 | `/room-types/:id/edit` | `RoomTypeFormPageComponent` | Empty scaffold for editing |
@@ -156,7 +163,21 @@ TypeScript strict mode, `strictNullChecks`, `noUncheckedIndexedAccess`, `exactOp
 
 ## Entity–relationship diagram
 
-The following diagram is the reference database model inherited from the Spring Boot project. It provides domain context for the TypeScript interfaces; this Angular application does not connect to a database. The sprint's hardcoded data service is still pending implementation.
+The following diagram is the reference database model inherited from the Spring Boot project. It provides domain context for the TypeScript interfaces; this Angular application does not connect to a database. Room types are hardcoded in `RoomTypeService`.
+
+### Room-type service
+
+`RoomTypeService` (`src/app/services/room-type.service.ts`) starts with the same five room types that the Spring Boot `DataLoader` created, with IDs 1 to 5:
+
+| Method | Result |
+| --- | --- |
+| `getAll()` | A copy of the list, so a component cannot change the service's array |
+| `getById(id)` | The room type with that ID, or `undefined` if none exists |
+| `add(roomType)` | Adds a room type without an ID; the service assigns the next ID (6, 7, …) and returns the new record |
+| `update(id, roomType)` | Finds the position of that ID and replaces the record there |
+| `delete(id)` | Removes the room type with that ID |
+
+`update` and `delete` do nothing if the ID does not exist. The service does not validate data: the Spring Boot rules (required fields, unique name, capacity from 1 to 10, non-negative price) belong in the room-type form.
 
 ![Atlan Suites entity–relationship diagram](docs/images/entity-relationship.png)
 
@@ -172,6 +193,6 @@ ng g c pages/<page>/components/<name>
 
 The project's `angular.json` configures SCSS and disables automatic `.spec.ts` generation for components and services. Use the local Angular 19 CLI through `npx ng` if the global version differs.
 
-The header's scroll animation scales its logo without changing the header's layout height. Preserve that behavior to avoid scroll oscillation. Its navigation belongs directly inside the header, with no separate navbar component.
+The header is fixed and transparent over the landing hero; it takes a dark background once the page scrolls. A page that reuses it needs top spacing so the header does not cover its content. When the page scrolls, the header also reduces its logo width and vertical padding. Because it is fixed, its height change does not move the page content or cause scroll oscillation. Its navigation belongs directly inside the header, with no separate navbar component.
 
 Workspace-specific agent instructions live in `../AGENTS.md`. The code knowledge graph is maintained outside this repository at `../Hotel-Management-System-Angular-graphify/graphify-out/`; neither is required to run the application. Do not commit generated graph artifacts.
