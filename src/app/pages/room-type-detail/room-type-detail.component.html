@@ -1,0 +1,33 @@
+<app-room-type-layout>
+  @if (roomType(); as type) {
+    <header class="page-heading">
+      <div><p class="page-eyebrow">Accommodation catalog</p><h1 class="page-title">{{ type.name }}</h1><p class="page-description">Shared gallery and commercial information for rooms in this category.</p></div>
+      <a class="atlan-btn atlan-btn--primary" [routerLink]="['/room-types', type.roomTypeId, 'edit']">Edit room type</a>
+    </header>
+    @if (saved()) { <p class="portal-alert portal-success" role="status">Room type saved successfully.</p> }
+    <section class="detail-grid" aria-label="Room type information">
+      <figure class="detail-visual"><img [src]="type.mainPhoto" [alt]="'Main photo for ' + type.name" /></figure>
+      <article class="surface-card detail-content">
+        <p class="page-eyebrow">Commercial information</p>
+        <dl class="detail-list">
+          <div><dt>Description</dt><dd class="description">{{ type.description }}</dd></div>
+          <div><dt>Price per night</dt><dd>COP {{ type.nightlyPrice | number:'1.0-2' }}</dd></div>
+          <div><dt>Maximum capacity</dt><dd>{{ type.maxCapacity }} guests</dd></div>
+        </dl>
+        <div class="form-actions"><a class="atlan-btn atlan-btn--secondary" routerLink="/room-types">← Back to list</a></div>
+      </article>
+    </section>
+    @if (type.secondaryPhotos.length) {
+      <section class="surface-card gallery-section" aria-labelledby="additional-photos-title">
+        <p class="page-eyebrow">Gallery</p><h2 class="form-section__title" id="additional-photos-title">Additional photos</h2>
+        <ul class="gallery-grid">
+          @for (photo of type.secondaryPhotos; track $index) {
+            <li><img [src]="photo" [alt]="type.name + ' — additional photo ' + ($index + 1)" loading="lazy" /></li>
+          }
+        </ul>
+      </section>
+    }
+  } @else {
+    <section class="surface-card empty-state"><p class="page-eyebrow">Accommodation catalog</p><h1 class="page-title">Room type not found</h1><p class="page-description">This room type does not exist or is no longer available.</p><div class="form-actions"><a class="atlan-btn atlan-btn--secondary" routerLink="/room-types">Back to list</a><a class="atlan-btn atlan-btn--primary" routerLink="/">Go to hotel</a></div></section>
+  }
+</app-room-type-layout>
