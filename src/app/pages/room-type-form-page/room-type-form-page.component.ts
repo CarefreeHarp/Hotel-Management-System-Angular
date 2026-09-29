@@ -32,6 +32,7 @@ export class RoomTypeFormPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   roomType: RoomType | undefined;
+  isCreateMode = false;
   submitted = false;
 
   readonly form = new FormGroup({
@@ -51,8 +52,12 @@ export class RoomTypeFormPageComponent {
 
   constructor() {
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(params => {
-      const id = Number(params.get('id'));
-      this.roomType = Number.isSafeInteger(id) && id > 0 ? this.service.getById(id) : undefined;
+      const idParam = params.get('id');
+      this.isCreateMode = idParam === null;
+      const id = Number(idParam);
+      this.roomType = this.isCreateMode || !Number.isSafeInteger(id) || id <= 0
+        ? undefined
+        : this.service.getById(id);
       this.submitted = false;
       this.form.controls.secondaryPhotos.clear();
       this.form.reset();
@@ -78,22 +83,27 @@ export class RoomTypeFormPageComponent {
     this.submitted = true;
     this.form.controls.name.updateValueAndValidity();
     this.form.markAllAsTouched();
-    if (!this.roomType || this.form.invalid) return;
-    if (!this.service.getById(this.roomType.roomTypeId)) {
-      this.roomType = undefined;
-      return;
-    }
+    if (this.form.invalid) return;
     const value = this.form.getRawValue();
     if (value.nightlyPrice === null || value.maxCapacity === null) return;
-    this.service.update(this.roomType.roomTypeId, {
-      roomTypeId: this.roomType.roomTypeId,
+    const roomTypeData = {
       name: value.name.trim(),
       description: value.description.trim(),
       nightlyPrice: value.nightlyPrice,
       maxCapacity: value.maxCapacity,
       mainPhoto: value.mainPhoto.trim(),
       secondaryPhotos: value.secondaryPhotos.map(photo => photo.trim()).filter(Boolean),
-    });
+    };
+    if (this.isCreateMode) {
+      const createdRoomType = this.service.add(roomTypeData);
+      void this.router.navigate(['/room-types', createdRoomType.roomTypeId], { queryParams: { saved: true } });
+      return;
+    }
+    if (!this.roomType || !this.service.getById(this.roomType.roomTypeId)) {
+      this.roomType = undefined;
+      return;
+    }
+    this.service.update(this.roomType.roomTypeId, { ...roomTypeData, roomTypeId: this.roomType.roomTypeId });
     void this.router.navigate(['/room-types', this.roomType.roomTypeId], { queryParams: { saved: true } });
   }
 }
