@@ -1,0 +1,47 @@
+<section class="rooms-section" id="rooms-section" aria-labelledby="rooms-title">
+  <span class="rooms-watermark" aria-hidden="true">Rooms<br />And<br />Suites</span>
+
+  <div class="rooms-heading-row">
+    <header class="rooms-intro fade-in">
+      <p class="eyebrow">Rooms and suites</p>
+      <h2 class="section-title rooms-title" id="rooms-title">Rooms and<br />Suites</h2>
+    </header>
+    <aside class="rooms-description fade-in">
+      <span class="eyebrow">Rooms and suites description</span>
+      <p>{{ description }}</p>
+    </aside>
+  </div>
+
+  <div class="room-carousel fade-in" role="region" aria-roledescription="carousel" aria-label="Suites carousel">
+    <div class="carousel-inner">
+      <div class="suite-carousel-track" [style.transform]="trackTransform">
+        @for (roomType of roomTypes; track roomType.roomTypeId) {
+          <article class="room-card" tabindex="0">
+            <div class="room-card-inner">
+              <div class="room-card-face room-card-front">
+                <img [src]="roomType.mainPhoto" [alt]="roomType.name" loading="lazy" />
+              </div>
+              <div class="room-card-face room-card-back">
+                <p class="room-card-back-text">{{ roomType.description }}</p>
+                <ul class="room-card-list">
+                  <li>{{ roomType.maxCapacity }} guests</li>
+                  <li>From COP {{ roomType.nightlyPrice.toLocaleString('en-US') }} per night</li>
+                </ul>
+              </div>
+            </div>
+            <h3 class="room-card-name">{{ roomType.name }}</h3>
+          </article>
+        } @empty {
+          <p class="rooms-empty">No suites are available at the moment.</p>
+        }
+      </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" aria-label="Previous suite" [disabled]="suiteIndex === 0" (click)="previous()">
+      <span aria-hidden="true">&lt;</span>
+    </button>
+    <button class="carousel-control-next" type="button" aria-label="Next suite" [disabled]="suiteIndex === maxIndex" (click)="next()">
+      <span aria-hidden="true">&gt;</span>
+    </button>
+  </div>
+</section>

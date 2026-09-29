@@ -1,0 +1,18 @@
+<section class="hero" id="hero" aria-labelledby="hero-title">
+  <img src="images/landing-page/hero_lobby.jpg" [alt]="'Main lobby of ' + hotelName" class="hero-image" />
+  <div class="hero-veil" aria-hidden="true"></div>
+
+  <h1 class="hero-title" id="hero-title">{{ hotelName }}</h1>
+
+  <aside class="hero-card fade-in" [attr.aria-label]="'Welcome to ' + hotelName">
+    <p class="eyebrow">Welcome</p>
+    <p class="hero-card-headline">Welcome<br />to Atlan</p>
+    <button type="button" class="btn btn-gold" (click)="scrollToHotel()">
+      Explore hotel <span aria-hidden="true">↗</span>
+    </button>
+  </aside>
+
+  <p class="hero-meta">
+    <span>{{ location }}</span>
+  </p>
+</section>
