@@ -1,17 +1,22 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
   // La landing lo oculta mientras el video del hotel ocupa toda la pantalla.
   @Input() isHidden = false;
+  @Input() solid = false;
   menuOpen = false;
   isScrolled = false;
+
+  get isSolidHeader(): boolean {
+    return this.solid || this.isScrolled;
+  }
 
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
