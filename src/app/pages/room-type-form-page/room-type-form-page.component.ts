@@ -2,9 +2,22 @@ import { Component, inject } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RoomTypeLayoutComponent } from '../../components/room-type-layout/room-type-layout.component';
+import { HeaderComponent } from '../../components/header/header.component';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
+import { ButtonComponent } from '../../components/button/button.component';
+import { RoomTypeCommercialFieldsComponent } from './components/room-type-commercial-fields/room-type-commercial-fields.component';
+import { RoomTypePhotoFieldsComponent } from './components/room-type-photo-fields/room-type-photo-fields.component';
 import { RoomTypeService } from '../../services/room-type.service';
 import { RoomType } from '../../models/room-type';
+
+export type RoomTypeForm = FormGroup<{
+  name: FormControl<string>;
+  description: FormControl<string>;
+  nightlyPrice: FormControl<number | null>;
+  maxCapacity: FormControl<number | null>;
+  mainPhoto: FormControl<string>;
+  secondaryPhotos: FormArray<FormControl<string>>;
+}>;
 
 function requiredText(control: AbstractControl): ValidationErrors | null {
   return String(control.value ?? '').trim() ? null : { required: true };
@@ -23,7 +36,10 @@ function photoUrl(control: AbstractControl): ValidationErrors | null {
 
 @Component({
   selector: 'app-room-type-form-page',
-  imports: [ReactiveFormsModule, RouterLink, RoomTypeLayoutComponent],
+  imports: [
+    ReactiveFormsModule, RouterLink, HeaderComponent, PageHeadingComponent, ButtonComponent,
+    RoomTypeCommercialFieldsComponent, RoomTypePhotoFieldsComponent,
+  ],
   templateUrl: './room-type-form-page.component.html',
   styleUrl: './room-type-form-page.component.scss'
 })
@@ -35,7 +51,7 @@ export class RoomTypeFormPageComponent {
   isCreateMode = false;
   submitted = false;
 
-  readonly form = new FormGroup({
+  readonly form: RoomTypeForm = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [requiredText, Validators.maxLength(50), control => {
       const name = String(control.value).trim().toLowerCase();
       return this.service.getAll().some(type => type.roomTypeId !== this.roomType?.roomTypeId && type.name.trim().toLowerCase() === name)
@@ -73,10 +89,6 @@ export class RoomTypeFormPageComponent {
     this.form.controls.secondaryPhotos.push(new FormControl(value, {
       nonNullable: true, validators: [Validators.maxLength(500), photoUrl],
     }));
-  }
-
-  invalid(control: AbstractControl): boolean {
-    return control.invalid && (control.touched || this.submitted);
   }
 
   save(): void {

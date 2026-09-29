@@ -1,14 +1,17 @@
 import { Component, inject } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
-import { RoomTypeLayoutComponent } from '../../components/room-type-layout/room-type-layout.component';
+import { HeaderComponent } from '../../components/header/header.component';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
+import { ButtonComponent } from '../../components/button/button.component';
+import { RoomTypeInfoComponent } from './components/room-type-info/room-type-info.component';
+import { RoomTypeGalleryComponent } from './components/room-type-gallery/room-type-gallery.component';
 import { RoomTypeService } from '../../services/room-type.service';
 
 @Component({
   selector: 'app-room-type-detail',
-  imports: [DecimalPipe, RouterLink, RoomTypeLayoutComponent],
+  imports: [RouterLink, HeaderComponent, PageHeadingComponent, ButtonComponent, RoomTypeInfoComponent, RoomTypeGalleryComponent],
   templateUrl: './room-type-detail.component.html',
   styleUrl: './room-type-detail.component.scss'
 })

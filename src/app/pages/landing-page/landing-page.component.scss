@@ -1,3 +1,18 @@
-:host { display: flex; min-height: 100vh; flex-direction: column; }
-main { flex: 1; }
-.scroll-progress { position: fixed; top: 0; left: 0; z-index: 60; height: 3px; background: linear-gradient(90deg, var(--color-gold), var(--color-sky-deep)); }
+:host {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-gold), var(--color-sky-deep));
+}

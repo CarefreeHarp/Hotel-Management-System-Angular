@@ -1,0 +1,30 @@
+:host {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    min-height: 2.75rem;
+    padding: .7rem 1.15rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    color: #0c1218;
+    background: #d3ae7b;
+    font-size: .76rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+:host(:not(.is-secondary):hover) {
+    background: #e0bd8c;
+}
+
+:host(.is-secondary) {
+    color: #f2f5f7;
+    border-color: rgba(221, 232, 239, .14);
+    background: rgba(255, 255, 255, .025);
+}
+
+:host(.is-secondary:hover) {
+    border-color: #afcfe3;
+    background: rgba(175, 207, 227, .08);
+}

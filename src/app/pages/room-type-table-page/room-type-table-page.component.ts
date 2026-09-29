@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
-import { FooterComponent } from '../../components/footer/footer.component';
 import { PageTitleComponent } from './components/page-title/page-title.component';
 import { RoomTypeTableComponent } from './components/room-type-table/room-type-table.component';
 import { RoomTypeService } from '../../services/room-type.service';
@@ -9,7 +8,7 @@ import { RoomType } from '../../models/room-type';
 
 @Component({
   selector: 'app-room-type-table-page',
-  imports: [CommonModule, HeaderComponent, FooterComponent, PageTitleComponent, RoomTypeTableComponent],
+  imports: [CommonModule, HeaderComponent,PageTitleComponent, RoomTypeTableComponent],
   templateUrl: './room-type-table-page.component.html',
   styleUrl: './room-type-table-page.component.scss'
 })

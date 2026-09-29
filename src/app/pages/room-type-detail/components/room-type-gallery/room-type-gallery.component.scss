@@ -1,0 +1,44 @@
+:host {
+    display: block;
+    margin-top: 1.5rem;
+}
+
+.gallery-section {
+    padding: 1.5rem;
+    border: 1px solid rgba(221, 232, 239, .14);
+    border-radius: 1.5rem;
+    background: linear-gradient(145deg, rgba(30, 43, 54, .94), rgba(19, 28, 36, .96));
+    box-shadow: 0 28px 70px rgba(0, 0, 0, .28);
+}
+
+.card-eyebrow {
+    margin: 0 0 .45rem;
+    color: #d3ae7b;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+}
+
+.gallery-title {
+    margin: 0 0 .35rem;
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    font-weight: 600;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+    gap: .8rem;
+    margin: 1.2rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.gallery-grid img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: .9rem;
+    object-fit: cover;
+}

@@ -1,62 +1,21 @@
-<app-room-type-layout>
-  @if (isCreateMode || roomType) {
-    <header class="page-heading"><div><p class="page-eyebrow">Accommodation catalog</p><h1 class="page-title">{{ isCreateMode ? 'Create room type' : 'Edit room type' }}</h1><p class="page-description">{{ isCreateMode ? 'Add a new accommodation option to the hotel inventory.' : 'Define how ' + roomType?.name + ' will appear in the hotel inventory.' }}</p></div></header>
-    <form class="surface-card form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-      @if (submitted && form.invalid) { <p class="portal-alert" role="alert">Please check the highlighted fields before saving.</p> }
-      <section class="form-section" aria-labelledby="type-data-title">
-        <h2 class="form-section__title" id="type-data-title">Commercial information</h2>
-        <p class="form-section__description">Display name, description, base rate, and permitted occupancy.</p>
-        <div class="form-grid">
-          <div>
-            <label class="portal-label" for="name">Name</label>
-            <input class="portal-control" id="name" formControlName="name" maxlength="50" required [attr.aria-invalid]="invalid(form.controls.name)" aria-describedby="name-error" />
-            <p class="field-error" id="name-error">@if (invalid(form.controls.name)) { {{ form.controls.name.hasError('duplicate') ? 'A room type with this name already exists.' : 'Enter a name of up to 50 characters.' }} }</p>
-          </div>
-          <div>
-            <label class="portal-label" for="maxCapacity">Maximum capacity</label>
-            <input class="portal-control" id="maxCapacity" type="number" formControlName="maxCapacity" min="1" max="10" step="1" required [attr.aria-invalid]="invalid(form.controls.maxCapacity)" aria-describedby="capacity-error" />
-            <p class="field-error" id="capacity-error">@if (invalid(form.controls.maxCapacity)) { Enter a whole number from 1 to 10. }</p>
-          </div>
-          <div class="full-width">
-            <label class="portal-label" for="description">Description</label>
-            <textarea class="portal-control" id="description" formControlName="description" rows="4" maxlength="500" required [attr.aria-invalid]="invalid(form.controls.description)" aria-describedby="description-hint description-error"></textarea>
-            <p class="field-hint" id="description-hint">Maximum 500 characters.</p>
-            <p class="field-error" id="description-error">@if (invalid(form.controls.description)) { Enter a description of up to 500 characters. }</p>
-          </div>
-          <div>
-            <label class="portal-label" for="nightlyPrice">Price per night (COP)</label>
-            <div class="currency-field"><input class="portal-control" id="nightlyPrice" type="number" formControlName="nightlyPrice" min="0" step="0.01" required [attr.aria-invalid]="invalid(form.controls.nightlyPrice)" aria-describedby="price-error" /></div>
-            <p class="field-error" id="price-error">@if (invalid(form.controls.nightlyPrice)) { Enter a price equal to or greater than zero. }</p>
-          </div>
+<app-header [solid]="true" />
+
+<main class="room-type-page">
+  <div class="room-type-page__container">
+    @if (isCreateMode || roomType) {
+      <app-page-heading
+        [title]="isCreateMode ? 'Create room type' : 'Edit room type'"
+        [description]="isCreateMode ? 'Add a new accommodation option to the hotel inventory.' : 'Define how ' + roomType?.name + ' will appear in the hotel inventory.'"
+      />
+      <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
+        @if (submitted && form.invalid) { <p class="form-alert" role="alert">Please check the highlighted fields before saving.</p> }
+        <app-room-type-commercial-fields class="form-section" [form]="form" [submitted]="submitted" />
+        <app-room-type-photo-fields class="form-section" [form]="form" [submitted]="submitted" (addPhoto)="addPhoto()" />
+        <div class="form-actions">
+          <button appButton type="submit">{{ isCreateMode ? 'Create room type' : 'Save room type' }} <span aria-hidden="true">→</span></button>
+          <a appButton variant="secondary" [routerLink]="isCreateMode ? '/room-types' : ['/room-types', roomType?.roomTypeId]">Cancel</a>
         </div>
-      </section>
-      <section class="form-section" aria-labelledby="type-photos-title">
-        <h2 class="form-section__title" id="type-photos-title">Gallery</h2>
-        <p class="form-section__description">These photos represent every room assigned to this type.</p>
-        <label class="portal-label" for="mainPhoto">Main photo URL</label>
-        <input class="portal-control" id="mainPhoto" type="url" formControlName="mainPhoto" maxlength="500" required placeholder="https://example.com/room-type.jpg" [attr.aria-invalid]="invalid(form.controls.mainPhoto)" aria-describedby="main-photo-error" />
-        <p class="field-error" id="main-photo-error">@if (invalid(form.controls.mainPhoto)) { Enter an HTTP or HTTPS photo URL of up to 500 characters. }</p>
-        <div class="photo-fields" formArrayName="secondaryPhotos">
-          @for (photo of form.controls.secondaryPhotos.controls; track photo; let i = $index) {
-            <div class="photo-field">
-              <span class="photo-field__number" aria-hidden="true">{{ i + 1 }}</span>
-              <div>
-                <label class="sr-only" [for]="'photo-' + i">Additional photo {{ i + 1 }} URL</label>
-                <input class="portal-control" type="url" [id]="'photo-' + i" [formControlName]="i" maxlength="500" placeholder="https://example.com/additional-photo.jpg" [attr.aria-invalid]="invalid(photo)" [attr.aria-describedby]="'photo-error-' + i" />
-                <p class="field-error" [id]="'photo-error-' + i">@if (invalid(photo)) { Enter an HTTP or HTTPS URL of up to 500 characters, or leave it empty. }</p>
-              </div>
-              <button class="remove-photo" type="button" (click)="form.controls.secondaryPhotos.removeAt(i)" [attr.aria-label]="'Remove additional photo ' + (i + 1)">×</button>
-            </div>
-          }
-        </div>
-        <button class="atlan-btn atlan-btn--secondary add-photo" type="button" (click)="addPhoto()">＋ Add another photo</button>
-      </section>
-      <div class="form-actions">
-        <button class="atlan-btn atlan-btn--primary" type="submit">{{ isCreateMode ? 'Create room type' : 'Save room type' }} <span aria-hidden="true">→</span></button>
-        <a class="atlan-btn atlan-btn--secondary" [routerLink]="isCreateMode ? '/room-types' : ['/room-types', roomType?.roomTypeId]">Cancel</a>
-      </div>
-    </form>
-  } @else {
-    <section class="surface-card empty-state"><p class="page-eyebrow">Accommodation catalog</p><h1 class="page-title">Room type not found</h1><p class="page-description">Select an existing room type to edit its information.</p><div class="form-actions"><a class="atlan-btn atlan-btn--secondary" routerLink="/room-types">Back to list</a><a class="atlan-btn atlan-btn--primary" routerLink="/">Go to hotel</a></div></section>
-  }
-</app-room-type-layout>
+      </form>
+    }
+  </div>
+</main>
