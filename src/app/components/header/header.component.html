@@ -1,6 +1,6 @@
-<header class="site-header" [class.is-scrolled]="isScrolled" [class.is-hidden]="isHidden" (keydown.escape)="closeMenu()">
+<header class="site-header" [class.is-scrolled]="isSolidHeader" [class.is-hidden]="isHidden" (keydown.escape)="closeMenu()">
   <a routerLink="/" class="brand-mark" (click)="closeMenu()">
-    <img src="images/images-utils/hotel-identity/logo-transparent.png" alt="Atlan Suites" class="brand-logo" />
+    <img src="/images/images-utils/hotel-identity/logo-transparent.png" alt="Atlan Suites" class="brand-logo" />
   </a>
   <nav id="main-nav" class="header-navigation" [class.is-open]="menuOpen" aria-label="Main navigation">
   <ul class="main-nav">
@@ -8,7 +8,7 @@
     <li><a routerLink="/" fragment="video-section" (click)="closeMenu()">The hotel</a></li>
     <li><a routerLink="/" fragment="rooms-section" (click)="closeMenu()">Suites</a></li>
     <li><a routerLink="/" fragment="experiences-section" (click)="closeMenu()">Experiences</a></li>
-    <li><span aria-disabled="true" title="Coming soon">Services</span></li>
+    <li><a routerLink="/room-types" routerLinkActive="active" (click)="closeMenu()">Room Types</a></li>
   </ul>
 </nav>
   <div class="header-actions">

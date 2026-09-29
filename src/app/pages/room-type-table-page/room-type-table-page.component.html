@@ -1,0 +1,33 @@
+<app-header [solid]="true" />
+
+<main class="room-types-page-main">
+  <!-- Subtle decorative watermark in background matching landing page style -->
+  <span class="page-watermark" aria-hidden="true">Room<br />Types</span>
+
+  <div class="page-container">
+    <app-page-title
+      [totalCount]="totalCount"
+      [avgPrice]="avgPrice"
+      [maxCapacity]="maxCapacity"
+      [minCapacity]="minCapacity"
+    />
+
+    <app-room-type-table
+      [roomTypes]="roomTypes"
+      (delete)="handleDelete($event)"
+    />
+  </div>
+</main>
+
+@if (toastMessage) {
+  <aside class="toast-notification" role="status" aria-live="polite">
+    <div class="toast-indicator"></div>
+    <div class="toast-text-content">
+      <span class="toast-title">Catalog Updated</span>
+      <span class="toast-message">{{ toastMessage }}</span>
+    </div>
+    <button type="button" class="btn-dismiss-toast" (click)="dismissToast()" aria-label="Close notification">✕</button>
+  </aside>
+}
+
+<app-footer />
