@@ -2,24 +2,26 @@ import { Injectable } from '@angular/core';
 import { Service } from '../models/service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ServiceService {
   // Los mismos servicios y datos iniciales de DataLoader en Spring Boot.
   private services: Service[] = [
     {
       serviceId: 1,
-      name: "High-speed Wi-Fi",
-      urlName: "high-speed-wi-fi",
-      description: "High-speed wireless internet throughout the hotel.\n\nAtlan Suites designs this experience around a calm, attentive stay. Stay connected throughout your visit Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Entire hotel and is available every day. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.",
+      name: 'High-speed Wi-Fi',
+      urlName: 'high-speed-wi-fi',
+      description:
+        'High-speed wireless internet throughout the hotel.\n\nAtlan Suites designs this experience around a calm, attentive stay. Stay connected throughout your visit Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Entire hotel and is available every day. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.',
       price: 10000,
-      category: "Connectivity",
+      category: 'Connectivity',
       active: true,
-      summary: "Stay connected throughout your visit",
-      duration: "24 hours",
-      availability: "Available every day",
-      location: "Entire hotel",
-      mainImageUrl: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853",
+      summary: 'Stay connected throughout your visit',
+      duration: '24 hours',
+      availability: 'Available every day',
+      location: 'Entire hotel',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1496181133206-80ce9b88a853',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -28,17 +30,19 @@ export class ServiceService {
     },
     {
       serviceId: 2,
-      name: "Breakfast Buffet",
-      urlName: "breakfast-buffet",
-      description: "A generous breakfast buffet with local produce, fresh fruit and baked goods.\n\nAtlan Suites designs this experience around a calm, attentive stay. A fresh start prepared every morning Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Atlan Restaurant and is available every day. Its usual duration is 6:30 AM - 10:30 AM, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Breakfast Buffet',
+      urlName: 'breakfast-buffet',
+      description:
+        'A generous breakfast buffet with local produce, fresh fruit and baked goods.\n\nAtlan Suites designs this experience around a calm, attentive stay. A fresh start prepared every morning Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Atlan Restaurant and is available every day. Its usual duration is 6:30 AM - 10:30 AM, and our concierge can help coordinate any details before or during your stay.',
       price: 45000,
-      category: "Food and beverage",
+      category: 'Food and beverage',
       active: true,
-      summary: "A fresh start prepared every morning",
-      duration: "6:30 AM - 10:30 AM",
-      availability: "Available every day",
-      location: "Atlan Restaurant",
-      mainImageUrl: "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666",
+      summary: 'A fresh start prepared every morning',
+      duration: '6:30 AM - 10:30 AM',
+      availability: 'Available every day',
+      location: 'Atlan Restaurant',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -47,17 +51,19 @@ export class ServiceService {
     },
     {
       serviceId: 3,
-      name: "Lunch Menu",
-      urlName: "lunch-menu",
-      description: "A seasonal lunch menu prepared with fresh regional ingredients.\n\nAtlan Suites designs this experience around a calm, attentive stay. Fresh flavors for the middle of your day Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Atlan Restaurant and is available every day. Its usual duration is 12:00 PM - 3:00 PM, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Lunch Menu',
+      urlName: 'lunch-menu',
+      description:
+        'A seasonal lunch menu prepared with fresh regional ingredients.\n\nAtlan Suites designs this experience around a calm, attentive stay. Fresh flavors for the middle of your day Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Atlan Restaurant and is available every day. Its usual duration is 12:00 PM - 3:00 PM, and our concierge can help coordinate any details before or during your stay.',
       price: 55000,
-      category: "Food and beverage",
+      category: 'Food and beverage',
       active: true,
-      summary: "Fresh flavors for the middle of your day",
-      duration: "12:00 PM - 3:00 PM",
-      availability: "Available every day",
-      location: "Atlan Restaurant",
-      mainImageUrl: "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f",
+      summary: 'Fresh flavors for the middle of your day',
+      duration: '12:00 PM - 3:00 PM',
+      availability: 'Available every day',
+      location: 'Atlan Restaurant',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -66,17 +72,19 @@ export class ServiceService {
     },
     {
       serviceId: 4,
-      name: "Fine Dining",
-      urlName: "fine-dining",
-      description: "An elegant Ã  la carte dinner featuring contemporary Colombian cuisine.\n\nAtlan Suites designs this experience around a calm, attentive stay. An evening designed to be remembered Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Atlan Restaurant and is available every day. Its usual duration is 6:00 PM - 10:00 PM, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Fine Dining',
+      urlName: 'fine-dining',
+      description:
+        'An elegant Ã  la carte dinner featuring contemporary Colombian cuisine.\n\nAtlan Suites designs this experience around a calm, attentive stay. An evening designed to be remembered Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Atlan Restaurant and is available every day. Its usual duration is 6:00 PM - 10:00 PM, and our concierge can help coordinate any details before or during your stay.',
       price: 65000,
-      category: "Food and beverage",
+      category: 'Food and beverage',
       active: true,
-      summary: "An evening designed to be remembered",
-      duration: "6:00 PM - 10:00 PM",
-      availability: "Available every day",
-      location: "Atlan Restaurant",
-      mainImageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
+      summary: 'An evening designed to be remembered',
+      duration: '6:00 PM - 10:00 PM',
+      availability: 'Available every day',
+      location: 'Atlan Restaurant',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1414235077428-338989a2e8c0',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -85,17 +93,19 @@ export class ServiceService {
     },
     {
       serviceId: 5,
-      name: "Room Service",
-      urlName: "room-service",
-      description: "Meals and beverages delivered directly to the comfort of your room.\n\nAtlan Suites designs this experience around a calm, attentive stay. Private dining whenever you need it Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Guest rooms and is available every day. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Room Service',
+      urlName: 'room-service',
+      description:
+        'Meals and beverages delivered directly to the comfort of your room.\n\nAtlan Suites designs this experience around a calm, attentive stay. Private dining whenever you need it Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Guest rooms and is available every day. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.',
       price: 15000,
-      category: "Room",
+      category: 'Room',
       active: true,
-      summary: "Private dining whenever you need it",
-      duration: "24 hours",
-      availability: "Available every day",
-      location: "Guest rooms",
-      mainImageUrl: "https://images.unsplash.com/photo-1564501049412-61c2a3083791",
+      summary: 'Private dining whenever you need it',
+      duration: '24 hours',
+      availability: 'Available every day',
+      location: 'Guest rooms',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -104,17 +114,18 @@ export class ServiceService {
     },
     {
       serviceId: 6,
-      name: "Laundry Service",
-      urlName: "laundry-service",
-      description: "Professional washing, drying and ironing for personal garments.\n\nAtlan Suites designs this experience around a calm, attentive stay. Thoughtful care for every garment Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Front desk and guest rooms and is available every day. Its usual duration is Delivery within 24 hours, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Laundry Service',
+      urlName: 'laundry-service',
+      description:
+        'Professional washing, drying and ironing for personal garments.\n\nAtlan Suites designs this experience around a calm, attentive stay. Thoughtful care for every garment Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Front desk and guest rooms and is available every day. Its usual duration is Delivery within 24 hours, and our concierge can help coordinate any details before or during your stay.',
       price: 30000,
-      category: "Laundry",
+      category: 'Laundry',
       active: true,
-      summary: "Thoughtful care for every garment",
-      duration: "Delivery within 24 hours",
-      availability: "Available every day",
-      location: "Front desk and guest rooms",
-      mainImageUrl: "https://images.unsplash.com/photo-1545173168-9f1947eebb7f",
+      summary: 'Thoughtful care for every garment',
+      duration: 'Delivery within 24 hours',
+      availability: 'Available every day',
+      location: 'Front desk and guest rooms',
+      mainImageUrl: 'https://images.unsplash.com/photo-1545173168-9f1947eebb7f',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -123,17 +134,19 @@ export class ServiceService {
     },
     {
       serviceId: 7,
-      name: "Secure Parking",
-      urlName: "secure-parking",
-      description: "Monitored parking available for hotel guests.\n\nAtlan Suites designs this experience around a calm, attentive stay. Peace of mind from the moment you arrive Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Basement level and is subject to availability. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Secure Parking',
+      urlName: 'secure-parking',
+      description:
+        'Monitored parking available for hotel guests.\n\nAtlan Suites designs this experience around a calm, attentive stay. Peace of mind from the moment you arrive Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Basement level and is subject to availability. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.',
       price: 25000,
-      category: "Transportation",
+      category: 'Transportation',
       active: true,
-      summary: "Peace of mind from the moment you arrive",
-      duration: "24 hours",
-      availability: "Subject to availability",
-      location: "Basement level",
-      mainImageUrl: "https://images.unsplash.com/photo-1506521781263-d8422e82f27a",
+      summary: 'Peace of mind from the moment you arrive',
+      duration: '24 hours',
+      availability: 'Subject to availability',
+      location: 'Basement level',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1506521781263-d8422e82f27a',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -142,17 +155,19 @@ export class ServiceService {
     },
     {
       serviceId: 8,
-      name: "Swimming Pool",
-      urlName: "swimming-pool",
-      description: "Access to the hotel\u0027s temperature-controlled panoramic pool.\n\nAtlan Suites designs this experience around a calm, attentive stay. A quiet pause beside the water Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Third-floor terrace and is available every day. Its usual duration is 7:00 AM - 9:00 PM, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Swimming Pool',
+      urlName: 'swimming-pool',
+      description:
+        'Access to the hotel\u0027s temperature-controlled panoramic pool.\n\nAtlan Suites designs this experience around a calm, attentive stay. A quiet pause beside the water Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Third-floor terrace and is available every day. Its usual duration is 7:00 AM - 9:00 PM, and our concierge can help coordinate any details before or during your stay.',
       price: 30000,
-      category: "Wellness",
+      category: 'Wellness',
       active: true,
-      summary: "A quiet pause beside the water",
-      duration: "7:00 AM - 9:00 PM",
-      availability: "Available every day",
-      location: "Third-floor terrace",
-      mainImageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+      summary: 'A quiet pause beside the water',
+      duration: '7:00 AM - 9:00 PM',
+      availability: 'Available every day',
+      location: 'Third-floor terrace',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -161,17 +176,19 @@ export class ServiceService {
     },
     {
       serviceId: 9,
-      name: "Fitness Center",
-      urlName: "fitness-center",
-      description: "A modern fitness center equipped for cardio and strength training.\n\nAtlan Suites designs this experience around a calm, attentive stay. Keep your energy moving every day Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Second floor and is available every day. Its usual duration is 5:00 AM - 11:00 PM, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Fitness Center',
+      urlName: 'fitness-center',
+      description:
+        'A modern fitness center equipped for cardio and strength training.\n\nAtlan Suites designs this experience around a calm, attentive stay. Keep your energy moving every day Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Second floor and is available every day. Its usual duration is 5:00 AM - 11:00 PM, and our concierge can help coordinate any details before or during your stay.',
       price: 20000,
-      category: "Wellness",
+      category: 'Wellness',
       active: true,
-      summary: "Keep your energy moving every day",
-      duration: "5:00 AM - 11:00 PM",
-      availability: "Available every day",
-      location: "Second floor",
-      mainImageUrl: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48",
+      summary: 'Keep your energy moving every day',
+      duration: '5:00 AM - 11:00 PM',
+      availability: 'Available every day',
+      location: 'Second floor',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1534438327276-14e5300c3a48',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -180,17 +197,19 @@ export class ServiceService {
     },
     {
       serviceId: 10,
-      name: "Signature Spa",
-      urlName: "signature-spa",
-      description: "A restorative wellness circuit with personalized spa treatments.\n\nAtlan Suites designs this experience around a calm, attentive stay. Relaxation in an exclusive setting Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Second-floor wellness area and is reservation required. Its usual duration is 90 minutes, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Signature Spa',
+      urlName: 'signature-spa',
+      description:
+        'A restorative wellness circuit with personalized spa treatments.\n\nAtlan Suites designs this experience around a calm, attentive stay. Relaxation in an exclusive setting Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Second-floor wellness area and is reservation required. Its usual duration is 90 minutes, and our concierge can help coordinate any details before or during your stay.',
       price: 120000,
-      category: "Wellness",
+      category: 'Wellness',
       active: true,
-      summary: "Relaxation in an exclusive setting",
-      duration: "90 minutes",
-      availability: "Reservation required",
-      location: "Second-floor wellness area",
-      mainImageUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef",
+      summary: 'Relaxation in an exclusive setting',
+      duration: '90 minutes',
+      availability: 'Reservation required',
+      location: 'Second-floor wellness area',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1540555700478-4be289fbecef',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -199,17 +218,18 @@ export class ServiceService {
     },
     {
       serviceId: 11,
-      name: "Sauna Session",
-      urlName: "sauna-session",
-      description: "A private sauna session designed to relax the body and clear the mind.\n\nAtlan Suites designs this experience around a calm, attentive stay. Restorative warmth and complete calm Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Second-floor wellness area and is reservation required. Its usual duration is 45 minutes, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Sauna Session',
+      urlName: 'sauna-session',
+      description:
+        'A private sauna session designed to relax the body and clear the mind.\n\nAtlan Suites designs this experience around a calm, attentive stay. Restorative warmth and complete calm Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Second-floor wellness area and is reservation required. Its usual duration is 45 minutes, and our concierge can help coordinate any details before or during your stay.',
       price: 40000,
-      category: "Wellness",
+      category: 'Wellness',
       active: true,
-      summary: "Restorative warmth and complete calm",
-      duration: "45 minutes",
-      availability: "Reservation required",
-      location: "Second-floor wellness area",
-      mainImageUrl: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874",
+      summary: 'Restorative warmth and complete calm',
+      duration: '45 minutes',
+      availability: 'Reservation required',
+      location: 'Second-floor wellness area',
+      mainImageUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -218,17 +238,19 @@ export class ServiceService {
     },
     {
       serviceId: 12,
-      name: "Private Jacuzzi",
-      urlName: "private-jacuzzi",
-      description: "One hour of private access to the hotel jacuzzi.\n\nAtlan Suites designs this experience around a calm, attentive stay. A peaceful moment reserved for you Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Second-floor wellness area and is reservation required. Its usual duration is 60 minutes, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Private Jacuzzi',
+      urlName: 'private-jacuzzi',
+      description:
+        'One hour of private access to the hotel jacuzzi.\n\nAtlan Suites designs this experience around a calm, attentive stay. A peaceful moment reserved for you Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Second-floor wellness area and is reservation required. Its usual duration is 60 minutes, and our concierge can help coordinate any details before or during your stay.',
       price: 60000,
-      category: "Wellness",
+      category: 'Wellness',
       active: true,
-      summary: "A peaceful moment reserved for you",
-      duration: "60 minutes",
-      availability: "Reservation required",
-      location: "Second-floor wellness area",
-      mainImageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461",
+      summary: 'A peaceful moment reserved for you',
+      duration: '60 minutes',
+      availability: 'Reservation required',
+      location: 'Second-floor wellness area',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1578683010236-d716f9a3f461',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -237,17 +259,19 @@ export class ServiceService {
     },
     {
       serviceId: 13,
-      name: "Relaxing Massage",
-      urlName: "relaxing-massage",
-      description: "A full-body massage performed by an experienced wellness therapist.\n\nAtlan Suites designs this experience around a calm, attentive stay. Balance for body and mind Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Second-floor wellness area and is reservation required. Its usual duration is 60 minutes, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Relaxing Massage',
+      urlName: 'relaxing-massage',
+      description:
+        'A full-body massage performed by an experienced wellness therapist.\n\nAtlan Suites designs this experience around a calm, attentive stay. Balance for body and mind Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Second-floor wellness area and is reservation required. Its usual duration is 60 minutes, and our concierge can help coordinate any details before or during your stay.',
       price: 150000,
-      category: "Wellness",
+      category: 'Wellness',
       active: true,
-      summary: "Balance for body and mind",
-      duration: "60 minutes",
-      availability: "Reservation required",
-      location: "Second-floor wellness area",
-      mainImageUrl: "https://images.unsplash.com/photo-1519823551278-64ac92734fb1",
+      summary: 'Balance for body and mind',
+      duration: '60 minutes',
+      availability: 'Reservation required',
+      location: 'Second-floor wellness area',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1519823551278-64ac92734fb1',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -256,17 +280,18 @@ export class ServiceService {
     },
     {
       serviceId: 14,
-      name: "Airport Transfer",
-      urlName: "airport-transfer",
-      description: "Private transportation between the hotel and the airport.\n\nAtlan Suites designs this experience around a calm, attentive stay. Arrivals and departures without stress Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Airport and hotel and is available every day. Its usual duration is By reservation, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Airport Transfer',
+      urlName: 'airport-transfer',
+      description:
+        'Private transportation between the hotel and the airport.\n\nAtlan Suites designs this experience around a calm, attentive stay. Arrivals and departures without stress Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Airport and hotel and is available every day. Its usual duration is By reservation, and our concierge can help coordinate any details before or during your stay.',
       price: 90000,
-      category: "Transportation",
+      category: 'Transportation',
       active: true,
-      summary: "Arrivals and departures without stress",
-      duration: "By reservation",
-      availability: "Available every day",
-      location: "Airport and hotel",
-      mainImageUrl: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2",
+      summary: 'Arrivals and departures without stress',
+      duration: 'By reservation',
+      availability: 'Available every day',
+      location: 'Airport and hotel',
+      mainImageUrl: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -275,17 +300,19 @@ export class ServiceService {
     },
     {
       serviceId: 15,
-      name: "In-room Minibar",
-      urlName: "in-room-minibar",
-      description: "A curated selection of drinks and snacks available in your room.\n\nAtlan Suites designs this experience around a calm, attentive stay. Small pleasures at any hour Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Guest rooms and is available every day. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.",
+      name: 'In-room Minibar',
+      urlName: 'in-room-minibar',
+      description:
+        'A curated selection of drinks and snacks available in your room.\n\nAtlan Suites designs this experience around a calm, attentive stay. Small pleasures at any hour Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Guest rooms and is available every day. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.',
       price: 20000,
-      category: "Food and beverage",
+      category: 'Food and beverage',
       active: true,
-      summary: "Small pleasures at any hour",
-      duration: "24 hours",
-      availability: "Available every day",
-      location: "Guest rooms",
-      mainImageUrl: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd",
+      summary: 'Small pleasures at any hour',
+      duration: '24 hours',
+      availability: 'Available every day',
+      location: 'Guest rooms',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -294,17 +321,19 @@ export class ServiceService {
     },
     {
       serviceId: 16,
-      name: "Additional Housekeeping",
-      urlName: "additional-housekeeping",
-      description: "Additional room cleaning requested outside the regular housekeeping schedule.\n\nAtlan Suites designs this experience around a calm, attentive stay. Your space, refreshed whenever you need it Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Guest rooms and is available every day. Its usual duration is By request, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Additional Housekeeping',
+      urlName: 'additional-housekeeping',
+      description:
+        'Additional room cleaning requested outside the regular housekeeping schedule.\n\nAtlan Suites designs this experience around a calm, attentive stay. Your space, refreshed whenever you need it Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Guest rooms and is available every day. Its usual duration is By request, and our concierge can help coordinate any details before or during your stay.',
       price: 25000,
-      category: "Room",
+      category: 'Room',
       active: true,
-      summary: "Your space, refreshed whenever you need it",
-      duration: "By request",
-      availability: "Available every day",
-      location: "Guest rooms",
-      mainImageUrl: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7",
+      summary: 'Your space, refreshed whenever you need it',
+      duration: 'By request',
+      availability: 'Available every day',
+      location: 'Guest rooms',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1584132967334-10e028bd69f7',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -313,17 +342,19 @@ export class ServiceService {
     },
     {
       serviceId: 17,
-      name: "Luggage Storage",
-      urlName: "luggage-storage",
-      description: "Secure temporary luggage storage before check-in or after check-out.\n\nAtlan Suites designs this experience around a calm, attentive stay. Explore the city without carrying your bags Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Front desk and is available every day. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Luggage Storage',
+      urlName: 'luggage-storage',
+      description:
+        'Secure temporary luggage storage before check-in or after check-out.\n\nAtlan Suites designs this experience around a calm, attentive stay. Explore the city without carrying your bags Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Front desk and is available every day. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.',
       price: 15000,
-      category: "Guest services",
+      category: 'Guest services',
       active: true,
-      summary: "Explore the city without carrying your bags",
-      duration: "24 hours",
-      availability: "Available every day",
-      location: "Front desk",
-      mainImageUrl: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1",
+      summary: 'Explore the city without carrying your bags',
+      duration: '24 hours',
+      availability: 'Available every day',
+      location: 'Front desk',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1569154941061-e231b4725ef1',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -332,17 +363,19 @@ export class ServiceService {
     },
     {
       serviceId: 18,
-      name: "Wake-up Call",
-      urlName: "wake-up-call",
-      description: "A personalized telephone wake-up call at your requested time.\n\nAtlan Suites designs this experience around a calm, attentive stay. Begin every day right on time Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Front desk and is available every day. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Wake-up Call',
+      urlName: 'wake-up-call',
+      description:
+        'A personalized telephone wake-up call at your requested time.\n\nAtlan Suites designs this experience around a calm, attentive stay. Begin every day right on time Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Front desk and is available every day. Its usual duration is 24 hours, and our concierge can help coordinate any details before or during your stay.',
       price: 10000,
-      category: "Guest services",
+      category: 'Guest services',
       active: true,
-      summary: "Begin every day right on time",
-      duration: "24 hours",
-      availability: "Available every day",
-      location: "Front desk",
-      mainImageUrl: "https://images.unsplash.com/photo-1501139083538-0139583c060f",
+      summary: 'Begin every day right on time',
+      duration: '24 hours',
+      availability: 'Available every day',
+      location: 'Front desk',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1501139083538-0139583c060f',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -351,17 +384,19 @@ export class ServiceService {
     },
     {
       serviceId: 19,
-      name: "Bicycle Rental",
-      urlName: "bicycle-rental",
-      description: "A city bicycle available for independent exploration throughout the day.\n\nAtlan Suites designs this experience around a calm, attentive stay. Discover the city at your own pace Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Lobby and is subject to availability. Its usual duration is Full day, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Bicycle Rental',
+      urlName: 'bicycle-rental',
+      description:
+        'A city bicycle available for independent exploration throughout the day.\n\nAtlan Suites designs this experience around a calm, attentive stay. Discover the city at your own pace Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Lobby and is subject to availability. Its usual duration is Full day, and our concierge can help coordinate any details before or during your stay.',
       price: 50000,
-      category: "Recreation",
+      category: 'Recreation',
       active: true,
-      summary: "Discover the city at your own pace",
-      duration: "Full day",
-      availability: "Subject to availability",
-      location: "Lobby",
-      mainImageUrl: "https://images.unsplash.com/photo-1502744688674-c619d1586c9e",
+      summary: 'Discover the city at your own pace',
+      duration: 'Full day',
+      availability: 'Subject to availability',
+      location: 'Lobby',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1502744688674-c619d1586c9e',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -370,17 +405,19 @@ export class ServiceService {
     },
     {
       serviceId: 20,
-      name: "Guided City Tour",
-      urlName: "guided-city-tour",
-      description: "A guided visit to the city\u0027s most memorable landmarks and neighborhoods.\n\nAtlan Suites designs this experience around a calm, attentive stay. Stories and places waiting to be discovered Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Lobby and is reservation required. Its usual duration is Half day, and our concierge can help coordinate any details before or during your stay.",
+      name: 'Guided City Tour',
+      urlName: 'guided-city-tour',
+      description:
+        'A guided visit to the city\u0027s most memorable landmarks and neighborhoods.\n\nAtlan Suites designs this experience around a calm, attentive stay. Stories and places waiting to be discovered Our team prepares the service with the same care given to every guest request, so the experience feels personal whether you are visiting for business, rest, or a special occasion.\n\nThe service is offered at Lobby and is reservation required. Its usual duration is Half day, and our concierge can help coordinate any details before or during your stay.',
       price: 180000,
-      category: "Recreation",
+      category: 'Recreation',
       active: true,
-      summary: "Stories and places waiting to be discovered",
-      duration: "Half day",
-      availability: "Reservation required",
-      location: "Lobby",
-      mainImageUrl: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
+      summary: 'Stories and places waiting to be discovered',
+      duration: 'Half day',
+      availability: 'Reservation required',
+      location: 'Lobby',
+      mainImageUrl:
+        'https://images.unsplash.com/photo-1469474968028-56623f02e42e',
       secondaryImageUrls: [
         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
         'https://images.unsplash.com/photo-1564501049412-61c2a3083791',
@@ -406,14 +443,18 @@ export class ServiceService {
   }
 
   update(id: number, service: Service): void {
-    const index = this.services.findIndex((current) => current.serviceId === id);
+    const index = this.services.findIndex(
+      (current) => current.serviceId === id,
+    );
     if (index !== -1) {
       this.services[index] = service;
     }
   }
 
   delete(id: number): void {
-    const index = this.services.findIndex((service) => service.serviceId === id);
+    const index = this.services.findIndex(
+      (service) => service.serviceId === id,
+    );
     if (index !== -1) {
       this.services.splice(index, 1);
     }

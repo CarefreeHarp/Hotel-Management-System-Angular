@@ -1,7 +1,17 @@
 <header class="page-header-container">
   <nav class="breadcrumb-nav" aria-label="Breadcrumbs">
     <a routerLink="/" class="breadcrumb-link">
-      <svg class="breadcrumb-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg
+        class="breadcrumb-icon"
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
         <polyline points="9 22 9 12 15 12 15 22"></polyline>
       </svg>
@@ -16,7 +26,8 @@
       <p class="eyebrow">Accommodation Management</p>
       <h1 class="page-main-title">Room Types &amp; Suites</h1>
       <p class="header-description">
-        Explore, configure and manage all room categories, rates, guest capacities and photographic showcases for Atlan Suites.
+        Explore, configure and manage all room categories, rates, guest
+        capacities and photographic showcases for Atlan Suites.
       </p>
     </div>
 
@@ -31,7 +42,16 @@
   <div class="metrics-grid">
     <div class="metric-card">
       <div class="metric-icon-wrap">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <path d="M2 4v16"></path>
           <path d="M2 8h18a2 2 0 0 1 2 2v10"></path>
           <path d="M2 17h20"></path>
@@ -46,19 +66,41 @@
 
     <div class="metric-card">
       <div class="metric-icon-wrap">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        <svg
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+          ></path>
         </svg>
       </div>
       <div class="metric-details">
         <span class="metric-label">Average Nightly Rate</span>
-        <span class="metric-value">COP ${{ avgPrice.toLocaleString('en-US') }}</span>
+        <span class="metric-value"
+          >COP ${{ avgPrice.toLocaleString("en-US") }}</span
+        >
       </div>
     </div>
 
     <div class="metric-card">
       <div class="metric-icon-wrap">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
           <circle cx="9" cy="7" r="4"></circle>
           <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -67,7 +109,9 @@
       </div>
       <div class="metric-details">
         <span class="metric-label">Capacity Range</span>
-        <span class="metric-value">{{ minCapacity }} – {{ maxCapacity }} Guests</span>
+        <span class="metric-value"
+          >{{ minCapacity }} – {{ maxCapacity }} Guests</span
+        >
       </div>
     </div>
   </div>

@@ -1,75 +1,75 @@
 :host {
-    display: block;
+  display: block;
 }
 
 .field-label {
-    display: block;
-    margin-bottom: .45rem;
-    color: #dfe7ec;
-    font-size: .72rem;
-    font-weight: 700;
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #dfe7ec;
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 .field-control {
-    position: relative;
+  position: relative;
 }
 
 .field-input {
-    width: 100%;
-    min-height: 3.15rem;
-    padding: .75rem 1rem;
-    border: 1px solid rgba(221, 232, 239, .14);
-    border-radius: .8rem;
-    color: #f2f5f7;
-    background: rgba(7, 12, 16, .42);
-    font: inherit;
-    font-size: .86rem;
+  width: 100%;
+  min-height: 3.15rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(221, 232, 239, 0.14);
+  border-radius: 0.8rem;
+  color: #f2f5f7;
+  background: rgba(7, 12, 16, 0.42);
+  font: inherit;
+  font-size: 0.86rem;
 }
 
 textarea.field-input {
-    min-height: 8rem;
-    resize: vertical;
+  min-height: 8rem;
+  resize: vertical;
 }
 
 .field-input::placeholder {
-    color: #9faeb9;
+  color: #9faeb9;
 }
 
 .field-input:focus {
-    outline: 2px solid #b88c5a;
-    outline-offset: 2px;
-    background: rgba(7, 12, 16, .62);
+  outline: 2px solid #b88c5a;
+  outline-offset: 2px;
+  background: rgba(7, 12, 16, 0.62);
 }
 
-.field-input[aria-invalid='true'] {
-    border-color: #da7e76;
+.field-input[aria-invalid="true"] {
+  border-color: #da7e76;
 }
 
 .field-control--prefixed::before {
-    content: attr(data-prefix);
-    position: absolute;
-    top: 50%;
-    left: 1rem;
-    color: #d3ae7b;
-    transform: translateY(-50%);
+  content: attr(data-prefix);
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  color: #d3ae7b;
+  transform: translateY(-50%);
 }
 
 .field-control--prefixed .field-input {
-    padding-left: 2rem;
+  padding-left: 2rem;
 }
 
 .field-hint {
-    margin: .4rem 0 0;
-    color: #9faeb9;
-    font-size: .72rem;
+  margin: 0.4rem 0 0;
+  color: #9faeb9;
+  font-size: 0.72rem;
 }
 
 .field-error {
-    margin: .35rem 0 0;
-    color: #ffd6d2;
-    font-size: .75rem;
+  margin: 0.35rem 0 0;
+  color: #ffd6d2;
+  font-size: 0.75rem;
 }
 
 .field-error:empty {
-    display: none;
+  display: none;
 }

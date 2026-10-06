@@ -1,12 +1,56 @@
-<label class="field-label" [class.sr-only]="hideLabel" [for]="fieldId">{{ label }}</label>
-<div class="field-control" [class.field-control--prefixed]="prefix" [attr.data-prefix]="prefix || null">
+<label class="field-label" [class.sr-only]="hideLabel" [for]="fieldId">{{
+  label
+}}</label>
+<div
+  class="field-control"
+  [class.field-control--prefixed]="prefix"
+  [attr.data-prefix]="prefix || null"
+>
   @if (multiline) {
-    <textarea class="field-input" [id]="fieldId" [formControl]="control" [rows]="rows" [attr.maxlength]="maxlength" [attr.required]="required || null" [attr.placeholder]="placeholder || null" [attr.aria-invalid]="invalid" [attr.aria-describedby]="describedBy"></textarea>
-  } @else if (type === 'number') {
-    <input class="field-input" type="number" [id]="fieldId" [formControl]="control" [attr.min]="min" [attr.max]="max" [attr.step]="step" [attr.required]="required || null" [attr.placeholder]="placeholder || null" [attr.aria-invalid]="invalid" [attr.aria-describedby]="describedBy" />
+    <textarea
+      class="field-input"
+      [id]="fieldId"
+      [formControl]="control"
+      [rows]="rows"
+      [attr.maxlength]="maxlength"
+      [attr.required]="required || null"
+      [attr.placeholder]="placeholder || null"
+      [attr.aria-invalid]="invalid"
+      [attr.aria-describedby]="describedBy"
+    ></textarea>
+  } @else if (type === "number") {
+    <input
+      class="field-input"
+      type="number"
+      [id]="fieldId"
+      [formControl]="control"
+      [attr.min]="min"
+      [attr.max]="max"
+      [attr.step]="step"
+      [attr.required]="required || null"
+      [attr.placeholder]="placeholder || null"
+      [attr.aria-invalid]="invalid"
+      [attr.aria-describedby]="describedBy"
+    />
   } @else {
-    <input class="field-input" [type]="type" [id]="fieldId" [formControl]="control" [attr.maxlength]="maxlength" [attr.required]="required || null" [attr.placeholder]="placeholder || null" [attr.aria-invalid]="invalid" [attr.aria-describedby]="describedBy" />
+    <input
+      class="field-input"
+      [type]="type"
+      [id]="fieldId"
+      [formControl]="control"
+      [attr.maxlength]="maxlength"
+      [attr.required]="required || null"
+      [attr.placeholder]="placeholder || null"
+      [attr.aria-invalid]="invalid"
+      [attr.aria-describedby]="describedBy"
+    />
   }
 </div>
-@if (hint) { <p class="field-hint" [id]="fieldId + '-hint'">{{ hint }}</p> }
-<p class="field-error" [id]="fieldId + '-error'">@if (invalid) { {{ error }} }</p>
+@if (hint) {
+  <p class="field-hint" [id]="fieldId + '-hint'">{{ hint }}</p>
+}
+<p class="field-error" [id]="fieldId + '-error'">
+  @if (invalid) {
+    {{ error }}
+  }
+</p>

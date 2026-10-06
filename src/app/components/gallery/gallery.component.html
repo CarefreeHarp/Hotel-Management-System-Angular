@@ -1,0 +1,15 @@
+<section class="gallery-section" aria-labelledby="additional-photos-title">
+  <p class="card-eyebrow">Gallery</p>
+  <h2 class="gallery-title" id="additional-photos-title">Additional photos</h2>
+  <ul class="gallery-grid">
+    @for (photo of photos; track $index) {
+      <li>
+        <img
+          [src]="photo"
+          [alt]="name + ' — additional photo ' + ($index + 1)"
+          loading="lazy"
+        />
+      </li>
+    }
+  </ul>
+</section>

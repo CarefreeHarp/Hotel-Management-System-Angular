@@ -1,0 +1,32 @@
+<app-header [solid]="true" />
+<main class="catalog-page">
+  <div class="catalog-page__container">
+    @if (item(); as service) {
+      <app-page-heading
+        [eyebrow]="service.category"
+        [title]="service.name"
+        [description]="service.summary || ''"
+        ><a appButton [routerLink]="['/services', service.serviceId, 'edit']"
+          >Edit service</a
+        ></app-page-heading
+      >
+      @if (saved()) {
+        <p class="saved-alert" role="status">Service saved successfully.</p>
+      }
+      <app-service-info [service]="service" />
+      @if (service.secondaryImageUrls.length) {
+        <app-gallery
+          [name]="service.name"
+          [photos]="service.secondaryImageUrls"
+        />
+      }
+    } @else {
+      <app-page-heading
+        eyebrow="Service catalog"
+        title="Service not found"
+        description="This service does not exist or is no longer available."
+        ><a appButton routerLink="/services">Back to list</a></app-page-heading
+      >
+    }
+  </div>
+</main>
