@@ -1,0 +1,46 @@
+<section class="detail-grid" aria-label="Service information">
+  <figure class="detail-visual">
+    <img [src]="service.mainImageUrl" [alt]="service.name" />
+  </figure>
+  <article class="detail-content">
+    <header class="service-card-heading">
+      <p class="card-eyebrow">Service information</p>
+      <span class="service-id">ID #{{ service.serviceId }}</span>
+    </header>
+    <dl class="detail-list">
+      <div>
+        <dt>Description</dt>
+        <dd class="description">{{ service.description }}</dd>
+      </div>
+      <div>
+        <dt>Price</dt>
+        <dd>
+          {{
+            service.price === 0
+              ? "Included"
+              : "COP " + (service.price | number: "1.0-2")
+          }}
+        </dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd>{{ service.active ? "Active" : "Inactive" }}</dd>
+      </div>
+      <div>
+        <dt>Duration</dt>
+        <dd>{{ service.duration || "Not specified" }}</dd>
+      </div>
+      <div>
+        <dt>Availability</dt>
+        <dd>{{ service.availability || "Not specified" }}</dd>
+      </div>
+      <div>
+        <dt>Location</dt>
+        <dd>{{ service.location || "Not specified" }}</dd>
+      </div>
+    </dl>
+    <div class="detail-actions">
+      <a appButton variant="secondary" routerLink="/services">Back to list</a>
+    </div>
+  </article>
+</section>

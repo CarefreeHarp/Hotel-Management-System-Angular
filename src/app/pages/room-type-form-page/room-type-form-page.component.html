@@ -1,19 +1,52 @@
 <app-header [solid]="true" />
 
-<main class="room-type-page">
-  <div class="room-type-page__container">
+<main class="catalog-page">
+  <div class="catalog-page__container">
     @if (isCreateMode || roomType) {
       <app-page-heading
         [title]="isCreateMode ? 'Create room type' : 'Edit room type'"
-        [description]="isCreateMode ? 'Add a new accommodation option to the hotel inventory.' : 'Define how ' + roomType?.name + ' will appear in the hotel inventory.'"
+        [description]="
+          isCreateMode
+            ? 'Add a new accommodation option to the hotel inventory.'
+            : 'Define how ' +
+              roomType?.name +
+              ' will appear in the hotel inventory.'
+        "
       />
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-        @if (submitted && form.invalid) { <p class="form-alert" role="alert">Please check the highlighted fields before saving.</p> }
-        <app-room-type-commercial-fields class="form-section" [form]="form" [submitted]="submitted" />
-        <app-room-type-photo-fields class="form-section" [form]="form" [submitted]="submitted" (addPhoto)="addPhoto()" />
+        @if (submitted && form.invalid) {
+          <p class="form-alert" role="alert">
+            Please check the highlighted fields before saving.
+          </p>
+        }
+        <app-room-type-commercial-fields
+          class="form-section"
+          [form]="form"
+          [submitted]="submitted"
+        />
+        <app-photo-fields
+          class="form-section"
+          [mainPhoto]="form.controls.mainPhoto"
+          [photos]="form.controls.secondaryPhotos"
+          description="These photos represent every room assigned to this type."
+          [submitted]="submitted"
+          (addPhoto)="addPhoto()"
+        />
         <div class="form-actions">
-          <button appButton type="submit">{{ isCreateMode ? 'Create room type' : 'Save room type' }} <span aria-hidden="true">→</span></button>
-          <a appButton variant="secondary" [routerLink]="isCreateMode ? '/room-types' : ['/room-types', roomType?.roomTypeId]">Cancel</a>
+          <button appButton type="submit">
+            {{ isCreateMode ? "Create room type" : "Save room type" }}
+            <span aria-hidden="true">→</span>
+          </button>
+          <a
+            appButton
+            variant="secondary"
+            [routerLink]="
+              isCreateMode
+                ? '/room-types'
+                : ['/room-types', roomType?.roomTypeId]
+            "
+            >Cancel</a
+          >
         </div>
       </form>
     }

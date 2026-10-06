@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { RoomType } from '../models/room-type';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RoomTypeService {
   // Datos quemados: los mismos tipos de habitación que cargaba DataLoader en Spring Boot.
@@ -10,7 +10,8 @@ export class RoomTypeService {
     {
       roomTypeId: 1,
       name: 'Standard Room',
-      description: 'A comfortable room with a queen bed, work desk and private bathroom.',
+      description:
+        'A comfortable room with a queen bed, work desk and private bathroom.',
       nightlyPrice: 250000,
       maxCapacity: 2,
       mainPhoto: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304',
@@ -22,7 +23,8 @@ export class RoomTypeService {
     {
       roomTypeId: 2,
       name: 'Deluxe Room',
-      description: 'A spacious room with a king bed, lounge area and panoramic city views.',
+      description:
+        'A spacious room with a king bed, lounge area and panoramic city views.',
       nightlyPrice: 360000,
       maxCapacity: 2,
       mainPhoto: 'https://images.unsplash.com/photo-1590490360182-c33d57733427',
@@ -34,7 +36,8 @@ export class RoomTypeService {
     {
       roomTypeId: 3,
       name: 'Executive Room',
-      description: 'A refined room with a dedicated workspace, premium amenities and lounge access.',
+      description:
+        'A refined room with a dedicated workspace, premium amenities and lounge access.',
       nightlyPrice: 450000,
       maxCapacity: 3,
       mainPhoto: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b',
@@ -46,7 +49,8 @@ export class RoomTypeService {
     {
       roomTypeId: 4,
       name: 'Family Suite',
-      description: 'A two-room suite designed for families, with extra beds and a generous living area.',
+      description:
+        'A two-room suite designed for families, with extra beds and a generous living area.',
       nightlyPrice: 590000,
       maxCapacity: 5,
       mainPhoto: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a',
@@ -58,7 +62,8 @@ export class RoomTypeService {
     {
       roomTypeId: 5,
       name: 'Presidential Suite',
-      description: 'Our signature suite with a private terrace, jacuzzi and personalized guest service.',
+      description:
+        'Our signature suite with a private terrace, jacuzzi and personalized guest service.',
       nightlyPrice: 950000,
       maxCapacity: 6,
       mainPhoto: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea',
@@ -89,14 +94,18 @@ export class RoomTypeService {
   }
 
   update(id: number, roomType: RoomType): void {
-    const index = this.roomTypes.findIndex((current) => current.roomTypeId === id);
+    const index = this.roomTypes.findIndex(
+      (current) => current.roomTypeId === id,
+    );
     if (index !== -1) {
       this.roomTypes[index] = roomType;
     }
   }
 
   delete(id: number): void {
-    const index = this.roomTypes.findIndex((roomType) => roomType.roomTypeId === id);
+    const index = this.roomTypes.findIndex(
+      (roomType) => roomType.roomTypeId === id,
+    );
     if (index !== -1) {
       this.roomTypes.splice(index, 1);
     }

@@ -1,0 +1,23 @@
+@use "../../../../../styles/catalog-info";
+.service-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.service-card-heading .card-eyebrow {
+  margin: 0;
+}
+
+.service-id {
+  flex-shrink: 0;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid rgba(211, 174, 123, 0.25);
+  border-radius: 999px;
+  color: #d3ae7b;
+  background: rgba(211, 174, 123, 0.06);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}

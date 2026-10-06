@@ -8,9 +8,14 @@ import { RoomType } from '../../models/room-type';
 
 @Component({
   selector: 'app-room-type-table-page',
-  imports: [CommonModule, HeaderComponent,PageTitleComponent, RoomTypeTableComponent],
+  imports: [
+    CommonModule,
+    HeaderComponent,
+    PageTitleComponent,
+    RoomTypeTableComponent,
+  ],
   templateUrl: './room-type-table-page.component.html',
-  styleUrl: './room-type-table-page.component.scss'
+  styleUrl: './room-type-table-page.component.scss',
 })
 export class RoomTypeTablePageComponent implements OnInit {
   private roomTypeService = inject(RoomTypeService);
@@ -33,7 +38,10 @@ export class RoomTypeTablePageComponent implements OnInit {
 
   get avgPrice(): number {
     if (this.roomTypes.length === 0) return 0;
-    const sum = this.roomTypes.reduce((acc, curr) => acc + curr.nightlyPrice, 0);
+    const sum = this.roomTypes.reduce(
+      (acc, curr) => acc + curr.nightlyPrice,
+      0,
+    );
     return Math.round(sum / this.roomTypes.length);
   }
 
@@ -51,7 +59,9 @@ export class RoomTypeTablePageComponent implements OnInit {
     const deletedItem = this.roomTypeService.getById(id);
     this.roomTypeService.delete(id);
     this.loadRoomTypes();
-    this.triggerToast(`Room type "${deletedItem?.name || id}" was successfully removed.`);
+    this.triggerToast(
+      `Room type "${deletedItem?.name || id}" was successfully removed.`,
+    );
   }
 
   triggerToast(message: string): void {

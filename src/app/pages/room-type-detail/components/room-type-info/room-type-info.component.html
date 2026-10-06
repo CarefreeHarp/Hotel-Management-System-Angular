@@ -1,12 +1,27 @@
 <section class="detail-grid" aria-label="Room type information">
-  <figure class="detail-visual"><img [src]="roomType.mainPhoto" [alt]="'Main photo for ' + roomType.name" /></figure>
+  <figure class="detail-visual">
+    <img [src]="roomType.mainPhoto" [alt]="'Main photo for ' + roomType.name" />
+  </figure>
   <article class="detail-content">
     <p class="card-eyebrow">Commercial information</p>
     <dl class="detail-list">
-      <div><dt>Description</dt><dd class="description">{{ roomType.description }}</dd></div>
-      <div><dt>Price per night</dt><dd>COP {{ roomType.nightlyPrice | number:'1.0-2' }}</dd></div>
-      <div><dt>Maximum capacity</dt><dd>{{ roomType.maxCapacity }} guests</dd></div>
+      <div>
+        <dt>Description</dt>
+        <dd class="description">{{ roomType.description }}</dd>
+      </div>
+      <div>
+        <dt>Price per night</dt>
+        <dd>COP {{ roomType.nightlyPrice | number: "1.0-2" }}</dd>
+      </div>
+      <div>
+        <dt>Maximum capacity</dt>
+        <dd>{{ roomType.maxCapacity }} guests</dd>
+      </div>
     </dl>
-    <div class="detail-actions"><a appButton variant="secondary" routerLink="/room-types">← Back to list</a></div>
+    <div class="detail-actions">
+      <a appButton variant="secondary" routerLink="/room-types"
+        >← Back to list</a
+      >
+    </div>
   </article>
 </section>

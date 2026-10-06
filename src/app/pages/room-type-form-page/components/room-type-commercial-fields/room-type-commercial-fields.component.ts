@@ -6,7 +6,7 @@ import type { RoomTypeForm } from '../../room-type-form-page.component';
   selector: 'app-room-type-commercial-fields',
   imports: [FormFieldComponent],
   templateUrl: './room-type-commercial-fields.component.html',
-  styleUrl: './room-type-commercial-fields.component.scss'
+  styleUrl: './room-type-commercial-fields.component.scss',
 })
 export class RoomTypeCommercialFieldsComponent {
   @Input({ required: true }) form!: RoomTypeForm;

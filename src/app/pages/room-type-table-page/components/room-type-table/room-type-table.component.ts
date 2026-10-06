@@ -8,7 +8,7 @@ import { RoomType } from '../../../../models/room-type';
   selector: 'app-room-type-table',
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './room-type-table.component.html',
-  styleUrl: './room-type-table.component.scss'
+  styleUrl: './room-type-table.component.scss',
 })
 export class RoomTypeTableComponent {
   @Input() roomTypes: RoomType[] = [];
@@ -31,7 +31,7 @@ export class RoomTypeTableComponent {
         (rt) =>
           rt.name.toLowerCase().includes(term) ||
           rt.description.toLowerCase().includes(term) ||
-          rt.roomTypeId.toString().includes(term)
+          rt.roomTypeId.toString().includes(term),
       );
     }
 
@@ -39,7 +39,9 @@ export class RoomTypeTableComponent {
     if (this.selectedCapacity === '1-2') {
       result = result.filter((rt) => rt.maxCapacity <= 2);
     } else if (this.selectedCapacity === '3-4') {
-      result = result.filter((rt) => rt.maxCapacity >= 3 && rt.maxCapacity <= 4);
+      result = result.filter(
+        (rt) => rt.maxCapacity >= 3 && rt.maxCapacity <= 4,
+      );
     } else if (this.selectedCapacity === '5+') {
       result = result.filter((rt) => rt.maxCapacity >= 5);
     }

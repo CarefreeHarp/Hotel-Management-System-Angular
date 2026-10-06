@@ -1,0 +1,18 @@
+<app-header [solid]="true" />
+<main class="room-types-page-main">
+  <span class="page-watermark" aria-hidden="true">Services</span>
+  <div class="page-container">
+    <header class="catalog-heading">
+      <div>
+        <p class="eyebrow">Atlan Suites · Service catalog</p>
+        <h1>Hotel services</h1>
+        <p>{{ services.length }} services · Prices in Colombian pesos (COP)</p>
+      </div>
+      <a appButton routerLink="/services/new">Create service</a>
+    </header>
+    @if (message) {
+      <p class="notice" role="status">{{ message }}</p>
+    }
+    <app-service-table [services]="services" (delete)="deleteService($event)" />
+  </div>
+</main>

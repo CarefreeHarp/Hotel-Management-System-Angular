@@ -1,0 +1,50 @@
+<section aria-labelledby="photos-title">
+  <h2 class="section-title" id="photos-title">{{ title }}</h2>
+  <p class="section-description">{{ description }}</p>
+  <app-form-field
+    fieldId="mainPhoto"
+    label="Main photo URL"
+    type="url"
+    [control]="mainPhoto"
+    [maxlength]="500"
+    placeholder="https://example.com/photo.jpg"
+    [submitted]="submitted"
+    error="Enter an HTTP or HTTPS photo URL of up to 500 characters."
+  />
+  <div class="photo-fields">
+    @for (photo of photos.controls; track photo; let i = $index) {
+      <div class="photo-field">
+        <span class="photo-field__number" aria-hidden="true">{{ i + 1 }}</span>
+        <app-form-field
+          [fieldId]="'photo-' + i"
+          [label]="'Additional photo ' + (i + 1) + ' URL'"
+          [hideLabel]="true"
+          type="url"
+          [control]="photo"
+          [maxlength]="500"
+          [required]="false"
+          placeholder="https://example.com/additional-photo.jpg"
+          [submitted]="submitted"
+          error="Enter an HTTP or HTTPS URL of up to 500 characters, or leave it empty."
+        />
+        <button
+          class="remove-photo"
+          type="button"
+          (click)="photos.removeAt(i)"
+          [attr.aria-label]="'Remove additional photo ' + (i + 1)"
+        >
+          ×
+        </button>
+      </div>
+    }
+  </div>
+  <button
+    appButton
+    variant="secondary"
+    class="add-photo"
+    type="button"
+    (click)="addPhoto.emit()"
+  >
+    ＋ Add another photo
+  </button>
+</section>
