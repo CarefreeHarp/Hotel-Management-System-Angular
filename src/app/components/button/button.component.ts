@@ -5,7 +5,7 @@ import { Component, Input } from '@angular/core';
   selector: 'a[appButton], button[appButton]',
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss',
-  host: { '[class.is-secondary]': "variant === 'secondary'" }
+  host: { '[class.is-secondary]': "variant === 'secondary'" },
 })
 export class ButtonComponent {
   @Input() variant: 'primary' | 'secondary' = 'primary';

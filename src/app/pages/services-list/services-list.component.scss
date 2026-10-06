@@ -1,0 +1,29 @@
+@use "../../../styles/catalog-list";
+.catalog-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(3rem, 6vw, 5rem);
+  line-height: 1;
+  margin: 0.6rem 0;
+}
+.catalog-heading p {
+  font-size: 0.85rem;
+}
+.notice {
+  background: #e2efe7;
+  color: #276144;
+  padding: 1rem;
+  border-radius: 8px;
+}
+@media (max-width: 640px) {
+  .catalog-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+}

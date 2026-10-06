@@ -5,7 +5,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   selector: 'app-form-field',
   imports: [ReactiveFormsModule],
   templateUrl: './form-field.component.html',
-  styleUrl: './form-field.component.scss'
+  styleUrl: './form-field.component.scss',
 })
 export class FormFieldComponent {
   @Input({ required: true }) control!: FormControl;
@@ -31,6 +31,8 @@ export class FormFieldComponent {
   }
 
   get describedBy(): string {
-    return this.hint ? `${this.fieldId}-hint ${this.fieldId}-error` : `${this.fieldId}-error`;
+    return this.hint
+      ? `${this.fieldId}-hint ${this.fieldId}-error`
+      : `${this.fieldId}-error`;
   }
 }

@@ -1,0 +1,44 @@
+<section [formGroup]="form" aria-labelledby="information-title">
+  <h2 id="information-title">Service information</h2>
+  <p class="section-description">
+    Required fields: name, category, description, price and main image.
+  </p>
+  <div class="form-grid">
+    @for (field of textFields; track field.key) {
+      <app-form-field
+        [fieldId]="field.key"
+        [label]="field.label"
+        [control]="form.controls[field.key]"
+        [required]="field.required"
+        [maxlength]="field.max"
+        [submitted]="submitted"
+        [error]="error(form.controls[field.key])"
+      />
+    }
+    <app-form-field
+      fieldId="price"
+      label="Price (COP)"
+      type="number"
+      prefix="$"
+      [control]="form.controls.price"
+      [min]="0"
+      [max]="99999999.99"
+      [step]="0.01"
+      [submitted]="submitted"
+      [error]="error(form.controls.price)"
+    />
+    <app-form-field
+      class="full-width"
+      fieldId="description"
+      label="Description"
+      [multiline]="true"
+      [rows]="6"
+      [control]="form.controls.description"
+      [submitted]="submitted"
+      [error]="error(form.controls.description)"
+    />
+    <label class="active-field"
+      ><input type="checkbox" formControlName="active" /> Active service</label
+    >
+  </div>
+</section>

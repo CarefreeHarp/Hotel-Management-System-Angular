@@ -95,7 +95,10 @@
   letter-spacing: 0.04em;
   border-radius: 999px;
   box-shadow: 0 4px 18px rgba(184, 140, 90, 0.25);
-  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), filter 0.25s ease;
+  transition:
+    transform 0.25s var(--ease),
+    box-shadow 0.25s var(--ease),
+    filter 0.25s ease;
 
   .btn-icon {
     font-size: 1.2rem;
@@ -130,7 +133,9 @@
   backdrop-filter: blur(10px);
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(17, 20, 23, 0.03);
-  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  transition:
+    transform 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
 
   &:hover {
     transform: translateY(-2px);

@@ -2,7 +2,9 @@
   <div>
     <p class="page-heading__eyebrow">{{ eyebrow }}</p>
     <h1 class="page-heading__title">{{ title }}</h1>
-    @if (description) { <p class="page-heading__description">{{ description }}</p> }
+    @if (description) {
+      <p class="page-heading__description">{{ description }}</p>
+    }
   </div>
   <ng-content />
 </header>

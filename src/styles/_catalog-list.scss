@@ -1,0 +1,121 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: radial-gradient(
+    circle at 75% 20%,
+    #d8e5ef 0%,
+    #e5e9ee 45%,
+    #d1dfea 100%
+  );
+  color: var(--color-charcoal);
+  position: relative;
+}
+
+.room-types-page-main {
+  position: relative;
+  overflow: hidden;
+  padding-top: clamp(6.5rem, 11vw, 9rem);
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+  padding-inline: var(--pad-inline);
+  min-height: 80vh;
+}
+
+.page-watermark {
+  position: absolute;
+  top: clamp(4rem, 8vw, 7rem);
+  right: clamp(1.5rem, 5vw, 5rem);
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 15vw, 15rem);
+  line-height: 0.72;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  color: rgba(46, 52, 59, 0.04);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.page-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* Toast Feedback Notification */
+.toast-notification {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.4rem;
+  background: rgba(17, 20, 23, 0.92);
+  color: var(--color-text-light);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: slideInToast 0.35s var(--ease);
+  max-width: 420px;
+}
+
+.toast-indicator {
+  width: 4px;
+  height: 28px;
+  background: var(--color-gold);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.toast-text-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+}
+
+.toast-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-gold);
+  font-weight: 700;
+}
+
+.toast-message {
+  font-size: 0.85rem;
+  color: rgba(244, 246, 248, 0.9);
+  line-height: 1.35;
+}
+
+.btn-dismiss-toast {
+  background: none;
+  border: none;
+  color: rgba(244, 246, 248, 0.6);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+@keyframes slideInToast {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

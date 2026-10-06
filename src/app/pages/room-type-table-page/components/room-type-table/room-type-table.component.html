@@ -3,7 +3,17 @@
   <div class="table-controls-bar">
     <div class="search-filter-box">
       <div class="search-input-wrapper">
-        <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          class="search-icon"
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
@@ -14,14 +24,25 @@
           [(ngModel)]="searchTerm"
         />
         @if (searchTerm) {
-          <button class="btn-clear-search" type="button" (click)="searchTerm = ''" aria-label="Clear search">✕</button>
+          <button
+            class="btn-clear-search"
+            type="button"
+            (click)="searchTerm = ''"
+            aria-label="Clear search"
+          >
+            ✕
+          </button>
         }
       </div>
 
       <div class="filters-group">
         <div class="select-wrapper">
           <label for="capacity-filter" class="filter-label">Capacity:</label>
-          <select id="capacity-filter" class="custom-select" [(ngModel)]="selectedCapacity">
+          <select
+            id="capacity-filter"
+            class="custom-select"
+            [(ngModel)]="selectedCapacity"
+          >
             <option value="all">All Capacities</option>
             <option value="1-2">1 – 2 Guests</option>
             <option value="3-4">3 – 4 Guests</option>
@@ -51,7 +72,16 @@
         title="Table View"
         aria-label="Table View"
       >
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <line x1="8" y1="6" x2="21" y2="6"></line>
           <line x1="8" y1="12" x2="21" y2="12"></line>
           <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -68,7 +98,16 @@
         title="Cards View"
         aria-label="Cards View"
       >
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <rect x="3" y="3" width="7" height="7"></rect>
           <rect x="14" y="3" width="7" height="7"></rect>
           <rect x="14" y="14" width="7" height="7"></rect>
@@ -81,9 +120,10 @@
   <!-- Results Count Bar -->
   <div class="results-summary-row">
     <span class="results-count-text">
-      Showing <strong>{{ filteredRoomTypes.length }}</strong> of {{ roomTypes.length }} room types
+      Showing <strong>{{ filteredRoomTypes.length }}</strong> of
+      {{ roomTypes.length }} room types
     </span>
-    @if (searchTerm || selectedCapacity !== 'all' || sortBy !== 'id-asc') {
+    @if (searchTerm || selectedCapacity !== "all" || sortBy !== "id-asc") {
       <button class="btn-reset-filters" type="button" (click)="resetFilters()">
         Reset all filters
       </button>
@@ -91,7 +131,7 @@
   </div>
 
   <!-- TABLE VIEW -->
-  @if (viewMode === 'table' && filteredRoomTypes.length > 0) {
+  @if (viewMode === "table" && filteredRoomTypes.length > 0) {
     <div class="table-card-container">
       <div class="table-responsive">
         <table class="luxury-table">
@@ -114,12 +154,20 @@
                 </td>
                 <td class="col-preview">
                   <div class="room-thumb-wrapper">
-                    <img [src]="item.mainPhoto" [alt]="item.name" class="room-thumb-img" loading="lazy" />
+                    <img
+                      [src]="item.mainPhoto"
+                      [alt]="item.name"
+                      class="room-thumb-img"
+                      loading="lazy"
+                    />
                   </div>
                 </td>
                 <td class="col-name">
                   <div class="room-info-cell">
-                    <a [routerLink]="['/room-types', item.roomTypeId]" class="room-name-link">
+                    <a
+                      [routerLink]="['/room-types', item.roomTypeId]"
+                      class="room-name-link"
+                    >
                       {{ item.name }}
                     </a>
                     <p class="room-desc-snippet">{{ item.description }}</p>
@@ -127,24 +175,55 @@
                 </td>
                 <td class="col-capacity">
                   <div class="capacity-badge">
-                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="15"
+                      height="15"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+                      ></path>
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
-                    <span>{{ item.maxCapacity }} {{ item.maxCapacity === 1 ? 'Guest' : 'Guests' }}</span>
+                    <span
+                      >{{ item.maxCapacity }}
+                      {{ item.maxCapacity === 1 ? "Guest" : "Guests" }}</span
+                    >
                   </div>
                 </td>
                 <td class="col-price">
                   <div class="price-wrapper">
                     <span class="currency-tag">COP</span>
-                    <span class="price-num">${{ item.nightlyPrice.toLocaleString('en-US') }}</span>
+                    <span class="price-num"
+                      >${{ item.nightlyPrice.toLocaleString("en-US") }}</span
+                    >
                     <span class="price-period">/ night</span>
                   </div>
                 </td>
                 <td class="col-gallery">
-                  <span class="gallery-count-pill" [title]="item.secondaryPhotos.length + ' secondary photos'">
-                    <svg class="gallery-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <span
+                    class="gallery-count-pill"
+                    [title]="item.secondaryPhotos.length + ' secondary photos'"
+                  >
+                    <svg
+                      class="gallery-icon"
+                      viewBox="0 0 24 24"
+                      width="13"
+                      height="13"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+                      ></path>
                       <circle cx="12" cy="13" r="4"></circle>
                     </svg>
                     <span>{{ item.secondaryPhotos.length + 1 }}</span>
@@ -158,8 +237,19 @@
                       title="View Details"
                       aria-label="View Details"
                     >
-                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <svg
+                        viewBox="0 0 24 24"
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                        ></path>
                         <circle cx="12" cy="12" r="3"></circle>
                       </svg>
                     </a>
@@ -169,9 +259,22 @@
                       title="Edit Room Type"
                       aria-label="Edit Room Type"
                     >
-                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                      <svg
+                        viewBox="0 0 24 24"
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                        ></path>
+                        <path
+                          d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                        ></path>
                       </svg>
                     </a>
                     <button
@@ -181,9 +284,20 @@
                       title="Delete Room Type"
                       aria-label="Delete Room Type"
                     >
-                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <svg
+                        viewBox="0 0 24 24"
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
                         <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <path
+                          d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                        ></path>
                         <line x1="10" y1="11" x2="10" y2="17"></line>
                         <line x1="14" y1="11" x2="14" y2="17"></line>
                       </svg>
@@ -199,15 +313,29 @@
   }
 
   <!-- CARDS / GRID VIEW -->
-  @if (viewMode === 'cards' && filteredRoomTypes.length > 0) {
+  @if (viewMode === "cards" && filteredRoomTypes.length > 0) {
     <div class="cards-grid">
       @for (item of filteredRoomTypes; track item.roomTypeId) {
         <article class="suite-catalog-card">
           <div class="card-media-wrapper">
-            <img [src]="item.mainPhoto" [alt]="item.name" class="card-image" loading="lazy" />
+            <img
+              [src]="item.mainPhoto"
+              [alt]="item.name"
+              class="card-image"
+              loading="lazy"
+            />
             <div class="card-badge-id">#{{ item.roomTypeId }}</div>
             <div class="card-badge-capacity">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
@@ -218,7 +346,9 @@
           <div class="card-content">
             <div class="card-header-row">
               <h3 class="card-suite-name">
-                <a [routerLink]="['/room-types', item.roomTypeId]">{{ item.name }}</a>
+                <a [routerLink]="['/room-types', item.roomTypeId]">{{
+                  item.name
+                }}</a>
               </h3>
             </div>
             <p class="card-description">{{ item.description }}</p>
@@ -227,18 +357,31 @@
               <div class="card-price-block">
                 <span class="card-price-label">Nightly Rate</span>
                 <div class="card-price-val">
-                  COP ${{ item.nightlyPrice.toLocaleString('en-US') }}
+                  COP ${{ item.nightlyPrice.toLocaleString("en-US") }}
                 </div>
               </div>
 
               <div class="card-actions-group">
-                <a [routerLink]="['/room-types', item.roomTypeId]" class="btn-card-action" title="View details">
+                <a
+                  [routerLink]="['/room-types', item.roomTypeId]"
+                  class="btn-card-action"
+                  title="View details"
+                >
                   View
                 </a>
-                <a [routerLink]="['/room-types', item.roomTypeId, 'edit']" class="btn-card-action edit" title="Edit suite">
+                <a
+                  [routerLink]="['/room-types', item.roomTypeId, 'edit']"
+                  class="btn-card-action edit"
+                  title="Edit suite"
+                >
                   Edit
                 </a>
-                <button type="button" class="btn-card-action delete" (click)="promptDelete(item)" title="Delete suite">
+                <button
+                  type="button"
+                  class="btn-card-action delete"
+                  (click)="promptDelete(item)"
+                  title="Delete suite"
+                >
                   Delete
                 </button>
               </div>
@@ -253,17 +396,31 @@
   @if (filteredRoomTypes.length === 0) {
     <div class="empty-state-container">
       <div class="empty-icon-circle">
-        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 24 24"
+          width="36"
+          height="36"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </div>
       <h3 class="empty-title">No Room Types Found</h3>
       <p class="empty-text">
-        No room types matched your current search or filter criteria. Try resetting the filters or creating a new room type.
+        No room types matched your current search or filter criteria. Try
+        resetting the filters or creating a new room type.
       </p>
       <div class="empty-actions">
-        <button class="btn-reset-filters-large" type="button" (click)="resetFilters()">
+        <button
+          class="btn-reset-filters-large"
+          type="button"
+          (click)="resetFilters()"
+        >
           Clear All Filters
         </button>
         <a routerLink="/room-types/new" class="btn-add-large">
@@ -275,36 +432,67 @@
 
   <!-- DELETE CONFIRMATION MODAL -->
   @if (roomTypeToDelete) {
-    <div class="modal-backdrop" (click)="cancelDelete()" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div
+      class="modal-backdrop"
+      (click)="cancelDelete()"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
       <div class="modal-card" (click)="$event.stopPropagation()">
         <div class="modal-header">
           <div class="modal-warning-icon">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+              ></path>
               <line x1="12" y1="9" x2="12" y2="13"></line>
               <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
           </div>
           <div>
-            <span class="eyebrow" style="color: var(--color-gold);">Confirm Action</span>
+            <span class="eyebrow" style="color: var(--color-gold)"
+              >Confirm Action</span
+            >
             <h3 class="modal-title" id="modal-title">Delete Room Type</h3>
           </div>
         </div>
 
         <div class="modal-body">
           <p>
-            Are you sure you want to delete <strong>"{{ roomTypeToDelete.name }}"</strong> (ID #{{ roomTypeToDelete.roomTypeId }})?
+            Are you sure you want to delete
+            <strong>"{{ roomTypeToDelete.name }}"</strong> (ID #{{
+              roomTypeToDelete.roomTypeId
+            }})?
           </p>
           <p class="modal-subtext">
-            This action will remove this room type from the catalog and the landing page suites showcase during this session.
+            This action will remove this room type from the catalog and the
+            landing page suites showcase during this session.
           </p>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn-modal-cancel" (click)="cancelDelete()">
+          <button
+            type="button"
+            class="btn-modal-cancel"
+            (click)="cancelDelete()"
+          >
             Cancel
           </button>
-          <button type="button" class="btn-modal-delete" (click)="confirmDelete()">
+          <button
+            type="button"
+            class="btn-modal-delete"
+            (click)="confirmDelete()"
+          >
             Yes, Delete Room Type
           </button>
         </div>

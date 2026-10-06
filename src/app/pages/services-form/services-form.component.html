@@ -1,0 +1,54 @@
+<app-header [solid]="true" />
+<main class="catalog-page">
+  <div class="catalog-page__container">
+    @if (isCreateMode || item) {
+      <app-page-heading
+        eyebrow="Service catalog"
+        [title]="isCreateMode ? 'Create service' : 'Edit service'"
+        description="Define the service information, price and photos."
+        ><a appButton variant="secondary" routerLink="/services"
+          >Back to list</a
+        ></app-page-heading
+      >
+      <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
+        @if (submitted && form.invalid) {
+          <p class="form-alert" role="alert">
+            Please check the highlighted fields before saving.
+          </p>
+        }
+        <app-service-fields
+          class="form-section"
+          [form]="form"
+          [submitted]="submitted"
+        />
+        <app-photo-fields
+          class="form-section"
+          title="Service photos"
+          [mainPhoto]="form.controls.mainImageUrl"
+          [photos]="form.controls.secondaryImageUrls"
+          [submitted]="submitted"
+          (addPhoto)="addPhoto()"
+        />
+        <div class="form-actions">
+          <button appButton type="submit">
+            {{ isCreateMode ? "Create service" : "Save service" }}</button
+          ><a
+            appButton
+            variant="secondary"
+            [routerLink]="
+              isCreateMode ? ['/services'] : ['/services', item?.serviceId]
+            "
+            >Cancel</a
+          >
+        </div>
+      </form>
+    } @else {
+      <app-page-heading
+        eyebrow="Service catalog"
+        title="Service not found"
+        description="This service does not exist or is no longer available."
+        ><a appButton routerLink="/services">Back to list</a></app-page-heading
+      >
+    }
+  </div>
+</main>

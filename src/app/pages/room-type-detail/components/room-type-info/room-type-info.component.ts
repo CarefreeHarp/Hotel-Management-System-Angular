@@ -8,7 +8,7 @@ import { RoomType } from '../../../../models/room-type';
   selector: 'app-room-type-info',
   imports: [DecimalPipe, RouterLink, ButtonComponent],
   templateUrl: './room-type-info.component.html',
-  styleUrl: './room-type-info.component.scss'
+  styleUrl: './room-type-info.component.scss',
 })
 export class RoomTypeInfoComponent {
   @Input({ required: true }) roomType!: RoomType;

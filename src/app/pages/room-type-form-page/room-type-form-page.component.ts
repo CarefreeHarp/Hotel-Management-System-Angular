@@ -1,12 +1,20 @@
 import { Component, inject } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HeaderComponent } from '../../components/header/header.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { RoomTypeCommercialFieldsComponent } from './components/room-type-commercial-fields/room-type-commercial-fields.component';
-import { RoomTypePhotoFieldsComponent } from './components/room-type-photo-fields/room-type-photo-fields.component';
+import { PhotoFieldsComponent } from '../../components/photo-fields/photo-fields.component';
 import { RoomTypeService } from '../../services/room-type.service';
 import { RoomType } from '../../models/room-type';
 
@@ -28,7 +36,9 @@ function photoUrl(control: AbstractControl): ValidationErrors | null {
   if (!value) return null;
   try {
     const url = new URL(value);
-    return /^https?:$/.test(url.protocol) && url.hostname && !/\s/.test(value) ? null : { photoUrl: true };
+    return /^https?:$/.test(url.protocol) && url.hostname && !/\s/.test(value)
+      ? null
+      : { photoUrl: true };
   } catch {
     return { photoUrl: true };
   }
@@ -37,11 +47,16 @@ function photoUrl(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-room-type-form-page',
   imports: [
-    ReactiveFormsModule, RouterLink, HeaderComponent, PageHeadingComponent, ButtonComponent,
-    RoomTypeCommercialFieldsComponent, RoomTypePhotoFieldsComponent,
+    ReactiveFormsModule,
+    RouterLink,
+    HeaderComponent,
+    PageHeadingComponent,
+    ButtonComponent,
+    RoomTypeCommercialFieldsComponent,
+    PhotoFieldsComponent,
   ],
   templateUrl: './room-type-form-page.component.html',
-  styleUrl: './room-type-form-page.component.scss'
+  styleUrl: './room-type-form-page.component.scss',
 })
 export class RoomTypeFormPageComponent {
   private readonly service = inject(RoomTypeService);
@@ -52,43 +67,80 @@ export class RoomTypeFormPageComponent {
   submitted = false;
 
   readonly form: RoomTypeForm = new FormGroup({
-    name: new FormControl('', { nonNullable: true, validators: [requiredText, Validators.maxLength(50), control => {
-      const name = String(control.value).trim().toLowerCase();
-      return this.service.getAll().some(type => type.roomTypeId !== this.roomType?.roomTypeId && type.name.trim().toLowerCase() === name)
-        ? { duplicate: true } : null;
-    }] }),
-    description: new FormControl('', { nonNullable: true, validators: [requiredText, Validators.maxLength(500)] }),
-    nightlyPrice: new FormControl<number | null>(null, [Validators.required, Validators.min(0), control =>
-      control.value === null || Number.isFinite(control.value) ? null : { number: true }]),
-    maxCapacity: new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(10), control =>
-      control.value === null || Number.isInteger(control.value) ? null : { integer: true }]),
-    mainPhoto: new FormControl('', { nonNullable: true, validators: [requiredText, Validators.maxLength(500), photoUrl] }),
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: [
+        requiredText,
+        Validators.maxLength(50),
+        (control) => {
+          const name = String(control.value).trim().toLowerCase();
+          return this.service
+            .getAll()
+            .some(
+              (type) =>
+                type.roomTypeId !== this.roomType?.roomTypeId &&
+                type.name.trim().toLowerCase() === name,
+            )
+            ? { duplicate: true }
+            : null;
+        },
+      ],
+    }),
+    description: new FormControl('', {
+      nonNullable: true,
+      validators: [requiredText, Validators.maxLength(500)],
+    }),
+    nightlyPrice: new FormControl<number | null>(null, [
+      Validators.required,
+      Validators.min(0),
+      (control) =>
+        control.value === null || Number.isFinite(control.value)
+          ? null
+          : { number: true },
+    ]),
+    maxCapacity: new FormControl<number | null>(null, [
+      Validators.required,
+      Validators.min(1),
+      Validators.max(10),
+      (control) =>
+        control.value === null || Number.isInteger(control.value)
+          ? null
+          : { integer: true },
+    ]),
+    mainPhoto: new FormControl('', {
+      nonNullable: true,
+      validators: [requiredText, Validators.maxLength(500), photoUrl],
+    }),
     secondaryPhotos: new FormArray<FormControl<string>>([]),
   });
 
   constructor() {
-    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(params => {
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
       const idParam = params.get('id');
       this.isCreateMode = idParam === null;
       const id = Number(idParam);
-      this.roomType = this.isCreateMode || !Number.isSafeInteger(id) || id <= 0
-        ? undefined
-        : this.service.getById(id);
+      this.roomType =
+        this.isCreateMode || !Number.isSafeInteger(id) || id <= 0
+          ? undefined
+          : this.service.getById(id);
       this.submitted = false;
       this.form.controls.secondaryPhotos.clear();
       this.form.reset();
       if (this.roomType) {
         this.form.patchValue(this.roomType);
-        this.roomType.secondaryPhotos.forEach(photo => this.addPhoto(photo));
+        this.roomType.secondaryPhotos.forEach((photo) => this.addPhoto(photo));
         this.form.markAsPristine();
       }
     });
   }
 
   addPhoto(value = ''): void {
-    this.form.controls.secondaryPhotos.push(new FormControl(value, {
-      nonNullable: true, validators: [Validators.maxLength(500), photoUrl],
-    }));
+    this.form.controls.secondaryPhotos.push(
+      new FormControl(value, {
+        nonNullable: true,
+        validators: [Validators.maxLength(500), photoUrl],
+      }),
+    );
   }
 
   save(): void {
@@ -104,18 +156,27 @@ export class RoomTypeFormPageComponent {
       nightlyPrice: value.nightlyPrice,
       maxCapacity: value.maxCapacity,
       mainPhoto: value.mainPhoto.trim(),
-      secondaryPhotos: value.secondaryPhotos.map(photo => photo.trim()).filter(Boolean),
+      secondaryPhotos: value.secondaryPhotos
+        .map((photo) => photo.trim())
+        .filter(Boolean),
     };
     if (this.isCreateMode) {
       const createdRoomType = this.service.add(roomTypeData);
-      void this.router.navigate(['/room-types', createdRoomType.roomTypeId], { queryParams: { saved: true } });
+      void this.router.navigate(['/room-types', createdRoomType.roomTypeId], {
+        queryParams: { saved: true },
+      });
       return;
     }
     if (!this.roomType || !this.service.getById(this.roomType.roomTypeId)) {
       this.roomType = undefined;
       return;
     }
-    this.service.update(this.roomType.roomTypeId, { ...roomTypeData, roomTypeId: this.roomType.roomTypeId });
-    void this.router.navigate(['/room-types', this.roomType.roomTypeId], { queryParams: { saved: true } });
+    this.service.update(this.roomType.roomTypeId, {
+      ...roomTypeData,
+      roomTypeId: this.roomType.roomTypeId,
+    });
+    void this.router.navigate(['/room-types', this.roomType.roomTypeId], {
+      queryParams: { saved: true },
+    });
   }
 }

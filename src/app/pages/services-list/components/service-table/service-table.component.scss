@@ -1,0 +1,98 @@
+:host {
+  display: block;
+}
+.catalog-table {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(46, 52, 59, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 35px rgba(17, 20, 23, 0.05);
+}
+.table-scroll {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.8rem;
+}
+th,
+td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(46, 52, 59, 0.08);
+}
+thead {
+  background: rgba(175, 207, 227, 0.18);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.service-cell {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  min-width: 290px;
+}
+.service-cell img {
+  width: 90px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 6px;
+  max-width: none;
+}
+.service-name {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+.service-name:hover {
+  color: var(--color-gold);
+}
+small {
+  display: block;
+  max-width: 30ch;
+  margin-top: 0.2rem;
+  font-weight: 400;
+  color: #59616b;
+}
+.price {
+  white-space: nowrap;
+}
+.status {
+  color: #276144;
+  background: #e2efe7;
+  padding: 0.3rem 0.6rem;
+  border-radius: 20px;
+}
+.inactive {
+  color: #804d3b;
+  background: #f3e7e0;
+}
+.actions {
+  display: flex;
+  gap: 0.4rem;
+}
+.actions a,
+.actions button {
+  padding: 0.45rem 0.6rem;
+  background: white;
+  border: 1px solid #cbd3da;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+.actions button {
+  color: #a42c2c;
+}
+.empty {
+  padding: 3rem;
+  text-align: center;
+}
+
+.service-id {
+  color: #68717c;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
