@@ -1,0 +1,49 @@
+<section class="fields-group" aria-labelledby="account-title">
+  <h2 id="account-title">Account information</h2>
+  <p class="section-description">
+    The email address is unique for each staff account.
+  </p>
+  <div class="form-grid">
+    <app-form-field
+      fieldId="name"
+      label="Name"
+      placeholder="Administrator name"
+      hint="Up to 50 characters."
+      [control]="form.controls.name"
+      [maxlength]="50"
+      [submitted]="submitted"
+      [error]="nameError()"
+    />
+    <app-form-field
+      fieldId="email"
+      label="Email address"
+      type="email"
+      placeholder="name@atlansuites.com"
+      hint="Must not be used by another staff account."
+      [control]="form.controls.email"
+      [maxlength]="80"
+      [submitted]="submitted"
+      [error]="emailError()"
+    />
+  </div>
+</section>
+@if (isCreateMode) {
+  <section class="fields-group" aria-labelledby="password-title">
+    <h2 id="password-title">Account password</h2>
+    <p class="section-description">
+      The password is set when the account is created. Editing keeps it.
+    </p>
+    <div class="form-grid">
+      <app-form-field
+        fieldId="password"
+        label="New account password"
+        type="password"
+        hint="Between 8 and 255 characters."
+        error="Enter a password with 8 to 255 characters."
+        [control]="form.controls.password"
+        [maxlength]="255"
+        [submitted]="submitted"
+      />
+    </div>
+  </section>
+}

@@ -1,0 +1,5 @@
+@use "../../../styles/catalog-form";
+
+@media (max-width: 575px) {
+  .form-card { padding: 1.1rem; }
+}

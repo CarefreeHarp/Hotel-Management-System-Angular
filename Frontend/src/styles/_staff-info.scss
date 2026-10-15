@@ -1,0 +1,153 @@
+.detail-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
+  gap: 1.5rem;
+}
+
+.staff-visual {
+  position: relative;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.1rem;
+  min-height: 22rem;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(221, 232, 239, 0.14);
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(
+      circle at 30% 18%,
+      rgba(175, 207, 227, 0.16),
+      transparent 55%
+    ),
+    linear-gradient(160deg, #253644, var(--color-ink));
+}
+
+// Palabra de fondo del portal anterior ("Admin" u "Operator").
+.staff-visual::after {
+  content: attr(data-role);
+  position: absolute;
+  right: 1rem;
+  bottom: 0.25rem;
+  color: rgba(255, 255, 255, 0.06);
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 4.5rem);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.staff-visual figcaption {
+  color: #d3ae7b;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.detail-content {
+  min-width: 0;
+  padding: clamp(1.4rem, 4vw, 2.5rem);
+  border: 1px solid rgba(221, 232, 239, 0.14);
+  border-radius: 1.5rem;
+  background: linear-gradient(
+    145deg,
+    rgba(30, 43, 54, 0.94),
+    rgba(19, 28, 36, 0.96)
+  );
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.28);
+}
+
+.info-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.card-eyebrow {
+  margin: 0;
+  color: #d3ae7b;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.record-id {
+  flex-shrink: 0;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid rgba(211, 174, 123, 0.25);
+  border-radius: 999px;
+  color: #d3ae7b;
+  background: rgba(211, 174, 123, 0.06);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.detail-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0.5rem 0 0;
+}
+
+.detail-list > div {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid rgba(221, 232, 239, 0.14);
+}
+
+.detail-list > div:nth-child(odd) {
+  padding-right: 1rem;
+}
+
+.detail-list dt {
+  margin-bottom: 0.32rem;
+  color: #9faeb9;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.detail-list dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.22rem;
+  overflow-wrap: anywhere;
+}
+
+.detail-link {
+  border-bottom: 1px solid rgba(211, 174, 123, 0.5);
+  transition: color 0.2s ease;
+}
+
+.detail-link:hover {
+  color: #d3ae7b;
+}
+
+.detail-actions {
+  margin-top: 2rem;
+}
+
+@media (max-width: 767px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .staff-visual {
+    min-height: 16rem;
+  }
+
+  .detail-list {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-list > div:nth-child(odd) {
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 575px) {
+  .detail-actions [appButton] {
+    width: 100%;
+  }
+}

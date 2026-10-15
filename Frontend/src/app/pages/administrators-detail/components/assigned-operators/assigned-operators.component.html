@@ -1,0 +1,37 @@
+<section class="assigned" aria-labelledby="assigned-title">
+  <header class="assigned-heading">
+    <div>
+      <p class="card-eyebrow">Reporting line</p>
+      <h2 id="assigned-title">Operators in charge</h2>
+    </div>
+    <a
+      appButton
+      variant="secondary"
+      [routerLink]="[base, 'operators', 'new']"
+      [queryParams]="{ adminId: adminId }"
+      >Add operator</a
+    >
+  </header>
+  @if (operators.length) {
+    <ul class="operator-list">
+      @for (operator of operators; track operator.operatorId) {
+        <li>
+          <a
+            class="operator-link"
+            [routerLink]="[base, 'operators', operator.operatorId]"
+          >
+            <app-staff-avatar
+              [name]="operator.name + ' ' + operator.lastName"
+            />
+            <span class="operator-text">
+              <strong>{{ operator.name }} {{ operator.lastName }}</strong>
+              <small>{{ operator.email }}</small>
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="empty-text">No operators report to this administrator yet.</p>
+  }
+</section>

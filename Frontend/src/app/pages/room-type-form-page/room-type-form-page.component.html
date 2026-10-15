@@ -1,0 +1,57 @@
+<app-admin-header />
+
+<main class="catalog-page">
+  <div class="catalog-page__container">
+    @if (isCreateMode || roomType) {
+      <app-page-heading
+        [title]="isCreateMode ? 'Create room type' : 'Edit room type'"
+        [description]="
+          isCreateMode
+            ? 'Add a new accommodation option to the hotel inventory.'
+            : 'Define how ' +
+              roomType?.name +
+              ' will appear in the hotel inventory.'
+        "
+      />
+      <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
+        @if (submitted && form.invalid) {
+          <p class="form-alert" role="alert">
+            Please check the highlighted fields before saving.
+          </p>
+        }
+        @if (error) {
+          <p class="form-alert" role="alert">{{ error }}</p>
+        }
+        <app-room-type-commercial-fields
+          class="form-section"
+          [form]="form"
+          [submitted]="submitted"
+        />
+        <app-photo-fields
+          class="form-section"
+          [mainPhoto]="form.controls.mainPhoto"
+          [photos]="form.controls.secondaryPhotos"
+          description="These photos represent every room assigned to this type."
+          [submitted]="submitted"
+          (addPhoto)="addPhoto()"
+        />
+        <div class="form-actions">
+          <button appButton type="submit">
+            {{ isCreateMode ? "Create room type" : "Save room type" }}
+            <span aria-hidden="true">→</span>
+          </button>
+          <a
+            appButton
+            variant="secondary"
+            [routerLink]="
+              isCreateMode
+                ? [base, 'room-types']
+                : [base, 'room-types', roomType?.roomTypeId]
+            "
+            >Cancel</a
+          >
+        </div>
+      </form>
+    }
+  </div>
+</main>

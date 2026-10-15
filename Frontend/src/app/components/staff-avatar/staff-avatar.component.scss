@@ -1,0 +1,31 @@
+:host {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(95, 125, 149, 0.35);
+  border-radius: 50%;
+  color: var(--color-charcoal);
+  background: linear-gradient(145deg, #cfe7f5, var(--color-sky-deep));
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1;
+  user-select: none;
+}
+
+:host(.is-gold) {
+  border-color: rgba(101, 74, 50, 0.3);
+  color: var(--color-ink);
+  background: linear-gradient(145deg, #e0bd8c, var(--color-gold));
+}
+
+:host(.is-large) {
+  width: clamp(7.5rem, 22vw, 10rem);
+  height: clamp(7.5rem, 22vw, 10rem);
+  border-width: 2px;
+  font-size: clamp(2.6rem, 7vw, 3.6rem);
+  font-weight: 500;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}

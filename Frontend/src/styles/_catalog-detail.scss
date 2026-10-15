@@ -1,0 +1,34 @@
+.catalog-page {
+  display: block;
+  min-height: 100vh;
+  padding: clamp(6.5rem, 11vw, 9rem) clamp(1rem, 4vw, 2rem) 5rem;
+  color: #f2f5f7;
+  background:
+    radial-gradient(
+      circle at 92% 0%,
+      rgba(95, 125, 149, 0.18),
+      transparent 26rem
+    ),
+    radial-gradient(
+      circle at 0% 78%,
+      rgba(184, 140, 90, 0.1),
+      transparent 30rem
+    ),
+    #0c1218;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.catalog-page__container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.saved-alert {
+  padding: 0.9rem 1rem;
+  border: 1px solid #82b99a;
+  border-radius: 0.8rem;
+  color: #b7e7cb;
+  background: rgba(130, 185, 154, 0.1);
+  font-size: 0.82rem;
+}

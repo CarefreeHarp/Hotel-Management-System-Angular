@@ -1,0 +1,40 @@
+<app-admin-header />
+<main class="room-types-page-main">
+  <span class="page-watermark" aria-hidden="true">Admins</span>
+  <div class="page-container">
+    <header class="catalog-heading">
+      <div>
+        <p class="eyebrow">Atlan Suites · Staff management</p>
+        <h1>Administrators</h1>
+        <p>
+          View the accounts that manage Atlan Suites and the operators in their
+          charge.
+        </p>
+      </div>
+      <a appButton [routerLink]="[base, 'administrators', 'new']">Create administrator</a>
+    </header>
+    @if (message) {
+      <p class="notice" role="status">{{ message }}</p>
+    }
+    @if (errorMessage) {
+      <p class="notice is-error" role="alert">{{ errorMessage }}</p>
+    }
+    @if (isLoading) {
+      <p class="state" role="status">Loading administrators…</p>
+    } @else if (loadError) {
+      <p class="state is-error" role="alert">{{ loadError }}</p>
+    } @else {
+      <app-administrator-table
+        [administrators]="administrators"
+        (delete)="deleteAdministrator($event)"
+      />
+      @if (administrators.length) {
+        <p class="staff-count">
+          {{ administrators.length }} registered
+          {{ administrators.length === 1 ? "administrator" : "administrators" }}
+          · <a [routerLink]="[base, 'operators']">View operators</a>
+        </p>
+      }
+    }
+  </div>
+</main>

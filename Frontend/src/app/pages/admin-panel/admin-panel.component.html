@@ -1,0 +1,47 @@
+<app-admin-header />
+<main class="room-types-page-main">
+  <span class="page-watermark" aria-hidden="true">Admin</span>
+  <div class="page-container">
+    <header class="catalog-heading">
+      <div>
+        <p class="eyebrow">Atlan Suites · Administration</p>
+        <h1>Admin Panel</h1>
+        <p>
+          Welcome, <strong>{{ authService.displayName() }}</strong>. Create, edit
+          and delete everything shown across Atlan Suites from one place.
+        </p>
+      </div>
+    </header>
+
+    @if (loadError) {
+      <p class="notice" role="alert">
+        The totals could not be loaded. Check that the Spring Boot backend is
+        running at localhost:8080.
+      </p>
+    }
+
+    <section class="panel-grid" aria-label="Manageable sections">
+      @for (card of cards; track card.key) {
+        <article class="panel-card">
+          <div class="panel-card__top">
+            <h2 class="panel-card__title">{{ card.title }}</h2>
+            <span class="panel-card__count">
+              @if (loading) {
+                …
+              } @else {
+                {{ counts?.[card.key] ?? "–" }}
+              }
+            </span>
+          </div>
+          <p class="panel-card__desc">{{ card.description }}</p>
+          <div class="panel-card__actions">
+            <a appButton [routerLink]="[base, card.path]">Manage {{ card.title.toLowerCase() }}</a>
+            <a class="panel-card__create" [routerLink]="[base, card.path, 'new']"
+              >+ {{ card.createLabel }}</a
+            >
+          </div>
+        </article>
+      }
+    </section>
+  </div>
+</main>

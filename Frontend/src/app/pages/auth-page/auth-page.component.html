@@ -1,0 +1,294 @@
+<app-header [solid]="true" />
+
+<main class="auth-page">
+  <div class="auth-container">
+    <div class="auth-back-nav">
+      <a routerLink="/" class="back-home-link">← Back to home</a>
+    </div>
+    <div class="auth-card">
+      <header class="auth-card__header">
+        <p class="eyebrow">Atlan Suites · Access Portal</p>
+        <h1 class="auth-title">
+          {{ activePortal === 'client' ? (clientMode === 'login' ? 'Guest Sign In' : 'Guest Registration') : 'Staff Portal' }}
+        </h1>
+        <p class="auth-subtitle">
+          {{ activePortal === 'client' 
+            ? 'Welcome to an unforgettable experience. Sign in to manage your stay and services.' 
+            : 'Restricted access for hotel administrators and operators.' }}
+        </p>
+      </header>
+
+      <!-- Selector principal de portal: Clientes vs Staff -->
+      <nav class="portal-nav" aria-label="Select portal">
+        <button
+          type="button"
+          class="portal-nav-btn"
+          [class.active]="activePortal === 'client'"
+          (click)="setPortal('client')"
+        >
+          <svg class="portal-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Guests
+        </button>
+        <button
+          type="button"
+          class="portal-nav-btn"
+          [class.active]="activePortal === 'staff'"
+          (click)="setPortal('staff')"
+        >
+          <svg class="portal-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="5.5"></circle><path d="M21 2l-9.6 9.6"></path><path d="M15.5 7.5l3 3L22 7l-3-3"></path></svg> Hotel Staff
+        </button>
+      </nav>
+
+      <!-- Mensajes de Alerta -->
+      @if (errorMessage) {
+        <div class="auth-alert error" role="alert">
+          <svg class="alert-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          <span>{{ errorMessage }}</span>
+        </div>
+      }
+      @if (successMessage) {
+        <div class="auth-alert success" role="status">
+          <span class="alert-icon">✓</span>
+          <span>{{ successMessage }}</span>
+        </div>
+      }
+
+      <!-- PORTAL CLIENTES -->
+      @if (activePortal === 'client') {
+        <div class="client-auth-section">
+          <!-- Toggle Iniciar Sesión / Registrarse -->
+          <div class="sub-toggle" role="tablist">
+            <button
+              type="button"
+              class="sub-toggle-btn"
+              [class.active]="clientMode === 'login'"
+              (click)="setClientMode('login')"
+              role="tab"
+              [attr.aria-selected]="clientMode === 'login'"
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              class="sub-toggle-btn"
+              [class.active]="clientMode === 'register'"
+              (click)="setClientMode('register')"
+              role="tab"
+              [attr.aria-selected]="clientMode === 'register'"
+            >
+              Register
+            </button>
+          </div>
+
+          <!-- CLIENTE: LOGIN -->
+          @if (clientMode === 'login') {
+            <form [formGroup]="clientLoginForm" (ngSubmit)="submitClientLogin()" class="auth-form" novalidate>
+              <app-form-field
+                fieldId="client-login-email"
+                label="Email"
+                type="email"
+                placeholder="example@email.com"
+                [control]="$any(clientLoginForm.controls['email'])"
+                [submitted]="clientLoginSubmitted"
+                error="Enter a valid email address."
+              />
+
+              <app-form-field
+                fieldId="client-login-password"
+                label="Password"
+                type="password"
+                placeholder="••••••••"
+                [control]="$any(clientLoginForm.controls['password'])"
+                [submitted]="clientLoginSubmitted"
+                error="Enter your password."
+              />
+
+              <div class="auth-actions">
+                <button
+                  appButton
+                  type="submit"
+                  class="btn-full"
+                  [disabled]="isLoading"
+                >
+                  {{ isLoading ? 'Signing in...' : 'Sign In' }}
+                </button>
+              </div>
+
+              <div class="auth-switch-prompt">
+                <span>Don't have an account yet?</span>
+                <button type="button" class="link-btn" (click)="setClientMode('register')">
+                  Register here
+                </button>
+              </div>
+
+              <!-- Quick demo fill -->
+              <div class="demo-helpers">
+                <p class="demo-title">Demo credentials:</p>
+                <button type="button" class="demo-chip" (click)="fillDemoClient()">
+                  Fill in Emma Thompson (Guest)
+                </button>
+              </div>
+            </form>
+          }
+
+          <!-- CLIENTE: REGISTER -->
+          @if (clientMode === 'register') {
+            <form [formGroup]="clientRegisterForm" (ngSubmit)="submitClientRegister()" class="auth-form" novalidate>
+              <div class="form-row">
+                <app-form-field
+                  fieldId="client-reg-name"
+                  label="First name"
+                  type="text"
+                  placeholder="John"
+                  [control]="$any(clientRegisterForm.controls['name'])"
+                  [submitted]="clientRegisterSubmitted"
+                  error="Enter your first name (max. 60 characters)."
+                />
+                <app-form-field
+                  fieldId="client-reg-lastname"
+                  label="Last name"
+                  type="text"
+                  placeholder="Smith"
+                  [control]="$any(clientRegisterForm.controls['lastName'])"
+                  [submitted]="clientRegisterSubmitted"
+                  error="Enter your last name (max. 60 characters)."
+                />
+              </div>
+
+              <div class="form-row">
+                <app-form-field
+                  fieldId="client-reg-nationalid"
+                  label="National ID (ID card/Passport)"
+                  type="text"
+                  placeholder="1001001001"
+                  [control]="$any(clientRegisterForm.controls['nationalId'])"
+                  [submitted]="clientRegisterSubmitted"
+                  error="Enter your unique ID number."
+                />
+                <app-form-field
+                  fieldId="client-reg-phone"
+                  label="Phone"
+                  type="tel"
+                  placeholder="3001234567"
+                  [control]="$any(clientRegisterForm.controls['phone'])"
+                  [submitted]="clientRegisterSubmitted"
+                  error="Enter your contact phone number."
+                />
+              </div>
+
+              <app-form-field
+                fieldId="client-reg-email"
+                label="Email"
+                type="email"
+                placeholder="name@example.com"
+                [control]="$any(clientRegisterForm.controls['email'])"
+                [submitted]="clientRegisterSubmitted"
+                error="Enter a valid email address."
+              />
+
+              <app-form-field
+                fieldId="client-reg-password"
+                label="Password"
+                type="password"
+                placeholder="At least 6 characters"
+                [control]="$any(clientRegisterForm.controls['password'])"
+                [submitted]="clientRegisterSubmitted"
+                hint="At least 6 characters"
+                error="Enter a secure password of at least 6 characters."
+              />
+
+              <app-form-field
+                fieldId="client-reg-photo"
+                label="Profile Photo URL (Optional)"
+                type="url"
+                placeholder="https://..."
+                [control]="$any(clientRegisterForm.controls['profilePhoto'])"
+                [submitted]="clientRegisterSubmitted"
+                [required]="false"
+                hint="Web link to an image (optional)"
+              />
+
+              <div class="auth-actions">
+                <button
+                  appButton
+                  type="submit"
+                  class="btn-full"
+                  [disabled]="isLoading"
+                >
+                  {{ isLoading ? 'Registering...' : 'Complete Registration' }}
+                </button>
+              </div>
+
+              <div class="auth-switch-prompt">
+                <span>Already have a guest account?</span>
+                <button type="button" class="link-btn" (click)="setClientMode('login')">
+                  Sign in
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+      }
+
+      <!-- PORTAL STAFF (ADMINISTRADORES Y OPERADORES) -->
+      @if (activePortal === 'staff') {
+        <div class="staff-auth-section">
+          <div class="staff-badge-notice">
+            <svg class="staff-key-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <div>
+              <strong>Exclusive access for hotel staff</strong>
+              <p>Unified sign-in for Atlan Suites administrators and operators.</p>
+            </div>
+          </div>
+
+          <form [formGroup]="staffLoginForm" (ngSubmit)="submitStaffLogin()" class="auth-form" novalidate>
+            <app-form-field
+              fieldId="staff-login-email"
+              label="Staff work email"
+              type="email"
+              placeholder="admin@atlansuites.com or operator@atlansuites.com"
+              [control]="$any(staffLoginForm.controls['email'])"
+              [submitted]="staffLoginSubmitted"
+              error="Enter your work email."
+            />
+
+            <app-form-field
+              fieldId="staff-login-password"
+              label="Staff password"
+              type="password"
+              placeholder="••••••••"
+              [control]="$any(staffLoginForm.controls['password'])"
+              [submitted]="staffLoginSubmitted"
+              error="Enter your staff password."
+            />
+
+            <div class="auth-actions">
+              <button
+                appButton
+                type="submit"
+                class="btn-full"
+                [disabled]="isLoading"
+              >
+                {{ isLoading ? 'Verifying credentials...' : 'Enter Hotel Management' }}
+              </button>
+            </div>
+
+            <!-- Quick demo helpers -->
+            <div class="demo-helpers">
+              <p class="demo-title">Quick demo credentials:</p>
+              <div class="demo-chips-group">
+                <button type="button" class="demo-chip" (click)="fillDemoAdmin()">
+                  Fill in Admin 1 (Admin2026!)
+                </button>
+                <button type="button" class="demo-chip" (click)="fillDemoOperator()">
+                  Fill in Operator 1 (Operator2026!)
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      }
+    </div>
+  </div>
+</main>
+
+<app-footer />

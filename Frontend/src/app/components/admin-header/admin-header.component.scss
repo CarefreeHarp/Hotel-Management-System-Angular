@@ -1,0 +1,164 @@
+// Colores del admin-shell de la aplicación de Thymeleaf.
+$ink: #0c1218;
+$line: rgba(221, 232, 239, 0.14);
+$muted: #9faeb9;
+$gold-light: #d3ae7b;
+
+// Fija arriba, igual que la barra de la landing, para que las páginas conserven su espacio superior.
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  min-height: 4.75rem;
+  padding: 0.6rem var(--pad-inline);
+  color: var(--color-text-light);
+  background: rgba(10, 16, 21, 0.94);
+  border-bottom: 1px solid $line;
+  backdrop-filter: blur(18px);
+}
+
+.admin-brand {
+  flex: 0 0 auto;
+  width: 8.5rem;
+
+  img {
+    width: 100%;
+    filter: brightness(0) invert(1);
+  }
+}
+
+.admin-menu {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 0.25rem;
+  margin-inline: auto;
+  padding: 0.3rem;
+  border: 1px solid $line;
+  border-radius: 999px;
+  background: rgba(110, 133, 150, 0.12);
+
+  a {
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
+    color: $muted;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition:
+      color 0.18s ease,
+      background 0.18s ease;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-text-light);
+    }
+
+    &.is-active {
+      color: $ink;
+      background: $gold-light;
+    }
+  }
+}
+
+.admin-link {
+  padding: 0.5rem;
+  border: 0;
+  color: $muted;
+  background: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-text-light);
+  }
+}
+
+.admin-exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(175, 207, 227, 0.28);
+  border-radius: 999px;
+  color: var(--color-sky-deep);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+
+  &:hover {
+    color: $ink;
+    background: var(--color-sky-deep);
+  }
+}
+
+.admin-menu-button {
+  display: none;
+  margin-left: auto;
+  padding: 0.55rem;
+  border: 1px solid $line;
+  background: none;
+  cursor: pointer;
+
+  span {
+    display: block;
+    width: 1.35rem;
+    height: 1px;
+    margin: 0.28rem 0;
+    background: var(--color-text-light);
+  }
+}
+
+@media (max-width: 1180px) {
+  .admin-header {
+    flex-wrap: wrap;
+  }
+
+  .admin-menu-button {
+    display: block;
+  }
+
+  .admin-menu {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    padding-bottom: 1rem;
+
+    &.is-open {
+      display: flex;
+    }
+  }
+
+  .admin-nav {
+    flex-direction: column;
+    margin-inline: 0;
+    border-radius: 1rem;
+
+    a {
+      text-align: center;
+    }
+  }
+
+  .admin-exit {
+    justify-content: center;
+  }
+}

@@ -1,0 +1,70 @@
+<section class="catalog-table" aria-label="Operators">
+  @if (operators.length) {
+    <div
+      class="table-scroll"
+      role="region"
+      aria-label="Operators table"
+      tabindex="0"
+    >
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Operator</th>
+            <th scope="col">Email</th>
+            <th scope="col">Administrator in charge</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of operators; track item.operatorId) {
+            <tr>
+              <td class="staff-id">#{{ item.operatorId }}</td>
+              <th class="staff-person" scope="row">
+                <div class="staff-cell">
+                  <app-staff-avatar [name]="item.name + ' ' + item.lastName" />
+                  <a
+                    class="staff-name"
+                    [routerLink]="[base, 'operators', item.operatorId]"
+                    >{{ item.name }} {{ item.lastName }}</a
+                  >
+                </div>
+              </th>
+              <td class="staff-email" data-label="Email">{{ item.email }}</td>
+              <td data-label="Administrator in charge">
+                <a
+                  class="admin-link"
+                  [routerLink]="[base, 'administrators', item.adminId]"
+                  >{{ item.adminName }}</a
+                >
+              </td>
+              <td class="actions-cell">
+                <div class="actions">
+                  <a [routerLink]="[base, 'operators', item.operatorId]"
+                    >View<span class="sr-only">
+                      {{ item.name }} {{ item.lastName }}</span
+                    ></a
+                  ><a
+                    [routerLink]="[base, 'operators', item.operatorId, 'edit']"
+                    >Edit<span class="sr-only">
+                      {{ item.name }} {{ item.lastName }}</span
+                    ></a
+                  ><button type="button" (click)="delete.emit(item)">
+                    Delete<span class="sr-only">
+                      {{ item.name }} {{ item.lastName }}</span
+                    >
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="empty">
+      <h2>No operators yet</h2>
+      <p>Create an operator to get started.</p>
+    </div>
+  }
+</section>

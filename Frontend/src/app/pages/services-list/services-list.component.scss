@@ -1,0 +1,68 @@
+@use "../../../styles/catalog-list";
+.catalog-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(3rem, 6vw, 5rem);
+  line-height: 1;
+  margin: 0.6rem 0;
+}
+.catalog-heading p {
+  font-size: 0.85rem;
+}
+.notice {
+  background: #e2efe7;
+  color: #276144;
+  padding: 1rem;
+  border-radius: 8px;
+}
+@media (max-width: 640px) {
+  .catalog-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+
+.page-container,
+.catalog-heading > div {
+  min-width: 0;
+}
+.catalog-heading h1,
+.catalog-heading p,
+.notice {
+  overflow-wrap: anywhere;
+}
+.notice[role="alert"] {
+  color: #8b2f2f;
+  background: #fbe5e2;
+}
+.inactive-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.inactive-heading h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+}
+.inactive-heading p {
+  margin: 0.25rem 0 0;
+  color: #59616b;
+  font-size: 0.85rem;
+}
+@media (max-width: 640px) {
+  .catalog-heading > a {
+    width: 100%;
+  }
+  .page-container {
+    gap: 1.5rem;
+  }
+}

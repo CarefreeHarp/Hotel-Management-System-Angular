@@ -1,0 +1,15 @@
+@if (client(); as item) {
+  <article class="detail-content" aria-label="Client information">
+    @if (item.profilePhoto) {
+      <img class="profile-photo" [src]="item.profilePhoto" [alt]="item.name + ' ' + item.lastName" />
+    }
+    <dl class="detail-list">
+      <div><dt>ID</dt><dd>{{ item.clientId }}</dd></div>
+      <div><dt>Name</dt><dd>{{ item.name }} {{ item.lastName }}</dd></div>
+      <div><dt>National ID</dt><dd>{{ item.nationalId }}</dd></div>
+      <div><dt>Email</dt><dd>{{ item.email }}</dd></div>
+      <div><dt>Phone</dt><dd>{{ item.phone }}</dd></div>
+    </dl>
+    <div class="detail-actions"><a appButton variant="secondary" [routerLink]="[base, 'clients']">Back to list</a></div>
+  </article>
+}

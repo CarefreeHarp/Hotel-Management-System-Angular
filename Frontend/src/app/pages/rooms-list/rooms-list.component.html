@@ -1,0 +1,48 @@
+<app-admin-header />
+<main class="room-types-page-main">
+  <span class="page-watermark" aria-hidden="true">Rooms</span>
+  <div class="page-container">
+    <header class="catalog-heading">
+      <div>
+        <p class="eyebrow">Atlan Suites &middot; Room catalog</p>
+        <h1>Hotel rooms</h1>
+        <p>{{ activeRooms.length }} active rooms &middot; {{ inactiveRooms.length }} inactive</p>
+      </div>
+      <a appButton [routerLink]="[base, 'rooms', 'new']">Create room</a>
+    </header>
+    @if (message) {
+      <p class="notice" role="status">{{ message }}</p>
+    }
+    @if (error) {
+      <p class="notice" role="alert">{{ error }}</p>
+    }
+    @if (loading) {
+      <p role="status">Loading rooms...</p>
+    } @else if (loadFailed) {
+      <button appButton type="button" (click)="load()">
+        Retry loading rooms
+      </button>
+    } @else {
+      <app-room-table
+        [rooms]="activeRooms"
+        (deactivate)="deactivateRoom($event)"
+        (delete)="deleteRoom($event)"
+      />
+      <section class="inactive-section" aria-labelledby="inactive-rooms-title">
+        <div class="inactive-heading">
+          <h2 id="inactive-rooms-title">Inactive rooms</h2>
+          <p>
+            Deactivated rooms keep their reservations. Activate a room to move it
+            back to the list above.
+          </p>
+        </div>
+        <app-room-table
+          [rooms]="inactiveRooms"
+          [inactive]="true"
+          (activate)="activateRoom($event)"
+          (delete)="deleteRoom($event)"
+        />
+      </section>
+    }
+  </div>
+</main>

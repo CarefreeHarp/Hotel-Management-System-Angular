@@ -1,0 +1,27 @@
+@use "catalog-form";
+
+.loading-state {
+  margin: 0;
+  padding: 4rem 1rem;
+  color: #9faeb9;
+  text-align: center;
+}
+
+// Línea dorada a la izquierda del formulario, como en el portal anterior.
+.form-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.form-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(#d3ae7b, transparent 72%);
+}
+
+.form-actions button[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}

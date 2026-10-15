@@ -1,0 +1,61 @@
+.section-title {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 600;
+}
+
+.section-description {
+  margin: 0 0 1.35rem;
+  color: #9faeb9;
+  font-size: 0.8rem;
+}
+
+.photo-fields {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.photo-field {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr) 2.75rem;
+  align-items: start;
+  gap: 0.65rem;
+}
+
+.photo-field__number {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: 0.4rem;
+  place-items: center;
+  border-radius: 50%;
+  color: #9faeb9;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.68rem;
+}
+
+.remove-photo {
+  min-height: 3.15rem;
+  border: 1px solid rgba(221, 232, 239, 0.14);
+  border-radius: 0.8rem;
+  color: #f2f5f7;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+.add-photo {
+  margin-top: 1rem;
+}
+
+@media (max-width: 575px) {
+  .photo-field {
+    grid-template-columns: minmax(0, 1fr) 2.75rem;
+  }
+
+  .photo-field__number {
+    display: none;
+  }
+}

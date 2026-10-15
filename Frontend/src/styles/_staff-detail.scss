@@ -1,0 +1,13 @@
+@use "catalog-detail";
+
+// Cormorant Garamond usa números antiguos por defecto: "1" parece una "ı".
+.catalog-page {
+  font-variant-numeric: lining-nums;
+}
+
+.loading-state {
+  margin: 0;
+  padding: 4rem 1rem;
+  color: #9faeb9;
+  text-align: center;
+}

@@ -1,0 +1,62 @@
+<app-header [solid]="true" />
+<main class="catalog-page">
+  <div class="catalog-page__container">
+    @if (isLoading) {
+      <p class="loading-state" role="status">Loading your profile…</p>
+    } @else if (client) {
+      <app-page-heading eyebrow="My profile" [title]="client.name + ' ' + client.lastName" description="Your account details and reservations at Atlan Suites.">
+        <a appButton [routerLink]="[base, 'profile', 'edit']">Edit profile</a>
+      </app-page-heading>
+      @if (saved) { <p class="saved-alert" role="status">Profile saved successfully.</p> }
+      @if (errorMessage) { <p class="form-alert" role="alert">{{ errorMessage }}</p> }
+
+      <div class="profile-grid">
+        <article class="detail-content" aria-label="Profile information">
+          @if (client.profilePhoto) {
+            <img class="profile-photo" [src]="client.profilePhoto" [alt]="client.name + ' ' + client.lastName" />
+          }
+          <dl class="detail-list">
+            <div><dt>Name</dt><dd>{{ client.name }} {{ client.lastName }}</dd></div>
+            <div><dt>National ID</dt><dd>{{ client.nationalId }}</dd></div>
+            <div><dt>Email</dt><dd>{{ client.email }}</dd></div>
+            <div><dt>Phone</dt><dd>{{ client.phone }}</dd></div>
+          </dl>
+          <div class="detail-actions">
+            <button appButton variant="secondary" type="button" [disabled]="isDeleting" (click)="deleteAccount()">
+              {{ isDeleting ? 'Deleting…' : 'Delete account' }}
+            </button>
+          </div>
+        </article>
+
+        <section class="detail-content" aria-labelledby="reservations-title">
+          <p class="card-eyebrow">Stays</p>
+          <h2 class="reservations-title" id="reservations-title">My reservations</h2>
+          @for (reservation of reservations; track reservation.reservationId) {
+            <article class="reservation" [class.is-active]="isActive(reservation)">
+              <div class="reservation__top">
+                <strong>{{ reservation.reservationCode }}</strong>
+                <span class="reservation__status">{{ statusLabel(reservation.status) }}</span>
+              </div>
+              <p>
+                {{ reservation.checkInDate | date: 'mediumDate' }} – {{ reservation.checkOutDate | date: 'mediumDate' }}
+                · {{ reservation.guestCount }} guest(s)
+              </p>
+              @if (reservation.roomNumber) {
+                <p class="reservation__room">
+                  Room {{ reservation.roomNumber }} ·
+                  <a [routerLink]="[base, 'room-types', reservation.roomTypeId]">{{ reservation.roomTypeName }}</a>
+                </p>
+              }
+            </article>
+          } @empty {
+            <p class="reservations-empty">You have no reservations yet.</p>
+          }
+        </section>
+      </div>
+    } @else {
+      <app-page-heading eyebrow="My profile" title="Profile unavailable" [description]="loadError || 'This profile could not be loaded.'">
+        <a appButton routerLink="/login">Sign in</a>
+      </app-page-heading>
+    }
+  </div>
+</main>

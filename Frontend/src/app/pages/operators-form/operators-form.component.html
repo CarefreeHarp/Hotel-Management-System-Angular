@@ -1,0 +1,70 @@
+<app-admin-header />
+<main class="catalog-page">
+  <div class="catalog-page__container">
+    @if (isLoading) {
+      <p class="loading-state" role="status">Loading form…</p>
+    } @else if (loadError) {
+      <app-page-heading
+        eyebrow="Staff management"
+        title="Form unavailable"
+        [description]="loadError"
+        ><a appButton [routerLink]="[base, 'operators']">Back to list</a></app-page-heading
+      >
+    } @else if (isCreateMode || item) {
+      <app-page-heading
+        eyebrow="Staff management"
+        [title]="isCreateMode ? 'Create operator' : 'Edit operator'"
+        [description]="
+          isCreateMode
+            ? 'Enter the details of the new operator account.'
+            : 'Update the account details. The current password is kept.'
+        "
+        ><a appButton variant="secondary" [routerLink]="[base, 'operators']"
+          >Back to list</a
+        ></app-page-heading
+      >
+      <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
+        @if (submitted && form.invalid) {
+          <p class="form-alert" role="alert">
+            Please check the highlighted fields before saving.
+          </p>
+        }
+        @if (saveError) {
+          <p class="form-alert" role="alert">{{ saveError }}</p>
+        }
+        <app-operator-fields
+          class="form-section"
+          [form]="form"
+          [administrators]="administrators"
+          [submitted]="submitted"
+          [isCreateMode]="isCreateMode"
+        />
+        <div class="form-actions">
+          <button appButton type="submit" [disabled]="isSaving">
+            {{
+              isSaving
+                ? "Saving…"
+                : isCreateMode
+                  ? "Create operator"
+                  : "Save operator"
+            }}</button
+          ><a
+            appButton
+            variant="secondary"
+            [routerLink]="
+              isCreateMode ? [base, 'operators'] : [base, 'operators', item?.operatorId]
+            "
+            >Cancel</a
+          >
+        </div>
+      </form>
+    } @else {
+      <app-page-heading
+        eyebrow="Staff management"
+        title="Operator not found"
+        description="This operator does not exist or is no longer available."
+        ><a appButton [routerLink]="[base, 'operators']">Back to list</a></app-page-heading
+      >
+    }
+  </div>
+</main>

@@ -1,0 +1,99 @@
+<section class="fields-group" aria-labelledby="personal-title">
+  <h2 id="personal-title">Personal information</h2>
+  <p class="section-description">Details required to identify the operator.</p>
+  <div class="form-grid">
+    <app-form-field
+      fieldId="name"
+      label="First name"
+      placeholder="Operator first name"
+      hint="Up to 50 characters."
+      [control]="form.controls.name"
+      [maxlength]="50"
+      [submitted]="submitted"
+      [error]="nameError()"
+    />
+    <app-form-field
+      fieldId="lastName"
+      label="Last name"
+      placeholder="Operator last name"
+      hint="Up to 50 characters."
+      [control]="form.controls.lastName"
+      [maxlength]="50"
+      [submitted]="submitted"
+      [error]="lastNameError()"
+    />
+  </div>
+</section>
+<section class="fields-group" aria-labelledby="contact-title">
+  <h2 id="contact-title">Contact and reporting line</h2>
+  <p class="section-description">
+    The email address is unique for each staff account.
+  </p>
+  <div class="form-grid">
+    <app-form-field
+      fieldId="email"
+      label="Email address"
+      type="email"
+      placeholder="name@atlansuites.com"
+      hint="Must not be used by another staff account."
+      [control]="form.controls.email"
+      [maxlength]="80"
+      [submitted]="submitted"
+      [error]="emailError()"
+    />
+    <div>
+      <label class="field-label" for="adminId">Administrator in charge</label>
+      <div class="select-control">
+        <select
+          id="adminId"
+          class="field-input"
+          [formControl]="form.controls.adminId"
+          [attr.aria-invalid]="adminInvalid"
+          aria-describedby="adminId-hint adminId-error"
+        >
+          <option [ngValue]="null" disabled>Select an administrator</option>
+          @for (administrator of administrators; track administrator.adminId) {
+            <option [ngValue]="administrator.adminId">
+              {{ administrator.name }} · {{ administrator.email }}
+            </option>
+          }
+        </select>
+      </div>
+      @if (administrators.length) {
+        <p class="field-hint" id="adminId-hint">
+          Every operator reports to one administrator.
+        </p>
+      } @else {
+        <p class="field-hint" id="adminId-hint">
+          There are no administrators yet.
+          <a [routerLink]="[base, 'administrators', 'new']">Create one first</a>.
+        </p>
+      }
+      <p class="field-error" id="adminId-error">
+        @if (adminInvalid) {
+          Select the administrator in charge of this operator.
+        }
+      </p>
+    </div>
+  </div>
+</section>
+@if (isCreateMode) {
+  <section class="fields-group" aria-labelledby="password-title">
+    <h2 id="password-title">Account password</h2>
+    <p class="section-description">
+      The password is set when the account is created. Editing keeps it.
+    </p>
+    <div class="form-grid">
+      <app-form-field
+        fieldId="password"
+        label="New account password"
+        type="password"
+        hint="Between 8 and 255 characters."
+        error="Enter a password with 8 to 255 characters."
+        [control]="form.controls.password"
+        [maxlength]="255"
+        [submitted]="submitted"
+      />
+    </div>
+  </section>
+}
