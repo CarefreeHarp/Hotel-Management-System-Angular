@@ -1,0 +1,99 @@
+:host {
+  display: block;
+  margin-top: 1.5rem;
+}
+
+.assigned {
+  padding: clamp(1.4rem, 4vw, 2rem);
+  border: 1px solid rgba(221, 232, 239, 0.14);
+  border-radius: 1.5rem;
+  background: linear-gradient(
+    145deg,
+    rgba(30, 43, 54, 0.94),
+    rgba(19, 28, 36, 0.96)
+  );
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.28);
+}
+
+.assigned-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.card-eyebrow {
+  margin: 0 0 0.45rem;
+  color: #d3ae7b;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+.operator-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.operator-link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(221, 232, 239, 0.14);
+  border-radius: 1rem;
+  background: rgba(7, 12, 16, 0.32);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.operator-link:hover {
+  border-color: rgba(211, 174, 123, 0.55);
+  background: rgba(7, 12, 16, 0.5);
+}
+
+.operator-text {
+  display: grid;
+  min-width: 0;
+}
+
+.operator-text strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.operator-text small {
+  color: #9faeb9;
+  font-size: 0.75rem;
+}
+
+.empty-text {
+  margin: 0;
+  color: #9faeb9;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 575px) {
+  .assigned-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .assigned-heading [appButton] {
+    width: 100%;
+  }
+}

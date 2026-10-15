@@ -1,0 +1,60 @@
+<section class="catalog-table" aria-label="Administrators">
+  @if (administrators.length) {
+    <div
+      class="table-scroll"
+      role="region"
+      aria-label="Administrators table"
+      tabindex="0"
+    >
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Administrator</th>
+            <th scope="col">Email</th>
+            <th scope="col">Operators</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of administrators; track item.adminId) {
+            <tr>
+              <td class="staff-id">#{{ item.adminId }}</td>
+              <th class="staff-person" scope="row">
+                <div class="staff-cell">
+                  <app-staff-avatar [name]="item.name" tone="gold" />
+                  <a
+                    class="staff-name"
+                    [routerLink]="[base, 'administrators', item.adminId]"
+                    >{{ item.name }}</a
+                  >
+                </div>
+              </th>
+              <td class="staff-email" data-label="Email">{{ item.email }}</td>
+              <td data-label="Operators in charge">
+                <span class="count-badge">{{ item.operatorCount }}</span>
+              </td>
+              <td class="actions-cell">
+                <div class="actions">
+                  <a [routerLink]="[base, 'administrators', item.adminId]"
+                    >View<span class="sr-only"> {{ item.name }}</span></a
+                  ><a
+                    [routerLink]="[base, 'administrators', item.adminId, 'edit']"
+                    >Edit<span class="sr-only"> {{ item.name }}</span></a
+                  ><button type="button" (click)="delete.emit(item)">
+                    Delete<span class="sr-only"> {{ item.name }}</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="empty">
+      <h2>No administrators yet</h2>
+      <p>Create an administrator to get started.</p>
+    </div>
+  }
+</section>

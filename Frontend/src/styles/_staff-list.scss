@@ -1,0 +1,74 @@
+@use "catalog-list";
+
+// Cormorant Garamond usa números antiguos por defecto: "1" parece una "ı".
+.room-types-page-main {
+  font-variant-numeric: lining-nums;
+}
+
+.catalog-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+h1 {
+  margin: 0.6rem 0;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.catalog-heading p {
+  max-width: 46ch;
+  font-size: 0.85rem;
+}
+
+.notice {
+  margin: 0;
+  padding: 1rem;
+  border-radius: 8px;
+  color: #276144;
+  background: #e2efe7;
+}
+
+.notice.is-error {
+  color: #8a2f2a;
+  background: #f5e1de;
+}
+
+.state {
+  margin: 0;
+  padding: 3rem 1.5rem;
+  border: 1px solid rgba(46, 52, 59, 0.1);
+  border-radius: 12px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.state.is-error {
+  color: #8a2f2a;
+}
+
+.staff-count {
+  margin: -1.5rem 0 0;
+  color: #68717c;
+  font-size: 0.75rem;
+}
+
+.staff-count a {
+  border-bottom: 1px solid rgba(184, 140, 90, 0.55);
+  color: var(--color-charcoal);
+}
+
+.staff-count a:hover {
+  color: var(--color-umber);
+}
+
+@media (max-width: 640px) {
+  .catalog-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+}

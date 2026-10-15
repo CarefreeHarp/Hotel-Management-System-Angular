@@ -1,0 +1,29 @@
+@if (adminArea) {
+  <app-admin-header />
+} @else {
+  <app-header [solid]="true" />
+}
+
+<main class="catalog-page">
+  <div class="catalog-page__container">
+    @if (roomType(); as type) {
+      <app-page-heading
+        [title]="type.name"
+        description="Shared gallery and commercial information for rooms in this category."
+      >
+        @if (adminArea) {
+          <a appButton [routerLink]="[base, 'room-types', type.roomTypeId, 'edit']"
+            >Edit room type</a
+          >
+        }
+      </app-page-heading>
+      @if (saved()) {
+        <p class="saved-alert" role="status">Room type saved successfully.</p>
+      }
+      <app-room-type-info [roomType]="type" />
+      @if (type.secondaryPhotos.length) {
+        <app-gallery [name]="type.name" [photos]="type.secondaryPhotos" />
+      }
+    }
+  </div>
+</main>

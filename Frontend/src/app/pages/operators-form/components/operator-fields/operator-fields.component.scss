@@ -1,0 +1,78 @@
+@use "../../../../../styles/staff-fields";
+
+// Mismo aspecto que los campos de FormFieldComponent, aplicado al selector.
+.field-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #dfe7ec;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.select-control {
+  position: relative;
+}
+
+.select-control::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 1.1rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 1.5px solid #d3ae7b;
+  border-bottom: 1.5px solid #d3ae7b;
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.field-input {
+  width: 100%;
+  min-height: 3.15rem;
+  padding: 0.75rem 2.75rem 0.75rem 1rem;
+  border: 1px solid rgba(221, 232, 239, 0.14);
+  border-radius: 0.8rem;
+  color: #f2f5f7;
+  background: rgba(7, 12, 16, 0.42);
+  font: inherit;
+  font-size: 0.86rem;
+  appearance: none;
+  color-scheme: dark;
+  cursor: pointer;
+}
+
+.field-input:focus {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+  background: rgba(7, 12, 16, 0.62);
+}
+
+.field-input[aria-invalid="true"] {
+  border-color: #da7e76;
+}
+
+.field-input option {
+  color: #f2f5f7;
+  background: #18232d;
+}
+
+.field-hint {
+  margin: 0.4rem 0 0;
+  color: #9faeb9;
+  font-size: 0.72rem;
+}
+
+.field-hint a {
+  border-bottom: 1px solid currentColor;
+  color: #d3ae7b;
+}
+
+.field-error {
+  margin: 0.35rem 0 0;
+  color: #ffd6d2;
+  font-size: 0.75rem;
+}
+
+.field-error:empty {
+  display: none;
+}

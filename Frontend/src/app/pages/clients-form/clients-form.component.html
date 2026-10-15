@@ -1,0 +1,33 @@
+@if (isProfile) {
+  <app-header [solid]="true" />
+} @else {
+  <app-admin-header />
+}
+<main class="catalog-page">
+  <div class="catalog-page__container">
+    @if (isLoading) {
+      <p class="loading-state" role="status">Loading form…</p>
+    } @else if (loadError) {
+      <app-page-heading [eyebrow]="isProfile ? 'My profile' : 'Client management'" title="Form unavailable" [description]="loadError">
+        <a appButton [routerLink]="isProfile ? [base, 'profile'] : [base, 'clients']">{{ isProfile ? 'Back to profile' : 'Back to list' }}</a>
+      </app-page-heading>
+    } @else {
+      <app-page-heading [eyebrow]="isProfile ? 'My profile' : 'Client management'" [title]="isProfile ? 'Edit profile' : isCreateMode ? 'Create client' : 'Edit client'" description="Enter the client profile and contact information.">
+        <a appButton variant="secondary" [routerLink]="isProfile ? [base, 'profile'] : [base, 'clients']">{{ isProfile ? 'Back to profile' : 'Back to list' }}</a>
+      </app-page-heading>
+      <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
+        @if (submitted && form.invalid) { <p class="form-alert" role="alert">Please check the highlighted fields before saving.</p> }
+        @if (saveError) { <p class="form-alert" role="alert">{{ saveError }}</p> }
+        <app-client-fields
+          [form]="form"
+          [submitted]="submitted"
+          [isCreateMode]="isCreateMode"
+        />
+        <div class="form-actions">
+          <button appButton type="submit" [disabled]="isSaving">{{ isSaving ? 'Saving…' : isCreateMode ? 'Create client' : isProfile ? 'Save profile' : 'Save client' }}</button>
+          <a appButton variant="secondary" [routerLink]="isProfile ? [base, 'profile'] : isCreateMode ? [base, 'clients'] : [base, 'clients', clientId]">Cancel</a>
+        </div>
+      </form>
+    }
+  </div>
+</main>

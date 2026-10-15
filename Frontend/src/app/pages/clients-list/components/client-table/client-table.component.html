@@ -1,0 +1,33 @@
+<section class="catalog-table" aria-label="Clients">
+  @if (clients().length) {
+    <div class="table-scroll" role="region" aria-label="Clients table" tabindex="0">
+      <table>
+        <thead><tr>
+          <th scope="col">ID</th><th scope="col">Client</th>
+          <th scope="col">National ID</th><th scope="col">Email</th>
+          <th scope="col">Phone</th><th scope="col">Actions</th>
+        </tr></thead>
+        <tbody>
+          @for (client of clients(); track client.clientId) {
+            <tr>
+              <td class="staff-id">#{{ client.clientId }}</td>
+              <th class="staff-person" scope="row">
+                <a class="staff-name" [routerLink]="[base, 'clients', client.clientId]">{{ client.name }} {{ client.lastName }}</a>
+              </th>
+              <td data-label="National ID">{{ client.nationalId }}</td>
+              <td class="staff-email" data-label="Email">{{ client.email }}</td>
+              <td data-label="Phone">{{ client.phone }}</td>
+              <td class="actions-cell"><div class="actions">
+                <a [routerLink]="[base, 'clients', client.clientId]">View<span class="sr-only"> {{ client.name }} {{ client.lastName }}</span></a>
+                <a [routerLink]="[base, 'clients', client.clientId, 'edit']">Edit<span class="sr-only"> {{ client.name }} {{ client.lastName }}</span></a>
+                <button type="button" (click)="delete.emit(client)">Delete<span class="sr-only"> {{ client.name }} {{ client.lastName }}</span></button>
+              </div></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="empty"><h2>No clients yet</h2><p>Create a client to get started.</p></div>
+  }
+</section>

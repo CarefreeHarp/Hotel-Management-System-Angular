@@ -1,0 +1,42 @@
+<section class="detail-grid" aria-label="Operator information">
+  <figure class="staff-visual" data-role="Operator">
+    <app-staff-avatar
+      [name]="operator.name + ' ' + operator.lastName"
+      size="large"
+    />
+    <figcaption>Operator</figcaption>
+  </figure>
+  <article class="detail-content">
+    <header class="info-card-heading">
+      <p class="card-eyebrow">Registered details</p>
+      <span class="record-id">ID #{{ operator.operatorId }}</span>
+    </header>
+    <dl class="detail-list">
+      <div>
+        <dt>First name</dt>
+        <dd>{{ operator.name }}</dd>
+      </div>
+      <div>
+        <dt>Last name</dt>
+        <dd>{{ operator.lastName }}</dd>
+      </div>
+      <div>
+        <dt>Email</dt>
+        <dd>{{ operator.email }}</dd>
+      </div>
+      <div>
+        <dt>Administrator in charge</dt>
+        <dd>
+          <a
+            class="detail-link"
+            [routerLink]="[base, 'administrators', operator.adminId]"
+            >{{ operator.adminName }}</a
+          >
+        </dd>
+      </div>
+    </dl>
+    <div class="detail-actions">
+      <a appButton variant="secondary" [routerLink]="[base, 'operators']">Back to list</a>
+    </div>
+  </article>
+</section>

@@ -1,0 +1,49 @@
+package com.example.demo.repository;
+
+import com.example.demo.dto.AdministratorDTO;
+import com.example.demo.dto.AdministratorListDTO;
+import com.example.demo.entities.Administrator;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+/**
+ * CAPA DE REPOSITORIO: acceso a la tabla ADMINISTRATOR con Spring Data JPA.
+ *
+ * Al extender JpaRepository ya se heredan findAll, findById, save, deleteById,
+ * existsById y count sin escribir código. El segundo tipo genérico es el de la
+ * llave primaria (admin_id, de tipo Integer).
+ *
+ * El método de abajo es una "derived query": Spring Data lee el nombre del
+ * método y genera la consulta, así que no hay que escribir SQL. Devuelve
+ * Optional porque puede que no exista ningún administrador con ese correo.
+ */
+@Repository
+public interface AdministratorRepository extends JpaRepository<Administrator, Integer> {
+
+    /* Busca un administrador por correo electrónico sin distinguir mayúsculas de minúsculas. */
+    Optional<Administrator> findByEmailIgnoreCase(String email);
+
+    /*
+     * Tabla de administradores: COUNT cuenta los operarios de cada uno en la misma
+     * consulta (LEFT JOIN para incluir a los que no tienen ninguno).
+     */
+    @Query("""
+            SELECT new com.example.demo.dto.AdministratorListDTO(admin.adminId, admin.name, admin.email,
+                    COUNT(operator))
+            FROM Administrator admin LEFT JOIN admin.operators operator
+            GROUP BY admin.adminId, admin.name, admin.email
+            ORDER BY admin.adminId
+            """)
+    List<AdministratorListDTO> findAllForList();
+
+    /* Selector del formulario de operarios: id, nombre y correo. */
+    @Query("""
+            SELECT new com.example.demo.dto.AdministratorDTO(admin.adminId, admin.name, admin.email)
+            FROM Administrator admin
+            ORDER BY admin.name
+            """)
+    List<AdministratorDTO> findAllForOptions();
+}

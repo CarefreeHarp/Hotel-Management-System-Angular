@@ -1,0 +1,34 @@
+:host {
+  display: block;
+}
+
+h2 {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 600;
+}
+
+.section-description {
+  margin: 0 0 1.35rem;
+  color: #9faeb9;
+  font-size: 0.8rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.5rem;
+}
+
+.fields-group + .fields-group {
+  margin-top: 2.2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(221, 232, 239, 0.14);
+}
+
+@media (max-width: 575px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

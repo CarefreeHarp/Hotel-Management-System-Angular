@@ -1,0 +1,191 @@
+:host {
+  display: block;
+}
+
+.catalog-table {
+  overflow: hidden;
+  border: 1px solid rgba(46, 52, 59, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 35px rgba(17, 20, 23, 0.05);
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+th,
+td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(46, 52, 59, 0.08);
+}
+
+thead th {
+  border-bottom-color: rgba(184, 140, 90, 0.42);
+  color: #59616b;
+  background: rgba(175, 207, 227, 0.18);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+tbody tr {
+  transition: background 0.18s ease;
+}
+
+tbody tr:hover {
+  background: rgba(175, 207, 227, 0.1);
+}
+
+.staff-id {
+  color: #68717c;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.staff-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 220px;
+}
+
+.staff-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.staff-name:hover,
+.admin-link:hover {
+  color: var(--color-gold);
+}
+
+.staff-email {
+  color: #4d5560;
+  overflow-wrap: anywhere;
+}
+
+.count-badge {
+  display: inline-block;
+  min-width: 2rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 20px;
+  color: var(--color-charcoal);
+  background: rgba(175, 207, 227, 0.45);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.admin-link {
+  border-bottom: 1px solid rgba(184, 140, 90, 0.5);
+  font-weight: 600;
+}
+
+// Mismos botones de acciones que las tablas de habitaciones y servicios.
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.actions a,
+.actions button {
+  padding: 0.45rem 0.6rem;
+  background: white;
+  border: 1px solid #cbd3da;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.actions button {
+  color: #a42c2c;
+}
+
+.empty {
+  padding: 3rem;
+  text-align: center;
+}
+
+// En pantallas pequeñas cada fila de la tabla se muestra como una tarjeta.
+@media (max-width: 720px) {
+  thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  table,
+  tbody {
+    display: block;
+  }
+
+  tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem 1rem;
+    padding: 1.1rem 1rem;
+    border-bottom: 1px solid rgba(46, 52, 59, 0.08);
+  }
+
+  th,
+  td {
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+
+  .staff-person {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .staff-id {
+    grid-row: 1;
+    grid-column: 2;
+    align-self: center;
+  }
+
+  td[data-label],
+  .actions-cell {
+    grid-column: 1 / -1;
+  }
+
+  td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 0.2rem;
+    color: #68717c;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .staff-cell {
+    min-width: 0;
+  }
+
+  .actions {
+    justify-content: flex-end;
+  }
+
+  .actions a,
+  .actions button {
+    min-height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+  }
+}

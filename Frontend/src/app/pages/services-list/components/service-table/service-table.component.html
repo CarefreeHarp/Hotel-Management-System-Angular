@@ -1,0 +1,87 @@
+<section class="catalog-table" aria-label="Hotel services">
+  @if (services.length) {
+    <div
+      class="table-scroll"
+      role="region"
+      aria-label="Services table"
+      tabindex="0"
+    >
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Service</th>
+            <th scope="col">Category</th>
+            <th scope="col">Status</th>
+            <th scope="col">Price</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of services; track item.serviceId) {
+            <tr>
+              <td class="service-id" data-label="ID">#{{ item.serviceId }}</td>
+              <th scope="row" class="item-heading">
+                <div class="service-cell">
+                  <a
+                    [routerLink]="[base, 'services', item.serviceId]"
+                    tabindex="-1"
+                    aria-hidden="true"
+                    ><img [src]="item.mainImageUrl" alt="" loading="lazy"
+                  /></a>
+                  <div>
+                    <a
+                      class="service-name"
+                      [routerLink]="[base, 'services', item.serviceId]"
+                      >{{ item.name }}</a
+                    ><small>{{ item.summary || item.category }}</small>
+                  </div>
+                </div>
+              </th>
+              <td data-label="Category">{{ item.category }}</td>
+              <td data-label="Status">
+                <span class="status" [class.inactive]="!item.active">{{
+                  item.active ? "Active" : "Inactive"
+                }}</span>
+              </td>
+              <td class="price" data-label="Price">
+                {{
+                  item.price === 0
+                    ? "Included"
+                    : "COP " + (item.price | number: "1.0-2")
+                }}
+              </td>
+              <td data-label="Actions">
+                <div class="actions">
+                  @if (inactive) {
+                    <button type="button" class="toggle-action activate" (click)="activate.emit(item)">
+                      Activate<span class="sr-only"> {{ item.name }}</span>
+                    </button>
+                  } @else {
+                    <a [routerLink]="[base, 'services', item.serviceId]"
+                      >View<span class="sr-only"> {{ item.name }}</span></a
+                    ><a [routerLink]="[base, 'services', item.serviceId, 'edit']"
+                      >Edit<span class="sr-only"> {{ item.name }}</span></a
+                    ><button type="button" class="toggle-action" (click)="deactivate.emit(item)">
+                      Deactivate<span class="sr-only"> {{ item.name }}</span>
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else if (inactive) {
+    <div class="empty">
+      <h2>No inactive services</h2>
+      <p>Services you deactivate will appear here.</p>
+    </div>
+  } @else {
+    <div class="empty">
+      <h2>No services yet</h2>
+      <p>Create a service to get started.</p>
+    </div>
+  }
+</section>
