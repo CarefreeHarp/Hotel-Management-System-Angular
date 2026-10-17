@@ -1,0 +1,37 @@
+<header class="admin-header" (keydown.escape)="closeMenu()">
+  <a class="admin-brand" [routerLink]="base" aria-label="Back to the admin panel">
+    <img src="/images/images-utils/hotel-identity/logo-transparent.png" alt="Atlan Suites" />
+  </a>
+
+  <button
+    class="admin-menu-button"
+    type="button"
+    [attr.aria-label]="menuOpen ? 'Close menu' : 'Open menu'"
+    [attr.aria-expanded]="menuOpen"
+    aria-controls="admin-menu"
+    (click)="toggleMenu()"
+  >
+    <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+  </button>
+
+  <div id="admin-menu" class="admin-menu" [class.is-open]="menuOpen">
+    <nav class="admin-nav" aria-label="Administrative navigation">
+      <a
+        [routerLink]="base"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMenu()"
+        >{{ isOperator ? 'Operator panel' : 'Admin panel' }}</a
+      >
+      @for (section of sections; track section.path) {
+        <a [routerLink]="[base, section.path]" routerLinkActive="is-active" (click)="closeMenu()">{{
+          section.label
+        }}</a>
+      }
+    </nav>
+
+    <a class="admin-link" [routerLink]="isOperator ? [base, 'profile'] : [base, 'administrators', adminId]" (click)="closeMenu()">My profile</a>
+    <button class="admin-link" type="button" (click)="logout()">Log out</button>
+    <a class="admin-exit" routerLink="/" (click)="closeMenu()">Go to hotel <span aria-hidden="true">↗</span></a>
+  </div>
+</header>

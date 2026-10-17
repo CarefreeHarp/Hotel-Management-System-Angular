@@ -1,13 +1,13 @@
 # Atlan Suites
 
-![Atlan Suites logo](Frontend/docs/images/atlan-suites-logo.jpeg)
+![Atlan Suites logo](readme-assets/atlan-suites-logo.jpeg)
 
 Atlan Suites is a hotel management application developed for the Web Development course. Its Angular frontend presents the public hotel website and management screens. Its Spring Boot backend exposes the REST resources consumed by Angular and stores the application data in H2.
 
 ## Repository structure
 
 ```text
-Frontend/                         Angular application
+Angular-Backend/                  Angular application
   src/app/components/             Shared UI components
   src/app/pages/                  Routed screens and page-specific components
   src/app/models/                 TypeScript entity interfaces and enums
@@ -15,7 +15,7 @@ Frontend/                         Angular application
   public/                         Public assets
   angular.json
   package.json
-Backend/                          Spring Boot application
+Springboot-Backend/               Spring Boot application
   src/main/java/com/example/demo/
     controller/                   REST entry points
     service/                      CRUD operations
@@ -29,6 +29,7 @@ Backend/                          Spring Boot application
   pom.xml
   mvnw
   mvnw.cmd
+readme-assets/                    README logo, palette and entity–relationship diagram
 README.md
 ```
 
@@ -44,19 +45,19 @@ The public service catalogue presents the same service data through customer-fac
 
 ## Validation and errors
 
-The backend currently assumes valid input and existing records. It does not use Bean Validation annotations, `@Valid`, custom exceptions, or a global exception handler. Services perform CRUD operations without checking field formats, business ranges, or duplicates beforehand. There is no application-defined error JSON contract or frontend error handling for these requests.
+The backend uses Spring's default error handling, without Bean Validation, custom exceptions or a global exception handler. Existing CRUD services check selected uniqueness and deletion rules, and Angular shows API failures in the relevant forms and pages. JPA and H2 also enforce non-null columns, uniqueness, column sizes and foreign keys.
 
-JPA mappings and H2 still enforce non-null columns, unique values, column sizes, and foreign keys. An administrator with assigned operators or a room type with associated rooms cannot be deleted. These failures are left to Spring Boot's default error handling and typically produce HTTP 500; framework request errors use their default behavior. Database constraints do not replace the removed business validation.
+Booking additionally checks stay dates, capacity, service availability, current room availability and simulated payment data. Invalid booking input returns 400; an exhausted room type returns 409; a missing saved reservation returns 404. Other framework and database errors retain their default responses. Booking allocation and persistence run in one transaction.
 
 ## REST API and interactive documentation
 
-Start the backend with `make` from `Backend/`, then open:
+Start the backend with `make` from `Springboot-Backend/`, then open:
 
 - [Swagger UI](http://localhost:8080/swagger-ui/index.html): interactive documentation and real requests through **Try it out**.
 - [OpenAPI JSON](http://localhost:8080/v3/api-docs): generated API description.
 - [OpenAPI YAML](http://localhost:8080/v3/api-docs.yaml): the same description in YAML.
 
-Springdoc generates the specification automatically from controllers and entity schemas. It includes all six CRUD modules, entity fields and relation fields. No custom OpenAPI configuration or `@Schema` annotations are used; inferred response codes may differ from runtime responses, and error examples are not explicitly documented. Swagger UI is served by Spring Boot and does not require Angular to be running.
+Springdoc generates the specification automatically from controllers and entity schemas. It includes the six CRUD modules, login and panel queries, reservation availability, quotes, creation and detailed histories, together with their entity and read-model schemas. No custom OpenAPI configuration or `@Schema` annotations are used; inferred response codes may differ from runtime responses, and error examples are not explicitly documented. Swagger UI is served by Spring Boot and does not require Angular to be running.
 
 | Resource | Collection route | Individual route |
 | --- | --- | --- |
@@ -71,7 +72,7 @@ For every module, `GET` on the collection lists all records and `POST` creates o
 
 `GET /operators?adminId=1` filters operators assigned to an administrator. `GET /services/by-url-name/{urlName}` retrieves a service using its unique slug. Public and management screens consume the same service resources and choose their own presentation.
 
-POST and PUT receive entities directly as JSON through `@RequestBody`, without DTOs or application validation. Persistence constraints remain declared in the JPA mappings. Send `Content-Type: application/json`; list fields such as `secondaryPhotos` are JSON arrays. Read responses use JSON; successful POST, PUT and DELETE responses have empty bodies. Operators accept `"admin": {"adminId": 1}` and rooms accept `"roomType": {"roomTypeId": 1}`; these must reference existing records. Additional fields inside these references do not update the referenced entities. Responses include the corresponding `admin` and `roomType` objects. Clients, administrators and operators store passwords in non-null columns of up to 255 characters; the application does not validate their length or content. Updating preserves their password. Passwords are ordinary JSON properties in requests and read responses, including nested administrator objects. Lombok generates their getters and setters through `@Data`. Relationships are unidirectional, so serialization does not recurse through reverse collections.
+POST and PUT receive entities directly as JSON through `@RequestBody`. Read endpoints use DTOs tailored to lists and details; user DTOs omit passwords. Existing CRUD writes return empty bodies, while reservation creation returns its saved detail and generated ID. Operators accept `"admin": {"adminId": 1}` and rooms accept `"roomType": {"roomTypeId": 1}`. Updates preserve existing passwords. Booking checks dates, capacity, active services, current availability and simulated card payment data with Spring's default error handling.
 
 For example, after choosing an existing room-type ID:
 
@@ -82,6 +83,12 @@ curl -i http://localhost:8080/rooms \
 ```
 
 The API accepts browser requests from `http://localhost:4200` through CORS without cookies. The allowed origin is fixed to `http://localhost:4200` in each controller. Override the backend port with `SERVER_PORT` when starting it; Swagger uses the backend origin from which it is opened.
+
+## Reservations
+
+Clients start from **Book now** on `/client/:clientId/profile`. `/client/:clientId/book-now` uses an explicit `step` query parameter for dates, available room types, optional services, checkout and payment. Successful creation opens `/reservation/:reservationId`. The backend assigns a currently available physical room, snapshots rates and charges, and stores a folio and optional simulated payment. Full payment confirms the reservation; partial or deferred payment leaves it pending. No bank is charged.
+
+Client profiles and staff client-detail pages share reservation history, with additional financial and internal fields for staff. Operators now enter `/operator/:operatorId` and can view clients and their histories. The existing frontend guards restore user state from route IDs; they do not provide backend authentication.
 
 ## Technology
 
@@ -94,24 +101,25 @@ The API accepts browser requests from `http://localhost:4200` through CORS witho
 
 ## Run locally
 
-Use a Node.js version compatible with Angular 19.2, such as Node.js 22, and a JDK 17 or later. Set `JAVA_HOME` to that JDK. The Maven Wrapper downloads Maven and project dependencies on its first execution.
+Use a Node.js version compatible with Angular 19.2, such as Node.js 22, and a complete JDK 17 or later. The backend Makefile detects the JDK from `javac` when `JAVA_HOME` is unset, so a separate Java runtime on `PATH` does not select the wrong compiler. You can explicitly select a JDK with `make serve JAVA_HOME=/path/to/jdk`. The Maven Wrapper downloads Maven and project dependencies on its first execution.
 
 Start Spring Boot in one terminal:
 
 ```bash
-cd Backend
+cd Springboot-Backend
 make serve
 ```
 
-Running `make` without a target also starts the backend. Without Make, use `./mvnw spring-boot:run`; on Windows, use `mvnw.cmd spring-boot:run`. The backend runs at `http://localhost:8080`.
+Running `make` without a target also starts the backend; `make start` and `make run` are aliases. Backend compilation and startup clean the generated classes first to avoid reusing stale or incompatible bytecode. Without Make, set `JAVA_HOME` to a complete JDK and use `./mvnw clean spring-boot:run`; on Windows, use `mvnw.cmd clean spring-boot:run`. The backend runs at `http://localhost:8080`.
 
 Start Angular in another terminal:
 
 ```bash
-cd Frontend
-npm ci
-npm start
+cd Angular-Backend
+make serve
 ```
+
+Running `make`, `make start`, or `make run` also starts Angular. Frontend targets install the locked dependencies automatically on first use and when `package.json` or `package-lock.json` changes; `make install` forces a fresh installation. Without Make, use `npm ci` followed by `npm start`.
 
 Open `http://localhost:4200`. Frontend and backend URLs are configured independently; when changing their ports, update the HTTP service configuration and permitted CORS origin together.
 
@@ -124,26 +132,40 @@ The development schema uses `create-drop`. Starting the backend recreates the sc
 ## Build and checks
 
 ```bash
-cd Frontend
+cd Angular-Backend
 make check
 ```
 
 ```bash
-cd Backend
+cd Springboot-Backend
 make check
 ```
 
-The backend verification runs integration tests against an isolated in-memory H2 database. They cover all six CRUD modules with JSON requests and arrays, database foreign-key constraints, the absence of application validation, CORS, password serialization and preservation, and Swagger/OpenAPI output.
+Frontend `make compile` is an alias for `make build`; `make check` runs TypeScript checking and a production build. Production builds do not download Google Fonts to inline them; the browser loads the existing external font references at runtime, with fallback fonts when offline.
 
-The backend also provides `make compile`, `make build`, `make test`, and `make clean`. Run `make help` for the full list. Maven options can be passed through `MAVEN_ARGS`, for example `make build MAVEN_ARGS=-DskipTests`. Without Make, `./mvnw verify` performs the same verification as `make check`.
+The existing backend verification runs integration tests against an isolated in-memory H2 database for CRUD, CORS and OpenAPI. Booking availability, price snapshots, pending reservations, partial/full simulated payments and concurrent allocation were checked using a temporary suite; no new test files are retained.
+
+The backend also provides `make compile`, `make build`, `make test`, and `make clean`. Run `make help` for the full list. Maven options can be passed through `MAVEN_ARGS`, for example `make build MAVEN_ARGS=-DskipTests` to package without executing tests. Without Make, `./mvnw clean verify` performs the same verification as `make check` when `JAVA_HOME` points to a complete JDK.
 
 ## Design and visual identity
 
 The interface uses the Atlan Suites palette and takes visual inspiration from [Marina Bay Sands](https://www.marinabaysands.com). Screens adapt to mobile, tablet, and desktop widths and use semantic HTML and accessible controls.
 
-![Atlan Suites color palette](Frontend/docs/images/atlan-suites-color-palette.jpeg)
+![Atlan Suites color palette](readme-assets/atlan-suites-color-palette.jpeg)
 
 - [Figma design](https://www.figma.com/design/AzKmb3UaMsc4t8JZCZXiL4/AtlanSuites?node-id=0-1&t=IUIAEeybnugZna8y-1)
 - [Interactive design reference](https://pants-toggle-56795002.figma.site)
 
-The management scope excludes room booking, availability searches for a stay, checkout, payments, folios, booking history, database triggers, scheduled occupancy changes, and the configurable application clock.
+The application does not integrate a real payment gateway, database triggers, scheduled occupancy changes, or a configurable application clock.
+
+## Entity–relationship diagram
+
+The reference domain model includes users, accommodation, reservations, services, folios and payments. The Angular application accesses H2 through the Spring Boot REST API.
+
+![Atlan Suites entity–relationship diagram](readme-assets/entity-relationship.png)
+
+## Repository hygiene
+
+README illustrations live only in `readme-assets/`, alongside `Angular-Backend/` and `Springboot-Backend/`. Runtime images remain in the Angular application's `public/` directory.
+
+Graphify's canonical workspace is outside this repository, in the sibling `Hotel-Management-System-Angular-graphify/` directory. The root `.gitignore` excludes Graphify output directories, caches, manifests and standard graph exports at any depth; these generated artifacts must not be committed.

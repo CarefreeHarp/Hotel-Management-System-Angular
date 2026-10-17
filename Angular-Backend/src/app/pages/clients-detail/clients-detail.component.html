@@ -1,0 +1,19 @@
+<app-admin-header />
+<main class="catalog-page">
+  <div class="catalog-page__container">
+    @if (isLoading) {
+      <p class="loading-state" role="status">Loading client…</p>
+    } @else if (client) {
+      <app-page-heading eyebrow="Client management" [title]="client.name + ' ' + client.lastName" description="Client profile and contact information.">
+        <a appButton [routerLink]="[base, 'clients', client.clientId, 'edit']">Edit client</a>
+      </app-page-heading>
+      @if (saved) { <p class="saved-alert" role="status">Client saved successfully.</p> }
+      <app-client-info [client]="client" />
+      @if(historyLoading){<p role="status">Loading reservations…</p>}@else if(historyError){<p role="alert">{{historyError}}</p>}@else{<app-reservation-history [reservations]="reservations" [staff]="true" />}
+    } @else {
+      <app-page-heading eyebrow="Client management" title="Client unavailable" description="This client does not exist or could not be loaded.">
+        <a appButton [routerLink]="[base, 'clients']">Back to list</a>
+      </app-page-heading>
+    }
+  </div>
+</main>

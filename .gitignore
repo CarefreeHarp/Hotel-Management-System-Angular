@@ -1,0 +1,12 @@
+# Graphify outputs belong in the canonical external sibling workspace.
+# Unanchored patterns apply to both application directories and all descendants.
+graphify-out/
+graphify-cache/
+graphify-workspace/
+*-graphify/
+.graphify*
+GRAPH_REPORT.md
+graph.json
+graph.html
+graph.svg
+graph.graphml
