@@ -145,51 +145,51 @@ public class DataLoader implements CommandLineRunner {
                 saveRoom(107, 1, RoomStatus.AVAILABLE, deluxeRoom);
                 saveRoom(108, 1, RoomStatus.OCCUPIED, executiveRoom);
                 saveRoom(109, 1, RoomStatus.AVAILABLE, familySuite);
-                saveRoom(110, 1, RoomStatus.OCCUPIED, presidentialSuite);
+                saveRoom(110, 1, RoomStatus.AVAILABLE, presidentialSuite);
 
                 saveRoom(201, 2, RoomStatus.AVAILABLE, standardRoom);
-                saveRoom(202, 2, RoomStatus.OCCUPIED, deluxeRoom);
+                saveRoom(202, 2, RoomStatus.AVAILABLE, deluxeRoom);
                 saveRoom(203, 2, RoomStatus.AVAILABLE, executiveRoom);
                 saveRoom(204, 2, RoomStatus.AVAILABLE, familySuite);
                 saveRoom(205, 2, RoomStatus.MAINTENANCE, presidentialSuite);
                 saveRoom(206, 2, RoomStatus.AVAILABLE, standardRoom);
-                saveRoom(207, 2, RoomStatus.OCCUPIED, deluxeRoom);
+                saveRoom(207, 2, RoomStatus.AVAILABLE, deluxeRoom);
                 saveRoom(208, 2, RoomStatus.AVAILABLE, executiveRoom);
                 saveRoom(209, 2, RoomStatus.AVAILABLE, familySuite);
-                saveRoom(210, 2, RoomStatus.OCCUPIED, presidentialSuite);
+                saveRoom(210, 2, RoomStatus.AVAILABLE, presidentialSuite);
 
                 saveRoom(301, 3, RoomStatus.AVAILABLE, standardRoom);
                 saveRoom(302, 3, RoomStatus.AVAILABLE, deluxeRoom);
-                saveRoom(303, 3, RoomStatus.OCCUPIED, executiveRoom);
+                saveRoom(303, 3, RoomStatus.AVAILABLE, executiveRoom);
                 saveRoom(304, 3, RoomStatus.AVAILABLE, familySuite);
                 saveRoom(305, 3, RoomStatus.MAINTENANCE, presidentialSuite);
                 saveRoom(306, 3, RoomStatus.AVAILABLE, standardRoom);
-                saveRoom(307, 3, RoomStatus.OCCUPIED, deluxeRoom);
+                saveRoom(307, 3, RoomStatus.AVAILABLE, deluxeRoom);
                 saveRoom(308, 3, RoomStatus.AVAILABLE, executiveRoom);
                 saveRoom(309, 3, RoomStatus.AVAILABLE, familySuite);
-                saveRoom(310, 3, RoomStatus.OCCUPIED, presidentialSuite);
+                saveRoom(310, 3, RoomStatus.AVAILABLE, presidentialSuite);
 
                 saveRoom(401, 4, RoomStatus.AVAILABLE, standardRoom);
-                saveRoom(402, 4, RoomStatus.OCCUPIED, deluxeRoom);
+                saveRoom(402, 4, RoomStatus.AVAILABLE, deluxeRoom);
                 saveRoom(403, 4, RoomStatus.AVAILABLE, executiveRoom);
                 saveRoom(404, 4, RoomStatus.AVAILABLE, familySuite);
                 saveRoom(405, 4, RoomStatus.MAINTENANCE, presidentialSuite);
                 saveRoom(406, 4, RoomStatus.AVAILABLE, standardRoom);
-                saveRoom(407, 4, RoomStatus.OCCUPIED, deluxeRoom);
+                saveRoom(407, 4, RoomStatus.AVAILABLE, deluxeRoom);
                 saveRoom(408, 4, RoomStatus.AVAILABLE, executiveRoom);
                 saveRoom(409, 4, RoomStatus.AVAILABLE, familySuite);
-                saveRoom(410, 4, RoomStatus.OCCUPIED, presidentialSuite);
+                saveRoom(410, 4, RoomStatus.AVAILABLE, presidentialSuite);
 
                 saveRoom(501, 5, RoomStatus.AVAILABLE, standardRoom);
                 saveRoom(502, 5, RoomStatus.AVAILABLE, deluxeRoom);
-                saveRoom(503, 5, RoomStatus.OCCUPIED, executiveRoom);
+                saveRoom(503, 5, RoomStatus.AVAILABLE, executiveRoom);
                 saveRoom(504, 5, RoomStatus.AVAILABLE, familySuite);
                 saveRoom(505, 5, RoomStatus.MAINTENANCE, presidentialSuite);
                 saveRoom(506, 5, RoomStatus.AVAILABLE, standardRoom);
-                saveRoom(507, 5, RoomStatus.OCCUPIED, deluxeRoom);
+                saveRoom(507, 5, RoomStatus.AVAILABLE, deluxeRoom);
                 saveRoom(508, 5, RoomStatus.AVAILABLE, executiveRoom);
                 saveRoom(509, 5, RoomStatus.AVAILABLE, familySuite);
-                saveRoom(510, 5, RoomStatus.OCCUPIED, presidentialSuite);
+                saveRoom(510, 5, RoomStatus.AVAILABLE, presidentialSuite);
 
                 // Servicios
                 saveService("High-speed Wi-Fi", "high-speed-wi-fi",
@@ -359,8 +359,8 @@ public class DataLoader implements CommandLineRunner {
                         operators.add(operator);
                 }
 
-                // Casos de demostración coherentes con el 17 de octubre de 2026.
-                // Solo Emma (cliente 1) recibe folios, cargos y pagos de ejemplo.
+                // Casos de demostración coherentes con el 18 de octubre de 2026.
+                // Cada reserva tiene folio; las confirmadas y estancias realizadas tienen pagos completos.
                 saveReservation("ATL-2026-0001", "emma.thompson@example.com", 101,
                                 LocalDate.of(2026, 6, 2), LocalDate.of(2026, 6, 5), 2, ReservationStatus.CHECKED_OUT,
                                 List.of("breakfast-buffet", "laundry-service"), new BigDecimal("825000"));
@@ -463,16 +463,22 @@ public class DataLoader implements CommandLineRunner {
                                 .room(room)
                                 .services(services)
                                 .build());
-                if (clientEmail.equals("emma.thompson@example.com")) saveReservationFolio(reservation, paymentAmounts);
+                saveReservationFolio(reservation, paymentAmounts);
         }
 
-        /** Crea el historial financiero de Emma con conceptos y tarifas de servicios congelados. */
+        /** Crea folios y pagos de demostración conservando las cuotas explícitas y los precios contratados. */
         private void saveReservationFolio(Reservation reservation, BigDecimal[] paymentAmounts) {
                 BigDecimal total = reservation.getNightlyPrice().multiply(BigDecimal.valueOf(
                                 ChronoUnit.DAYS.between(reservation.getCheckInDate(), reservation.getCheckOutDate())));
                 for (Service service : reservation.getServices()) total = total.add(service.getPrice());
-                BigDecimal paid = BigDecimal.ZERO;
-                for (BigDecimal amount : paymentAmounts) paid = paid.add(amount);
+                List<BigDecimal> installments = new ArrayList<>(List.of(paymentAmounts));
+                BigDecimal paid = installments.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+                // Los casos pagados completan su saldo sin sustituir las cuotas ya definidas.
+                if (reservation.getStatus() != ReservationStatus.PENDING
+                                && reservation.getStatus() != ReservationStatus.CANCELLED && paid.compareTo(total) < 0) {
+                        installments.add(total.subtract(paid));
+                        paid = total;
+                }
                 FolioStatus status = reservation.getStatus() == ReservationStatus.CANCELLED ? FolioStatus.CANCELLED
                                 : paid.compareTo(total) == 0 ? FolioStatus.PAID : FolioStatus.PENDING;
                 Folio folio = Folio.builder().reservation(reservation).status(status)
@@ -482,8 +488,8 @@ public class DataLoader implements CommandLineRunner {
                         entityManager.persist(FolioItem.builder().folio(folio).service(service).concept(service.getName())
                                         .unitPrice(service.getPrice()).quantity(1).chargedAt(reservation.getCreatedAt()).build());
                 }
-                for (int index = 0; index < paymentAmounts.length; index++) {
-                        entityManager.persist(Payment.builder().folio(folio).amount(paymentAmounts[index])
+                for (int index = 0; index < installments.size(); index++) {
+                        entityManager.persist(Payment.builder().folio(folio).amount(installments.get(index))
                                         .paymentMethod("CARD").status(PaymentStatus.APPROVED)
                                         .paidAt(reservation.getCreatedAt().plusDays(index + 1)).build());
                 }

@@ -2,81 +2,31 @@
   display: block;
   margin-top: 2rem;
 }
-.history h2,
-.history h3 {
-  font-family: var(--font-display);
-}
 .history h2 {
+  font-family: var(--font-display);
   font-size: 2rem;
 }
-article {
-  margin-bottom: 1.5rem;
-  padding: 1.5rem;
-  background: #18212c;
-  color: #e5e9ee;
-  border: 1px solid #b88c5a55;
-  border-radius: 0.5rem;
-}
-header {
-  display: flex;
-  gap: 1rem;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-header strong {
-  color: #dfb888;
-}
-.columns {
+.reservation-cards {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
-dl > div {
+.reservation-filters {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ffffff20;
-}
-dd {
-  margin: 0;
-  text-align: right;
-}
-.table-scroll {
-  overflow: auto;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-td,
-th {
-  padding: 0.65rem;
-  border-bottom: 1px solid #ffffff20;
-}
-a {
-  text-decoration: underline;
-}
-@media (max-width: 900px) {
-  .columns {
-    grid-template-columns: 1fr;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+  button {
+    transition:
+      background 0.2s,
+      border-color 0.2s,
+      transform 0.15s;
+    &[aria-pressed="true"] {
+      border-color: var(--color-gold);
+      background: rgba(184, 140, 90, 0.2);
+      color: #e0bd8c;
+    }
+    &:active {
+      transform: translateY(1px);
+    }
   }
-  article {
-    padding: 1rem;
-  }
-}
-.staff-history article {
-  background: #f4f6f8;
-  color: #162b40;
-  border-color: #b4c4d4;
-  border-left: 5px solid #426b8c;
-}
-.staff-history header strong {
-  color: #315977;
-}
-.staff-history dl > div,
-.staff-history td,
-.staff-history th {
-  border-color: #162b4025;
 }

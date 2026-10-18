@@ -1,0 +1,34 @@
+@use "../../../styles/staff-form";
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.booking-summary {
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #53616b;
+  color: #cad5dd;
+}
+.booking-summary strong {
+  color: #d3ae7b;
+}
+dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+dt {
+  font-size: 0.85rem;
+}
+dd {
+  margin: 0.4rem 0;
+  font-size: 1.1rem;
+  color: #f3e6d3;
+}
+@media (max-width: 600px) {
+  dl {
+    grid-template-columns: 1fr;
+  }
+}

@@ -11,4 +11,8 @@ export interface ReservationDTO {
   roomNumber?: number;
   roomTypeId?: number;
   roomTypeName?: string;
+  clientId?: number;
+  clientName?: string;
+  createdAt?: string;
+  roomTypeMainPhoto?: string;
 }

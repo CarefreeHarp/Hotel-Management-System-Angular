@@ -16,6 +16,7 @@ export interface AdminSection {
 // Secciones de la barra, en el mismo orden que el admin-shell de la aplicación de Thymeleaf.
 export const ADMIN_SECTIONS: AdminSection[] = [
   { label: 'Clients', path: 'clients' },
+  { label: 'Reservations', path: 'reservations' },
   { label: 'Room types', path: 'room-types' },
   { label: 'Rooms', path: 'rooms' },
   { label: 'Services', path: 'services' },
@@ -39,7 +40,10 @@ export class AdminHeaderComponent {
 
   readonly isOperator = this.route.snapshot.paramMap.has('operatorId');
   readonly sections = this.isOperator
-    ? ADMIN_SECTIONS.filter((section) => section.path === 'clients')
+    ? ADMIN_SECTIONS.filter(
+        (section) =>
+          section.path === 'clients' || section.path === 'reservations',
+      )
     : ADMIN_SECTIONS;
   get base(): string {
     return basePath(this.route);

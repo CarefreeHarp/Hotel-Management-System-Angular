@@ -6,7 +6,7 @@ export interface ListFilter {
   key: string;
   label: string;
   options?: ListOption[];
-  type?: 'number';
+  type?: 'number' | 'date';
 }
 export interface ListState {
   search: string;

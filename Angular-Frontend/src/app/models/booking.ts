@@ -37,6 +37,7 @@ export interface BookingQuote {
 }
 export interface ReservationCharge {
   itemId?: number;
+  serviceId?: number;
   concept: string;
   quantity: number;
   unitPrice: number;

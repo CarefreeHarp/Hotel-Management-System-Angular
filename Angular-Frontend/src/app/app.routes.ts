@@ -30,6 +30,9 @@ import { ClientServicesDetailComponent } from './pages/client-services-detail/cl
 import { ReservationDetailComponent } from './pages/reservation-detail/reservation-detail.component';
 import { BookNowComponent } from './pages/book-now/book-now.component';
 
+import { ReservationsListComponent } from './pages/reservations-list/reservations-list.component';
+import { ReservationFormComponent } from './pages/reservation-form/reservation-form.component';
+
 export const routes: Routes = [
   // Sitio público, sin sesión.
   { path: '', component: LandingPageComponent },
@@ -75,6 +78,9 @@ export const routes: Routes = [
       { path: 'operators/new', component: OperatorsFormComponent },
       { path: 'operators/:id/edit', component: OperatorsFormComponent },
       { path: 'operators/:id', component: OperatorsDetailComponent },
+      { path: 'reservations', component: ReservationsListComponent },
+      { path: 'reservations/:id/edit', component: ReservationFormComponent },
+      { path: 'reservations/:id', component: ReservationDetailComponent },
       { path: 'clients', component: ClientsListComponent },
       { path: 'clients/new', component: ClientsFormComponent },
       { path: 'clients/:id/edit', component: ClientsFormComponent },
@@ -85,6 +91,9 @@ export const routes: Routes = [
     path: 'operator/:operatorId',
     children: [
       { path: '', component: OperatorsDetailComponent },
+      { path: 'reservations', component: ReservationsListComponent },
+      { path: 'reservations/:id/edit', component: ReservationFormComponent },
+      { path: 'reservations/:id', component: ReservationDetailComponent },
       { path: 'clients', component: ClientsListComponent },
       { path: 'clients/new', component: ClientsFormComponent },
       { path: 'clients/:id/edit', component: ClientsFormComponent },

@@ -1,209 +1,36 @@
-<section
-  class="history"
-  [class.staff-history]="staff"
-  aria-labelledby="history-title"
->
+<section class="history" aria-labelledby="history-title">
   <h2 id="history-title">
-    {{ staff ? "Complete Reservation History" : "My reservations" }}
+    {{ staff ? "Reservation history" : "My reservations" }}
   </h2>
-  @if (!staff) {
-    <ng-content />
-    @if (!reservations.length) {
-      <p>No reservations found.</p>
+  <nav class="reservation-filters" aria-label="Reservation filters">
+    @for (filter of filters; track filter.status) {
+      <button
+        appButton
+        variant="secondary"
+        type="button"
+        [attr.aria-pressed]="selectedFilter === filter.status"
+        (click)="selectedFilter = filter.status"
+      >
+        {{ filter.label }}
+      </button>
     }
-  } @else {
-    @for (detail of reservations; track detail.reservation.reservationId) {
-      <article>
-        <header>
-          <strong>{{ detail.reservation.reservationCode }}</strong
-          ><span>{{ detail.reservation.status.replace("_", " ") }}</span>
-        </header>
-        <p>
-          Created: {{ detail.createdAt | date: "medium" }}
-          @if (staff) {
-            · Reservation ID #{{ detail.reservation.reservationId }}
-          }
-        </p>
-        <div class="columns">
-          <section>
-            <h3>Stay details</h3>
-            <dl>
-              <div>
-                <dt>Room</dt>
-                <dd>
-                  {{ detail.reservation.roomNumber ?? "Unassigned" }} ·
-                  {{ detail.reservation.roomTypeName }}
-                </dd>
-              </div>
-              @if (staff) {
-                <div>
-                  <dt>Floor / Capacity</dt>
-                  <dd>{{ detail.roomFloor }} / {{ detail.maxCapacity }}</dd>
-                </div>
-              }
-              <div>
-                <dt>Check-in</dt>
-                <dd>
-                  {{ detail.reservation.checkInDate | date: "mediumDate" }}
-                </dd>
-              </div>
-              <div>
-                <dt>Check-out</dt>
-                <dd>
-                  {{ detail.reservation.checkOutDate | date: "mediumDate" }}
-                </dd>
-              </div>
-              <div>
-                <dt>Nights / Guests</dt>
-                <dd>
-                  {{ detail.nights }} / {{ detail.reservation.guestCount }}
-                </dd>
-              </div>
-            </dl>
-          </section>
-          <section>
-            <h3>
-              {{ staff ? "Folio & Financial Details" : "Pricing Summary" }}
-            </h3>
-            <dl>
-              <div>
-                <dt>Nightly rate</dt>
-                <dd>
-                  {{
-                    detail.nightlyPrice | currency: "COP" : "symbol" : "1.2-2"
-                  }}
-                </dd>
-              </div>
-              <div>
-                <dt>Total</dt>
-                <dd>
-                  {{ detail.total | currency: "COP" : "symbol" : "1.2-2" }}
-                </dd>
-              </div>
-              @if (staff) {
-                @if (detail.folioId) {
-                  <div>
-                    <dt>Folio ID / Status</dt>
-                    <dd>#{{ detail.folioId }} · {{ detail.folioStatus }}</dd>
-                  </div>
-                  <div>
-                    <dt>Issued</dt>
-                    <dd>{{ detail.issuedAt | date: "medium" }}</dd>
-                  </div>
-                }
-                <div>
-                  <dt>Subtotal</dt>
-                  <dd>
-                    {{ detail.subtotal | currency: "COP" : "symbol" : "1.2-2" }}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Paid / Balance</dt>
-                  <dd>
-                    {{
-                      detail.paidTotal | currency: "COP" : "symbol" : "1.2-2"
-                    }}
-                    /
-                    {{ detail.balance | currency: "COP" : "symbol" : "1.2-2" }}
-                  </dd>
-                </div>
-              }
-            </dl>
-          </section>
-          <section>
-            <h3>{{ staff ? "Payment Records" : "Payment Information" }}</h3>
-            @for (payment of detail.payments; track payment.paymentId) {
-              <dl>
-                @if (staff) {
-                  <div>
-                    <dt>Payment / Status</dt>
-                    <dd>#{{ payment.paymentId }} · {{ payment.status }}</dd>
-                  </div>
-                  <div>
-                    <dt>Amount</dt>
-                    <dd>
-                      {{
-                        payment.amount | currency: "COP" : "symbol" : "1.2-2"
-                      }}
-                    </dd>
-                  </div>
-                }
-                <div>
-                  <dt>Method</dt>
-                  <dd>{{ payment.paymentMethod }}</dd>
-                </div>
-                <div>
-                  <dt>Date</dt>
-                  <dd>{{ payment.paidAt | date: "medium" }}</dd>
-                </div>
-                @if (staff) {
-                  <div>
-                    <dt>Processed by</dt>
-                    <dd>{{ payment.operatorName }}</dd>
-                  </div>
-                }
-              </dl>
-            } @empty {
-              <p>No payments registered.</p>
-            }
-          </section>
-        </div>
-        <h3>Contracted Services & Add-ons</h3>
-        @if (detail.charges.length) {
-          <div class="table-scroll">
-            <table>
-              <caption class="sr-only">
-                Charges for
-                {{
-                  detail.reservation.reservationCode
-                }}
-              </caption>
-              <thead>
-                <tr>
-                  @if (staff) {
-                    <th scope="col">Item #</th>
-                  }
-                  <th scope="col">Service / Concept</th>
-                  <th scope="col">Qty</th>
-                  <th scope="col">Unit Price</th>
-                  <th scope="col">Subtotal</th>
-                  @if (staff) {
-                    <th scope="col">Charged At</th>
-                  }
-                </tr>
-              </thead>
-              <tbody>
-                @for (charge of detail.charges; track $index) {
-                  <tr>
-                    @if (staff) {
-                      <td>{{ charge.itemId ?? "—" }}</td>
-                    }
-                    <th scope="row">{{ charge.concept }}</th>
-                    <td>{{ charge.quantity }}</td>
-                    <td>
-                      {{
-                        charge.unitPrice | currency: "COP" : "symbol" : "1.2-2"
-                      }}
-                    </td>
-                    <td>
-                      {{
-                        charge.subtotal | currency: "COP" : "symbol" : "1.2-2"
-                      }}
-                    </td>
-                    @if (staff) {
-                      <td>{{ charge.chargedAt | date: "medium" }}</td>
-                    }
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        } @else {
-          <p>No additional services contracted for this reservation.</p>
-        }
-      </article>
+  </nav>
+  <div class="reservation-cards">
+    @for (
+      detail of filteredReservations;
+      track detail.reservation.reservationId
+    ) {
+      <app-reservation-card
+        [detail]="detail"
+        [staff]="staff"
+        [guestName]="guestName || detail.reservation.clientName || 'Guest'"
+      />
     } @empty {
-      <p>No reservations found for this guest.</p>
+      <p>
+        No reservations found{{
+          selectedFilter === "all" ? "." : " for this status."
+        }}
+      </p>
     }
-  }
+  </div>
 </section>

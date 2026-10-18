@@ -1,0 +1,49 @@
+<app-admin-header />
+<main class="room-types-page-main">
+  <span class="page-watermark" aria-hidden="true">Reservations</span>
+  <div class="page-container">
+    <header class="catalog-heading">
+      <div>
+        <p class="eyebrow">Atlan Suites · Management</p>
+        <h1>Reservations</h1>
+        <p>Guest stays, room assignments and booking history.</p>
+      </div>
+    </header>
+    @if (message) {
+      <p class="notice" role="status">{{ message }}</p>
+    }
+    @if (actionError) {
+      <p class="notice is-error" role="alert">{{ actionError }}</p>
+    }
+    @if (state$ | async; as state) {
+      @if (state.loading) {
+        <p role="status">Loading reservations…</p>
+      } @else if (state.error) {
+        <p class="notice is-error" role="alert">{{ state.error }}</p>
+        <button type="button" (click)="retry()">Retry</button>
+      } @else {
+        <app-list-controls
+          [state]="state.controls"
+          [filters]="state.filters"
+          [sortOptions]="sortOptions"
+          [count]="state.filtered.length"
+          [total]="state.items.length"
+          (changed)="changeControls($event)"
+        />
+        @if (state.controls.view === "table") {
+          <app-reservation-table
+            [reservations]="state.filtered"
+            [base]="base"
+            [busy]="deleting"
+            (deleteRecord)="remove($event)"
+          />
+        } @else {
+          <app-record-cards
+            [cards]="cards(state.filtered)"
+            (deleteRecord)="remove($event)"
+          />
+        }
+      }
+    }
+  </div>
+</main>

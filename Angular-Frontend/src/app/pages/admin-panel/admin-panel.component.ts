@@ -12,7 +12,7 @@ interface PanelCard {
   title: string;
   description: string;
   path: string;
-  createLabel: string;
+  createLabel?: string;
 }
 
 @Component({
@@ -32,6 +32,13 @@ export class AdminPanelComponent implements OnInit {
   }
 
   readonly cards: PanelCard[] = [
+    {
+      key: 'reservations',
+      title: 'Reservations',
+      description:
+        'All guest bookings, dates, room assignments and reservation details.',
+      path: 'reservations',
+    },
     {
       key: 'services',
       title: 'Services',
@@ -88,12 +95,10 @@ export class AdminPanelComponent implements OnInit {
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('adminId'));
     if (Number.isSafeInteger(id) && id > 0)
-      this.administrators
-        .getById(id)
-        .subscribe({
-          next: (admin) => (this.administratorName = admin.name),
-          error: () => (this.administratorName = ''),
-        });
+      this.administrators.getById(id).subscribe({
+        next: (admin) => (this.administratorName = admin.name),
+        error: () => (this.administratorName = ''),
+      });
     this.panelService.getCounts().subscribe({
       next: (counts) => {
         this.counts = counts;

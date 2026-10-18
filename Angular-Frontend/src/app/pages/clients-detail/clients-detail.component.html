@@ -22,7 +22,11 @@
       } @else if (historyError) {
         <p role="alert">{{ historyError }}</p>
       } @else {
-        <app-reservation-history [reservations]="reservations" [staff]="true" />
+        <app-reservation-history
+          [reservations]="reservations"
+          [staff]="true"
+          [guestName]="client.name + ' ' + client.lastName"
+        />
       }
     } @else {
       <app-page-heading

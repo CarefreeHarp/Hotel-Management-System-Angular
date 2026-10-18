@@ -11,10 +11,10 @@
     @for (item of filters; track item.key) {
       <label
         >{{ item.label }}
-        @if (item.type === "number") {
+        @if (item.type) {
           <input
-            type="number"
-            min="0"
+            [type]="item.type"
+            [attr.min]="item.type === 'number' ? 0 : null"
             [name]="item.key"
             [ngModel]="state.filters[item.key] ?? ''"
             (ngModelChange)="filter(item.key, $event)"

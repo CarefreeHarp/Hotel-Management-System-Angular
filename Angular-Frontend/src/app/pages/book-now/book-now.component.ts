@@ -70,6 +70,7 @@ export class BookNowComponent {
   loading = false;
   busy = false;
   error = '';
+  private pendingError = '';
   clientId: number | undefined;
   readonly profileUrl = '/profile';
   get authParams(): { auth?: number } {
@@ -89,7 +90,9 @@ export class BookNowComponent {
           }
           const step = params.get('step');
           this.step = this.isStep(step) ? step : 'dates';
-          this.error = '';
+          this.error = this.pendingError;
+          this.pendingError = '';
+          this.types = [];
           this.quote = undefined;
           this.stay = {
             checkIn: params.get('check-in') ?? '',
@@ -147,10 +150,18 @@ export class BookNowComponent {
       .subscribe(() => (this.loading = false));
   }
   private failed(error: HttpErrorResponse): Observable<null> {
-    this.error =
-      error.error?.message ??
-      'The booking could not be loaded. Please try again.';
+    this.error = this.bookingError(error);
     return of(null);
+  }
+  private bookingError(error: HttpErrorResponse): string {
+    if (error.status === 0)
+      return 'The booking server could not be reached. Please check your connection and try again.';
+    if (error.status >= 500)
+      return 'The hotel could not process the booking request. Please try again.';
+    return (
+      error.error?.message ??
+      'The booking request could not be completed. Please try again.'
+    );
   }
   private isStep(value: string | null): value is BookingStep {
     return (
@@ -214,10 +225,9 @@ export class BookNowComponent {
         },
         error: (error: HttpErrorResponse) => {
           this.busy = false;
-          this.error =
-            error.error?.message ??
-            'Your reservation could not be saved. Please try again.';
+          this.error = this.bookingError(error);
           if (error.status === 409) {
+            this.pendingError = this.error;
             void this.go('room-types', {
               'room-type': null,
               'service-ids': null,

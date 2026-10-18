@@ -1,10 +1,11 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { clientQuery } from '../../../../utils/client-query';
+import { basePath } from '../../utils/base-path';
+import { clientQuery } from '../../utils/client-query';
 import { Component, inject, Input } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ButtonComponent } from '../../../../components/button/button.component';
-import { ReservationDetails } from '../../../../models/booking';
-import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
+import { ButtonComponent } from '../button/button.component';
+import { ReservationDetails } from '../../models/booking';
+import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 
 @Component({
   selector: 'app-reservation-card',
@@ -20,6 +21,7 @@ export class ReservationCardComponent {
   }
   @Input({ required: true }) detail: ReservationDetails | undefined;
   @Input({ required: true }) guestName: string = '';
+  @Input() staff = false;
   readonly stars = [1, 2, 3, 4, 5];
   selectedRating = 0;
   openDetails(event?: MouseEvent): void {
@@ -27,9 +29,17 @@ export class ReservationCardComponent {
     if (event?.target instanceof Element && event.target.closest('button, a'))
       return;
     void this.router.navigate(
-      ['/reservation', this.detail.reservation.reservationId],
+      this.staff
+        ? [
+            basePath(this.route),
+            'reservations',
+            this.detail.reservation.reservationId,
+          ]
+        : ['/reservation', this.detail.reservation.reservationId],
       {
-        queryParams: this.authParams,
+        queryParams: this.staff
+          ? { clientId: this.detail.clientId }
+          : this.authParams,
       },
     );
   }

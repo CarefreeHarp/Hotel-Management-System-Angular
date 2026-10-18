@@ -19,6 +19,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT reservation FROM Reservation reservation WHERE reservation.reservationId = :id")
+    java.util.Optional<Reservation> lockForEditing(@Param("id") Integer id);
+
     /*
      * Reservas de un cliente para su perfil, de la llegada más reciente a la más
      * antigua. LEFT JOIN porque la reserva podría no tener habitación asignada.
@@ -26,8 +30,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     @Query("""
             SELECT new com.example.demo.dto.ReservationDTO(reservation.reservationId, reservation.reservationCode,
                     reservation.checkInDate, reservation.checkOutDate, reservation.guestCount, reservation.status,
-                    room.number, roomType.roomTypeId, roomType.name)
-            FROM Reservation reservation LEFT JOIN reservation.room room LEFT JOIN room.roomType roomType
+                    room.number, roomType.roomTypeId, roomType.name, client.clientId,
+                    CONCAT(client.name, ' ', client.lastName), reservation.createdAt, roomType.mainPhoto)
+            FROM Reservation reservation LEFT JOIN reservation.room room LEFT JOIN room.roomType roomType LEFT JOIN reservation.client client
             WHERE reservation.client.clientId = :clientId
             ORDER BY reservation.checkInDate DESC
             """)
@@ -37,8 +42,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     @Query("""
             SELECT new com.example.demo.dto.ReservationDTO(reservation.reservationId, reservation.reservationCode,
                     reservation.checkInDate, reservation.checkOutDate, reservation.guestCount, reservation.status,
-                    room.number, roomType.roomTypeId, roomType.name)
-            FROM Reservation reservation LEFT JOIN reservation.room room LEFT JOIN room.roomType roomType
+                    room.number, roomType.roomTypeId, roomType.name, client.clientId,
+                    CONCAT(client.name, ' ', client.lastName), reservation.createdAt, roomType.mainPhoto)
+            FROM Reservation reservation LEFT JOIN reservation.room room LEFT JOIN room.roomType roomType LEFT JOIN reservation.client client
             ORDER BY reservation.checkInDate DESC
             """)
     List<ReservationDTO> findAllForList();

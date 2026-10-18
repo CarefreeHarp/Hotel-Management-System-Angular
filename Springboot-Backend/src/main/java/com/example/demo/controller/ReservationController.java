@@ -45,6 +45,14 @@ public class ReservationController {
     public com.example.demo.dto.ReservationDetailDTO createReservation(@RequestBody com.example.demo.entities.Reservation reservation) {
         return booking.create(reservation);
     }
+    @PutMapping("/{id}")
+    public void updateReservation(@PathVariable Integer id, @RequestBody com.example.demo.entities.Reservation reservation) {
+        booking.update(id, reservation);
+    }
+    @DeleteMapping("/{id}")
+    public void deleteReservation(@PathVariable Integer id) {
+        booking.delete(id);
+    }
     @GetMapping("/{id}/details")
     public com.example.demo.dto.ReservationDetailDTO readReservationDetails(@PathVariable Integer id) {
         return booking.detail(id);

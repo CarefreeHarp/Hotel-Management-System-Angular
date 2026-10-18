@@ -23,32 +23,3 @@
   background: rgba(218, 126, 118, 0.1);
   font-size: 0.82rem;
 }
-
-.reservation-cards {
-  display: grid;
-  gap: 1.25rem;
-}
-
-.reservation-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  margin-bottom: 1.25rem;
-
-  button {
-    transition:
-      background 0.2s,
-      border-color 0.2s,
-      transform 0.15s;
-
-    &[aria-pressed="true"] {
-      border-color: var(--color-gold);
-      background: rgba(184, 140, 90, 0.2);
-      color: #e0bd8c;
-    }
-
-    &:active {
-      transform: translateY(1px);
-    }
-  }
-}

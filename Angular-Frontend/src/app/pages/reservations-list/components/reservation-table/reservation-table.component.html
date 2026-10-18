@@ -1,0 +1,90 @@
+<section class="catalog-table" aria-label="Reservations table">
+  <div class="table-scroll">
+    <table>
+      <caption class="sr-only">
+        All guest reservations
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Booking</th>
+          <th scope="col">Guest</th>
+          <th scope="col">Stay</th>
+          <th scope="col">Room</th>
+          <th scope="col">Guests</th>
+          <th scope="col">Status</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of reservations; track item.reservationId) {
+          <tr>
+            <th scope="row" class="staff-person">
+              <a
+                class="booking-code"
+                [routerLink]="[base, 'reservations', item.reservationId]"
+                >{{ item.reservationCode }}</a
+              ><small
+                >#{{ item.reservationId }} ·
+                {{ item.createdAt | date: "MMM d, y" }}</small
+              >
+            </th>
+            <td data-label="Guest">
+              {{ item.clientName?.trim() || "Deleted guest" }}
+            </td>
+            <td data-label="Stay">
+              <time [attr.datetime]="item.checkInDate">{{
+                item.checkInDate | date: "MMM d, y"
+              }}</time>
+              –
+              <time [attr.datetime]="item.checkOutDate">{{
+                item.checkOutDate | date: "MMM d, y"
+              }}</time
+              ><small>{{ nights(item) }} night(s)</small>
+            </td>
+            <td data-label="Room">
+              {{ item.roomTypeName ?? "Unassigned"
+              }}<small>Room {{ item.roomNumber ?? "—" }}</small>
+            </td>
+            <td data-label="Guests">{{ item.guestCount }}</td>
+            <td data-label="Status">
+              <span class="status-badge">{{
+                item.status.replace("_", " ").toLowerCase()
+              }}</span>
+            </td>
+            <td class="actions-cell">
+              <div class="actions">
+                <a [routerLink]="[base, 'reservations', item.reservationId]"
+                  >View<span class="sr-only">
+                    {{ item.reservationCode }}</span
+                  ></a
+                ><a
+                  [routerLink]="[
+                    base,
+                    'reservations',
+                    item.reservationId,
+                    'edit',
+                  ]"
+                  >Edit<span class="sr-only">
+                    {{ item.reservationCode }}</span
+                  ></a
+                ><button
+                  type="button"
+                  [disabled]="busy"
+                  (click)="deleteRecord.emit(item.reservationId)"
+                >
+                  Delete<span class="sr-only"> {{ item.reservationCode }}</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="empty" colspan="7">
+              No reservations match your search.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

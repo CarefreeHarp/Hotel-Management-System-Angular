@@ -19,32 +19,10 @@
       @if (errorMessage) {
         <p class="form-alert" role="alert">{{ errorMessage }}</p>
       }
-      <app-reservation-history [reservations]="filteredReservations">
-        <nav class="reservation-filters" aria-label="Reservation filters">
-          @for (filter of reservationFilters; track filter.status) {
-            <button
-              appButton
-              variant="secondary"
-              type="button"
-              [attr.aria-pressed]="reservationFilter === filter.status"
-              (click)="reservationFilter = filter.status"
-            >
-              {{ filter.label }}
-            </button>
-          }
-        </nav>
-        <div class="reservation-cards">
-          @for (
-            detail of filteredReservations;
-            track detail.reservation.reservationId
-          ) {
-            <app-reservation-card
-              [detail]="detail"
-              [guestName]="client.name + ' ' + client.lastName"
-            />
-          }
-        </div>
-      </app-reservation-history>
+      <app-reservation-history
+        [reservations]="reservations"
+        [guestName]="client.name + ' ' + client.lastName"
+      />
       <footer class="detail-actions">
         <button
           appButton

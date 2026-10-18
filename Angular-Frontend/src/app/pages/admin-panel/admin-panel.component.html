@@ -39,11 +39,13 @@
             <a appButton [routerLink]="[base, card.path]"
               >Manage {{ card.title.toLowerCase() }}</a
             >
-            <a
-              class="panel-card__create"
-              [routerLink]="[base, card.path, 'new']"
-              >+ {{ card.createLabel }}</a
-            >
+            @if (card.createLabel) {
+              <a
+                class="panel-card__create"
+                [routerLink]="[base, card.path, 'new']"
+                >+ {{ card.createLabel }}</a
+              >
+            }
           </div>
         </article>
       }

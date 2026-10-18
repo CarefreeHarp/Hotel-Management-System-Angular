@@ -47,12 +47,14 @@
           />
         }
         @case ("room-types") {
-          <app-booking-room-types
-            [types]="types"
-            [stay]="stay"
-            (changeDates)="go('dates')"
-            (selected)="chooseType($event)"
-          />
+          @if (types.length || !error) {
+            <app-booking-room-types
+              [types]="types"
+              [stay]="stay"
+              (changeDates)="go('dates')"
+              (selected)="chooseType($event)"
+            />
+          }
         }
         @case ("services") {
           @if (draft && quote) {

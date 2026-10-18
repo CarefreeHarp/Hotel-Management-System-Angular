@@ -1,3 +1,5 @@
+import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
+import { basePath } from '../../utils/base-path';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -21,6 +23,7 @@ import { ReservationFinanceComponent } from './components/reservation-finance/re
     DatePipe,
     RouterLink,
     HeaderComponent,
+    AdminHeaderComponent,
     ButtonComponent,
     ClientInfoComponent,
     OptimizedImageDirective,
@@ -38,6 +41,27 @@ export class ReservationDetailComponent implements OnInit {
   client: ClientDetailDTO | undefined;
   isLoading = true;
   errorMessage = '';
+  get saved(): boolean {
+    return this.route.snapshot.queryParamMap.get('saved') === 'true';
+  }
+  get staff(): boolean {
+    return (
+      this.route.snapshot.paramMap.has('adminId') ||
+      this.route.snapshot.paramMap.has('operatorId')
+    );
+  }
+  get clientHistoryId(): number | undefined {
+    const id = Number(this.route.snapshot.queryParamMap.get('clientId'));
+    return this.staff && Number.isSafeInteger(id) && id > 0 ? id : undefined;
+  }
+  get backUrl(): string {
+    if (this.clientHistoryId !== undefined)
+      return `${basePath(this.route)}/clients/${this.clientHistoryId}`;
+    return this.staff ? `${basePath(this.route)}/reservations` : '/profile';
+  }
+  get editUrl(): string {
+    return `${basePath(this.route)}/reservations/${this.detail?.reservation.reservationId}/edit`;
+  }
   get authParams(): { auth?: number } {
     return clientQuery(this.route);
   }

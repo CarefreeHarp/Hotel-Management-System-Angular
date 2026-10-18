@@ -8,12 +8,10 @@ import { PageHeadingComponent } from '../../components/page-heading/page-heading
 import { ButtonComponent } from '../../components/button/button.component';
 import { ClientInfoComponent } from '../../components/client-info/client-info.component';
 import { ReservationHistoryComponent } from '../../components/reservation-history/reservation-history.component';
-import { ReservationCardComponent } from './components/reservation-card/reservation-card.component';
 import { ClientService } from '../../services/client.service';
 import { ReservationService } from '../../services/reservation.service';
 import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 import { ReservationDetails } from '../../models/booking';
-import { ReservationStatus } from '../../models/enums/reservation-status';
 import { clientQuery } from '../../utils/client-query';
 
 @Component({
@@ -25,7 +23,6 @@ import { clientQuery } from '../../utils/client-query';
     ButtonComponent,
     ClientInfoComponent,
     ReservationHistoryComponent,
-    ReservationCardComponent,
   ],
   templateUrl: './client-profile.component.html',
   styleUrl: './client-profile.component.scss',
@@ -38,29 +35,11 @@ export class ClientProfileComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   client: ClientDetailDTO | undefined;
   reservations: ReservationDetails[] = [];
-  reservationFilter: 'all' | ReservationStatus = 'all';
-  readonly reservationFilters: {
-    label: string;
-    status: 'all' | ReservationStatus;
-  }[] = [
-    { label: 'All', status: 'all' },
-    { label: 'Upcoming', status: ReservationStatus.CONFIRMED },
-    { label: 'In progress', status: ReservationStatus.CHECKED_IN },
-    { label: 'Awaiting review', status: ReservationStatus.CHECKED_OUT },
-    { label: 'Awaiting payment', status: ReservationStatus.PENDING },
-    { label: 'Cancelled', status: ReservationStatus.CANCELLED },
-  ];
   isLoading = true;
   isDeleting = false;
   saved = false;
   loadError = '';
   errorMessage = '';
-  get filteredReservations(): ReservationDetails[] {
-    if (this.reservationFilter === 'all') return this.reservations;
-    return this.reservations.filter(
-      (detail) => detail.reservation.status === this.reservationFilter,
-    );
-  }
   get authParams(): { auth?: number } {
     return clientQuery(this.route);
   }

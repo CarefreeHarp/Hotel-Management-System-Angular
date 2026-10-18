@@ -37,9 +37,17 @@ public class BookingService {
     public List<RoomTypeListDTO> available(LocalDate checkIn, LocalDate checkOut, Integer guests) {
         checkStay(checkIn, checkOut, guests);
         Map<Integer, RoomTypeListDTO> result = new LinkedHashMap<>();
-        for (Room room : rooms.findAvailableForBooking(checkIn, checkOut, guests)) {
+        for (Room room : rooms.findAvailableForBooking(checkIn, checkOut, guests, null)) {
             RoomType type = room.getRoomType();
             result.putIfAbsent(type.getRoomTypeId(), typeView(type));
+        }
+        if (result.isEmpty()) {
+            Integer maximum = rooms.findMaximumBookableCapacity();
+            if (maximum == null)
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "No rooms are currently enabled for booking. Please contact the hotel.");
+            if (guests > maximum)
+                throw problem("No bookable room can accommodate " + guests + " guests. The maximum is " + maximum + ". Please reduce the number of guests.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "No rooms are available for the selected dates and guest count. Please change the dates or the number of guests.");
         }
         return new ArrayList<>(result.values());
     }
@@ -47,7 +55,8 @@ public class BookingService {
     public BookingQuote quote(Integer roomTypeId, LocalDate checkIn, LocalDate checkOut, Integer guests, List<Integer> serviceIds) {
         checkStay(checkIn, checkOut, guests);
         RoomType type = types.findById(roomTypeId).orElseThrow(() -> problem("Room type not found."));
-        if (type.getMaxCapacity() < guests) throw problem("The guest count exceeds the room capacity.");
+        if (type.getMaxCapacity() < guests)
+            throw problem("This room type accommodates at most " + type.getMaxCapacity() + " guests. Please reduce the number of guests or choose another room type.");
         List<com.example.demo.entities.Service> selected = selectedServices(serviceIds);
         long nights = ChronoUnit.DAYS.between(checkIn, checkOut);
         BigDecimal stayTotal = type.getNightlyPrice().multiply(BigDecimal.valueOf(nights));
@@ -62,9 +71,9 @@ public class BookingService {
         types.lockForBooking(typeId).orElseThrow(() -> problem("Room type not found."));
         List<Integer> serviceIds = input.getServices().stream().map(com.example.demo.entities.Service::getServiceId).toList();
         BookingQuote quote = quote(typeId, input.getCheckInDate(), input.getCheckOutDate(), input.getGuestCount(), serviceIds);
-        Room room = rooms.findAvailableForBooking(input.getCheckInDate(), input.getCheckOutDate(), input.getGuestCount())
+        Room room = rooms.findAvailableForBooking(input.getCheckInDate(), input.getCheckOutDate(), input.getGuestCount(), null)
             .stream().filter(candidate -> candidate.getRoomType().getRoomTypeId().equals(typeId)).findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "This room type is no longer available. Please choose another type."));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "The selected room type is no longer available for these dates and guests. Please choose another room type, change the dates or reduce the number of guests."));
         Payment initial = input.getInitialPayment();
         if (initial != null) checkPayment(initial, quote.total());
         LocalDateTime now = LocalDateTime.now();
@@ -90,6 +99,82 @@ public class BookingService {
         return detail(reservation.getReservationId());
     }
 
+    public void update(Integer id, Reservation input) {
+        Reservation current = reservations.lockForEditing(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found."));
+        if (input.getCheckInDate() == null || input.getCheckOutDate() == null)
+            throw problem("Choose both a check-in and a check-out date.");
+        if (!input.getCheckOutDate().isAfter(input.getCheckInDate()))
+            throw problem("The check-out date must be after the check-in date.");
+        if (input.getGuestCount() == null || input.getGuestCount() < 1) throw problem("Enter at least one guest.");
+        if (input.getStatus() == null) throw problem("Choose a reservation status.");
+        Integer typeId = input.getRoom().getRoomType().getRoomTypeId();
+        RoomType type = types.lockForBooking(typeId).orElseThrow(() -> problem("Room type not found."));
+        if (input.getGuestCount() > type.getMaxCapacity())
+            throw problem("This room type accommodates at most " + type.getMaxCapacity() + " guests. Please reduce the number of guests or choose another room type.");
+        boolean sameType = current.getRoom() != null && current.getRoom().getRoomType().getRoomTypeId().equals(typeId);
+        boolean stayChanged = !sameType || !current.getCheckInDate().equals(input.getCheckInDate())
+            || !current.getCheckOutDate().equals(input.getCheckOutDate());
+        Room assigned = current.getRoom();
+        if (input.getStatus() != ReservationStatus.CANCELLED && (stayChanged
+                || !current.getGuestCount().equals(input.getGuestCount()) || current.getStatus() == ReservationStatus.CANCELLED)) {
+            List<Room> candidates = rooms.findAvailableForBooking(input.getCheckInDate(), input.getCheckOutDate(), input.getGuestCount(), id)
+                .stream().filter(room -> room.getRoomType().getRoomTypeId().equals(typeId)).toList();
+            assigned = candidates.stream().filter(room -> current.getRoom() != null && room.getRoomId().equals(current.getRoom().getRoomId()))
+                .findFirst().orElseGet(() -> candidates.stream().findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT,
+                    "No room of the selected type is available. Please change the dates, room type or number of guests.")));
+        } else if (!sameType) {
+            assigned = rooms.findAll().stream().filter(room -> room.getRoomType().getRoomTypeId().equals(typeId)).findFirst()
+                .orElseThrow(() -> problem("The selected room type has no rooms."));
+        }
+        Set<Integer> oldServices = new HashSet<>(current.getServices().stream().map(com.example.demo.entities.Service::getServiceId).toList());
+        List<Integer> selectedIds = input.getServices().stream().map(com.example.demo.entities.Service::getServiceId).distinct().toList();
+        List<com.example.demo.entities.Service> selected = selectedIds.stream().map(serviceId -> services.findById(serviceId)
+            .filter(service -> oldServices.contains(serviceId) || service.getActivationStatus() == ActivationStatus.ACTIVE)
+            .orElseThrow(() -> problem("A selected service is no longer available."))).toList();
+        boolean financialChange = stayChanged || !oldServices.equals(new HashSet<>(selectedIds));
+        BigDecimal nightly = sameType ? current.getNightlyPrice() : type.getNightlyPrice();
+        ReservationDetailDTO previous = detail(id);
+        Folio folio = folios.findByReservation_ReservationId(id).orElseGet(() -> folios.save(Folio.builder()
+            .reservation(current).issuedAt(current.getCreatedAt()).status(FolioStatus.PENDING).build()));
+        List<FolioItem> charges = new ArrayList<>(items.findByFolio_FolioIdOrderByChargedAtAsc(folio.getFolioId()));
+        // Retained services and independent charges keep their contracted price snapshots.
+        List<FolioItem> removed = charges.stream().filter(item -> item.getService() != null
+            && !selectedIds.contains(item.getService().getServiceId())).toList();
+        charges.removeAll(removed);
+        for (com.example.demo.entities.Service service : selected) {
+            if (charges.stream().noneMatch(item -> item.getService() != null && item.getService().getServiceId().equals(service.getServiceId()))) {
+                charges.add(FolioItem.builder().folio(folio).service(service).concept(service.getName()).unitPrice(service.getPrice())
+                    .quantity(1).chargedAt(LocalDateTime.now()).build());
+            }
+        }
+        BigDecimal total = nightly.multiply(BigDecimal.valueOf(ChronoUnit.DAYS.between(input.getCheckInDate(), input.getCheckOutDate())))
+            .add(charges.stream().map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity()))).reduce(BigDecimal.ZERO, BigDecimal::add));
+        BigDecimal paid = previous.paidTotal();
+        if (financialChange && paid.signum() > 0 && total.compareTo(paid) <= 0)
+            throw problem("The recalculated total must be greater than the amount already paid (COP " + paid.toPlainString() + "). Payments cannot be changed here.");
+        ReservationStatus status = input.getStatus();
+        if (financialChange && paid.signum() > 0 && previous.total().compareTo(paid) == 0
+                && total.compareTo(paid) > 0 && status != ReservationStatus.CANCELLED) status = ReservationStatus.PENDING;
+        current.setCheckInDate(input.getCheckInDate()); current.setCheckOutDate(input.getCheckOutDate());
+        current.setGuestCount(input.getGuestCount()); current.setRoom(assigned); current.setNightlyPrice(nightly);
+        current.setServices(new ArrayList<>(selected)); current.setStatus(status);
+        items.deleteAll(removed); items.saveAll(charges);
+        folio.setStatus(status == ReservationStatus.CANCELLED ? FolioStatus.CANCELLED : total.compareTo(paid) == 0 ? FolioStatus.PAID : FolioStatus.PENDING);
+    }
+
+    public void delete(Integer id) {
+        Reservation reservation = reservations.lockForEditing(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found."));
+        folios.findByReservation_ReservationId(id).ifPresent(folio -> {
+            payments.deleteAll(payments.findByFolio_FolioIdOrderByPaidAtAsc(folio.getFolioId()));
+            items.deleteAll(items.findByFolio_FolioIdOrderByChargedAtAsc(folio.getFolioId()));
+            folios.delete(folio);
+            folios.flush();
+        });
+        reservations.delete(reservation);
+    }
+
     public List<ReservationDetailDTO> history(Integer clientId) {
         return reservations.findAllForListByClientId(clientId).stream().map(row -> detail(row.getReservationId())).toList();
     }
@@ -111,8 +196,8 @@ public class BookingService {
             .map(Payment::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
         Room room = reservation.getRoom();
         List<ReservationDetailDTO.Charge> chargeViews = folio == null ? reservation.getServices().stream()
-            .map(service -> new ReservationDetailDTO.Charge(null, service.getName(), 1, service.getPrice(), service.getPrice(), null)).toList()
-            : charges.stream().map(item -> new ReservationDetailDTO.Charge(item.getItemId(), item.getConcept(), item.getQuantity(),
+            .map(service -> new ReservationDetailDTO.Charge(null, service.getServiceId(), service.getName(), 1, service.getPrice(), service.getPrice(), null)).toList()
+            : charges.stream().map(item -> new ReservationDetailDTO.Charge(item.getItemId(), item.getService() == null ? null : item.getService().getServiceId(), item.getConcept(), item.getQuantity(),
                 item.getUnitPrice(), item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())), item.getChargedAt())).toList();
         return new ReservationDetailDTO(ReservationDTO.from(reservation), reservation.getClient() == null ? null : reservation.getClient().getClientId(),
             room == null ? null : room.getFloor(), room == null ? null : room.getRoomType().getMaxCapacity(), reservation.getCreatedAt(),
@@ -124,8 +209,10 @@ public class BookingService {
     }
 
     private void checkStay(LocalDate checkIn, LocalDate checkOut, Integer guests) {
-        if (checkIn == null || checkOut == null || checkIn.isBefore(LocalDate.now()) || !checkOut.isAfter(checkIn) || guests == null || guests < 1)
-            throw problem("Choose valid future dates and at least one guest.");
+        if (checkIn == null || checkOut == null) throw problem("Choose both a check-in and a check-out date.");
+        if (checkIn.isBefore(LocalDate.now())) throw problem("The check-in date cannot be in the past. Please choose new dates.");
+        if (!checkOut.isAfter(checkIn)) throw problem("The check-out date must be after the check-in date.");
+        if (guests == null || guests < 1) throw problem("Enter at least one guest.");
     }
     private List<com.example.demo.entities.Service> selectedServices(List<Integer> ids) {
         if (ids == null) return List.of();

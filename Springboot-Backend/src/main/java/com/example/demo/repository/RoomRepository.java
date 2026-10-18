@@ -18,13 +18,22 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
           AND type.maxCapacity >= :guests
           AND NOT EXISTS (SELECT reservation FROM Reservation reservation
             WHERE reservation.room = room
+              AND (:excludedId IS NULL OR reservation.reservationId <> :excludedId)
               AND reservation.status <> com.example.demo.entities.enums.ReservationStatus.CANCELLED
               AND reservation.checkInDate < :checkOut AND reservation.checkOutDate > :checkIn)
         ORDER BY room.number
         """)
     List<Room> findAvailableForBooking(@org.springframework.data.repository.query.Param("checkIn") java.time.LocalDate checkIn,
         @org.springframework.data.repository.query.Param("checkOut") java.time.LocalDate checkOut,
-        @org.springframework.data.repository.query.Param("guests") Integer guests);
+        @org.springframework.data.repository.query.Param("guests") Integer guests,
+        @org.springframework.data.repository.query.Param("excludedId") Integer excludedId);
+
+    @Query("""
+        SELECT MAX(type.maxCapacity) FROM Room room JOIN room.roomType type
+        WHERE room.activationStatus = com.example.demo.entities.enums.ActivationStatus.ACTIVE
+          AND room.status <> com.example.demo.entities.enums.RoomStatus.MAINTENANCE
+        """)
+    Integer findMaximumBookableCapacity();
 
     /* Total de habitaciones de un tipo: un tipo con habitaciones no se borra. */
     long countByRoomType_RoomTypeId(Integer roomTypeId);

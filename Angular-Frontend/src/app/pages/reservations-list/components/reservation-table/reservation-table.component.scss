@@ -1,0 +1,20 @@
+@use "../../../../../styles/staff-table";
+.booking-code {
+  color: #654a32;
+  font-weight: 700;
+}
+small {
+  display: block;
+  margin-top: 0.3rem;
+  font-weight: 400;
+  color: #59616b;
+}
+.status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 2rem;
+  background: #afcfe345;
+  color: #2e343b;
+  text-transform: capitalize;
+  white-space: nowrap;
+}

@@ -1,17 +1,33 @@
-<app-header [solid]="true" />
+@if (staff) {
+  <app-admin-header />
+} @else {
+  <app-header [solid]="true" />
+}
 <main class="reservation-page">
   <div class="reservation-container">
     <a
       appButton
       variant="secondary"
-      routerLink="/profile"
+      [routerLink]="backUrl"
       [queryParams]="authParams"
-      >Back to my reservations</a
+      >{{
+        clientHistoryId !== undefined
+          ? "Back to client"
+          : staff
+            ? "Back to reservations"
+            : "Back to my reservations"
+      }}</a
     >
     @if (isLoading) {
       <p role="status">Loading reservation…</p>
     } @else if (detail) {
       @let item = detail;
+      @if (staff && saved) {
+        <p role="status">Reservation updated successfully.</p>
+      }
+      @if (staff && clientHistoryId === undefined) {
+        <a appButton [routerLink]="editUrl">Edit reservation</a>
+      }
       <div class="reservation-layout">
         <div class="reservation-main">
           <section
@@ -117,7 +133,7 @@
           <section aria-labelledby="guest-title">
             <h2 id="guest-title">Guest information</h2>
             @if (client; as guest) {
-              <app-client-info [client]="guest" />
+              <app-client-info [client]="guest" [staff]="staff" />
             } @else {
               <p>Guest contact information is unavailable.</p>
             }

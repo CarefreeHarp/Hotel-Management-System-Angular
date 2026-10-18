@@ -131,7 +131,7 @@
       </div>
     </div>
     <footer class="booking-actions">
-      @if (detail.reservation.status === "CHECKED_OUT") {
+      @if (!staff && detail.reservation.status === "CHECKED_OUT") {
         <div class="review-prompt">
           <p>RATE YOUR EXPERIENCE</p>
           <div
@@ -165,8 +165,10 @@
           </div>
         </div>
       }
-      <button appButton type="button" (click)="openDetails()">Details</button
-      ><button appButton type="button">Book again</button>
+      <button appButton type="button" (click)="openDetails()">Details</button>
+      @if (!staff) {
+        <button appButton type="button">Book again</button>
+      }
     </footer>
   </article>
 }
