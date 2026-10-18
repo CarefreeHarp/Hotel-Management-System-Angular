@@ -1,34 +1,45 @@
 <app-admin-header />
 <main class="catalog-page">
   <div class="catalog-page__container">
-    @if (loading) { <p role="status">Loading service...</p> } @else {
-    @if (item(); as service) {
-      <app-page-heading
-        [eyebrow]="service.category"
-        [title]="service.name"
-        [description]="service.summary || ''"
-        ><a appButton [routerLink]="[base, 'services', service.serviceId, 'edit']"
-          >Edit service</a
-        ></app-page-heading
-      >
-      @if (saved()) {
-        <p class="saved-alert" role="status">Service saved successfully.</p>
+    @if (state$ | async; as state) {
+      @if (state.loading) {
+        <p role="status">Loading service...</p>
+      } @else {
+        @if (state.service; as service) {
+          <app-page-heading
+            [eyebrow]="service.category"
+            [title]="service.name"
+            [description]="service.summary || ''"
+            ><a
+              appButton
+              [routerLink]="[base, 'services', service.serviceId, 'edit']"
+              >Edit service</a
+            ></app-page-heading
+          >
+          @if (saved$ | async) {
+            <p class="saved-alert" role="status">Service saved successfully.</p>
+          }
+          <app-service-info [service]="service" />
+          @if (service.secondaryImageUrls.length) {
+            <app-gallery
+              [name]="service.name"
+              [photos]="service.secondaryImageUrls"
+            />
+          }
+        } @else {
+          <app-page-heading
+            eyebrow="Service catalog"
+            title="Service not found"
+            [description]="
+              state.error ||
+              'This service does not exist or is no longer available.'
+            "
+            ><a appButton [routerLink]="[base, 'services']"
+              >Back to list</a
+            ></app-page-heading
+          >
+        }
       }
-      <app-service-info [service]="service" />
-      @if (service.secondaryImageUrls.length) {
-        <app-gallery
-          [name]="service.name"
-          [photos]="service.secondaryImageUrls"
-        />
-      }
-    } @else {
-      <app-page-heading
-        eyebrow="Service catalog"
-        title="Service not found"
-        [description]="error || 'This service does not exist or is no longer available.'"
-        ><a appButton [routerLink]="[base, 'services']">Back to list</a></app-page-heading
-      >
     }
-  }
-</div>
+  </div>
 </main>

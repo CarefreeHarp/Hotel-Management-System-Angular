@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { BookingQuote } from '../../../../models/booking';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
@@ -9,5 +9,5 @@ import { OptimizedImageDirective } from '../../../../directives/optimized-image.
   styleUrl: './booking-reservation-summary.component.scss',
 })
 export class BookingReservationSummaryComponent {
-  readonly quote = input.required<BookingQuote>();
+  @Input({ required: true }) quote: BookingQuote | undefined;
 }

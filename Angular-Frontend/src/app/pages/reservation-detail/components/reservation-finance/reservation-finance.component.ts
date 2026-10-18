@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ReservationDetails } from '../../../../models/booking';
 @Component({
   selector: 'app-reservation-finance',
@@ -8,5 +8,5 @@ import { ReservationDetails } from '../../../../models/booking';
   styleUrl: './reservation-finance.component.scss',
 })
 export class ReservationFinanceComponent {
-  readonly detail = input.required<ReservationDetails>();
+  @Input({ required: true }) detail: ReservationDetails | undefined;
 }

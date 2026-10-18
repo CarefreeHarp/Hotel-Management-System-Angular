@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, Input, output } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { BookingQuote } from '../../../../models/booking';
 @Component({
@@ -8,8 +8,8 @@ import { BookingQuote } from '../../../../models/booking';
   styleUrl: './booking-checkout.component.scss',
 })
 export class BookingCheckoutComponent {
-  readonly quote = input.required<BookingQuote>();
-  readonly busy = input(false);
+  @Input({ required: true }) quote: BookingQuote | undefined;
+  @Input() busy = false;
   readonly payLater = output<void>();
   readonly payNow = output<void>();
 }

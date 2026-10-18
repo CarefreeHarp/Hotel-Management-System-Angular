@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
 import type { ClientForm } from '../../clients-form.component';
 
@@ -9,7 +9,7 @@ import type { ClientForm } from '../../clients-form.component';
   styleUrl: './client-fields.component.scss',
 })
 export class ClientFieldsComponent {
-  readonly form = input.required<ClientForm>();
-  readonly submitted = input(false);
-  readonly isCreateMode = input(true);
+  @Input({ required: true }) form: ClientForm | undefined;
+  @Input() submitted = false;
+  @Input() isCreateMode = true;
 }

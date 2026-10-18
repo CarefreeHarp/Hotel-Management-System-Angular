@@ -1,53 +1,55 @@
-<aside class="reservation-summary" aria-labelledby="summary-title">
-  <h2 id="summary-title">Your reservation</h2>
-  <figure>
-    <img
-      appImage
-      imageWidth="960"
-      [src]="quote().roomType.mainPhoto"
-      [alt]="quote().roomType.name"
-    />
-    <figcaption>
-      <strong>{{ quote().roomType.name }}</strong>
-    </figcaption>
-  </figure>
-  <dl class="summary-stay">
-    <div>
-      <dt>Check-in</dt>
-      <dd>{{ quote().checkInDate | date: "MMM d, yyyy" }}</dd>
-    </div>
-    <div>
-      <dt>Check-out</dt>
-      <dd>{{ quote().checkOutDate | date: "MMM d, yyyy" }}</dd>
-    </div>
-    <div>
-      <dt>Guests</dt>
-      <dd>{{ quote().guestCount }}</dd>
-    </div>
-    <div>
-      <dt>Nights</dt>
-      <dd>{{ quote().nights }}</dd>
-    </div>
-  </dl>
-  <dl class="summary-costs">
-    <div>
-      <dt>
-        {{
-          quote().roomType.nightlyPrice | currency: "COP" : "symbol" : "1.0-0"
-        }}
-        × {{ quote().nights }} night(s)
-      </dt>
-      <dd>{{ quote().stayTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
-    </div>
-    @for (service of quote().services; track service.serviceId) {
+@if (quote; as quote) {
+  <aside class="reservation-summary" aria-labelledby="summary-title">
+    <h2 id="summary-title">Your reservation</h2>
+    <figure>
+      <img
+        appImage
+        imageWidth="960"
+        [src]="quote.roomType.mainPhoto"
+        [alt]="quote.roomType.name"
+      />
+      <figcaption>
+        <strong>{{ quote.roomType.name }}</strong>
+      </figcaption>
+    </figure>
+    <dl class="summary-stay">
       <div>
-        <dt>{{ service.name }}</dt>
-        <dd>{{ service.price | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+        <dt>Check-in</dt>
+        <dd>{{ quote.checkInDate | date: "MMM d, yyyy" }}</dd>
       </div>
-    }
-    <div class="summary-total">
-      <dt>Total</dt>
-      <dd>{{ quote().total | currency: "COP" : "symbol" : "1.0-2" }}</dd>
-    </div>
-  </dl>
-</aside>
+      <div>
+        <dt>Check-out</dt>
+        <dd>{{ quote.checkOutDate | date: "MMM d, yyyy" }}</dd>
+      </div>
+      <div>
+        <dt>Guests</dt>
+        <dd>{{ quote.guestCount }}</dd>
+      </div>
+      <div>
+        <dt>Nights</dt>
+        <dd>{{ quote.nights }}</dd>
+      </div>
+    </dl>
+    <dl class="summary-costs">
+      <div>
+        <dt>
+          {{
+            quote.roomType.nightlyPrice | currency: "COP" : "symbol" : "1.0-0"
+          }}
+          × {{ quote.nights }} night(s)
+        </dt>
+        <dd>{{ quote.stayTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+      </div>
+      @for (service of quote.services; track service.serviceId) {
+        <div>
+          <dt>{{ service.name }}</dt>
+          <dd>{{ service.price | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+        </div>
+      }
+      <div class="summary-total">
+        <dt>Total</dt>
+        <dd>{{ quote.total | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+      </div>
+    </dl>
+  </aside>
+}

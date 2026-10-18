@@ -5,7 +5,7 @@ import {
   OnDestroy,
   ViewChild,
   inject,
-  input,
+  Input,
 } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -16,7 +16,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './header-menu.component.scss',
 })
 export class HeaderMenuComponent implements OnDestroy {
-  readonly authParams = input.required<{ auth?: number }>();
+  @Input({ required: true }) authParams: { auth?: number } = {};
   @ViewChild('drawer') private drawer?: ElementRef<HTMLDialogElement>;
   private readonly document = inject(DOCUMENT);
   private previousOverflow: string | undefined;

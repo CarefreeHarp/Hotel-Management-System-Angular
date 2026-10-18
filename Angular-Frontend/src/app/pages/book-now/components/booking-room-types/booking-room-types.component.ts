@@ -1,5 +1,5 @@
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
-import { Component, input, output } from '@angular/core';
+import { Component, Input, output } from '@angular/core';
 import { BookingStay } from '../../../../models/booking';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RoomTypeListDTO } from '../../../../models/dto/room-type-list-dto';
@@ -10,8 +10,12 @@ import { RoomTypeListDTO } from '../../../../models/dto/room-type-list-dto';
   styleUrl: './booking-room-types.component.scss',
 })
 export class BookingRoomTypesComponent {
-  readonly stay = input.required<BookingStay>();
+  @Input({ required: true }) stay: BookingStay = {
+    checkIn: '',
+    checkOut: '',
+    guests: 1,
+  };
   readonly changeDates = output<void>();
-  readonly types = input.required<RoomTypeListDTO[]>();
+  @Input({ required: true }) types: RoomTypeListDTO[] = [];
   readonly selected = output<number>();
 }

@@ -1,7 +1,7 @@
-@if (client(); as item) {
+@if (client; as item) {
   <article
     class="client-card"
-    [class.staff-card]="staff()"
+    [class.staff-card]="staff"
     aria-label="Client information"
   >
     <header class="client-identity">
@@ -16,7 +16,7 @@
       }
       <div>
         <h2>{{ item.name }} {{ item.lastName }}</h2>
-        @if (staff()) {
+        @if (staff) {
           <p>Client #{{ item.clientId }}</p>
         }
       </div>

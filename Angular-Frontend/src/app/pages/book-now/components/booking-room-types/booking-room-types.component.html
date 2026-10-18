@@ -1,15 +1,15 @@
 <dl class="stay-summary" aria-label="Selected stay">
   <div>
     <dt>Check-in</dt>
-    <dd>{{ stay().checkIn | date: "MMM d, yyyy" }}</dd>
+    <dd>{{ stay.checkIn | date: "MMM d, yyyy" }}</dd>
   </div>
   <div>
     <dt>Check-out</dt>
-    <dd>{{ stay().checkOut | date: "MMM d, yyyy" }}</dd>
+    <dd>{{ stay.checkOut | date: "MMM d, yyyy" }}</dd>
   </div>
   <div>
     <dt>Guests</dt>
-    <dd>{{ stay().guests }}</dd>
+    <dd>{{ stay.guests }}</dd>
   </div>
   <div>
     <button class="change-dates" type="button" (click)="changeDates.emit()">
@@ -20,7 +20,7 @@
 <section class="rooms-section" aria-labelledby="available-rooms-title">
   <h2 id="available-rooms-title">Available room types</h2>
   <div class="rooms-grid">
-    @for (type of types(); track type.roomTypeId) {
+    @for (type of types; track type.roomTypeId) {
       <article class="room-card">
         <figure class="room-gallery">
           <img

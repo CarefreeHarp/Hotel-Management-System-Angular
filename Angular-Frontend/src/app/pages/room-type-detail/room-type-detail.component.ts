@@ -1,7 +1,7 @@
+import { AsyncPipe } from '@angular/common';
 import { clientQuery } from '../../utils/client-query';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { HeaderComponent } from '../../components/header/header.component';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
@@ -15,6 +15,7 @@ import { basePath, isAdminArea } from '../../utils/base-path';
 @Component({
   selector: 'app-room-type-detail',
   imports: [
+    AsyncPipe,
     RouterLink,
     HeaderComponent,
     AdminHeaderComponent,
@@ -36,19 +37,15 @@ export class RoomTypeDetailComponent {
     return basePath(this.route);
   }
   readonly adminArea = isAdminArea(this.route);
-  readonly roomType = toSignal(
-    this.route.paramMap.pipe(
-      switchMap((params) => {
-        const id = Number(params.get('id'));
-        return Number.isSafeInteger(id) && id > 0
-          ? this.service.getById(id).pipe(catchError(() => of(undefined)))
-          : of(undefined);
-      }),
-    ),
+  readonly roomType$ = this.route.paramMap.pipe(
+    switchMap((params) => {
+      const id = Number(params.get('id'));
+      return Number.isSafeInteger(id) && id > 0
+        ? this.service.getById(id).pipe(catchError(() => of(undefined)))
+        : of(undefined);
+    }),
   );
-  readonly saved = toSignal(
-    this.route.queryParamMap.pipe(
-      map((params) => params.get('saved') === 'true'),
-    ),
+  readonly saved$ = this.route.queryParamMap.pipe(
+    map((params) => params.get('saved') === 'true'),
   );
 }

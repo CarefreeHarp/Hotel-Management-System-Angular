@@ -1,5 +1,5 @@
 import { BookingReservationSummaryComponent } from '../booking-reservation-summary/booking-reservation-summary.component';
-import { Component, input, output } from '@angular/core';
+import { Component, Input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
 import { BookingQuote, CardPayment } from '../../../../models/booking';
@@ -10,8 +10,8 @@ import { BookingQuote, CardPayment } from '../../../../models/booking';
   styleUrl: './booking-payment.component.scss',
 })
 export class BookingPaymentComponent {
-  readonly quote = input.required<BookingQuote>();
-  readonly busy = input(false);
+  @Input({ required: true }) quote: BookingQuote | undefined;
+  @Input() busy = false;
   readonly pay = output<CardPayment>();
   readonly payLater = output<void>();
   amount = 0;
@@ -21,13 +21,13 @@ export class BookingPaymentComponent {
   securityCode = '';
   submitted = false;
   ngOnInit(): void {
-    this.amount = this.quote().total;
+    this.amount = this.quote?.total ?? 0;
   }
   get validationMessage(): string {
     if (
       !Number.isFinite(this.amount) ||
       this.amount < 100000 ||
-      this.amount > this.quote().total
+      this.amount > (this.quote?.total ?? 0)
     )
       return 'Enter at least COP 100,000 without exceeding the total.';
     const month = Number(this.expiryDate.split('/')[0]);
@@ -93,7 +93,7 @@ export class BookingPaymentComponent {
   }
   submit(): void {
     this.submitted = true;
-    if (this.valid() && !this.busy())
+    if (this.quote && this.valid() && !this.busy)
       this.pay.emit({
         amount: this.amount,
         cardholderName: this.cardholderName.trim(),

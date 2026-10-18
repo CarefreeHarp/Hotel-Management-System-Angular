@@ -1,6 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { clientQuery } from '../../../../utils/client-query';
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ButtonComponent } from '../../../../components/button/button.component';
 import { ReservationDetails } from '../../../../models/booking';
@@ -18,27 +18,28 @@ export class ReservationCardComponent {
   get authParams(): { auth?: number } {
     return clientQuery(this.route);
   }
-  readonly detail = input.required<ReservationDetails>();
-  readonly guestName = input.required<string>();
+  @Input({ required: true }) detail: ReservationDetails | undefined;
+  @Input({ required: true }) guestName: string = '';
   readonly stars = [1, 2, 3, 4, 5];
   selectedRating = 0;
   openDetails(event?: MouseEvent): void {
+    if (!this.detail) return;
     if (event?.target instanceof Element && event.target.closest('button, a'))
       return;
     void this.router.navigate(
-      ['/reservation', this.detail().reservation.reservationId],
+      ['/reservation', this.detail.reservation.reservationId],
       {
         queryParams: this.authParams,
       },
     );
   }
   get otherGuests(): number {
-    return Math.max(0, this.detail().reservation.guestCount - 1);
+    return Math.max(0, (this.detail?.reservation.guestCount ?? 1) - 1);
   }
   get services(): string {
-    return this.detail()
-      .charges.map((charge) => charge.concept)
-      .join(', ');
+    return (
+      this.detail?.charges.map((charge) => charge.concept).join(', ') ?? ''
+    );
   }
   get servicesPreview(): string {
     return this.services.length > 50
@@ -46,7 +47,8 @@ export class ReservationCardComponent {
       : this.services;
   }
   get countdown(): string {
-    const reservation = this.detail().reservation;
+    const reservation = this.detail?.reservation;
+    if (!reservation) return '';
     if (reservation.status === 'CHECKED_IN') return 'In progress';
     if (reservation.status === 'PENDING') return 'Awaiting payment';
     if (reservation.status === 'CANCELLED') return 'Cancelled';

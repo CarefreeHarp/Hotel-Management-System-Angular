@@ -1,5 +1,5 @@
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
-import { Component, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 
 @Component({
@@ -9,6 +9,6 @@ import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
   styleUrl: './client-info.component.scss',
 })
 export class ClientInfoComponent {
-  readonly client = input.required<ClientDetailDTO>();
-  readonly staff = input(false);
+  @Input({ required: true }) client: ClientDetailDTO | undefined;
+  @Input() staff = false;
 }

@@ -1,4 +1,4 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, Input, output } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ClientListDTO } from '../../../../models/dto/client-list-dto';
 import { basePath } from '../../../../utils/base-path';
@@ -10,7 +10,7 @@ import { basePath } from '../../../../utils/base-path';
   styleUrl: './client-table.component.scss',
 })
 export class ClientTableComponent {
-  readonly clients = input<ClientListDTO[]>([]);
+  @Input() clients: ClientListDTO[] = [];
   readonly delete = output<ClientListDTO>();
   private readonly route = inject(ActivatedRoute);
   get base(): string {

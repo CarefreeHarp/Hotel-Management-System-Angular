@@ -1,9 +1,9 @@
 <fieldset>
   <legend>Price (COP)</legend>
   <div class="range-values" aria-live="polite">
-    <output>{{ minimum() | currency: "COP" : "symbol" : "1.0-2" }}</output
+    <output>{{ minimum | currency: "COP" : "symbol" : "1.0-2" }}</output
     ><span aria-hidden="true">—</span
-    ><output>{{ maximum() | currency: "COP" : "symbol" : "1.0-2" }}</output>
+    ><output>{{ maximum | currency: "COP" : "symbol" : "1.0-2" }}</output>
   </div>
   <div
     class="range-track"
@@ -14,25 +14,25 @@
       #lower
       type="range"
       aria-label="Minimum price (COP)"
-      [min]="floor()"
-      [disabled]="floor() === limit()"
-      [max]="limit()"
+      [min]="floor"
+      [disabled]="floor === limit"
+      [max]="limit"
       step="0.01"
-      [value]="minimum()"
-      [attr.aria-valuemax]="maximum()"
-      [style.z-index]="minimum() === limit() ? 3 : 1"
+      [value]="minimum"
+      [attr.aria-valuemax]="maximum"
+      [style.z-index]="minimum === limit ? 3 : 1"
       (input)="changeMinimum(lower)"
     />
     <input
       #upper
       type="range"
       aria-label="Maximum price (COP)"
-      [min]="floor()"
-      [disabled]="floor() === limit()"
-      [max]="limit()"
+      [min]="floor"
+      [disabled]="floor === limit"
+      [max]="limit"
       step="0.01"
-      [value]="maximum()"
-      [attr.aria-valuemin]="minimum()"
+      [value]="maximum"
+      [attr.aria-valuemin]="minimum"
       (input)="changeMaximum(upper)"
     />
   </div>

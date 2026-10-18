@@ -6,7 +6,7 @@
 
 <main class="catalog-page">
   <div class="catalog-page__container">
-    @if (roomType(); as type) {
+    @if (roomType$ | async; as type) {
       <app-page-heading
         [title]="type.name"
         description="Shared gallery and commercial information for rooms in this category."
@@ -26,7 +26,7 @@
           >
         }
       </app-page-heading>
-      @if (saved()) {
+      @if (saved$ | async) {
         <p class="saved-alert" role="status">Room type saved successfully.</p>
       }
       <app-room-type-info [roomType]="type" />

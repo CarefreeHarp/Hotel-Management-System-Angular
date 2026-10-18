@@ -1,6 +1,7 @@
+import { Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { clientQuery } from '../../utils/client-query';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ServiceService } from '../../services/service.service';
@@ -25,7 +26,7 @@ import { basePath } from '../../utils/base-path';
   templateUrl: './client-services-detail.component.html',
   styleUrl: './client-services-detail.component.scss',
 })
-export class ClientServicesDetailComponent implements OnInit {
+export class ClientServicesDetailComponent {
   get authParams(): { auth?: number } {
     return clientQuery(this.route);
   }
@@ -35,56 +36,48 @@ export class ClientServicesDetailComponent implements OnInit {
     return basePath(this.route);
   }
 
-  readonly service = signal<ServiceDetailDTO | null>(null);
-  readonly isLoading = signal<boolean>(true);
-  readonly errorMessage = signal<string>('');
-
-  ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      const idOrSlug = params.get('id');
-      if (idOrSlug) {
-        this.loadService(idOrSlug);
-      }
-    });
-  }
-
-  loadService(idOrSlug: string): void {
-    this.isLoading.set(true);
-    this.errorMessage.set('');
-
-    const numericId = Number(idOrSlug);
-    if (!isNaN(numericId) && numericId > 0) {
-      this.serviceService.getById(numericId).subscribe({
-        next: (data) => {
-          this.service.set(data.activationStatus === 'ACTIVE' ? data : null);
-          if (data.activationStatus !== 'ACTIVE')
-            this.errorMessage.set('The requested service is inactive.');
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.fallbackSearch(idOrSlug);
-        },
-      });
-    } else {
-      this.fallbackSearch(idOrSlug);
-    }
-  }
-
-  // Se busca solo ese servicio por su urlName, sin descargar la lista completa.
-  private fallbackSearch(slug: string): void {
-    this.serviceService.getByUrlName(slug).subscribe({
-      next: (found) => {
-        this.service.set(found.activationStatus === 'ACTIVE' ? found : null);
-        if (found.activationStatus !== 'ACTIVE')
-          this.errorMessage.set('The requested service is inactive.');
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('The requested service is not available.');
-        this.isLoading.set(false);
-      },
-    });
-  }
+  readonly state$: Observable<{
+    service?: ServiceDetailDTO;
+    isLoading: boolean;
+    errorMessage: string;
+  }> = this.route.paramMap.pipe(
+    map((params) => params.get('id') ?? ''),
+    switchMap((idOrSlug) => {
+      const numericId = Number(idOrSlug);
+      const request =
+        Number.isSafeInteger(numericId) && numericId > 0
+          ? this.serviceService
+              .getById(numericId)
+              .pipe(
+                catchError(() => this.serviceService.getByUrlName(idOrSlug)),
+              )
+          : this.serviceService.getByUrlName(idOrSlug);
+      return request.pipe(
+        map(
+          (
+            service,
+          ): {
+            service?: ServiceDetailDTO;
+            isLoading: boolean;
+            errorMessage: string;
+          } =>
+            service.activationStatus === 'ACTIVE'
+              ? { service, isLoading: false, errorMessage: '' }
+              : {
+                  isLoading: false,
+                  errorMessage: 'The requested service is inactive.',
+                },
+        ),
+        catchError(() =>
+          of({
+            isLoading: false,
+            errorMessage: 'The requested service is not available.',
+          }),
+        ),
+        startWith({ isLoading: true, errorMessage: '' }),
+      );
+    }),
+  );
 
   formatPrice(price: number): string {
     return Number(price).toLocaleString('en-US', {

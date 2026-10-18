@@ -1,6 +1,16 @@
+import {
+  BehaviorSubject,
+  Subject,
+  catchError,
+  combineLatest,
+  map,
+  of,
+  startWith,
+  switchMap,
+} from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { clientQuery } from '../../utils/client-query';
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -25,7 +35,7 @@ import { basePath } from '../../utils/base-path';
   templateUrl: './client-services-list.component.html',
   styleUrl: './client-services-list.component.scss',
 })
-export class ClientServicesListComponent implements OnInit {
+export class ClientServicesListComponent {
   get authParams(): { auth?: number } {
     return clientQuery(this.route);
   }
@@ -35,69 +45,66 @@ export class ClientServicesListComponent implements OnInit {
     return basePath(this.route);
   }
 
-  readonly services = signal<ServiceCatalogDTO[]>([]);
-  readonly isLoading = signal<boolean>(true);
-  readonly errorMessage = signal<string>('');
-
-  readonly selectedCategory = signal<string>('ALL');
-  readonly searchQuery = signal<string>('');
-
-  readonly categories = computed(() => {
-    const all = this.services();
-    const set = new Set<string>();
-    for (const item of all) {
-      if (item.category) set.add(item.category);
-    }
-    return Array.from(set).sort();
-  });
-
-  readonly filteredServices = computed(() => {
-    const list = this.services();
-    const cat = this.selectedCategory();
-    const query = this.searchQuery().trim().toLowerCase();
-
-    // El backend ya envía solo los servicios activos del catálogo.
-    return list.filter((item) => {
-      const matchesCat = cat === 'ALL' || item.category === cat;
-      const matchesQuery =
-        !query ||
-        item.name.toLowerCase().includes(query) ||
-        (item.summary && item.summary.toLowerCase().includes(query)) ||
-        (item.description && item.description.toLowerCase().includes(query)) ||
-        (item.category && item.category.toLowerCase().includes(query));
-
-      return matchesCat && matchesQuery;
-    });
-  });
-
-  ngOnInit(): void {
-    this.loadServices();
-  }
-
+  private readonly reloadSubject = new Subject<void>();
+  private readonly selectedCategorySubject = new BehaviorSubject('ALL');
+  private readonly searchQuerySubject = new BehaviorSubject('');
+  private readonly catalog$ = this.reloadSubject.pipe(
+    startWith(undefined),
+    switchMap(() =>
+      this.serviceService.getCatalog().pipe(
+        map((services) => ({ services, isLoading: false, errorMessage: '' })),
+        catchError(() =>
+          of({
+            services: new Array<ServiceCatalogDTO>(),
+            isLoading: false,
+            errorMessage:
+              'The service catalog could not be loaded. Please try again.',
+          }),
+        ),
+        startWith({
+          services: new Array<ServiceCatalogDTO>(),
+          isLoading: true,
+          errorMessage: '',
+        }),
+      ),
+    ),
+  );
+  readonly state$ = combineLatest([
+    this.catalog$,
+    this.selectedCategorySubject,
+    this.searchQuerySubject,
+  ]).pipe(
+    map(([state, selectedCategory, searchQuery]) => {
+      const query = searchQuery.trim().toLowerCase();
+      return {
+        ...state,
+        selectedCategory,
+        searchQuery,
+        categories: [
+          ...new Set(
+            state.services.map((item) => item.category).filter(Boolean),
+          ),
+        ].sort(),
+        filteredServices: state.services.filter(
+          (item) =>
+            (selectedCategory === 'ALL' ||
+              item.category === selectedCategory) &&
+            (!query ||
+              [item.name, item.summary, item.description, item.category].some(
+                (value) => value?.toLowerCase().includes(query),
+              )),
+        ),
+      };
+    }),
+  );
   loadServices(): void {
-    this.isLoading.set(true);
-    this.errorMessage.set('');
-
-    this.serviceService.getCatalog().subscribe({
-      next: (data) => {
-        this.services.set(data);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set(
-          'The service catalog could not be loaded. Please try again.',
-        );
-        this.isLoading.set(false);
-      },
-    });
+    this.reloadSubject.next();
   }
-
   selectCategory(category: string): void {
-    this.selectedCategory.set(category);
+    this.selectedCategorySubject.next(category);
   }
-
   onSearchChange(value: string): void {
-    this.searchQuery.set(value);
+    this.searchQuerySubject.next(value);
   }
 
   formatPrice(price: number): string {

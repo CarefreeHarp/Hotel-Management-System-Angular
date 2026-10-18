@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ReservationDetails } from '../../models/booking';
 @Component({
@@ -8,6 +8,6 @@ import { ReservationDetails } from '../../models/booking';
   styleUrl: './reservation-history.component.scss',
 })
 export class ReservationHistoryComponent {
-  readonly reservations = input.required<ReservationDetails[]>();
-  readonly staff = input(false);
+  @Input({ required: true }) reservations: ReservationDetails[] = [];
+  @Input() staff = false;
 }

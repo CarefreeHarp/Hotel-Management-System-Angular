@@ -1,39 +1,42 @@
 <app-admin-header />
 <main class="catalog-page">
   <div class="catalog-page__container">
-    @if (loading) {
-      <p role="status">Loading room...</p>
-    } @else {
-      @if (item(); as room) {
-        <app-page-heading
-          eyebrow="Room catalog"
-          [title]="'Room ' + room.number"
-          [description]="room.roomType.name"
-        >
-          <a appButton [routerLink]="[base, 'rooms', room.roomId, 'edit']"
-            >Edit room</a
-          >
-        </app-page-heading>
-        @if (saved()) {
-          <p class="saved-alert" role="status">Room saved successfully.</p>
-        }
-        <app-room-info [room]="room" />
-        @if (room.roomType.secondaryPhotos.length) {
-          <app-gallery
-            [name]="'Room ' + room.number"
-            [photos]="room.roomType.secondaryPhotos"
-          />
-        }
+    @if (state$ | async; as state) {
+      @if (state.loading) {
+        <p role="status">Loading room...</p>
       } @else {
-        <app-page-heading
-          eyebrow="Room catalog"
-          title="Room not found"
-          [description]="
-            error || 'This room does not exist or is no longer available.'
-          "
-        >
-          <a appButton [routerLink]="[base, 'rooms']">Back to list</a>
-        </app-page-heading>
+        @if (state.room; as room) {
+          <app-page-heading
+            eyebrow="Room catalog"
+            [title]="'Room ' + room.number"
+            [description]="room.roomType.name"
+          >
+            <a appButton [routerLink]="[base, 'rooms', room.roomId, 'edit']"
+              >Edit room</a
+            >
+          </app-page-heading>
+          @if (saved$ | async) {
+            <p class="saved-alert" role="status">Room saved successfully.</p>
+          }
+          <app-room-info [room]="room" />
+          @if (room.roomType.secondaryPhotos.length) {
+            <app-gallery
+              [name]="'Room ' + room.number"
+              [photos]="room.roomType.secondaryPhotos"
+            />
+          }
+        } @else {
+          <app-page-heading
+            eyebrow="Room catalog"
+            title="Room not found"
+            [description]="
+              state.error ||
+              'This room does not exist or is no longer available.'
+            "
+          >
+            <a appButton [routerLink]="[base, 'rooms']">Back to list</a>
+          </app-page-heading>
+        }
       }
     }
   </div>

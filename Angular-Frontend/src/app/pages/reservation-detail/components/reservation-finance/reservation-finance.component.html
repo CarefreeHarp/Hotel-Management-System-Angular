@@ -1,102 +1,104 @@
-<section class="panel" aria-labelledby="price-title">
-  <h2 id="price-title">Price details</h2>
-  <dl class="price-list">
-    <div>
-      <dt>1 room × {{ detail().nights }} nights</dt>
-      <dd>
-        {{
-          detail().nightlyPrice * detail().nights
-            | currency: "COP" : "symbol" : "1.0-2"
-        }}
-      </dd>
-    </div>
-    @for (charge of detail().charges; track $index) {
+@if (detail; as detail) {
+  <section class="panel" aria-labelledby="price-title">
+    <h2 id="price-title">Price details</h2>
+    <dl class="price-list">
       <div>
-        <dt>
-          {{ charge.concept }} × {{ charge.quantity
-          }}<small
-            >{{
-              charge.unitPrice | currency: "COP" : "symbol" : "1.0-2"
-            }}
-            each</small
-          >
-        </dt>
-        <dd>{{ charge.subtotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+        <dt>1 room × {{ detail.nights }} nights</dt>
+        <dd>
+          {{
+            detail.nightlyPrice * detail.nights
+              | currency: "COP" : "symbol" : "1.0-2"
+          }}
+        </dd>
       </div>
-    } @empty {
-      <div>
-        <dt>Additional services</dt>
-        <dd>None</dd>
-      </div>
-    }
-    <div class="total">
-      <dt>Total</dt>
-      <dd>{{ detail().total | currency: "COP" : "symbol" : "1.0-2" }}</dd>
-    </div>
-    <div>
-      <dt>Paid</dt>
-      <dd>{{ detail().paidTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
-    </div>
-    <div class="balance">
-      <dt>Balance</dt>
-      <dd>{{ detail().balance | currency: "COP" : "symbol" : "1.0-2" }}</dd>
-    </div>
-  </dl>
-</section>
-<section class="panel" aria-labelledby="folio-title">
-  <h2 id="folio-title">Folio & services</h2>
-  @if (detail().folioId; as folioId) {
-    <p class="folio">
-      Folio #{{ folioId }} <span>{{ detail().folioStatus }}</span>
-    </p>
-    <p class="muted">Issued {{ detail().issuedAt | date: "medium" }}</p>
-  } @else {
-    <p class="muted">No folio has been issued.</p>
-  }
-  @for (charge of detail().charges; track $index) {
-    <article class="record">
-      <h3>{{ charge.concept }}</h3>
-      <p class="muted">
-        Quantity: {{ charge.quantity }}
-        @if (charge.itemId) {
-          · Charge #{{ charge.itemId }}
-        }
-      </p>
-      @if (charge.chargedAt) {
-        <p class="muted">{{ charge.chargedAt | date: "medium" }}</p>
+      @for (charge of detail.charges; track $index) {
+        <div>
+          <dt>
+            {{ charge.concept }} × {{ charge.quantity
+            }}<small
+              >{{
+                charge.unitPrice | currency: "COP" : "symbol" : "1.0-2"
+              }}
+              each</small
+            >
+          </dt>
+          <dd>{{ charge.subtotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+        </div>
+      } @empty {
+        <div>
+          <dt>Additional services</dt>
+          <dd>None</dd>
+        </div>
       }
-    </article>
-  } @empty {
-    <p class="muted">No additional services contracted.</p>
-  }
-</section>
-<section class="panel" aria-labelledby="payments-title">
-  <h2 id="payments-title">Payment history</h2>
-  @for (payment of detail().payments; track payment.paymentId) {
-    <article class="record">
-      <header>
-        <h3>Payment #{{ payment.paymentId }}</h3>
-        <span>{{ payment.status }}</span>
-      </header>
-      <strong>{{
-        payment.amount | currency: "COP" : "symbol" : "1.0-2"
-      }}</strong>
-      <dl class="payment-facts">
-        <div>
-          <dt>Date</dt>
-          <dd>{{ payment.paidAt | date: "medium" }}</dd>
-        </div>
-        <div>
-          <dt>Method</dt>
-          <dd>{{ payment.paymentMethod }}</dd>
-        </div>
-        <div>
-          <dt>Processed by</dt>
-          <dd>{{ payment.operatorName }}</dd>
-        </div>
-      </dl>
-    </article>
-  } @empty {
-    <p class="muted">No payments registered.</p>
-  }
-</section>
+      <div class="total">
+        <dt>Total</dt>
+        <dd>{{ detail.total | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+      </div>
+      <div>
+        <dt>Paid</dt>
+        <dd>{{ detail.paidTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+      </div>
+      <div class="balance">
+        <dt>Balance</dt>
+        <dd>{{ detail.balance | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+      </div>
+    </dl>
+  </section>
+  <section class="panel" aria-labelledby="folio-title">
+    <h2 id="folio-title">Folio & services</h2>
+    @if (detail.folioId; as folioId) {
+      <p class="folio">
+        Folio #{{ folioId }} <span>{{ detail.folioStatus }}</span>
+      </p>
+      <p class="muted">Issued {{ detail.issuedAt | date: "medium" }}</p>
+    } @else {
+      <p class="muted">No folio has been issued.</p>
+    }
+    @for (charge of detail.charges; track $index) {
+      <article class="record">
+        <h3>{{ charge.concept }}</h3>
+        <p class="muted">
+          Quantity: {{ charge.quantity }}
+          @if (charge.itemId) {
+            · Charge #{{ charge.itemId }}
+          }
+        </p>
+        @if (charge.chargedAt) {
+          <p class="muted">{{ charge.chargedAt | date: "medium" }}</p>
+        }
+      </article>
+    } @empty {
+      <p class="muted">No additional services contracted.</p>
+    }
+  </section>
+  <section class="panel" aria-labelledby="payments-title">
+    <h2 id="payments-title">Payment history</h2>
+    @for (payment of detail.payments; track payment.paymentId) {
+      <article class="record">
+        <header>
+          <h3>Payment #{{ payment.paymentId }}</h3>
+          <span>{{ payment.status }}</span>
+        </header>
+        <strong>{{
+          payment.amount | currency: "COP" : "symbol" : "1.0-2"
+        }}</strong>
+        <dl class="payment-facts">
+          <div>
+            <dt>Date</dt>
+            <dd>{{ payment.paidAt | date: "medium" }}</dd>
+          </div>
+          <div>
+            <dt>Method</dt>
+            <dd>{{ payment.paymentMethod }}</dd>
+          </div>
+          <div>
+            <dt>Processed by</dt>
+            <dd>{{ payment.operatorName }}</dd>
+          </div>
+        </dl>
+      </article>
+    } @empty {
+      <p class="muted">No payments registered.</p>
+    }
+  </section>
+}

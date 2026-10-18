@@ -1,18 +1,18 @@
 <section
   class="history"
-  [class.staff-history]="staff()"
+  [class.staff-history]="staff"
   aria-labelledby="history-title"
 >
   <h2 id="history-title">
-    {{ staff() ? "Complete Reservation History" : "My reservations" }}
+    {{ staff ? "Complete Reservation History" : "My reservations" }}
   </h2>
-  @if (!staff()) {
+  @if (!staff) {
     <ng-content />
-    @if (!reservations().length) {
+    @if (!reservations.length) {
       <p>No reservations found.</p>
     }
   } @else {
-    @for (detail of reservations(); track detail.reservation.reservationId) {
+    @for (detail of reservations; track detail.reservation.reservationId) {
       <article>
         <header>
           <strong>{{ detail.reservation.reservationCode }}</strong
@@ -20,7 +20,7 @@
         </header>
         <p>
           Created: {{ detail.createdAt | date: "medium" }}
-          @if (staff()) {
+          @if (staff) {
             · Reservation ID #{{ detail.reservation.reservationId }}
           }
         </p>
@@ -35,7 +35,7 @@
                   {{ detail.reservation.roomTypeName }}
                 </dd>
               </div>
-              @if (staff()) {
+              @if (staff) {
                 <div>
                   <dt>Floor / Capacity</dt>
                   <dd>{{ detail.roomFloor }} / {{ detail.maxCapacity }}</dd>
@@ -63,7 +63,7 @@
           </section>
           <section>
             <h3>
-              {{ staff() ? "Folio & Financial Details" : "Pricing Summary" }}
+              {{ staff ? "Folio & Financial Details" : "Pricing Summary" }}
             </h3>
             <dl>
               <div>
@@ -80,7 +80,7 @@
                   {{ detail.total | currency: "COP" : "symbol" : "1.2-2" }}
                 </dd>
               </div>
-              @if (staff()) {
+              @if (staff) {
                 @if (detail.folioId) {
                   <div>
                     <dt>Folio ID / Status</dt>
@@ -94,9 +94,7 @@
                 <div>
                   <dt>Subtotal</dt>
                   <dd>
-                    {{
-                      detail.subtotal | currency: "COP" : "symbol" : "1.2-2"
-                    }}
+                    {{ detail.subtotal | currency: "COP" : "symbol" : "1.2-2" }}
                   </dd>
                 </div>
                 <div>
@@ -113,10 +111,10 @@
             </dl>
           </section>
           <section>
-            <h3>{{ staff() ? "Payment Records" : "Payment Information" }}</h3>
+            <h3>{{ staff ? "Payment Records" : "Payment Information" }}</h3>
             @for (payment of detail.payments; track payment.paymentId) {
               <dl>
-                @if (staff()) {
+                @if (staff) {
                   <div>
                     <dt>Payment / Status</dt>
                     <dd>#{{ payment.paymentId }} · {{ payment.status }}</dd>
@@ -138,7 +136,7 @@
                   <dt>Date</dt>
                   <dd>{{ payment.paidAt | date: "medium" }}</dd>
                 </div>
-                @if (staff()) {
+                @if (staff) {
                   <div>
                     <dt>Processed by</dt>
                     <dd>{{ payment.operatorName }}</dd>
@@ -162,14 +160,14 @@
               </caption>
               <thead>
                 <tr>
-                  @if (staff()) {
+                  @if (staff) {
                     <th scope="col">Item #</th>
                   }
                   <th scope="col">Service / Concept</th>
                   <th scope="col">Qty</th>
                   <th scope="col">Unit Price</th>
                   <th scope="col">Subtotal</th>
-                  @if (staff()) {
+                  @if (staff) {
                     <th scope="col">Charged At</th>
                   }
                 </tr>
@@ -177,7 +175,7 @@
               <tbody>
                 @for (charge of detail.charges; track $index) {
                   <tr>
-                    @if (staff()) {
+                    @if (staff) {
                       <td>{{ charge.itemId ?? "—" }}</td>
                     }
                     <th scope="row">{{ charge.concept }}</th>
@@ -192,7 +190,7 @@
                         charge.subtotal | currency: "COP" : "symbol" : "1.2-2"
                       }}
                     </td>
-                    @if (staff()) {
+                    @if (staff) {
                       <td>{{ charge.chargedAt | date: "medium" }}</td>
                     }
                   </tr>

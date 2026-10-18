@@ -26,14 +26,12 @@
   <nav id="main-nav" class="header-navigation" aria-label="Main navigation">
     <ul class="main-nav">
       <li>
-        <a routerLink="/" [queryParams]="authParams()" (click)="close()"
-          >Home</a
-        >
+        <a routerLink="/" [queryParams]="authParams" (click)="close()">Home</a>
       </li>
       <li>
         <a
           routerLink="/"
-          [queryParams]="authParams()"
+          [queryParams]="authParams"
           fragment="video-section"
           (click)="close()"
           >The hotel</a
@@ -42,7 +40,7 @@
       <li>
         <a
           routerLink="/"
-          [queryParams]="authParams()"
+          [queryParams]="authParams"
           fragment="rooms-section"
           (click)="close()"
           >Suites</a
@@ -51,7 +49,7 @@
       <li>
         <a
           routerLink="/"
-          [queryParams]="authParams()"
+          [queryParams]="authParams"
           fragment="services-section"
           (click)="close()"
           >Services</a
@@ -60,7 +58,7 @@
       <li>
         <a
           routerLink="/services-catalog"
-          [queryParams]="authParams()"
+          [queryParams]="authParams"
           routerLinkActive="active"
           (click)="close()"
           >Service catalog</a

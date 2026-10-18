@@ -1,122 +1,128 @@
-<form class="booking-layout" (ngSubmit)="submit()">
-  <section class="booking-calendar-card" aria-labelledby="dates-title">
-    <header class="dates-summary">
-      <div>
-        <p class="eyebrow">Your stay</p>
-        <h2 id="dates-title">Dates of stay</h2>
-      </div>
-      <dl class="dates-summary__values" aria-live="polite">
+@if (months$ | async; as months) {
+  <form class="booking-layout" (ngSubmit)="submit()">
+    <section class="booking-calendar-card" aria-labelledby="dates-title">
+      <header class="dates-summary">
         <div>
-          <dt>Check-in</dt>
-          <dd>
-            {{ checkIn ? (checkIn | date: "MMM d, yyyy") : "Choose a date" }}
-          </dd>
+          <p class="eyebrow">Your stay</p>
+          <h2 id="dates-title">Dates of stay</h2>
         </div>
-        <div>
-          <dt>Check-out</dt>
-          <dd>
-            {{ checkOut ? (checkOut | date: "MMM d, yyyy") : "Choose a date" }}
-          </dd>
-        </div>
-        <div>
-          <dt>Duration</dt>
-          <dd>{{ nights ? nights + " night(s)" : "—" }}</dd>
-        </div>
-      </dl>
-    </header>
-    <div class="calendar-toolbar">
-      <button
-        class="calendar-arrow"
-        type="button"
-        aria-label="Show previous month"
-        (click)="changeMonth(-1)"
-      >
-        ←
-      </button>
-      <p aria-live="polite">
-        {{ months()[0]?.title }} — {{ months()[1]?.title }}
-      </p>
-      <button
-        class="calendar-arrow"
-        type="button"
-        aria-label="Show next month"
-        (click)="changeMonth(1)"
-      >
-        →
-      </button>
-    </div>
-    <div class="calendar-months">
-      @for (month of months(); track month.title) {
-        <section class="calendar-month" [attr.aria-label]="month.title">
-          <h3>{{ month.title }}</h3>
-          <div class="calendar-weekdays">
-            @for (
-              day of ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-              track day
-            ) {
-              <span>{{ day }}</span>
-            }
+        <dl class="dates-summary__values" aria-live="polite">
+          <div>
+            <dt>Check-in</dt>
+            <dd>
+              {{ checkIn ? (checkIn | date: "MMM d, yyyy") : "Choose a date" }}
+            </dd>
           </div>
-          <div class="calendar-days">
-            @for (day of month.days; track day.value) {
-              <button
-                class="calendar-day"
-                type="button"
-                [disabled]="day.disabled"
-                [attr.aria-label]="day.value"
-                [attr.aria-pressed]="
-                  day.value === checkIn || day.value === checkOut
-                "
-                [class.is-selected]="
-                  day.value === checkIn || day.value === checkOut
-                "
-                [class.is-in-range]="
-                  checkIn &&
-                  checkOut &&
-                  day.value > checkIn &&
-                  day.value < checkOut
-                "
-                (click)="chooseDate(day.value)"
-              >
-                {{ day.label }}
-              </button>
-            }
+          <div>
+            <dt>Check-out</dt>
+            <dd>
+              {{
+                checkOut ? (checkOut | date: "MMM d, yyyy") : "Choose a date"
+              }}
+            </dd>
           </div>
-        </section>
-      }
-    </div>
-    <p class="calendar-hint">Choose a check-in date, then a check-out date.</p>
-  </section>
-  <aside class="guests-panel" aria-labelledby="guests-title">
-    <div>
-      <p class="eyebrow">Reservation details</p>
-      <h2 id="guests-title">Guests</h2>
-    </div>
-    <div class="guest-stepper">
-      <div>
-        <p>Guests</p>
-        <span>How many people will stay?</span>
-      </div>
-      <div class="guest-stepper__controls" aria-label="Guest quantity">
+          <div>
+            <dt>Duration</dt>
+            <dd>{{ nights ? nights + " night(s)" : "—" }}</dd>
+          </div>
+        </dl>
+      </header>
+      <div class="calendar-toolbar">
         <button
+          class="calendar-arrow"
           type="button"
-          aria-label="Decrease guests"
-          [disabled]="guests <= 1"
-          (click)="guests = guests - 1"
+          aria-label="Show previous month"
+          (click)="changeMonth(-1)"
         >
-          −</button
-        ><output aria-live="polite">{{ guests }}</output
-        ><button
+          ←
+        </button>
+        <p aria-live="polite">
+          {{ months[0]?.title }} — {{ months[1]?.title }}
+        </p>
+        <button
+          class="calendar-arrow"
           type="button"
-          aria-label="Increase guests"
-          (click)="guests = guests + 1"
+          aria-label="Show next month"
+          (click)="changeMonth(1)"
         >
-          +
+          →
         </button>
       </div>
-    </div>
-    <button class="booking-submit" type="submit" [disabled]="!valid()">
-      Check availability <span aria-hidden="true">→</span>
-    </button>
-  </aside>
-</form>
+      <div class="calendar-months">
+        @for (month of months; track month.title) {
+          <section class="calendar-month" [attr.aria-label]="month.title">
+            <h3>{{ month.title }}</h3>
+            <div class="calendar-weekdays">
+              @for (
+                day of ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                track day
+              ) {
+                <span>{{ day }}</span>
+              }
+            </div>
+            <div class="calendar-days">
+              @for (day of month.days; track day.value) {
+                <button
+                  class="calendar-day"
+                  type="button"
+                  [disabled]="day.disabled"
+                  [attr.aria-label]="day.value"
+                  [attr.aria-pressed]="
+                    day.value === checkIn || day.value === checkOut
+                  "
+                  [class.is-selected]="
+                    day.value === checkIn || day.value === checkOut
+                  "
+                  [class.is-in-range]="
+                    checkIn &&
+                    checkOut &&
+                    day.value > checkIn &&
+                    day.value < checkOut
+                  "
+                  (click)="chooseDate(day.value)"
+                >
+                  {{ day.label }}
+                </button>
+              }
+            </div>
+          </section>
+        }
+      </div>
+      <p class="calendar-hint">
+        Choose a check-in date, then a check-out date.
+      </p>
+    </section>
+    <aside class="guests-panel" aria-labelledby="guests-title">
+      <div>
+        <p class="eyebrow">Reservation details</p>
+        <h2 id="guests-title">Guests</h2>
+      </div>
+      <div class="guest-stepper">
+        <div>
+          <p>Guests</p>
+          <span>How many people will stay?</span>
+        </div>
+        <div class="guest-stepper__controls" aria-label="Guest quantity">
+          <button
+            type="button"
+            aria-label="Decrease guests"
+            [disabled]="guests <= 1"
+            (click)="guests = guests - 1"
+          >
+            −</button
+          ><output aria-live="polite">{{ guests }}</output
+          ><button
+            type="button"
+            aria-label="Increase guests"
+            (click)="guests = guests + 1"
+          >
+            +
+          </button>
+        </div>
+      </div>
+      <button class="booking-submit" type="submit" [disabled]="!valid()">
+        Check availability <span aria-hidden="true">→</span>
+      </button>
+    </aside>
+  </form>
+}

@@ -60,6 +60,8 @@ flowchart TD
     Services --> API[Spring Boot REST API]
 ```
 
+Frontend reactive state uses RxJS Observables and Subjects, consumed through `async`. Component inputs use `@Input`; the application does not use Angular signals. Route-dependent detail queries cancel superseded reads with `switchMap`.
+
 ## Navigation
 
 Public pages: `/`, `/login`, `/services-catalog`, `/services-catalog/:id` and `/room-types/:id`. Client pages use `/profile?auth=1`, `/profile/edit?auth=1` and `/book-now?auth=1&step=dates`; the URL is the only user context. Staff use `/admin/:adminId` and `/operator/:operatorId`, with no session or role guards. The operator landing route opens their profile with access to the client list.

@@ -1,7 +1,8 @@
+import { ServiceDetailDTO } from '../../models/dto/service-detail-dto';
+import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { Observable, startWith, catchError, map, of, switchMap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -13,6 +14,7 @@ import { basePath } from '../../utils/base-path';
 @Component({
   selector: 'app-services-detail',
   imports: [
+    AsyncPipe,
     ServiceInfoComponent,
     RouterLink,
     AdminHeaderComponent,
@@ -29,38 +31,28 @@ export class ServicesDetailComponent {
   get base(): string {
     return basePath(this.route);
   }
-  loading = true;
-  error = '';
-  readonly item = toSignal(
-    this.route.paramMap.pipe(
-      switchMap((params) => {
-        this.loading = true;
-        this.error = '';
-        const id = Number(params.get('id'));
-        return Number.isSafeInteger(id) && id > 0
-          ? this.service.getById(id).pipe(
-              map((item) => {
-                this.loading = false;
-                return item;
-              }),
-              catchError(() => {
-                this.loading = false;
-                this.error = 'Unable to load this service from the server.';
-                return of(undefined);
-              }),
-            )
-          : of(undefined).pipe(
-              map((item) => {
-                this.loading = false;
-                return item;
-              }),
-            );
-      }),
-    ),
+  readonly state$: Observable<{
+    service?: ServiceDetailDTO;
+    loading: boolean;
+    error: string;
+  }> = this.route.paramMap.pipe(
+    switchMap((params) => {
+      const id = Number(params.get('id'));
+      if (!Number.isSafeInteger(id) || id <= 0)
+        return of({ loading: false, error: '' });
+      return this.service.getById(id).pipe(
+        map((service) => ({ service, loading: false, error: '' })),
+        catchError(() =>
+          of({
+            loading: false,
+            error: 'Unable to load this service from the server.',
+          }),
+        ),
+        startWith({ loading: true, error: '' }),
+      );
+    }),
   );
-  readonly saved = toSignal(
-    this.route.queryParamMap.pipe(
-      map((params) => params.get('saved') === 'true'),
-    ),
+  readonly saved$ = this.route.queryParamMap.pipe(
+    map((params) => params.get('saved') === 'true'),
   );
 }

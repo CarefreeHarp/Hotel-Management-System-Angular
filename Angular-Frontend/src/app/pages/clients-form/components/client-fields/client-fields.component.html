@@ -1,20 +1,82 @@
-<section class="fields-group" aria-labelledby="profile-title">
-  <h2 id="profile-title">Client information</h2>
-  <p class="section-description">Email and national ID must be unique. Profile photo is optional.</p>
-  <div class="form-grid">
-    <app-form-field fieldId="name" label="First name" type="text" [control]="form().controls.name" [maxlength]="60" [submitted]="submitted()" error="Enter a first name with up to 60 characters." />
-    <app-form-field fieldId="lastName" label="Last name" type="text" [control]="form().controls.lastName" [maxlength]="60" [submitted]="submitted()" error="Enter a last name with up to 60 characters." />
-    <app-form-field fieldId="nationalId" label="National ID" type="text" [control]="form().controls.nationalId" [maxlength]="20" [submitted]="submitted()" error="Enter a national ID with up to 20 characters." />
-    <app-form-field fieldId="phone" label="Phone" type="tel" [control]="form().controls.phone" [maxlength]="20" [submitted]="submitted()" error="Enter a phone number with up to 20 characters." />
-    <app-form-field fieldId="email" label="Email address" type="email" [control]="form().controls.email" [maxlength]="100" [submitted]="submitted()" error="Enter a valid email address with up to 100 characters." />
-    <app-form-field fieldId="profilePhoto" label="Profile photo URL" type="url" [control]="form().controls.profilePhoto" [maxlength]="500" [submitted]="submitted()" error="Enter an HTTP or HTTPS URL with up to 500 characters." [required]="false" />
-  </div>
-</section>
-@if (isCreateMode()) {
-  <section class="fields-group" aria-labelledby="password-title">
-    <h2 id="password-title">Account password</h2>
-    <app-form-field fieldId="password" label="Password" type="password" [control]="form().controls.password" [maxlength]="255" [submitted]="submitted()" hint="Between 8 and 255 characters." error="Enter a password with 8 to 255 characters." />
+@if (form; as form) {
+  <section class="fields-group" aria-labelledby="profile-title">
+    <h2 id="profile-title">Client information</h2>
+    <p class="section-description">
+      Email and national ID must be unique. Profile photo is optional.
+    </p>
+    <div class="form-grid">
+      <app-form-field
+        fieldId="name"
+        label="First name"
+        type="text"
+        [control]="form.controls.name"
+        [maxlength]="60"
+        [submitted]="submitted"
+        error="Enter a first name with up to 60 characters."
+      />
+      <app-form-field
+        fieldId="lastName"
+        label="Last name"
+        type="text"
+        [control]="form.controls.lastName"
+        [maxlength]="60"
+        [submitted]="submitted"
+        error="Enter a last name with up to 60 characters."
+      />
+      <app-form-field
+        fieldId="nationalId"
+        label="National ID"
+        type="text"
+        [control]="form.controls.nationalId"
+        [maxlength]="20"
+        [submitted]="submitted"
+        error="Enter a national ID with up to 20 characters."
+      />
+      <app-form-field
+        fieldId="phone"
+        label="Phone"
+        type="tel"
+        [control]="form.controls.phone"
+        [maxlength]="20"
+        [submitted]="submitted"
+        error="Enter a phone number with up to 20 characters."
+      />
+      <app-form-field
+        fieldId="email"
+        label="Email address"
+        type="email"
+        [control]="form.controls.email"
+        [maxlength]="100"
+        [submitted]="submitted"
+        error="Enter a valid email address with up to 100 characters."
+      />
+      <app-form-field
+        fieldId="profilePhoto"
+        label="Profile photo URL"
+        type="url"
+        [control]="form.controls.profilePhoto"
+        [maxlength]="500"
+        [submitted]="submitted"
+        error="Enter an HTTP or HTTPS URL with up to 500 characters."
+        [required]="false"
+      />
+    </div>
   </section>
-} @else {
-  <p class="section-description">Editing keeps the current password.</p>
+  @if (isCreateMode) {
+    <section class="fields-group" aria-labelledby="password-title">
+      <h2 id="password-title">Account password</h2>
+      <app-form-field
+        fieldId="password"
+        label="Password"
+        type="password"
+        [control]="form.controls.password"
+        [maxlength]="255"
+        [submitted]="submitted"
+        hint="Between 8 and 255 characters."
+        error="Enter a password with 8 to 255 characters."
+      />
+    </section>
+  } @else {
+    <p class="section-description">Editing keeps the current password.</p>
+  }
 }
