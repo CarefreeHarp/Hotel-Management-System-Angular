@@ -1,0 +1,135 @@
+<app-header [solid]="true" />
+<main class="reservation-page">
+  <div class="reservation-container">
+    <a
+      appButton
+      variant="secondary"
+      routerLink="/profile"
+      [queryParams]="authParams"
+      >Back to my reservations</a
+    >
+    @if (isLoading) {
+      <p role="status">Loading reservation…</p>
+    } @else if (detail) {
+      @let item = detail;
+      <div class="reservation-layout">
+        <div class="reservation-main">
+          <section
+            class="panel status-panel"
+            aria-labelledby="reservation-title"
+          >
+            <p class="eyebrow">Your reservation</p>
+            <h1 id="reservation-title">
+              {{ item.reservation.status.replace("_", " ").toLowerCase() }}
+            </h1>
+            <dl class="facts">
+              <div>
+                <dt>Booking number</dt>
+                <dd>{{ item.reservation.reservationCode }}</dd>
+              </div>
+              <div>
+                <dt>Reservation ID</dt>
+                <dd>#{{ item.reservation.reservationId }}</dd>
+              </div>
+              <div>
+                <dt>Booking date</dt>
+                <dd>{{ item.createdAt | date: "medium" }}</dd>
+              </div>
+            </dl>
+          </section>
+          <section class="panel hotel-panel" aria-labelledby="hotel-title">
+            @if (item.roomTypeMainPhoto; as photo) {
+              <img
+                appImage
+                imageWidth="640"
+                [src]="photo"
+                [alt]="
+                  item.reservation.roomTypeName ?? 'Reserved accommodation'
+                "
+              />
+            }
+            <div>
+              <p class="eyebrow">Your accommodation</p>
+              <h2 id="hotel-title">Singapore's Atlan Suites branch</h2>
+              <p>{{ item.reservation.roomTypeName }}</p>
+            </div>
+          </section>
+          <section class="panel" aria-labelledby="stay-title">
+            <h2 id="stay-title">Your stay</h2>
+            <dl class="stay-dates">
+              <div>
+                <dt>Check-in</dt>
+                <dd>
+                  <time [attr.datetime]="item.reservation.checkInDate">{{
+                    item.reservation.checkInDate | date: "EEE, MMM d, y"
+                  }}</time>
+                </dd>
+              </div>
+              <div class="nights">
+                <dt>Duration</dt>
+                <dd>
+                  {{ item.nights }} {{ item.nights === 1 ? "night" : "nights" }}
+                </dd>
+              </div>
+              <div>
+                <dt>Check-out</dt>
+                <dd>
+                  <time [attr.datetime]="item.reservation.checkOutDate">{{
+                    item.reservation.checkOutDate | date: "EEE, MMM d, y"
+                  }}</time>
+                </dd>
+              </div>
+            </dl>
+          </section>
+          <section class="panel" aria-labelledby="room-title">
+            <h2 id="room-title">
+              {{ item.reservation.roomTypeName ?? "Room details" }}
+            </h2>
+            <dl class="facts">
+              <div>
+                <dt>Room number</dt>
+                <dd>{{ item.reservation.roomNumber ?? "Not assigned" }}</dd>
+              </div>
+              @if (item.roomFloor !== undefined) {
+                <div>
+                  <dt>Floor</dt>
+                  <dd>{{ item.roomFloor }}</dd>
+                </div>
+              }
+              <div>
+                <dt>Guests</dt>
+                <dd>{{ item.reservation.guestCount }}</dd>
+              </div>
+              @if (item.maxCapacity !== undefined) {
+                <div>
+                  <dt>Maximum capacity</dt>
+                  <dd>{{ item.maxCapacity }}</dd>
+                </div>
+              }
+              <div>
+                <dt>Nightly rate</dt>
+                <dd>
+                  {{ item.nightlyPrice | currency: "COP" : "symbol" : "1.0-2" }}
+                </dd>
+              </div>
+            </dl>
+          </section>
+          <section aria-labelledby="guest-title">
+            <h2 id="guest-title">Guest information</h2>
+            @if (client; as guest) {
+              <app-client-info [client]="guest" />
+            } @else {
+              <p>Guest contact information is unavailable.</p>
+            }
+          </section>
+        </div>
+        <aside aria-label="Reservation pricing and payment history">
+          <app-reservation-finance [detail]="item" />
+        </aside>
+      </div>
+    } @else {
+      <h1>Reservation unavailable</h1>
+      <p role="alert">{{ errorMessage }}</p>
+    }
+  </div>
+</main>

@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.entities.enums.ActivationStatus;
+
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +21,6 @@ public class ServiceListDTO {
     private String category;
     private BigDecimal price;
     private String mainImageUrl;
-    // Indica en qué sección de la pantalla va el servicio: activos o inactivos.
-    private Boolean active;
+    // Disponibilidad para mostrar y contratar el servicio.
+    private ActivationStatus activationStatus;
 }

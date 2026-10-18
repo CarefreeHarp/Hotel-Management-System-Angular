@@ -1,0 +1,56 @@
+<section class="record-grid" aria-label="Records grid">
+  @for (card of cards; track card.id) {
+    <article>
+      @if (card.image) {
+        <a [routerLink]="card.detailUrl" tabindex="-1" aria-hidden="true"
+          ><img
+            appImage
+            imageWidth="640"
+            [src]="card.image"
+            alt=""
+            loading="lazy"
+        /></a>
+      }
+      <header>
+        <small>#{{ card.id }}</small>
+        <h2>
+          <a [routerLink]="card.detailUrl">{{ card.title }}</a>
+        </h2>
+      </header>
+      <dl>
+        @for (field of card.details; track field.label) {
+          <div>
+            <dt>{{ field.label }}</dt>
+            <dd>{{ field.value }}</dd>
+          </div>
+        }
+      </dl>
+      <footer>
+        <a [routerLink]="card.detailUrl">View</a
+        ><a [routerLink]="card.editUrl">Edit</a>
+        @if (card.activationStatus) {
+          <button
+            class="toggle-action"
+            [class.activate]="card.activationStatus === 'INACTIVE'"
+            type="button"
+            (click)="toggleActivation.emit(card.id)"
+          >
+            {{ card.activationStatus === "ACTIVE" ? "Deactivate" : "Activate"
+            }}<span class="sr-only"> {{ card.title }}</span>
+          </button>
+        }
+        @if (card.canDelete) {
+          <button
+            class="danger"
+            type="button"
+            (click)="deleteRecord.emit(card.id)"
+          >
+            Delete<span class="sr-only"> {{ card.title }}</span>
+          </button>
+        }
+      </footer>
+    </article>
+  } @empty {
+    <p>No records match your search.</p>
+  }
+</section>

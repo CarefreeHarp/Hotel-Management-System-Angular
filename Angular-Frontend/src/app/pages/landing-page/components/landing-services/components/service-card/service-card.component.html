@@ -1,0 +1,21 @@
+@if (service; as item) {
+  <article class="service-card">
+    <a
+      [routerLink]="['/services-catalog', item.serviceId]"
+      [queryParams]="{ auth }"
+      ><img
+        appImage
+        imageWidth="640"
+        [src]="item.mainImageUrl"
+        [alt]="item.name"
+        loading="lazy"
+      />
+      <div class="overlay"></div>
+      <header>
+        <p>{{ item.category }}</p>
+        <h3>{{ item.name }}</h3>
+        <p>{{ item.availability }}</p>
+      </header></a
+    >
+  </article>
+}

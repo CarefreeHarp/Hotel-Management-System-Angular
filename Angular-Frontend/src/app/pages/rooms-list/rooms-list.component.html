@@ -1,0 +1,63 @@
+<app-admin-header />
+<main class="room-types-page-main">
+  <span class="page-watermark" aria-hidden="true">Rooms</span>
+  <div class="page-container">
+    <header class="catalog-heading">
+      <div>
+        <p class="eyebrow">Atlan Suites · Management</p>
+        <h1>Rooms</h1>
+      </div>
+      <a appButton [create]="true" [routerLink]="[base, 'rooms', 'new']"
+        >+ Add room</a
+      >
+    </header>
+    @if (message) {
+      <p class="notice" role="status">{{ message }}</p>
+    }
+    @if (error) {
+      <p class="notice is-error" role="alert">{{ error }}</p>
+    }
+    @if (loading) {
+      <p role="status">Loading rooms…</p>
+    } @else {
+      <app-list-controls
+        [state]="listState"
+        [filters]="filters"
+        [sortOptions]="sortOptions"
+        [count]="filteredItems.length"
+        [total]="items.length"
+        (changed)="listState = $event"
+      />
+      <section aria-label="Active rooms">
+        @if (listState.view === "table") {
+          <app-room-table
+            [rooms]="activeItems"
+            (toggleActivation)="toggle($event)"
+          />
+        } @else {
+          <app-record-cards
+            [cards]="cards"
+            (toggleActivation)="toggleById($event)"
+          />
+        }
+      </section>
+      <section class="inactive-section" aria-labelledby="inactive-title">
+        <header class="inactive-heading">
+          <h2 id="inactive-title">Inactive rooms</h2>
+          <p>{{ inactiveItems.length }} inactive records match your filters.</p>
+        </header>
+        @if (listState.view === "table") {
+          <app-room-table
+            [rooms]="inactiveItems"
+            (toggleActivation)="toggle($event)"
+          />
+        } @else {
+          <app-record-cards
+            [cards]="inactiveCards"
+            (toggleActivation)="toggleById($event)"
+          />
+        }
+      </section>
+    }
+  </div>
+</main>

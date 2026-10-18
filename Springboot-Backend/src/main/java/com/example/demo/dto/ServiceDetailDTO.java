@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.entities.enums.ActivationStatus;
+
 import com.example.demo.entities.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class ServiceDetailDTO {
     private String description;
     private BigDecimal price;
     private String category;
-    private Boolean active;
+    private ActivationStatus activationStatus;
     private String summary;
     private String duration;
     private String availability;
@@ -32,7 +34,7 @@ public class ServiceDetailDTO {
 
     public static ServiceDetailDTO from(Service service) {
         return new ServiceDetailDTO(service.getServiceId(), service.getName(), service.getUrlName(),
-                service.getDescription(), service.getPrice(), service.getCategory(), service.getActive(),
+                service.getDescription(), service.getPrice(), service.getCategory(), service.getActivationStatus(),
                 service.getSummary(), service.getDuration(), service.getAvailability(), service.getLocation(),
                 service.getMainImageUrl(), new ArrayList<>(service.getSecondaryImageUrls()));
     }

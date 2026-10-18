@@ -1,6 +1,7 @@
 package com.example.demo.entities;
 
 import jakarta.persistence.*;
+import com.example.demo.entities.enums.ActivationStatus;
 import lombok.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -35,9 +36,11 @@ public class Service {
     @Column(nullable = false, length = 50)
     // Categoría del servicio. Restricciones: No admite null en la base de datos; columna de máximo 50 caracteres.
     private String category;
-    @Column(nullable = false)
-    // Indica si el servicio sigue en el catálogo. Restricciones: No admite null en la base de datos; lo asigna el backend: true al crearlo y false al eliminar un servicio que tiene reservas.
-    private Boolean active;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "activation_status", nullable = false, length = 8)
+    @Builder.Default
+    // Disponibilidad para nuevas reservas. Restricciones: No admite null; enum ACTIVE o INACTIVE; editable en formulario y mediante Activate/Deactivate, sin alterar reservas existentes.
+    private ActivationStatus activationStatus = ActivationStatus.ACTIVE;
     @Column(length = 255)
     // Resumen corto opcional. Restricciones: Opcional; columna de máximo 255 caracteres.
     private String summary;

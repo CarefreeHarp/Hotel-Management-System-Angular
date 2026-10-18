@@ -1,6 +1,7 @@
 package com.example.demo.entities;
 
 import jakarta.persistence.*;
+import com.example.demo.entities.enums.ActivationStatus;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
@@ -34,9 +35,11 @@ public class Room {
     @JoinColumn(name = "room_type_id", nullable = false)
     // Tipo de habitación asignado. Restricciones: Relación obligatoria con un registro existente; los campos adicionales recibidos no modifican ese registro.
     private RoomType roomType;
-    @Column(nullable = false)
-    // Indica si la habitación sigue en uso. Restricciones: No admite null en la base de datos; lo asigna el backend: true al crearla y false al eliminar una habitación que tiene reservas.
-    private Boolean active;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "activation_status", nullable = false, length = 8)
+    @Builder.Default
+    // Disponibilidad para nuevas reservas. Restricciones: No admite null; enum ACTIVE o INACTIVE; editable en formulario y mediante Activate/Deactivate, sin alterar reservas existentes.
+    private ActivationStatus activationStatus = ActivationStatus.ACTIVE;
     @OneToMany(mappedBy = "room")
     @JsonIgnore
     @EqualsAndHashCode.Exclude

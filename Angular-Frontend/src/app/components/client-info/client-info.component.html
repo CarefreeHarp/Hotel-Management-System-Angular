@@ -1,0 +1,39 @@
+@if (client(); as item) {
+  <article
+    class="client-card"
+    [class.staff-card]="staff()"
+    aria-label="Client information"
+  >
+    <header class="client-identity">
+      @if (item.profilePhoto) {
+        <img
+          appImage
+          imageWidth="160"
+          class="profile-photo"
+          [src]="item.profilePhoto"
+          [alt]="item.name + ' ' + item.lastName"
+        />
+      }
+      <div>
+        <h2>{{ item.name }} {{ item.lastName }}</h2>
+        @if (staff()) {
+          <p>Client #{{ item.clientId }}</p>
+        }
+      </div>
+    </header>
+    <dl class="contact-details">
+      <div>
+        <dt>Email</dt>
+        <dd>{{ item.email }}</dd>
+      </div>
+      <div>
+        <dt>Phone</dt>
+        <dd>{{ item.phone }}</dd>
+      </div>
+      <div>
+        <dt>National ID</dt>
+        <dd>{{ item.nationalId }}</dd>
+      </div>
+    </dl>
+  </article>
+}

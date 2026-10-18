@@ -1,0 +1,99 @@
+<app-header [solid]="true" />
+<main class="booking-page" [class.services-step]="step === 'services'">
+  <div
+    class="booking-container"
+    [class.checkout-container]="step === 'checkout'"
+  >
+    <a class="profile-back" [routerLink]="profileUrl" [queryParams]="authParams"
+      >← My profile</a
+    >
+    @if (step === "dates" || step === "room-types") {
+      <header class="booking-intro">
+        <p class="eyebrow">
+          {{ step === "dates" ? "Reservations" : "Step 2 of 4" }}
+        </p>
+        <h1>
+          {{ step === "dates" ? "Choose your dates" : "Choose your room" }}
+        </h1>
+        <p>
+          {{
+            step === "dates"
+              ? "Select when you would like to stay and how many guests will join you."
+              : "These room types are available for the dates you selected."
+          }}
+        </p>
+      </header>
+    }
+    @if (step === "dates") {
+      <ol class="booking-steps" aria-label="Reservation progress">
+        <li class="is-current" aria-current="step"><span>1</span> Dates</li>
+        <li><span>2</span> Choose room</li>
+        <li><span>3</span> Services</li>
+        <li><span>4</span> Payment</li>
+      </ol>
+    }
+    @if (error) {
+      <p role="alert" class="error">{{ error }}</p>
+      <button type="button" (click)="retry()">Retry</button>
+    }
+    @if (loading) {
+      <p role="status">Loading your stay…</p>
+    } @else {
+      @switch (step) {
+        @case ("dates") {
+          <app-booking-dates
+            [stay]="stay"
+            (continueBooking)="chooseDates($event)"
+          />
+        }
+        @case ("room-types") {
+          <app-booking-room-types
+            [types]="types"
+            [stay]="stay"
+            (changeDates)="go('dates')"
+            (selected)="chooseType($event)"
+          />
+        }
+        @case ("services") {
+          @if (draft && quote) {
+            <app-booking-services
+              [services]="catalog"
+              [initialIds]="draft.serviceIds"
+              [quote]="quote"
+              (selected)="chooseServices($event)"
+            />
+          }
+        }
+        @case ("checkout") {
+          @if (quote) {
+            <app-booking-checkout
+              [quote]="quote"
+              [busy]="busy"
+              (payLater)="confirm()"
+              (payNow)="go('payment')"
+            />
+          }
+        }
+        @case ("payment") {
+          @if (quote) {
+            <app-booking-payment
+              [quote]="quote"
+              [busy]="busy"
+              (pay)="confirm($event)"
+              (payLater)="confirm()"
+            />
+          }
+        }
+      }
+    }
+    @if (step !== "dates") {
+      <nav class="booking-actions" aria-label="Booking navigation">
+        <button type="button" [disabled]="busy" (click)="back()">
+          ← Previous step</button
+        ><button type="button" [disabled]="busy" (click)="go('dates')">
+          Change dates
+        </button>
+      </nav>
+    }
+  </div>
+</main>

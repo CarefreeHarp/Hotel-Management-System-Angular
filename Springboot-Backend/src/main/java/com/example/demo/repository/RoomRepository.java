@@ -1,5 +1,7 @@
 package com.example.demo.repository;
 
+import com.example.demo.entities.enums.ActivationStatus;
+
 import com.example.demo.dto.RoomListDTO;
 import com.example.demo.entities.Room;
 import java.util.List;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface RoomRepository extends JpaRepository<Room, Integer> {
     @Query("""
         SELECT room FROM Room room JOIN FETCH room.roomType type
-        WHERE room.active = true AND room.status <> com.example.demo.entities.enums.RoomStatus.MAINTENANCE
+        WHERE room.activationStatus = com.example.demo.entities.enums.ActivationStatus.ACTIVE AND room.status <> com.example.demo.entities.enums.RoomStatus.MAINTENANCE
           AND type.maxCapacity >= :guests
           AND NOT EXISTS (SELECT reservation FROM Reservation reservation
             WHERE reservation.room = room
@@ -31,7 +33,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     Optional<Room> findByNumber(Integer number);
 
     /* Total de habitaciones en uso para el panel. */
-    long countByActiveTrue();
+    long countByActivationStatus(ActivationStatus activationStatus);
 
     /*
      * Tabla de habitaciones: "SELECT new" arma cada RoomListDTO en la misma
@@ -40,7 +42,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
      */
     @Query("""
             SELECT new com.example.demo.dto.RoomListDTO(room.roomId, room.number, room.floor, room.status,
-                    room.active, roomType.name, roomType.mainPhoto)
+                    room.activationStatus, roomType.name, roomType.mainPhoto)
             FROM Room room JOIN room.roomType roomType
             ORDER BY room.number
             """)

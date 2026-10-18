@@ -1,0 +1,104 @@
+:host {
+  display: block;
+  height: 100%;
+}
+.reservation-summary h2 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+}
+.reservation-summary {
+  color: var(--color-ink);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border-left: 1px solid rgba(46, 52, 59, 0.16);
+  background: #e7e9df;
+}
+.reservation-summary h2 {
+  margin-bottom: 1.25rem;
+}
+.reservation-summary figure {
+  margin: 0 0 1.25rem;
+}
+.reservation-summary figure img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+.reservation-summary figcaption {
+  display: grid;
+  gap: 0.18rem;
+  padding: 0.85rem 0;
+}
+.reservation-summary figcaption span {
+  color: var(--color-charcoal);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.reservation-summary figcaption strong {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.summary-stay {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  padding: 1.1rem 0;
+  border-top: 1px solid rgba(46, 52, 59, 0.18);
+  border-bottom: 1px solid rgba(46, 52, 59, 0.18);
+}
+.summary-stay dt,
+.summary-costs dt {
+  color: var(--color-charcoal);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.summary-stay dd,
+.summary-costs dd {
+  margin: 0.2rem 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.summary-costs {
+  display: grid;
+  gap: 0.7rem;
+  padding: 1.2rem 0;
+}
+.summary-costs dt {
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.summary-costs dd {
+  flex-shrink: 0;
+}
+.summary-costs > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.summary-total {
+  margin-top: 0.4rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(46, 52, 59, 0.2);
+}
+.summary-total dt,
+.summary-total dd {
+  color: var(--color-ink);
+  font-size: 1.1rem;
+}
+
+.reservation-summary {
+  height: 100%;
+}
+@media (max-width: 767px) {
+  .reservation-summary {
+    border-left: 0;
+    border-top: 1px solid #2e343b29;
+  }
+}

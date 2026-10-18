@@ -1,0 +1,162 @@
+:host {
+  display: contents;
+}
+.menu-drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(380px, 90vw);
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-left: 0;
+  border-radius: 0 1.75rem 1.75rem 0;
+  background:
+    radial-gradient(ellipse at 0 0, rgba(255, 255, 255, 0.08), transparent 55%),
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0.005)
+    ),
+    rgba(17, 25, 33, 0.18);
+  -webkit-backdrop-filter: blur(14px) saturate(145%);
+  backdrop-filter: blur(14px) saturate(145%);
+  color: var(--color-text-light);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset -1px 0 0 rgba(255, 255, 255, 0.12),
+    12px 0 60px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+
+  opacity: 0;
+  transform: translateX(-100%);
+  transition:
+    transform 0.3s var(--ease),
+    opacity 0.3s var(--ease);
+
+  &[open] {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  &[open].is-closing {
+    opacity: 0;
+    transform: translateX(-100%);
+    // Curva inversa de --ease para recorrer la misma animación hacia atrás.
+    transition-timing-function: cubic-bezier(0.64, 0, 0.78, 0);
+  }
+  &::backdrop {
+    background: rgba(6, 12, 18, 0.12);
+    -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(1px);
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+  }
+  &[open]::backdrop {
+    opacity: 1;
+  }
+  &[open].is-closing::backdrop {
+    opacity: 0;
+    transition-timing-function: cubic-bezier(0.64, 0, 0.78, 0);
+  }
+}
+@starting-style {
+  .menu-drawer[open] {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  .menu-drawer[open]::backdrop {
+    opacity: 0;
+  }
+}
+.menu-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 500;
+  }
+}
+.close-menu {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.04)
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: inherit;
+  cursor: pointer;
+
+  svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+  &:hover {
+    color: var(--color-gold);
+    border-color: var(--color-gold);
+  }
+}
+.main-nav {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 1.5rem 1.25rem;
+  list-style: none;
+
+  a {
+    display: block;
+    padding: 0.9rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.8rem;
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 500;
+    line-height: 1.2;
+    transition:
+      background 0.2s,
+      border-color 0.2s,
+      color 0.2s;
+
+    &:hover,
+    &:focus-visible,
+    &.active {
+      color: #f1d7b5;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.13),
+        rgba(184, 140, 90, 0.1)
+      );
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.13);
+    }
+  }
+}
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .menu-drawer {
+    background: #182635;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-drawer,
+  .menu-drawer::backdrop {
+    transition: none;
+  }
+}

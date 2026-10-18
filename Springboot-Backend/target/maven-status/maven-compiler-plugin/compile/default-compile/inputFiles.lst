@@ -34,6 +34,7 @@
 /home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Room.java
 /home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/RoomType.java
 /home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Service.java
+/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/ActivationStatus.java
 /home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/FolioStatus.java
 /home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/PaymentStatus.java
 /home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/ReservationStatus.java

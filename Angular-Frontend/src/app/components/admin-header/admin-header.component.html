@@ -1,0 +1,91 @@
+<header class="admin-header" (keydown.escape)="closeMenu()">
+  <a
+    class="admin-brand"
+    [routerLink]="base"
+    [attr.aria-label]="isOperator ? 'Operator profile' : 'Admin panel'"
+  >
+    <img
+      loading="eager"
+      appImage
+      imageWidth="240"
+      src="/images/images-utils/hotel-identity/logo-transparent-320.webp"
+      alt="Atlan Suites"
+    />
+  </a>
+
+  <button
+    class="admin-menu-button"
+    type="button"
+    [attr.aria-label]="menuOpen ? 'Close menu' : 'Open menu'"
+    [attr.aria-expanded]="menuOpen"
+    aria-controls="admin-menu"
+    (click)="toggleMenu()"
+  >
+    <span aria-hidden="true"></span><span aria-hidden="true"></span
+    ><span aria-hidden="true"></span>
+  </button>
+
+  <div id="admin-menu" class="admin-menu" [class.is-open]="menuOpen">
+    <nav class="admin-nav" aria-label="Administrative navigation">
+      @if (isOperator) {
+        <a
+          [routerLink]="base"
+          routerLinkActive="is-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMenu()"
+          >My profile</a
+        >
+      } @else {
+        <a
+          [routerLink]="base"
+          routerLinkActive="is-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMenu()"
+          >Admin panel</a
+        >
+      }
+      @for (section of sections; track section.path) {
+        <a
+          [routerLink]="[base, section.path]"
+          routerLinkActive="is-active"
+          (click)="closeMenu()"
+          >{{ section.label }}</a
+        >
+      }
+    </nav>
+
+    @if (!isOperator) {
+      <a
+        class="admin-link"
+        [routerLink]="isOperator ? [base] : [base, 'administrators', adminId]"
+        (click)="closeMenu()"
+        ><svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          width="17"
+          height="17"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+        >
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 22v-3a8 8 0 0 1 16 0v3" /></svg
+        >My profile</a
+      >
+    }
+    <button class="admin-link admin-logout" type="button" (click)="logout()">
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        width="17"
+        height="17"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.7"
+      >
+        <path d="M9 4H4v16h5M14 7l5 5-5 5M8 12h11" /></svg
+      >Log out
+    </button>
+    <a class="admin-exit" routerLink="/" (click)="closeMenu()">Go to hotel </a>
+  </div>
+</header>

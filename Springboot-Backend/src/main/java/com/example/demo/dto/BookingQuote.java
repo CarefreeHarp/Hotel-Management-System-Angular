@@ -4,4 +4,4 @@ import java.time.LocalDate;
 import java.util.List;
 public record BookingQuote(RoomTypeListDTO roomType, LocalDate checkInDate, LocalDate checkOutDate,
     Integer guestCount, long nights, BigDecimal stayTotal, List<ServiceCatalogDTO> services,
-    BigDecimal servicesTotal, BigDecimal subtotal, BigDecimal taxes, BigDecimal total) {}
+    BigDecimal servicesTotal, BigDecimal subtotal, BigDecimal total) {}

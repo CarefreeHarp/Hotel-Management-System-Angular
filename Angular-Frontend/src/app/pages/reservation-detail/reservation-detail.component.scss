@@ -1,0 +1,151 @@
+:host {
+  display: block;
+  color: var(--color-text-light);
+  font-variant-numeric: lining-nums;
+}
+.reservation-page {
+  min-height: 100vh;
+  padding: 9rem clamp(1rem, 4vw, 2rem) 5rem;
+  background:
+    radial-gradient(
+      circle at 92% 0%,
+      rgba(95, 125, 149, 0.18),
+      transparent 26rem
+    ),
+    radial-gradient(
+      circle at 0% 78%,
+      rgba(184, 140, 90, 0.1),
+      transparent 30rem
+    ),
+    #0c1218;
+  color: var(--color-text-light);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.reservation-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+}
+.reservation-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(300px, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  align-items: start;
+}
+.reservation-main {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+}
+aside {
+  min-width: 0;
+}
+.panel {
+  color: var(--color-text-light);
+  padding: 1.6rem;
+  border: 1px solid rgba(184, 140, 90, 0.25);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #1e2c38, #141e28);
+}
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+}
+h1 {
+  font-size: 2.5rem;
+  text-transform: capitalize;
+  color: var(--color-gold);
+}
+h2 {
+  font-size: 1.6rem;
+}
+p {
+  line-height: 1.6;
+}
+.eyebrow {
+  color: var(--color-gold);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  margin: 0 0 0.65rem;
+  opacity: 1;
+}
+.facts,
+.stay-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 2rem;
+  margin: 0;
+}
+.facts > div {
+  flex: 1 1 150px;
+}
+dt {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  margin-bottom: 0.4rem;
+}
+dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+.hotel-panel {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.hotel-panel img {
+  width: 120px;
+  height: 145px;
+  object-fit: cover;
+  border-radius: 0.6rem;
+}
+.hotel-panel p:last-child {
+  color: var(--color-text-muted);
+  margin-bottom: 0;
+}
+.stay-dates {
+  justify-content: space-between;
+}
+.stay-dates dd {
+  font-weight: 600;
+}
+.nights dd {
+  color: var(--color-gold);
+}
+@media (max-width: 950px) {
+  .reservation-layout {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 500px) {
+  .reservation-page {
+    padding-top: 7rem;
+  }
+  .panel {
+    padding: 1.1rem;
+  }
+  .hotel-panel {
+    align-items: start;
+  }
+  .hotel-panel img {
+    width: 80px;
+    height: 110px;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.35rem;
+  }
+  .stay-dates {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

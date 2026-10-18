@@ -1,0 +1,62 @@
+<section class="checkout-card" aria-labelledby="checkout-title">
+  <header class="checkout-intro">
+    <p class="eyebrow">One more choice</p>
+    <h1 id="checkout-title">How would you like to continue?</h1>
+    <p>{{ quote().roomType.name }} · {{ quote().nights }} night(s)</p>
+  </header>
+  <div class="checkout-options">
+    <article class="checkout-option">
+      <p class="eyebrow">Reserve now</p>
+      <h2>Book and pay later</h2>
+      <p>
+        Your reservation will remain in your account. You may pay it in several
+        payments whenever you are ready.
+      </p>
+      <button type="button" [disabled]="busy()" (click)="payLater.emit()">
+        {{ busy() ? "Booking…" : "Book and pay later" }}
+        <span aria-hidden="true">→</span>
+      </button>
+    </article>
+    <article class="checkout-option checkout-option--dark">
+      <p class="eyebrow">Pay today</p>
+      <h2>Pay now</h2>
+      <p>
+        You may pay all or part today. Your remaining balance stays in your
+        account and can be paid in several payments.
+      </p>
+      <ul class="checkout-services">
+        <li class="checkout-stay-cost">
+          <span
+            >Accommodation ·
+            {{
+              quote().roomType.nightlyPrice
+                | currency: "COP" : "symbol" : "1.0-0"
+            }}
+            × {{ quote().nights }} night(s)</span
+          ><strong>{{
+            quote().stayTotal | currency: "COP" : "symbol" : "1.0-2"
+          }}</strong>
+        </li>
+        @for (service of quote().services; track service.serviceId) {
+          <li>
+            <span>{{ service.name }}</span
+            ><strong>{{
+              service.price | currency: "COP" : "symbol" : "1.0-2"
+            }}</strong>
+          </li>
+        }
+      </ul>
+      <strong
+        >Total stay:
+        {{ quote().total | currency: "COP" : "symbol" : "1.0-2" }}</strong
+      ><button
+        class="pay-now"
+        type="button"
+        [disabled]="busy()"
+        (click)="payNow.emit()"
+      >
+        Pay now <span aria-hidden="true">→</span>
+      </button>
+    </article>
+  </div>
+</section>

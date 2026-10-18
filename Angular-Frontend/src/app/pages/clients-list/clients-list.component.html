@@ -1,0 +1,43 @@
+<app-admin-header />
+<main class="room-types-page-main">
+  <span class="page-watermark" aria-hidden="true">Clients</span>
+  <div class="page-container">
+    <header class="catalog-heading">
+      <div>
+        <p class="eyebrow">Atlan Suites · Client management</p>
+        <h1>Clients</h1>
+        <p>View and manage the clients registered at Atlan Suites.</p>
+      </div>
+      <a appButton [create]="true" [routerLink]="[base, 'clients', 'new']"
+        >Create client</a
+      >
+    </header>
+    @if (message) {
+      <p class="notice" role="status">{{ message }}</p>
+    }
+    @if (errorMessage) {
+      <p class="notice is-error" role="alert">{{ errorMessage }}</p>
+    }
+    @if (isLoading) {
+      <p class="state" role="status">Loading clients…</p>
+    } @else if (loadError) {
+      <p class="state is-error" role="alert">{{ loadError }}</p>
+    } @else {
+      <app-list-controls
+        [state]="listState"
+        [filters]="filters"
+        [count]="filteredItems.length"
+        [total]="clients.length"
+        (changed)="listState = $event"
+      />
+      @if (listState.view === "table") {
+        <app-client-table
+          [clients]="filteredItems"
+          (delete)="deleteClient($event)"
+        />
+      } @else {
+        <app-record-cards [cards]="cards" (deleteRecord)="deleteCard($event)" />
+      }
+    }
+  </div>
+</main>

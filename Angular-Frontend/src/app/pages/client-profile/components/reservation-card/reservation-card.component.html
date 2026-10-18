@@ -1,0 +1,170 @@
+<article
+  class="booking-card"
+  (click)="openDetails($event)"
+  [attr.aria-label]="'Reservation ' + detail().reservation.reservationCode"
+>
+  <header class="booking-header">
+    <svg
+      class="bed-icon"
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="currentColor"
+    >
+      <path
+        d="M4 3h16v7H4zm1 1v4h6V4zm8 0v4h6V4zM3 11h18l1 6H2zm-1 7h20v3h-2v-1H4v1H2z"
+      />
+    </svg>
+    <p>
+      Booking No.
+      <span class="booking-code">{{
+        detail().reservation.reservationCode
+      }}</span>
+    </p>
+    <p class="booking-created">
+      Booking Date:
+      <time [attr.datetime]="detail().createdAt">{{
+        detail().createdAt | date: "MMM d, y"
+      }}</time>
+    </p>
+    <span
+      class="booking-status"
+      [class.is-pending]="detail().reservation.status === 'PENDING'"
+      [class.is-cancelled]="detail().reservation.status === 'CANCELLED'"
+      >{{ detail().reservation.status.replace("_", " ").toLowerCase() }}</span
+    >
+  </header>
+  <p class="countdown">
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+    >
+      <rect x="4" y="5" width="16" height="16" rx="2" />
+      <path d="M8 2v6m8-6v6M4 10h16M8 13v4m4-4v4m4-4v4" /></svg
+    >{{ countdown }}
+  </p>
+  <div class="booking-body">
+    @if (detail().roomTypeMainPhoto; as photo) {
+      <img
+        class="room-photo"
+        appImage
+        imageWidth="320"
+        [src]="photo"
+        [alt]="detail().reservation.roomTypeName ?? 'Reserved room type'"
+      />
+    } @else {
+      <div
+        class="photo-placeholder"
+        role="img"
+        aria-label="Room photo unavailable"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          width="36"
+          height="36"
+          fill="currentColor"
+        >
+          <path d="M4 3h16v7H4zm-1 8h18l1 6H2zm-1 7h20v3h-2v-1H4v1H2z" />
+        </svg>
+      </div>
+    }
+    <div class="booking-content">
+      <div class="hotel-heading">
+        <h3>Singapore's Atlan Suites branch</h3>
+        <dl class="booking-price">
+          <div>
+            <dt class="sr-only">Total price</dt>
+            <dd>{{ detail().total | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+          </div>
+          <div class="paid-amount">
+            <dt>Paid:</dt>
+            <dd>
+              {{ detail().paidTotal | currency: "COP" : "symbol" : "1.0-2" }}
+            </dd>
+          </div>
+        </dl>
+      </div>
+      <dl class="stay-details">
+        <div>
+          <dt class="sr-only">Dates of stay</dt>
+          <dd>
+            <strong
+              ><time [attr.datetime]="detail().reservation.checkInDate">{{
+                detail().reservation.checkInDate | date: "MMM d, y"
+              }}</time>
+              –
+              <time [attr.datetime]="detail().reservation.checkOutDate">{{
+                detail().reservation.checkOutDate | date: "MMM d, y"
+              }}</time></strong
+            ><span class="stay-caption"
+              >{{ detail().nights }}
+              {{ detail().nights === 1 ? "night" : "nights" }}</span
+            >
+          </dd>
+        </div>
+        <div>
+          <dt class="sr-only">Room type and services</dt>
+          <dd>
+            <strong>{{
+              detail().reservation.roomTypeName ?? "Unassigned room type"
+            }}</strong
+            ><span class="stay-caption" [title]="services">{{
+              servicesPreview || "No additional services"
+            }}</span>
+          </dd>
+        </div>
+        <div>
+          <dt class="sr-only">Guests</dt>
+          <dd>
+            <strong>{{ guestName() }} + {{ otherGuests }}</strong>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+  <footer class="booking-actions">
+    @if (detail().reservation.status === "CHECKED_OUT") {
+      <div class="review-prompt">
+        <p>RATE YOUR EXPERIENCE</p>
+        <div
+          class="review-stars"
+          role="group"
+          aria-label="Rate your experience"
+        >
+          @for (star of stars; track star) {
+            <button
+              class="star-button"
+              type="button"
+              [class.is-selected]="star <= selectedRating"
+              [attr.aria-label]="
+                'Rate ' + star + (star === 1 ? ' star' : ' stars')
+              "
+              [attr.aria-pressed]="star === selectedRating"
+              (click)="selectedRating = star"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                width="25"
+                height="25"
+              >
+                <path
+                  d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2L5.8 21 7 14.2 2 9.3l6.9-1z"
+                />
+              </svg>
+            </button>
+          }
+        </div>
+      </div>
+    }
+    <button appButton type="button" (click)="openDetails()">Details</button
+    ><button appButton type="button">Book again</button>
+  </footer>
+</article>

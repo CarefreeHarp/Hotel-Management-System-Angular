@@ -1,0 +1,68 @@
+<app-header [solid]="true" />
+<main class="catalog-page">
+  <div class="catalog-page__container">
+    @if (isLoading) {
+      <p role="status">Loading your profile…</p>
+    } @else if (client) {
+      <app-page-heading
+        eyebrow="My profile"
+        [title]="client.name + ' ' + client.lastName"
+        description="Your account details and reservations at Atlan Suites."
+        ><a appButton routerLink="/profile/edit" [queryParams]="authParams"
+          >Edit profile</a
+        ></app-page-heading
+      >
+      @if (saved) {
+        <p class="saved-alert" role="status">Profile saved successfully.</p>
+      }
+      <app-client-info [client]="client" />
+      @if (errorMessage) {
+        <p class="form-alert" role="alert">{{ errorMessage }}</p>
+      }
+      <app-reservation-history [reservations]="filteredReservations">
+        <nav class="reservation-filters" aria-label="Reservation filters">
+          @for (filter of reservationFilters; track filter.status) {
+            <button
+              appButton
+              variant="secondary"
+              type="button"
+              [attr.aria-pressed]="reservationFilter === filter.status"
+              (click)="reservationFilter = filter.status"
+            >
+              {{ filter.label }}
+            </button>
+          }
+        </nav>
+        <div class="reservation-cards">
+          @for (
+            detail of filteredReservations;
+            track detail.reservation.reservationId
+          ) {
+            <app-reservation-card
+              [detail]="detail"
+              [guestName]="client.name + ' ' + client.lastName"
+            />
+          }
+        </div>
+      </app-reservation-history>
+      <footer class="detail-actions">
+        <button
+          appButton
+          variant="secondary"
+          type="button"
+          [disabled]="isDeleting"
+          (click)="deleteAccount()"
+        >
+          {{ isDeleting ? "Deleting…" : "Delete account" }}
+        </button>
+      </footer>
+    } @else {
+      <app-page-heading
+        eyebrow="My profile"
+        title="Profile unavailable"
+        [description]="loadError"
+        ><a appButton routerLink="/login">Sign in</a></app-page-heading
+      >
+    }
+  </div>
+</main>

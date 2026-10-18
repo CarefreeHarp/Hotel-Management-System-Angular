@@ -45,12 +45,6 @@ public class RoomController {
         service.update(id, room);
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar una habitación", description = "Elimina el registro. Responde 409 con el motivo si la habitación tiene reservas o está ocupada.")
-    public void deleteRoom(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
-        service.delete(id);
-    }
-
     @PutMapping("/{id}/deactivate")
     @Operation(summary = "Desactivar una habitación", description = "La habitación se conserva con sus reservas y pasa a la sección de inactivas.")
     public void deactivateRoom(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {

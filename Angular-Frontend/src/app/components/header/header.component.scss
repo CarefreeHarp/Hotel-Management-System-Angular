@@ -1,0 +1,223 @@
+:host {
+  display: block;
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+}
+.site-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  min-height: 104px;
+  padding: 0.65rem var(--pad-inline);
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text-light);
+  transition:
+    background 0.3s,
+    opacity 0.28s,
+    transform 0.28s;
+}
+.site-header.is-scrolled {
+  background: rgba(17, 20, 23, 0.94);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+.site-header.is-hidden {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+.brand-mark {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  display: block;
+  width: 232px;
+  height: 160px;
+  transform: translateX(-50%);
+  transform-origin: top center;
+  transition: transform 0.3s var(--ease);
+}
+.brand-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0) invert(1) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+.is-scrolled .brand-mark {
+  transform: translateX(-50%) scale(0.5);
+}
+.nav-toggle,
+.header-actions {
+  transform: translateY(40px);
+  transition: transform 0.3s var(--ease);
+}
+.is-scrolled .nav-toggle,
+.is-scrolled .header-actions {
+  transform: translateY(0);
+}
+.nav-toggle {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 44px;
+  padding: 0.5rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-gold);
+  }
+}
+.menu-bars {
+  display: grid;
+  gap: 6px;
+  width: 25px;
+
+  span {
+    height: 2px;
+    background: currentColor;
+  }
+}
+.header-actions {
+  grid-column: 3;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+.glass-button {
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: center;
+  white-space: nowrap;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(235, 242, 248, 0.3);
+  background: rgba(105, 123, 140, 0.18);
+  color: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+
+  &:hover {
+    background: rgba(184, 140, 90, 0.3);
+    border-color: var(--color-gold);
+    color: #fff;
+  }
+}
+.user-session-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  background: rgba(17, 20, 23, 0.65);
+  border: 1px solid rgba(184, 140, 90, 0.4);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  text-decoration: none;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--color-gold);
+    background: #27323d;
+  }
+}
+.user-role-badge {
+  background: var(--color-gold);
+  color: var(--color-ink);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+}
+.user-name-text {
+  color: #fff;
+  font-weight: 500;
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.logout-btn {
+  background: rgba(220, 53, 69, 0.2);
+  border-color: rgba(220, 53, 69, 0.4);
+  color: #ffadb3;
+
+  &:hover {
+    background: rgba(220, 53, 69, 0.4);
+    border-color: #dc3545;
+    color: #fff;
+  }
+}
+.drawer-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.85rem;
+  margin: 2rem 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+
+  .glass-button,
+  .user-session-chip {
+    justify-content: center;
+    min-height: 44px;
+  }
+  .user-name-text {
+    max-width: 180px;
+  }
+}
+@media (max-width: 1099px) {
+  .site-header {
+    min-height: 88px;
+    padding: 0.5rem 1.25rem;
+  }
+  .brand-mark {
+    top: 8px;
+    width: 175px;
+    height: 120px;
+  }
+  .is-scrolled .brand-mark {
+    transform: translateX(-50%) scale(0.6);
+  }
+  .nav-toggle {
+    transform: translateY(24px);
+  }
+  .is-scrolled .nav-toggle {
+    transform: translateY(0);
+  }
+}
+@media (max-width: 479px) {
+  .nav-toggle {
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 44px;
+    font-size: 0.75rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .brand-mark,
+  .nav-toggle,
+  .header-actions {
+    transition: none;
+  }
+}

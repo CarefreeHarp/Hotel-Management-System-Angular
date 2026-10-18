@@ -16,7 +16,6 @@ public interface RoomService {
     Room findByNumber(int number);
     void create(Room room);
     void update(int roomId, Room room);
-    void delete(int roomId);
     void activate(int roomId);
     void deactivate(int roomId);
 }

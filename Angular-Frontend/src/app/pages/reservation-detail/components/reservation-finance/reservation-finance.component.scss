@@ -1,0 +1,121 @@
+:host {
+  color: var(--color-text-light);
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+}
+.panel {
+  color: var(--color-text-light);
+  padding: 1.5rem;
+  border: 1px solid rgba(184, 140, 90, 0.25);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #1e2c38, #141e28);
+}
+h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin: 0 0 1.25rem;
+}
+h3 {
+  font-size: 0.9rem;
+  margin: 0;
+}
+p {
+  line-height: 1.5;
+}
+dl,
+dd {
+  margin: 0;
+}
+.price-list {
+  display: grid;
+  gap: 1rem;
+}
+.price-list > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+}
+dt {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+dd {
+  overflow-wrap: anywhere;
+}
+.price-list dd {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+small {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.7rem;
+}
+.total {
+  border-top: 1px solid rgba(184, 140, 90, 0.25);
+  padding-top: 1rem;
+  font-size: 1.2rem;
+}
+.total dd,
+.balance dd,
+.record > strong {
+  color: var(--color-gold);
+}
+.total dt {
+  color: var(--color-text-light);
+}
+.balance {
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(229, 233, 238, 0.1);
+}
+.record {
+  padding: 1rem 0;
+  border-top: 1px solid rgba(229, 233, 238, 0.1);
+}
+.record:last-child {
+  padding-bottom: 0;
+}
+.record header,
+.folio {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.record header {
+  margin-bottom: 0.75rem;
+}
+.record header span,
+.folio span {
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  color: var(--color-sky-deep);
+  background: rgba(175, 207, 227, 0.08);
+  padding: 0.3rem 0.6rem;
+  border-radius: 2rem;
+}
+.muted {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+.payment-facts {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.payment-facts > div {
+  display: grid;
+  gap: 0.2rem;
+}
+.payment-facts dd {
+  font-size: 0.85rem;
+}
+@media (max-width: 500px) {
+  .panel {
+    padding: 1.1rem;
+  }
+}

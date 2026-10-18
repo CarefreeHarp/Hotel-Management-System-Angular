@@ -1,0 +1,130 @@
+:host {
+  display: block;
+}
+.go-back-form {
+  margin-bottom: 1.75rem;
+}
+.go-back {
+  display: inline-flex;
+  border: 0;
+  padding: 1rem 1.35rem;
+  background: var(--color-gold);
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.go-back:hover {
+  background: var(--color-mist);
+  color: var(--color-ink);
+}
+.payment-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(19rem, 0.62fr);
+  align-items: start;
+  background: var(--color-mist);
+  color: var(--color-ink);
+  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.3);
+}
+.payment-form {
+  display: grid;
+  gap: 2rem;
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+.payment-form section {
+  display: grid;
+  gap: 1.15rem;
+}
+.payment-form h2 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+}
+.payment-fields {
+  display: grid;
+  gap: 0.85rem;
+}
+.payment-fields--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.payment-fields label {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--color-charcoal);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.payment-fields input {
+  width: 100%;
+  border: 1px solid rgba(46, 52, 59, 0.25);
+  border-radius: 0;
+  padding: 0.8rem 0.9rem;
+  background: #fff;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 1rem;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.payment-fields input:focus {
+  outline: 2px solid var(--color-sky-deep);
+  outline-offset: 1px;
+}
+.payment-security {
+  color: var(--color-charcoal);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.payment-submit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  border: 0;
+  padding: 1rem 1.2rem;
+  background: var(--color-ink);
+  color: var(--color-mist);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.payment-submit:hover {
+  background: var(--color-gold);
+  color: var(--color-ink);
+}
+.go-back {
+  margin-bottom: 1.75rem;
+}
+@media (max-width: 767px) {
+  .payment-layout {
+    grid-template-columns: 1fr;
+  }
+  .payment-fields--two {
+    grid-template-columns: 1fr;
+  }
+}
+
+.amount-hint {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
+}
+.payment-error {
+  margin: 0;
+  padding: 0.8rem 1rem;
+  background: #fbe5e2;
+  border-left: 3px solid #a42c2c;
+  color: #8b2f2f;
+  font-size: 0.95rem;
+}

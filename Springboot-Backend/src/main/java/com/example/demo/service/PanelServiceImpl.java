@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.entities.enums.ActivationStatus;
+
 import com.example.demo.repository.AdministratorRepository;
 import com.example.demo.repository.ClientRepository;
 import com.example.demo.repository.OperatorRepository;
@@ -46,9 +48,9 @@ public class PanelServiceImpl implements PanelService {
     public Map<String, Long> countRecords() {
         Map<String, Long> counts = new LinkedHashMap<>();
         // Los servicios y habitaciones desactivados no se cuentan, igual que en sus listas.
-        counts.put("services", serviceRepository.countByActiveTrue());
+        counts.put("services", serviceRepository.countByActivationStatus(ActivationStatus.ACTIVE));
         counts.put("roomTypes", roomTypeRepository.count());
-        counts.put("rooms", roomRepository.countByActiveTrue());
+        counts.put("rooms", roomRepository.countByActivationStatus(ActivationStatus.ACTIVE));
         counts.put("clients", clientRepository.count());
         counts.put("administrators", administratorRepository.count());
         counts.put("operators", operatorRepository.count());

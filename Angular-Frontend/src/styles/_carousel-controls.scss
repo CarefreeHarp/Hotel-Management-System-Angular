@@ -1,0 +1,42 @@
+@mixin arrows {
+  .carousel-control-prev,
+  .carousel-control-next {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+  .carousel-control-prev {
+    left: -0.65rem;
+  }
+  .carousel-control-next {
+    right: -0.65rem;
+  }
+  .carousel-control-prev span,
+  .carousel-control-next span {
+    color: var(--carousel-arrow-color, var(--color-text-light));
+    font-size: 2.25rem;
+    line-height: 1;
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
+  }
+  .carousel-control-prev:hover:enabled span,
+  .carousel-control-next:hover:enabled span {
+    color: var(--color-gold);
+    transform: scale(1.14);
+  }
+  .carousel-control-prev:disabled,
+  .carousel-control-next:disabled {
+    cursor: default;
+    opacity: 0.3;
+  }
+}

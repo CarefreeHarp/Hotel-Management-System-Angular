@@ -1,0 +1,50 @@
+<app-admin-header />
+<main class="room-types-page-main">
+  <span class="page-watermark" aria-hidden="true">Operators</span>
+  <div class="page-container">
+    <header class="catalog-heading">
+      <div>
+        <p class="eyebrow">Atlan Suites · Staff management</p>
+        <h1>Operators</h1>
+        <p>View the registered operators and their administrator in charge.</p>
+      </div>
+      <a appButton [create]="true" [routerLink]="[base, 'operators', 'new']"
+        >Create operator</a
+      >
+    </header>
+    @if (message) {
+      <p class="notice" role="status">{{ message }}</p>
+    }
+    @if (errorMessage) {
+      <p class="notice is-error" role="alert">{{ errorMessage }}</p>
+    }
+    @if (isLoading) {
+      <p class="state" role="status">Loading operators…</p>
+    } @else if (loadError) {
+      <p class="state is-error" role="alert">{{ loadError }}</p>
+    } @else {
+      <app-list-controls
+        [state]="listState"
+        [filters]="filters"
+        [count]="filteredItems.length"
+        [total]="operators.length"
+        (changed)="listState = $event"
+      />
+      @if (listState.view === "table") {
+        <app-operator-table
+          [operators]="filteredItems"
+          (delete)="deleteOperator($event)"
+        />
+      } @else {
+        <app-record-cards [cards]="cards" (deleteRecord)="deleteCard($event)" />
+      }
+      @if (operators.length) {
+        <p class="staff-count">
+          {{ operators.length }} registered
+          {{ operators.length === 1 ? "operator" : "operators" }}
+          · <a [routerLink]="[base, 'administrators']">View administrators</a>
+        </p>
+      }
+    }
+  </div>
+</main>

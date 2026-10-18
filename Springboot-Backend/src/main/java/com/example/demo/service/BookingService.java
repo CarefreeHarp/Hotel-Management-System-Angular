@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.entities.enums.ActivationStatus;
+
 import com.example.demo.dto.*;
 import com.example.demo.entities.*;
 import com.example.demo.entities.enums.*;
@@ -51,9 +53,8 @@ public class BookingService {
         BigDecimal stayTotal = type.getNightlyPrice().multiply(BigDecimal.valueOf(nights));
         BigDecimal servicesTotal = selected.stream().map(com.example.demo.entities.Service::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal subtotal = stayTotal.add(servicesTotal);
-        BigDecimal taxes = tax(subtotal);
         return new BookingQuote(typeView(type), checkIn, checkOut, guests, nights, stayTotal,
-            selected.stream().map(this::serviceView).toList(), servicesTotal, subtotal, taxes, subtotal.add(taxes));
+            selected.stream().map(this::serviceView).toList(), servicesTotal, subtotal, subtotal);
     }
 
     public ReservationDetailDTO create(Reservation input) {
@@ -105,7 +106,7 @@ public class BookingService {
         subtotal = subtotal.add(folio == null ? reservation.getServices().stream().map(com.example.demo.entities.Service::getPrice)
             .reduce(BigDecimal.ZERO, BigDecimal::add) : charges.stream().map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
             .reduce(BigDecimal.ZERO, BigDecimal::add));
-        BigDecimal taxes = tax(subtotal); BigDecimal total = subtotal.add(taxes);
+        BigDecimal total = subtotal;
         BigDecimal paid = records.stream().filter(payment -> payment.getStatus() == PaymentStatus.APPROVED)
             .map(Payment::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
         Room room = reservation.getRoom();
@@ -116,9 +117,10 @@ public class BookingService {
         return new ReservationDetailDTO(ReservationDTO.from(reservation), reservation.getClient() == null ? null : reservation.getClient().getClientId(),
             room == null ? null : room.getFloor(), room == null ? null : room.getRoomType().getMaxCapacity(), reservation.getCreatedAt(),
             reservation.getNightlyPrice(), nights, folio == null ? null : folio.getFolioId(), folio == null ? null : folio.getStatus().name(),
-            folio == null ? null : folio.getIssuedAt(), subtotal, taxes, total, paid, total.subtract(paid), chargeViews,
+            folio == null ? null : folio.getIssuedAt(), subtotal, total, paid, total.subtract(paid), chargeViews,
             records.stream().map(payment -> new ReservationDetailDTO.PaymentView(payment.getPaymentId(), payment.getAmount(), payment.getPaymentMethod(),
-                payment.getStatus().name(), payment.getPaidAt(), payment.getOperator() == null ? "Client self-service" : payment.getOperator().getName() + " " + payment.getOperator().getLastName())).toList());
+                payment.getStatus().name(), payment.getPaidAt(), payment.getOperator() == null ? "Client self-service" : payment.getOperator().getName() + " " + payment.getOperator().getLastName())).toList(),
+            room == null ? null : room.getRoomType().getMainPhoto());
     }
 
     private void checkStay(LocalDate checkIn, LocalDate checkOut, Integer guests) {
@@ -127,20 +129,18 @@ public class BookingService {
     }
     private List<com.example.demo.entities.Service> selectedServices(List<Integer> ids) {
         if (ids == null) return List.of();
-        return ids.stream().distinct().map(id -> services.findById(id).filter(service -> Boolean.TRUE.equals(service.getActive()))
+        return ids.stream().distinct().map(id -> services.findById(id).filter(service -> service.getActivationStatus() == ActivationStatus.ACTIVE)
             .orElseThrow(() -> problem("A selected service is no longer available."))).toList();
     }
     private void checkPayment(Payment payment, BigDecimal total) {
-        if (payment.getAmount() == null || payment.getAmount().stripTrailingZeros().scale() > 2 || payment.getAmount().compareTo(BigDecimal.ZERO) <= 0 || payment.getAmount().compareTo(total) > 0)
-            throw problem("Payment must be greater than zero and cannot exceed the total.");
-        if (payment.getCardholderName() == null || payment.getCardholderName().isBlank()
-            || payment.getCardNumber() == null || !payment.getCardNumber().replace(" ", "").matches("[0-9]{16}")
-            || payment.getExpiryDate() == null || !payment.getExpiryDate().matches("(0[1-9]|1[0-2])/[0-9]{2}")
-            || payment.getSecurityCode() == null || !payment.getSecurityCode().matches("[0-9]{3}"))
-            throw problem("Enter a cardholder name, 16-digit card number, MM/YY expiry and 3-digit security code.");
+        if (payment.getAmount() == null || payment.getAmount().compareTo(new BigDecimal("100000")) < 0 || payment.getAmount().compareTo(total) > 0)
+            throw problem("Payment must be at least COP 100,000 and cannot exceed the total.");
+        String expiry = payment.getExpiryDate();
+        String month = expiry == null ? "" : expiry.split("/", -1)[0];
+        if (!month.matches("[0-9]{1,2}") || Integer.parseInt(month) < 1 || Integer.parseInt(month) > 12)
+            throw problem("Enter an expiry month from 1 to 12.");
     }
     private ResponseStatusException problem(String message) { return new ResponseStatusException(HttpStatus.BAD_REQUEST, message); }
-    private BigDecimal tax(BigDecimal subtotal) { return subtotal.multiply(new BigDecimal("0.19")).setScale(2, RoundingMode.HALF_UP); }
     private RoomTypeListDTO typeView(RoomType type) { return new RoomTypeListDTO(type.getRoomTypeId(), type.getName(), type.getDescription(), type.getNightlyPrice(), type.getMaxCapacity(), type.getMainPhoto()); }
     private ServiceCatalogDTO serviceView(com.example.demo.entities.Service service) { return new ServiceCatalogDTO(service.getServiceId(), service.getName(), service.getSummary(), service.getDescription(), service.getCategory(), service.getPrice(), service.getDuration(), service.getAvailability(), service.getLocation(), service.getMainImageUrl()); }
 }

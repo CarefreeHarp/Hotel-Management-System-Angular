@@ -1,0 +1,80 @@
+<section
+  class="experiences-section"
+  id="services-section"
+  aria-labelledby="services-title"
+>
+  <span class="experiences-watermark" aria-hidden="true">Services</span>
+  <div class="experiences-layout">
+    @if (featured; as item) {
+      <a
+        class="experience-feature-card"
+        [routerLink]="['/services-catalog', item.serviceId]"
+        [queryParams]="authParams"
+        ><img
+          appImage
+          imageWidth="960"
+          [src]="item.mainImageUrl"
+          [alt]="item.name"
+        />
+        <div class="experience-feature-overlay"></div>
+        <div class="experience-feature-content">
+          <p class="eyebrow">Featured service</p>
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.availability }}</p>
+        </div></a
+      >
+    }
+    <header class="experience-info">
+      <p class="eyebrow">Dining, wellness and more</p>
+      <h2 class="section-title" id="services-title">Services</h2>
+      <p class="section-text">
+        Discover the services that make your stay at Atlan Suites your own.
+      </p>
+      <a
+        routerLink="/services-catalog"
+        [queryParams]="authParams"
+        class="btn btn-gold explore-services-btn"
+        >View all services
+      </a>
+    </header>
+    <section class="services-carousel" aria-label="Hotel services carousel">
+      @if (loading) {
+        <p role="status">Loading services…</p>
+      } @else if (error) {
+        <p role="alert">{{ error }}</p>
+      } @else if (!services.length) {
+        <p>No services are available at the moment.</p>
+      }
+      <div class="carousel-viewport">
+        <div
+          class="services-track"
+          [style.transform]="transform"
+          [style.--visible]="visibleCount"
+        >
+          @for (item of services; track item.serviceId) {
+            <app-service-card [service]="item" [auth]="authParams.auth" />
+          }
+        </div>
+      </div>
+      <nav class="carousel-controls" aria-label="Service carousel controls">
+        <button
+          class="carousel-control-prev"
+          type="button"
+          aria-label="Previous service"
+          [disabled]="index === 0"
+          (click)="previous()"
+        >
+          <span aria-hidden="true">&lt;</span></button
+        ><button
+          class="carousel-control-next"
+          type="button"
+          aria-label="Next service"
+          [disabled]="index >= maxIndex"
+          (click)="next()"
+        >
+          <span aria-hidden="true">&gt;</span>
+        </button>
+      </nav>
+    </section>
+  </div>
+</section>

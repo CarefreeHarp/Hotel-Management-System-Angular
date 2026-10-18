@@ -1,0 +1,62 @@
+:host {
+  display: block;
+}
+.service-card {
+  height: 350px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #27323d;
+}
+.service-card a {
+  display: block;
+  height: 100%;
+  color: #fff;
+  text-decoration: none;
+}
+.service-card img,
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.overlay {
+  background: linear-gradient(180deg, #11141714, #111417bf);
+}
+header {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+p {
+  margin: 0;
+  font-size: 0.75rem;
+}
+header > p:first-child {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #dfb888;
+}
+h3 {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  margin: 0.35rem 0;
+}
+a:focus-visible {
+  outline: 3px solid #b88c5a;
+  outline-offset: -3px;
+}
+
+.service-card img {
+  transition: transform 0.55s var(--ease);
+}
+.service-card:hover img,
+.service-card:focus-within img {
+  transform: scale(1.07);
+}

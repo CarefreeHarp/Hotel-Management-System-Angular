@@ -1,0 +1,116 @@
+:host {
+  display: block;
+  margin: 1.5rem 0;
+}
+.list-controls {
+  padding: 1.25rem;
+  border: 1px solid #654a3233;
+  background: #ffffff80;
+  border-radius: 0.75rem;
+  color: #27323d;
+}
+form {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.search-field {
+  flex: 1;
+  min-width: 180px;
+}
+input,
+select {
+  min-height: 2.6rem;
+  max-width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #697b8c55;
+  border-radius: 0.4rem;
+  background: #fff;
+  color: #27323d;
+  font: inherit;
+}
+input[type="number"] {
+  width: 140px;
+}
+button {
+  min-height: 2.6rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #697b8c66;
+  background: transparent;
+  border-radius: 999px;
+  color: inherit;
+  cursor: pointer;
+}
+button[aria-pressed="true"] {
+  background: #27323d;
+  color: #fff;
+}
+footer,
+nav {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+footer {
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+p {
+  font-size: 0.8rem;
+  margin: 0;
+}
+@media (max-width: 600px) {
+  label {
+    flex: 1 1 100%;
+  }
+  input[type="number"] {
+    width: 100%;
+  }
+  footer {
+    flex-wrap: wrap;
+  }
+}
+
+nav {
+  padding: 0.25rem;
+  border-radius: 0.55rem;
+  background: #2e343b12;
+  gap: 0.25rem;
+}
+nav button {
+  display: grid;
+  place-items: center;
+  min-height: 2.3rem;
+  width: 2.3rem;
+  padding: 0.4rem;
+  border: 0;
+  border-radius: 0.35rem;
+  color: #697b8c;
+}
+nav button[aria-pressed="true"] {
+  background: #fff;
+  color: #a7743b;
+  box-shadow: 0 2px 6px #11141714;
+}
+nav button:hover {
+  color: #654a32;
+  background: #ffffff99;
+}
+app-price-range {
+  flex: 1;
+  max-width: 360px;
+}
+@media (max-width: 600px) {
+  app-price-range {
+    flex-basis: 100%;
+    max-width: none;
+  }
+}

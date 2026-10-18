@@ -1,0 +1,89 @@
+<section class="catalog-table" aria-label="Hotel rooms">
+  @if (rooms.length) {
+    <div
+      class="table-scroll"
+      role="region"
+      aria-label="Rooms table"
+      tabindex="0"
+    >
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Room</th>
+            <th scope="col">Floor</th>
+            <th scope="col">Room type</th>
+            <th scope="col">Physical status</th>
+            <th scope="col">Activation</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of rooms; track item.roomId) {
+            <tr>
+              <td class="service-id" data-label="ID">#{{ item.roomId }}</td>
+              <th scope="row" class="item-heading">
+                <div class="service-cell">
+                  <img
+                    appImage
+                    imageWidth="160"
+                    [src]="item.mainPhoto"
+                    alt=""
+                    loading="lazy"
+                  />
+                  <a
+                    class="service-name"
+                    [routerLink]="[base, 'rooms', item.roomId]"
+                    >Room {{ item.number }}</a
+                  >
+                </div>
+              </th>
+              <td data-label="Floor">{{ item.floor }}</td>
+              <td data-label="Room type">{{ item.roomTypeName }}</td>
+              <td data-label="Status">
+                <span
+                  class="status"
+                  [class.occupied]="item.status === 'OCCUPIED'"
+                  [class.maintenance]="item.status === 'MAINTENANCE'"
+                  >{{
+                    item.status === "AVAILABLE"
+                      ? "Available"
+                      : item.status === "OCCUPIED"
+                        ? "Occupied"
+                        : "Maintenance"
+                  }}</span
+                >
+              </td>
+              <td data-label="Activation">
+                {{ item.activationStatus === "ACTIVE" ? "Active" : "Inactive" }}
+              </td>
+              <td data-label="Actions">
+                <div class="actions">
+                  <a [routerLink]="[base, 'rooms', item.roomId]">View</a
+                  ><a [routerLink]="[base, 'rooms', item.roomId, 'edit']"
+                    >Edit</a
+                  ><button
+                    type="button"
+                    class="toggle-action"
+                    (click)="toggleActivation.emit(item)"
+                  >
+                    {{
+                      item.activationStatus === "ACTIVE"
+                        ? "Deactivate"
+                        : "Activate"
+                    }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="empty">
+      <h2>No rooms yet</h2>
+      <p>Create a room to get started.</p>
+    </div>
+  }
+</section>

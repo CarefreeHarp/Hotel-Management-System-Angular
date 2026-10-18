@@ -1,0 +1,54 @@
+@use "../../../styles/staff-detail";
+@use "../../../styles/staff-info";
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.profile-photo {
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.form-alert {
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(218, 126, 118, 0.28);
+  border-radius: 0.8rem;
+  color: #ffd6d2;
+  background: rgba(218, 126, 118, 0.1);
+  font-size: 0.82rem;
+}
+
+.reservation-cards {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.reservation-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+
+  button {
+    transition:
+      background 0.2s,
+      border-color 0.2s,
+      transform 0.15s;
+
+    &[aria-pressed="true"] {
+      border-color: var(--color-gold);
+      background: rgba(184, 140, 90, 0.2);
+      color: #e0bd8c;
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+}

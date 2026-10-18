@@ -52,12 +52,6 @@ public class ServiceController {
         service.update(id, hotelService);
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar un servicio", description = "Elimina el registro. Responde 409 con el motivo si el servicio tiene reservas.")
-    public void deleteService(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
-        service.delete(id);
-    }
-
     @PutMapping("/{id}/deactivate")
     @Operation(summary = "Desactivar un servicio", description = "El servicio se conserva con sus reservas, sale del catálogo y pasa a la sección de inactivos.")
     public void deactivateService(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {

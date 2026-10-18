@@ -1,0 +1,107 @@
+:host {
+  display: block;
+}
+.record-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 1.5rem;
+}
+article {
+  overflow: hidden;
+  border: 1px solid #654a322f;
+  border-radius: 1rem;
+  background: #ffffffb3;
+  color: #27323d;
+  box-shadow: 0 12px 35px #1114170d;
+}
+img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+header,
+dl,
+footer {
+  padding: 1.1rem;
+  margin: 0;
+}
+header {
+  padding-bottom: 0;
+}
+small {
+  color: #697b8c;
+}
+h2 {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  margin: 0.3rem 0;
+}
+a {
+  color: inherit;
+}
+dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #697b8c22;
+  font-size: 0.8rem;
+}
+dd {
+  margin: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+dt {
+  color: #697b8c;
+}
+footer {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+footer a,
+button {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: #654a32;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+footer {
+  gap: 0.4rem;
+}
+footer a,
+footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.6rem;
+  background: #fff;
+  border: 1px solid #cbd3da;
+  border-radius: 4px;
+  color: #27323d;
+  font-size: 0.75rem;
+  text-decoration: none;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+footer a:hover,
+footer button:hover {
+  background: #f4eee7;
+  border-color: #b88c5a;
+}
+footer .danger {
+  color: #a42c2c;
+}
+
+footer button.toggle-action {
+  color: #806015;
+}
+footer button.toggle-action.activate {
+  color: #276144;
+}

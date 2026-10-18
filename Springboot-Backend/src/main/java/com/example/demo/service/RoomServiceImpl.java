@@ -1,12 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.entities.enums.ActivationStatus;
+
 import com.example.demo.dto.RoomDetailDTO;
 import com.example.demo.dto.RoomListDTO;
 import com.example.demo.entities.Room;
 import com.example.demo.repository.RoomRepository;
-import com.example.demo.service.interfaces.ReservationService;
 import com.example.demo.service.interfaces.RoomService;
-import com.example.demo.entities.enums.RoomStatus;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,12 +24,10 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     private com.example.demo.service.interfaces.RoomTypeService roomTypeService;
 
-    @Autowired
-    private ReservationService reservationService;
 
     @Override
     public List<RoomListDTO> listRooms() {
-        // Activas e inactivas: la pantalla las separa en dos secciones con el atributo active.
+        // Incluye ambos estados de activación para los filtros de gestión.
         return roomRepository.findAllForList();
     }
 
@@ -54,7 +52,6 @@ public class RoomServiceImpl implements RoomService {
     public void create(Room room) {
         // El id lo genera la base de datos. El formulario nunca debe conservarlo.
         room.setRoomId(null);
-        room.setActive(true);
         checkNumberIsFree(room.getNumber(), null);
         resolveRoomType(room);
         roomRepository.save(room);
@@ -67,46 +64,23 @@ public class RoomServiceImpl implements RoomService {
         checkNumberIsFree(room.getNumber(), registeredRoom.getRoomId());
         resolveRoomType(room);
 
-        // Se conserva el id para actualizar la misma fila si cambia el número, y el
-        // estado activo porque solo lo cambian los botones de activar y desactivar.
+        // Se conserva el id al cambiar el número físico.
         room.setRoomId(registeredRoom.getRoomId());
-        room.setActive(registeredRoom.getActive());
         roomRepository.save(room);
-    }
-
-    @Override
-    public void delete(int roomId) {
-        Room registeredRoom = findById(roomId);
-
-        // El repositorio cuenta las reservas con una consulta. Una habitación con
-        // reservas no se borra, para no perder el historial: se puede desactivar.
-        long reservations = reservationService.countByRoom(registeredRoom.getRoomId());
-        if (reservations > 0) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Room " + registeredRoom.getNumber() + " cannot be deleted because it has " + reservations
-                            + " reservation(s). Deactivate it instead.");
-        }
-
-        if (registeredRoom.getStatus() == RoomStatus.OCCUPIED) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Room " + registeredRoom.getNumber() + " cannot be deleted because it is occupied.");
-        }
-
-        roomRepository.delete(registeredRoom);
     }
 
     @Override
     public void activate(int roomId) {
         Room registeredRoom = findById(roomId);
-        registeredRoom.setActive(true);
+        registeredRoom.setActivationStatus(ActivationStatus.ACTIVE);
         roomRepository.save(registeredRoom);
     }
 
     @Override
     public void deactivate(int roomId) {
-        // La habitación se conserva con sus reservas; solo pasa a la sección de inactivas.
+        // Conserva el estado físico y las reservas existentes.
         Room registeredRoom = findById(roomId);
-        registeredRoom.setActive(false);
+        registeredRoom.setActivationStatus(ActivationStatus.INACTIVE);
         roomRepository.save(registeredRoom);
     }
 

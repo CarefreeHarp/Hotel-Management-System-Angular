@@ -32,7 +32,7 @@ public class Payment {
     // Operador opcional; null indica pago de autoservicio del cliente.
     private Operator operator;
     @Column(nullable = false, precision = 10, scale = 2)
-    // Importe obligatorio decimal(10,2); positivo y como máximo el total de la reserva.
+    // Importe obligatorio decimal(10,2); el pago inicial exige mínimo COP 100.000 y como máximo el total de la reserva.
     private BigDecimal amount;
     @Column(name = "payment_method", nullable = false, length = 30)
     // Método obligatorio de hasta 30 caracteres; el pago inicial usa CARD.

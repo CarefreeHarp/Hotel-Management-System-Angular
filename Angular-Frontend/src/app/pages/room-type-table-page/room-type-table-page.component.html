@@ -1,0 +1,42 @@
+@if (adminArea) {
+  <app-admin-header />
+} @else {
+  <app-header [solid]="true" />
+}
+
+<main class="room-types-page-main">
+  <!-- Subtle decorative watermark in background matching landing page style -->
+  <span class="page-watermark" aria-hidden="true">Room<br />Types</span>
+
+  <div class="page-container">
+    <header class="catalog-heading">
+      <h1>Room types</h1>
+      <a appButton [create]="true" [routerLink]="[base, 'room-types', 'new']"
+        >+ Add Room Type</a
+      >
+    </header>
+
+    <app-room-type-table
+      [roomTypes]="roomTypes"
+      (delete)="handleDelete($event)"
+    />
+  </div>
+</main>
+
+@if (toastMessage) {
+  <aside class="toast-notification" role="status" aria-live="polite">
+    <div class="toast-indicator"></div>
+    <div class="toast-text-content">
+      <span class="toast-title">Catalog Updated</span>
+      <span class="toast-message">{{ toastMessage }}</span>
+    </div>
+    <button
+      type="button"
+      class="btn-dismiss-toast"
+      (click)="dismissToast()"
+      aria-label="Close notification"
+    >
+      ✕
+    </button>
+  </aside>
+}

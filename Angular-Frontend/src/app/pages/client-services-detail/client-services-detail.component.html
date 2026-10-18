@@ -1,0 +1,205 @@
+<app-header [solid]="true" />
+
+<main class="client-detail-page">
+  @if (isLoading()) {
+    <div class="loading-wrapper" role="status">
+      <div class="spinner"></div>
+      <p>Loading service information...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="error-wrapper">
+      <div class="error-card">
+        <p class="eyebrow">Atlan Suites</p>
+        <h1>Service unavailable</h1>
+        <p>{{ errorMessage() }}</p>
+        <a
+          appButton
+          [queryParams]="authParams"
+          [routerLink]="[base, 'services-catalog']"
+          >Back to the service catalog</a
+        >
+      </div>
+    </div>
+  } @else {
+    @if (service(); as item) {
+      <!-- Breadcrumb & Back Navigation -->
+      <div class="nav-bar-wrapper">
+        <div class="nav-container">
+          <a
+            [queryParams]="authParams"
+            [routerLink]="[base, 'services-catalog']"
+            class="back-link"
+          >
+            <span aria-hidden="true">←</span> Service catalog
+          </a>
+          <span class="nav-separator">/</span>
+          <span class="current-item">{{ item.name }}</span>
+        </div>
+      </div>
+
+      <!-- Hero Banner with Service Photography -->
+      <section class="service-hero">
+        <div class="hero-image-wrap">
+          <img
+            appImage
+            imageWidth="960"
+            [src]="item.mainImageUrl"
+            [alt]="item.name"
+            class="hero-img"
+          />
+          <div class="hero-overlay"></div>
+        </div>
+
+        <div class="hero-content">
+          <div class="hero-meta-badge">
+            <span class="category-tag">{{ item.category }}</span>
+            @if (item.activationStatus === "ACTIVE") {
+              <span class="status-tag">Available to guests</span>
+            }
+          </div>
+
+          <h1 class="service-title">{{ item.name }}</h1>
+
+          @if (item.summary) {
+            <p class="service-summary">{{ item.summary }}</p>
+          }
+
+          <div class="hero-price-badge">
+            <span class="price-eyebrow">Price per service</span>
+            <span class="price-val">COP ${{ formatPrice(item.price) }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Content Area -->
+      <div class="detail-container">
+        <div class="detail-layout">
+          <!-- Main Service Description & Features -->
+          <article class="detail-main">
+            <!-- Quick Info Cards -->
+            <section class="quick-info-grid" aria-label="Service quick facts">
+              @if (item.duration) {
+                <div class="quick-info-item">
+                  <svg
+                    class="info-icon"
+                    viewBox="0 0 24 24"
+                    width="28"
+                    height="28"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  <div>
+                    <span class="info-label">Duration</span>
+                    <strong class="info-value">{{ item.duration }}</strong>
+                  </div>
+                </div>
+              }
+              @if (item.location) {
+                <div class="quick-info-item">
+                  <svg
+                    class="info-icon"
+                    viewBox="0 0 24 24"
+                    width="28"
+                    height="28"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                    ></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <div>
+                    <span class="info-label">Location</span>
+                    <strong class="info-value">{{ item.location }}</strong>
+                  </div>
+                </div>
+              }
+              @if (item.availability) {
+                <div class="quick-info-item">
+                  <svg
+                    class="info-icon"
+                    viewBox="0 0 24 24"
+                    width="28"
+                    height="28"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <rect
+                      x="3"
+                      y="4"
+                      width="18"
+                      height="18"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  <div>
+                    <span class="info-label">Schedule</span>
+                    <strong class="info-value">{{ item.availability }}</strong>
+                  </div>
+                </div>
+              }
+            </section>
+
+            <!-- Full Description -->
+            <section class="description-section">
+              <h2 class="section-heading">About this service</h2>
+              <div class="description-text">
+                @for (
+                  paragraph of item.description.split("\n\n");
+                  track paragraph
+                ) {
+                  <p>{{ paragraph }}</p>
+                }
+              </div>
+            </section>
+
+            <app-service-gallery
+              [name]="item.name"
+              [mainPhoto]="item.mainImageUrl"
+              [photos]="item.secondaryImageUrls"
+            />
+          </article>
+
+          <aside class="detail-sidebar">
+            <div class="booking-card">
+              <div class="booking-card__header">
+                <p class="eyebrow">Atlan Suites</p>
+                <h2 class="booking-card__title">Enjoy it during your stay</h2>
+              </div>
+              <div class="booking-card__body">
+                <a
+                  appButton
+                  routerLink="/book-now"
+                  [queryParams]="{ auth: authParams.auth, step: 'dates' }"
+                  >Book a room with us to try it out!</a
+                >
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    }
+  }
+</main>
+
+<app-footer />

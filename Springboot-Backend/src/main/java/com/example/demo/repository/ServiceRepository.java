@@ -1,5 +1,7 @@
 package com.example.demo.repository;
 
+import com.example.demo.entities.enums.ActivationStatus;
+
 import com.example.demo.dto.ServiceCatalogDTO;
 import com.example.demo.dto.ServiceListDTO;
 import com.example.demo.entities.Service;
@@ -22,12 +24,12 @@ public interface ServiceRepository extends JpaRepository<Service, Integer> {
     Optional<Service> findByUrlNameIgnoreCase(String urlName);
 
     /* Total de servicios del catálogo para el panel. */
-    long countByActiveTrue();
+    long countByActivationStatus(ActivationStatus activationStatus);
 
     /* Tabla de servicios del panel: activos e inactivos, sin descripción ni galería. */
     @Query("""
             SELECT new com.example.demo.dto.ServiceListDTO(service.serviceId, service.name, service.summary,
-                    service.category, service.price, service.mainImageUrl, service.active)
+                    service.category, service.price, service.mainImageUrl, service.activationStatus)
             FROM Service service
             ORDER BY service.serviceId
             """)
@@ -39,7 +41,7 @@ public interface ServiceRepository extends JpaRepository<Service, Integer> {
                     service.description, service.category, service.price, service.duration,
                     service.availability, service.location, service.mainImageUrl)
             FROM Service service
-            WHERE service.active = true
+            WHERE service.activationStatus = com.example.demo.entities.enums.ActivationStatus.ACTIVE
             ORDER BY service.serviceId
             """)
     List<ServiceCatalogDTO> findAllForCatalog();

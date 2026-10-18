@@ -1,0 +1,237 @@
+<section class="table-section-wrapper">
+  <app-list-controls
+    [state]="listState"
+    [filters]="filters"
+    [sortOptions]="sortOptions"
+    [priceFloor]="priceFloor"
+    [priceLimit]="priceLimit"
+    [count]="filteredRoomTypes.length"
+    [total]="roomTypes.length"
+    (changed)="listState = $event"
+  />
+  <!-- TABLE VIEW -->
+  @if (viewMode === "table" && filteredRoomTypes.length > 0) {
+    <div class="table-card-container">
+      <div class="table-responsive">
+        <table class="luxury-table">
+          <thead>
+            <tr>
+              <th class="col-id"># ID</th>
+              <th class="col-preview">Preview</th>
+              <th class="col-name">Room Type &amp; Details</th>
+              <th class="col-capacity">Max Guests</th>
+              <th class="col-price">Nightly Rate</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of filteredRoomTypes; track item.roomTypeId) {
+              <tr class="table-row">
+                <td class="col-id">
+                  <span class="id-badge">#{{ item.roomTypeId }}</span>
+                </td>
+                <td class="col-preview">
+                  <div class="room-thumb-wrapper">
+                    <img
+                      appImage
+                      imageWidth="400"
+                      [src]="item.mainPhoto"
+                      [alt]="item.name"
+                      class="room-thumb-img"
+                      loading="lazy"
+                    />
+                  </div>
+                </td>
+                <td class="col-name">
+                  <div class="room-info-cell">
+                    <a
+                      [routerLink]="[base, 'room-types', item.roomTypeId]"
+                      class="room-name-link"
+                    >
+                      {{ item.name }}
+                    </a>
+                    <p class="room-desc-snippet">{{ item.description }}</p>
+                  </div>
+                </td>
+                <td class="col-capacity">
+                  <div class="capacity-badge">
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="15"
+                      height="15"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+                      ></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span
+                      >{{ item.maxCapacity }}
+                      {{ item.maxCapacity === 1 ? "Guest" : "Guests" }}</span
+                    >
+                  </div>
+                </td>
+                <td class="col-price">
+                  <div class="price-wrapper">
+                    <span class="currency-tag">COP</span>
+                    <span class="price-num"
+                      >${{ item.nightlyPrice.toLocaleString("en-US") }}</span
+                    >
+                    <span class="price-period">/ night</span>
+                  </div>
+                </td>
+                <td class="col-actions">
+                  <div class="actions">
+                    <a [routerLink]="[base, 'room-types', item.roomTypeId]"
+                      >View<span class="sr-only"> {{ item.name }}</span></a
+                    >
+                    @if (adminArea) {
+                      <a
+                        [routerLink]="[
+                          base,
+                          'room-types',
+                          item.roomTypeId,
+                          'edit',
+                        ]"
+                        >Edit<span class="sr-only"> {{ item.name }}</span></a
+                      >
+                      <button
+                        type="button"
+                        (click)="delete.emit(item.roomTypeId)"
+                      >
+                        Delete<span class="sr-only"> {{ item.name }}</span>
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <!-- CARDS / GRID VIEW -->
+  @if (viewMode === "cards" && filteredRoomTypes.length > 0) {
+    <div class="cards-grid">
+      @for (item of filteredRoomTypes; track item.roomTypeId) {
+        <article class="suite-catalog-card">
+          <div class="card-media-wrapper">
+            <img
+              appImage
+              imageWidth="400"
+              [src]="item.mainPhoto"
+              [alt]="item.name"
+              class="card-image"
+              loading="lazy"
+            />
+            <div class="card-badge-id">#{{ item.roomTypeId }}</div>
+            <div class="card-badge-capacity">
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>{{ item.maxCapacity }} Guests</span>
+            </div>
+          </div>
+
+          <div class="card-content">
+            <div class="card-header-row">
+              <h3 class="card-suite-name">
+                <a [routerLink]="[base, 'room-types', item.roomTypeId]">{{
+                  item.name
+                }}</a>
+              </h3>
+            </div>
+            <p class="card-description">{{ item.description }}</p>
+
+            <div class="card-footer-row">
+              <div class="card-price-block">
+                <span class="card-price-label">Nightly Rate</span>
+                <div class="card-price-val">
+                  COP ${{ item.nightlyPrice.toLocaleString("en-US") }}
+                </div>
+              </div>
+
+              <div class="actions">
+                <a [routerLink]="[base, 'room-types', item.roomTypeId]"
+                  >View<span class="sr-only"> {{ item.name }}</span></a
+                >
+                @if (adminArea) {
+                  <a
+                    [routerLink]="[base, 'room-types', item.roomTypeId, 'edit']"
+                    >Edit<span class="sr-only"> {{ item.name }}</span></a
+                  >
+                  <button type="button" (click)="delete.emit(item.roomTypeId)">
+                    Delete<span class="sr-only"> {{ item.name }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+
+  <!-- EMPTY STATE -->
+  @if (filteredRoomTypes.length === 0) {
+    <div class="empty-state-container">
+      <div class="empty-icon-circle">
+        <svg
+          viewBox="0 0 24 24"
+          width="36"
+          height="36"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+      <h3 class="empty-title">No Room Types Found</h3>
+      <p class="empty-text">
+        No room types matched your current search or filter criteria. Try
+        resetting the filters{{
+          adminArea ? " or creating a new room type" : ""
+        }}.
+      </p>
+      <div class="empty-actions">
+        <button
+          class="btn-reset-filters-large"
+          type="button"
+          (click)="resetFilters()"
+        >
+          Clear All Filters
+        </button>
+        @if (adminArea) {
+          <a
+            [routerLink]="[base, 'room-types', 'new']"
+            appButton
+            [create]="true"
+          >
+            + Add New Room Type
+          </a>
+        }
+      </div>
+    </div>
+  }
+</section>

@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.entities.enums.ActivationStatus;
+
 import com.example.demo.entities.enums.RoomStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,8 +20,8 @@ public class RoomListDTO {
     private Integer number;
     private Integer floor;
     private RoomStatus status;
-    // Indica en qué sección de la pantalla va la habitación: activas o inactivas.
-    private Boolean active;
+    // Disponibilidad independiente del estado físico.
+    private ActivationStatus activationStatus;
     private String roomTypeName;
     private String mainPhoto;
 }

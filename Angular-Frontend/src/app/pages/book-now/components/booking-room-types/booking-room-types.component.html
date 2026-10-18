@@ -1,0 +1,77 @@
+<dl class="stay-summary" aria-label="Selected stay">
+  <div>
+    <dt>Check-in</dt>
+    <dd>{{ stay().checkIn | date: "MMM d, yyyy" }}</dd>
+  </div>
+  <div>
+    <dt>Check-out</dt>
+    <dd>{{ stay().checkOut | date: "MMM d, yyyy" }}</dd>
+  </div>
+  <div>
+    <dt>Guests</dt>
+    <dd>{{ stay().guests }}</dd>
+  </div>
+  <div>
+    <button class="change-dates" type="button" (click)="changeDates.emit()">
+      Change booking details
+    </button>
+  </div>
+</dl>
+<section class="rooms-section" aria-labelledby="available-rooms-title">
+  <h2 id="available-rooms-title">Available room types</h2>
+  <div class="rooms-grid">
+    @for (type of types(); track type.roomTypeId) {
+      <article class="room-card">
+        <figure class="room-gallery">
+          <img
+            class="room-gallery__main"
+            appImage
+            imageWidth="960"
+            [src]="type.mainPhoto"
+            [alt]="type.name"
+            loading="lazy"
+          />
+          <figcaption>{{ type.name }}</figcaption>
+        </figure>
+        <section class="room-card__details">
+          <p class="eyebrow">Rooms &amp; suites</p>
+          <h3>{{ type.name }}</h3>
+          <p class="room-description">{{ type.description }}</p>
+          <dl class="room-features">
+            <div>
+              <dt>Capacity</dt>
+              <dd>Up to {{ type.maxCapacity }} guests</dd>
+            </div>
+            <div>
+              <dt>Stay</dt>
+              <dd>Available for your dates</dd>
+            </div>
+          </dl>
+        </section>
+        <aside class="room-card__rate" aria-label="Room rate">
+          <p>From</p>
+          <p class="rate-value">
+            <span class="rate-amount">{{
+              type.nightlyPrice | currency: "COP" : "symbol" : "1.0-0"
+            }}</span
+            ><span class="rate-period">/ night</span>
+          </p>
+          <p class="rate-note">
+            Your total includes accommodation and selected services.
+          </p>
+          <button
+            class="choose-room"
+            type="button"
+            (click)="selected.emit(type.roomTypeId)"
+          >
+            Select room type <span aria-hidden="true">→</span>
+          </button>
+        </aside>
+      </article>
+    } @empty {
+      <p class="empty-rooms" role="status">
+        No rooms are available for these dates. Please choose a different stay.
+      </p>
+    }
+  </div>
+</section>

@@ -18,7 +18,6 @@ public interface ServiceService {
     Service findById(Integer serviceId);
     void create(Service service);
     void update(Integer serviceId, Service service);
-    void delete(Integer serviceId);
     void activate(Integer serviceId);
     void deactivate(Integer serviceId);
 }

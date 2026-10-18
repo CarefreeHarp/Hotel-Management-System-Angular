@@ -1,0 +1,94 @@
+<button
+  class="go-back"
+  type="button"
+  [disabled]="busy()"
+  (click)="payLater.emit()"
+>
+  <span aria-hidden="true">←</span> Or book and pay later
+</button>
+<header class="booking-intro">
+  <p class="eyebrow">Step 4 of 4</p>
+  <h1>Payment</h1>
+  <p>Review your stay and enter your payment details.</p>
+</header>
+<div class="payment-layout">
+  <form
+    class="payment-form"
+    (ngSubmit)="submit()"
+    aria-labelledby="payment-details-title"
+  >
+    <section>
+      <h2 id="payment-details-title">Choose your payment</h2>
+      <div class="payment-fields">
+        <label
+          >Amount to pay today
+          <span class="amount-hint"
+            >(you can edit this field and pay the rest later)</span
+          ><input
+            type="number"
+            name="amount"
+            [(ngModel)]="amount"
+            min="100000"
+            [max]="quote().total"
+            step="any"
+            required
+        /></label>
+      </div>
+      <p class="payment-security">
+        You can pay all or part of your stay total today.
+      </p>
+    </section>
+    <section>
+      <h2>Card details</h2>
+      <div class="payment-fields">
+        <label
+          >Name on card<input
+            name="cardholderName"
+            [(ngModel)]="cardholderName"
+            autocomplete="cc-name" /></label
+        ><label
+          >Card number<input
+            #cardNumberInput
+            name="cardNumber"
+            [ngModel]="cardNumber"
+            (input)="formatCardNumber(cardNumberInput)"
+            (keydown.backspace)="
+              eraseSeparator($event, cardNumberInput, 'card')
+            "
+            inputmode="numeric"
+            autocomplete="cc-number"
+            placeholder="0000 0000 0000 0000"
+        /></label>
+      </div>
+      <div class="payment-fields payment-fields--two">
+        <label
+          >Expiry date<input
+            #expiryInput
+            name="expiryDate"
+            [ngModel]="expiryDate"
+            (input)="formatExpiry(expiryInput)"
+            (keydown.backspace)="eraseSeparator($event, expiryInput, 'expiry')"
+            inputmode="numeric"
+            autocomplete="cc-exp"
+            placeholder="MM/YY" /></label
+        ><label
+          >Security code<input
+            name="securityCode"
+            [(ngModel)]="securityCode"
+            type="text"
+            inputmode="numeric"
+            autocomplete="cc-csc"
+            placeholder="CVV"
+        /></label>
+      </div>
+    </section>
+    @if (submitted && validationMessage) {
+      <p class="payment-error" role="alert">{{ validationMessage }}</p>
+    }
+    <button class="payment-submit" type="submit" [disabled]="busy()">
+      {{ busy() ? "Processing…" : "Confirm and pay" }}
+      <span>{{ amount | currency: "COP" : "symbol" : "1.0-2" }}</span>
+    </button>
+  </form>
+  <app-booking-reservation-summary [quote]="quote()" />
+</div>

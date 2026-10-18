@@ -1,0 +1,103 @@
+<section class="list-controls" aria-label="Search and display controls">
+  <form (submit)="$event.preventDefault()">
+    <label class="search-field"
+      >Search<input
+        type="search"
+        name="search"
+        [ngModel]="state.search"
+        (ngModelChange)="update({ search: $event })"
+        placeholder="Search records…"
+    /></label>
+    @for (item of filters; track item.key) {
+      <label
+        >{{ item.label }}
+        @if (item.type === "number") {
+          <input
+            type="number"
+            min="0"
+            [name]="item.key"
+            [ngModel]="state.filters[item.key] ?? ''"
+            (ngModelChange)="filter(item.key, $event)"
+          />
+        } @else {
+          <select
+            [name]="item.key"
+            [ngModel]="state.filters[item.key] ?? ''"
+            (ngModelChange)="filter(item.key, $event)"
+          >
+            <option value="">All</option>
+            @for (option of item.options; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        }
+      </label>
+    }
+    @if (priceLimit > 0) {
+      <app-price-range
+        [floor]="priceFloor"
+        [limit]="priceLimit"
+        [minimum]="minimumPrice"
+        [maximum]="maximumPrice"
+        (changed)="prices($event)"
+      />
+    }
+    <label
+      >Order by<select
+        name="sort"
+        [ngModel]="state.sort"
+        (ngModelChange)="update({ sort: $event })"
+      >
+        @for (option of sortOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select></label
+    ><button type="button" (click)="reset()">Clear</button>
+  </form>
+  <footer>
+    <p role="status">{{ count }} of {{ total }} results</p>
+    <nav aria-label="Display mode">
+      <button
+        type="button"
+        aria-label="Table view"
+        title="Table view"
+        [attr.aria-pressed]="state.view === 'table'"
+        (click)="update({ view: 'table' })"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+        >
+          <rect x="3" y="4" width="18" height="16" rx="2" />
+          <path d="M3 9h18M3 14h18M9 4v16" />
+        </svg></button
+      ><button
+        type="button"
+        aria-label="Grid view"
+        title="Grid view"
+        [attr.aria-pressed]="state.view === 'cards'"
+        (click)="update({ view: 'cards' })"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+        >
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
+      </button>
+    </nav>
+  </footer>
+</section>

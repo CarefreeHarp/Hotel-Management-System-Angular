@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Tarjeta del catálogo de servicios que ven los huéspedes. Solo se consultan
- * los servicios activos, así que no lleva el atributo active ni la galería.
+ * los servicios activos, así que no lleva el estado interno de activación ni la galería.
  */
 @Data
 @NoArgsConstructor

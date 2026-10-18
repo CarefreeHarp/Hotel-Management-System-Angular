@@ -1,11 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.entities.enums.ActivationStatus;
+
 import com.example.demo.dto.ServiceCatalogDTO;
 import com.example.demo.dto.ServiceDetailDTO;
 import com.example.demo.dto.ServiceListDTO;
 import com.example.demo.entities.Service;
 import com.example.demo.repository.ServiceRepository;
-import com.example.demo.service.interfaces.ReservationService;
 import com.example.demo.service.interfaces.ServiceService;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +19,14 @@ import org.springframework.web.server.ResponseStatusException;
 @Transactional
 public class ServiceServiceImpl implements ServiceService {
     private final ServiceRepository serviceRepository;
-    private final ReservationService reservationService;
 
-    public ServiceServiceImpl(ServiceRepository serviceRepository, ReservationService reservationService) {
+    public ServiceServiceImpl(ServiceRepository serviceRepository) {
         this.serviceRepository = serviceRepository;
-        this.reservationService = reservationService;
     }
 
     @Override
     public List<ServiceListDTO> listServices() {
-        // Activos e inactivos: la pantalla del panel los separa en dos secciones.
+        // Incluye ambos estados de activación para los filtros de gestión.
         return serviceRepository.findAllForList();
     }
 
@@ -55,7 +54,6 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public void create(Service service) {
         service.setServiceId(null);
-        service.setActive(true);
         checkUrlNameIsFree(service, null);
         if (service.getSecondaryImageUrls() == null) service.setSecondaryImageUrls(new ArrayList<>());
         serviceRepository.save(service);
@@ -66,40 +64,22 @@ public class ServiceServiceImpl implements ServiceService {
         Service registered = findById(serviceId);
         checkUrlNameIsFree(service, registered.getServiceId());
         service.setServiceId(registered.getServiceId());
-        // El estado activo no viene del formulario: solo lo cambian los botones de activar y desactivar.
-        service.setActive(registered.getActive());
         if (service.getSecondaryImageUrls() == null) service.setSecondaryImageUrls(new ArrayList<>());
         serviceRepository.save(service);
     }
 
     @Override
-    public void delete(Integer serviceId) {
-        Service registered = findById(serviceId);
-
-        // El repositorio cuenta las reservas con una consulta. Un servicio con
-        // reservas no se borra, para no perder el historial: se puede desactivar.
-        long reservations = reservationService.countByService(registered.getServiceId());
-        if (reservations > 0) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "\"" + registered.getName() + "\" cannot be deleted because it is part of " + reservations
-                            + " reservation(s). Deactivate it instead.");
-        }
-
-        serviceRepository.delete(registered);
-    }
-
-    @Override
     public void activate(Integer serviceId) {
         Service registered = findById(serviceId);
-        registered.setActive(true);
+        registered.setActivationStatus(ActivationStatus.ACTIVE);
         serviceRepository.save(registered);
     }
 
     @Override
     public void deactivate(Integer serviceId) {
-        // El servicio se conserva con sus reservas; sale del catálogo y pasa a la sección de inactivos.
+        // Sale del catálogo sin modificar los cargos existentes.
         Service registered = findById(serviceId);
-        registered.setActive(false);
+        registered.setActivationStatus(ActivationStatus.INACTIVE);
         serviceRepository.save(registered);
     }
 

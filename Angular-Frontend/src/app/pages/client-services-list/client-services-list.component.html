@@ -1,0 +1,231 @@
+<app-header [solid]="true" />
+
+<main class="client-services-page">
+  <!-- Hero / Introduction for Guests -->
+  <section class="services-hero">
+    <div class="services-hero__content">
+      <p class="eyebrow">Atlan Suites · Experiences & Hospitality</p>
+      <h1 class="services-hero__title">Hotel Services</h1>
+      <p class="services-hero__desc">
+        Explore our curated collection of signature dining, holistic wellness,
+        recreation and personalized assistance. Every service is designed to
+        enrich each moment of your stay.
+      </p>
+    </div>
+  </section>
+
+  <div class="services-container">
+    <!-- Filter Bar: Search and Category Pills -->
+    <div class="filter-bar">
+      <div class="search-box">
+        <svg
+          class="search-icon"
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="search"
+          class="search-input"
+          placeholder="Search services (e.g. Spa, Breakfast, Bicycle...)"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="onSearchChange($event)"
+          aria-label="Search services"
+        />
+        @if (searchQuery()) {
+          <button
+            type="button"
+            class="clear-search"
+            (click)="onSearchChange('')"
+            aria-label="Clear search"
+          >
+            ✕
+          </button>
+        }
+      </div>
+
+      <nav class="category-pills" aria-label="Filter by category">
+        <button
+          type="button"
+          class="pill-btn"
+          [class.active]="selectedCategory() === 'ALL'"
+          (click)="selectCategory('ALL')"
+        >
+          All ({{ services().length }})
+        </button>
+        @for (cat of categories(); track cat) {
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="selectedCategory() === cat"
+            (click)="selectCategory(cat)"
+          >
+            {{ cat }}
+          </button>
+        }
+      </nav>
+    </div>
+
+    <!-- Error state -->
+    @if (errorMessage()) {
+      <div class="alert-box error" role="alert">
+        <p>{{ errorMessage() }}</p>
+        <button appButton (click)="loadServices()">Try again</button>
+      </div>
+    }
+
+    <!-- Loading state -->
+    @if (isLoading()) {
+      <div class="loading-container" role="status">
+        <div class="spinner"></div>
+        <p>Loading the service catalog...</p>
+      </div>
+    } @else {
+      <!-- Results Grid -->
+      @if (filteredServices().length > 0) {
+        <div class="services-grid">
+          @for (service of filteredServices(); track service.serviceId) {
+            <article class="service-card">
+              <div class="card-media">
+                <img
+                  appImage
+                  imageWidth="960"
+                  [src]="service.mainImageUrl"
+                  [alt]="service.name"
+                  loading="lazy"
+                />
+                <span class="card-category-badge">{{ service.category }}</span>
+              </div>
+
+              <div class="card-body">
+                <header class="card-header">
+                  <h2 class="card-title">{{ service.name }}</h2>
+                  <div class="card-price">
+                    <span class="price-currency">COP</span>
+                    <span class="price-amount"
+                      >${{ formatPrice(service.price) }}</span
+                    >
+                  </div>
+                </header>
+
+                <p class="card-summary">
+                  {{ service.summary || service.description }}
+                </p>
+
+                <ul class="card-meta">
+                  @if (service.duration) {
+                    <li>
+                      <svg
+                        class="meta-icon"
+                        viewBox="0 0 24 24"
+                        width="14"
+                        height="14"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span>{{ service.duration }}</span>
+                    </li>
+                  }
+                  @if (service.location) {
+                    <li>
+                      <svg
+                        class="meta-icon"
+                        viewBox="0 0 24 24"
+                        width="14"
+                        height="14"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                        ></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                      <span>{{ service.location }}</span>
+                    </li>
+                  }
+                  @if (service.availability) {
+                    <li>
+                      <svg
+                        class="meta-icon"
+                        viewBox="0 0 24 24"
+                        width="14"
+                        height="14"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <rect
+                          x="3"
+                          y="4"
+                          width="18"
+                          height="18"
+                          rx="2"
+                          ry="2"
+                        ></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                      </svg>
+                      <span>{{ service.availability }}</span>
+                    </li>
+                  }
+                </ul>
+
+                <footer class="card-footer">
+                  <a
+                    appButton
+                    [queryParams]="authParams"
+                    [routerLink]="[base, 'services-catalog', service.serviceId]"
+                    class="view-detail-btn"
+                  >
+                    View details
+                  </a>
+                </footer>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <p class="empty-title">No services found</p>
+          <p class="empty-subtitle">
+            No services match the selected search criteria.
+          </p>
+          <button
+            appButton
+            variant="secondary"
+            (click)="selectCategory('ALL'); onSearchChange('')"
+          >
+            Reset filters
+          </button>
+        </div>
+      }
+    }
+  </div>
+</main>
+
+<app-footer />

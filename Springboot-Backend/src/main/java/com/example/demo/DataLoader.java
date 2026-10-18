@@ -1,6 +1,13 @@
 package com.example.demo;
 
+import com.example.demo.entities.enums.ActivationStatus;
+
 import com.example.demo.entities.Client;
+import com.example.demo.entities.Folio;
+import com.example.demo.entities.FolioItem;
+import com.example.demo.entities.Payment;
+import com.example.demo.entities.enums.FolioStatus;
+import com.example.demo.entities.enums.PaymentStatus;
 import com.example.demo.entities.Administrator;
 import com.example.demo.entities.Operator;
 import com.example.demo.entities.Reservation;
@@ -18,6 +25,7 @@ import jakarta.transaction.Transactional;
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,12 +138,12 @@ public class DataLoader implements CommandLineRunner {
                 // Habitaciones
                 saveRoom(101, 1, RoomStatus.AVAILABLE, standardRoom);
                 saveRoom(102, 1, RoomStatus.AVAILABLE, deluxeRoom);
-                saveRoom(103, 1, RoomStatus.OCCUPIED, executiveRoom);
+                saveRoom(103, 1, RoomStatus.AVAILABLE, executiveRoom);
                 saveRoom(104, 1, RoomStatus.AVAILABLE, familySuite);
                 saveRoom(105, 1, RoomStatus.MAINTENANCE, presidentialSuite);
                 saveRoom(106, 1, RoomStatus.AVAILABLE, standardRoom);
-                saveRoom(107, 1, RoomStatus.OCCUPIED, deluxeRoom);
-                saveRoom(108, 1, RoomStatus.AVAILABLE, executiveRoom);
+                saveRoom(107, 1, RoomStatus.AVAILABLE, deluxeRoom);
+                saveRoom(108, 1, RoomStatus.OCCUPIED, executiveRoom);
                 saveRoom(109, 1, RoomStatus.AVAILABLE, familySuite);
                 saveRoom(110, 1, RoomStatus.OCCUPIED, presidentialSuite);
 
@@ -186,21 +194,21 @@ public class DataLoader implements CommandLineRunner {
                 // Servicios
                 saveService("High-speed Wi-Fi", "high-speed-wi-fi",
                                 "High-speed wireless internet throughout the hotel.", new BigDecimal("10000"),
-                                "Connectivity", true, "Stay connected throughout your visit", "24 hours",
+                                "Connectivity", ActivationStatus.ACTIVE, "Stay connected throughout your visit", "24 hours",
                                 "Available every day", "Entire hotel",
                                 "https://images.unsplash.com/photo-1496181133206-80ce9b88a853");
 
                 saveService("Breakfast Buffet", "breakfast-buffet",
                                 "A generous breakfast buffet with local produce, fresh fruit and baked goods.",
                                 new BigDecimal("45000"),
-                                "Food and beverage", true, "A fresh start prepared every morning", "6:30 AM - 10:30 AM",
+                                "Food and beverage", ActivationStatus.ACTIVE, "A fresh start prepared every morning", "6:30 AM - 10:30 AM",
                                 "Available every day", "Atlan Restaurant",
                                 "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666");
 
                 saveService("Lunch Menu", "lunch-menu",
                                 "A seasonal lunch menu prepared with fresh regional ingredients.",
                                 new BigDecimal("55000"),
-                                "Food and beverage", true, "Fresh flavors for the middle of your day",
+                                "Food and beverage", ActivationStatus.ACTIVE, "Fresh flavors for the middle of your day",
                                 "12:00 PM - 3:00 PM",
                                 "Available every day", "Atlan Restaurant",
                                 "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f");
@@ -208,119 +216,119 @@ public class DataLoader implements CommandLineRunner {
                 saveService("Fine Dining", "fine-dining",
                                 "An elegant à la carte dinner featuring contemporary Colombian cuisine.",
                                 new BigDecimal("65000"),
-                                "Food and beverage", true, "An evening designed to be remembered", "6:00 PM - 10:00 PM",
+                                "Food and beverage", ActivationStatus.ACTIVE, "An evening designed to be remembered", "6:00 PM - 10:00 PM",
                                 "Available every day", "Atlan Restaurant",
                                 "https://images.unsplash.com/photo-1414235077428-338989a2e8c0");
 
                 saveService("Room Service", "room-service",
                                 "Meals and beverages delivered directly to the comfort of your room.",
                                 new BigDecimal("15000"),
-                                "Room", true, "Private dining whenever you need it", "24 hours",
+                                "Room", ActivationStatus.ACTIVE, "Private dining whenever you need it", "24 hours",
                                 "Available every day", "Guest rooms",
                                 "https://images.unsplash.com/photo-1564501049412-61c2a3083791");
 
                 saveService("Laundry Service", "laundry-service",
                                 "Professional washing, drying and ironing for personal garments.",
                                 new BigDecimal("30000"),
-                                "Laundry", true, "Thoughtful care for every garment", "Delivery within 24 hours",
+                                "Laundry", ActivationStatus.ACTIVE, "Thoughtful care for every garment", "Delivery within 24 hours",
                                 "Available every day", "Front desk and guest rooms",
                                 "https://images.unsplash.com/photo-1545173168-9f1947eebb7f");
 
                 saveService("Secure Parking", "secure-parking",
                                 "Monitored parking available for hotel guests.", new BigDecimal("25000"),
-                                "Transportation", true, "Peace of mind from the moment you arrive", "24 hours",
+                                "Transportation", ActivationStatus.ACTIVE, "Peace of mind from the moment you arrive", "24 hours",
                                 "Subject to availability", "Basement level",
                                 "https://images.unsplash.com/photo-1506521781263-d8422e82f27a");
 
                 saveService("Swimming Pool", "swimming-pool",
                                 "Access to the hotel's temperature-controlled panoramic pool.", new BigDecimal("30000"),
-                                "Wellness", true, "A quiet pause beside the water", "7:00 AM - 9:00 PM",
+                                "Wellness", ActivationStatus.ACTIVE, "A quiet pause beside the water", "7:00 AM - 9:00 PM",
                                 "Available every day", "Third-floor terrace",
                                 "https://images.unsplash.com/photo-1566073771259-6a8506099945");
 
                 saveService("Fitness Center", "fitness-center",
                                 "A modern fitness center equipped for cardio and strength training.",
                                 new BigDecimal("20000"),
-                                "Wellness", true, "Keep your energy moving every day", "5:00 AM - 11:00 PM",
+                                "Wellness", ActivationStatus.ACTIVE, "Keep your energy moving every day", "5:00 AM - 11:00 PM",
                                 "Available every day", "Second floor",
                                 "https://images.unsplash.com/photo-1534438327276-14e5300c3a48");
 
                 saveService("Signature Spa", "signature-spa",
                                 "A restorative wellness circuit with personalized spa treatments.",
                                 new BigDecimal("120000"),
-                                "Wellness", true, "Relaxation in an exclusive setting", "90 minutes",
+                                "Wellness", ActivationStatus.ACTIVE, "Relaxation in an exclusive setting", "90 minutes",
                                 "Reservation required", "Second-floor wellness area",
                                 "https://images.unsplash.com/photo-1540555700478-4be289fbecef");
 
                 saveService("Sauna Session", "sauna-session",
                                 "A private sauna session designed to relax the body and clear the mind.",
                                 new BigDecimal("40000"),
-                                "Wellness", true, "Restorative warmth and complete calm", "45 minutes",
+                                "Wellness", ActivationStatus.ACTIVE, "Restorative warmth and complete calm", "45 minutes",
                                 "Reservation required", "Second-floor wellness area",
                                 "https://images.unsplash.com/photo-1544161515-4ab6ce6db874");
 
                 saveService("Private Jacuzzi", "private-jacuzzi",
                                 "One hour of private access to the hotel jacuzzi.", new BigDecimal("60000"),
-                                "Wellness", true, "A peaceful moment reserved for you", "60 minutes",
+                                "Wellness", ActivationStatus.ACTIVE, "A peaceful moment reserved for you", "60 minutes",
                                 "Reservation required", "Second-floor wellness area",
                                 "https://images.unsplash.com/photo-1578683010236-d716f9a3f461");
 
                 saveService("Relaxing Massage", "relaxing-massage",
                                 "A full-body massage performed by an experienced wellness therapist.",
                                 new BigDecimal("150000"),
-                                "Wellness", true, "Balance for body and mind", "60 minutes",
+                                "Wellness", ActivationStatus.ACTIVE, "Balance for body and mind", "60 minutes",
                                 "Reservation required", "Second-floor wellness area",
                                 "https://images.unsplash.com/photo-1519823551278-64ac92734fb1");
 
                 saveService("Airport Transfer", "airport-transfer",
                                 "Private transportation between the hotel and the airport.", new BigDecimal("90000"),
-                                "Transportation", true, "Arrivals and departures without stress", "By reservation",
+                                "Transportation", ActivationStatus.ACTIVE, "Arrivals and departures without stress", "By reservation",
                                 "Available every day", "Airport and hotel",
                                 "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2");
 
                 saveService("In-room Minibar", "in-room-minibar",
                                 "A curated selection of drinks and snacks available in your room.",
                                 new BigDecimal("20000"),
-                                "Food and beverage", true, "Small pleasures at any hour", "24 hours",
+                                "Food and beverage", ActivationStatus.ACTIVE, "Small pleasures at any hour", "24 hours",
                                 "Available every day", "Guest rooms",
                                 "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd");
 
                 saveService("Additional Housekeeping", "additional-housekeeping",
                                 "Additional room cleaning requested outside the regular housekeeping schedule.",
                                 new BigDecimal("25000"),
-                                "Room", true, "Your space, refreshed whenever you need it", "By request",
+                                "Room", ActivationStatus.ACTIVE, "Your space, refreshed whenever you need it", "By request",
                                 "Available every day", "Guest rooms",
                                 "https://images.unsplash.com/photo-1584132967334-10e028bd69f7");
 
                 saveService("Luggage Storage", "luggage-storage",
                                 "Secure temporary luggage storage before check-in or after check-out.",
                                 new BigDecimal("15000"),
-                                "Guest services", true, "Explore the city without carrying your bags", "24 hours",
+                                "Guest services", ActivationStatus.ACTIVE, "Explore the city without carrying your bags", "24 hours",
                                 "Available every day", "Front desk",
                                 "https://images.unsplash.com/photo-1569154941061-e231b4725ef1");
 
                 saveService("Wake-up Call", "wake-up-call",
                                 "A personalized telephone wake-up call at your requested time.", new BigDecimal("10000"),
-                                "Guest services", true, "Begin every day right on time", "24 hours",
+                                "Guest services", ActivationStatus.ACTIVE, "Begin every day right on time", "24 hours",
                                 "Available every day", "Front desk",
                                 "https://images.unsplash.com/photo-1501139083538-0139583c060f");
 
                 saveService("Bicycle Rental", "bicycle-rental",
                                 "A city bicycle available for independent exploration throughout the day.",
                                 new BigDecimal("50000"),
-                                "Recreation", true, "Discover the city at your own pace", "Full day",
+                                "Recreation", ActivationStatus.ACTIVE, "Discover the city at your own pace", "Full day",
                                 "Subject to availability", "Lobby",
                                 "https://images.unsplash.com/photo-1502744688674-c619d1586c9e");
 
                 saveService("Guided City Tour", "guided-city-tour",
                                 "A guided visit to the city's most memorable landmarks and neighborhoods.",
                                 new BigDecimal("180000"),
-                                "Recreation", true, "Stories and places waiting to be discovered", "Half day",
+                                "Recreation", ActivationStatus.ACTIVE, "Stories and places waiting to be discovered", "Half day",
                                 "Reservation required", "Lobby",
                                 "https://images.unsplash.com/photo-1469474968028-56623f02e42e");
 
                 serviceRepository.findAll().stream()
-                                .filter(service -> Boolean.TRUE.equals(service.getActive()))
+                                .filter(service -> service.getActivationStatus() == ActivationStatus.ACTIVE)
                                 .forEach(service -> {
                                         service.setDescription(buildDetailedDescription(service));
                                         service.setSecondaryImageUrls(new ArrayList<>(serviceGalleryImages()));
@@ -351,26 +359,50 @@ public class DataLoader implements CommandLineRunner {
                         operators.add(operator);
                 }
 
-                // Reservas de Emma, Liam, Olivia, Noah y Ava: esos clientes no se pueden borrar,
-                // y sus habitaciones y servicios se desactivan en vez de borrarse.
+                // Casos de demostración coherentes con el 17 de octubre de 2026.
+                // Solo Emma (cliente 1) recibe folios, cargos y pagos de ejemplo.
                 saveReservation("ATL-2026-0001", "emma.thompson@example.com", 101,
                                 LocalDate.of(2026, 6, 2), LocalDate.of(2026, 6, 5), 2, ReservationStatus.CHECKED_OUT,
-                                List.of("breakfast-buffet", "laundry-service"));
+                                List.of("breakfast-buffet", "laundry-service"), new BigDecimal("825000"));
                 saveReservation("ATL-2026-0002", "emma.thompson@example.com", 103,
-                                LocalDate.of(2026, 10, 11), LocalDate.of(2026, 10, 15), 2, ReservationStatus.CHECKED_IN,
-                                List.of("breakfast-buffet", "signature-spa"));
+                                LocalDate.of(2026, 10, 11), LocalDate.of(2026, 10, 15), 2, ReservationStatus.CHECKED_OUT,
+                                List.of("breakfast-buffet", "signature-spa"), new BigDecimal("1965000"));
                 saveReservation("ATL-2026-0003", "liam.anderson@example.com", 104,
-                                LocalDate.of(2026, 11, 20), LocalDate.of(2026, 11, 23), 4, ReservationStatus.CONFIRMED,
+                                LocalDate.of(2027, 11, 20), LocalDate.of(2027, 11, 23), 4, ReservationStatus.CONFIRMED,
                                 List.of("airport-transfer"));
                 saveReservation("ATL-2026-0004", "olivia.martinez@example.com", 107,
-                                LocalDate.of(2026, 10, 12), LocalDate.of(2026, 10, 14), 1, ReservationStatus.CHECKED_IN,
+                                LocalDate.of(2026, 10, 12), LocalDate.of(2026, 10, 14), 1, ReservationStatus.CHECKED_OUT,
                                 List.of("room-service"));
                 saveReservation("ATL-2026-0005", "noah.williams@example.com", 102,
                                 LocalDate.of(2026, 9, 1), LocalDate.of(2026, 9, 3), 2, ReservationStatus.CANCELLED,
                                 List.of());
                 saveReservation("ATL-2026-0006", "ava.robinson@example.com", 201,
-                                LocalDate.of(2026, 12, 18), LocalDate.of(2026, 12, 22), 2, ReservationStatus.PENDING,
+                                LocalDate.of(2027, 12, 18), LocalDate.of(2027, 12, 22), 2, ReservationStatus.PENDING,
                                 List.of("secure-parking"));
+
+                saveReservation("ATL-2026-0007", "emma.thompson@example.com", 108,
+                                LocalDate.of(2026, 10, 16), LocalDate.of(2026, 12, 1), 2, ReservationStatus.CHECKED_IN,
+                                List.of(), new BigDecimal("20700000"));
+                saveReservation("ATL-2026-0008", "emma.thompson@example.com", 102,
+                                LocalDate.of(2027, 1, 10), LocalDate.of(2027, 1, 13), 2, ReservationStatus.CONFIRMED,
+                                List.of("airport-transfer", "breakfast-buffet"), new BigDecimal("1215000"));
+                saveReservation("ATL-2026-0009", "emma.thompson@example.com", 104,
+                                LocalDate.of(2027, 3, 15), LocalDate.of(2027, 3, 19), 4, ReservationStatus.CONFIRMED,
+                                List.of("airport-transfer", "breakfast-buffet", "laundry-service", "signature-spa"),
+                                new BigDecimal("800000"), new BigDecimal("900000"), new BigDecimal("945000"));
+                saveReservation("ATL-2026-0010", "emma.thompson@example.com", 106,
+                                LocalDate.of(2027, 4, 20), LocalDate.of(2027, 4, 23), 1, ReservationStatus.PENDING,
+                                List.of("secure-parking"));
+                saveReservation("ATL-2026-0011", "emma.thompson@example.com", 108,
+                                LocalDate.of(2027, 6, 5), LocalDate.of(2027, 6, 9), 2, ReservationStatus.PENDING,
+                                List.of("signature-spa", "private-jacuzzi"), new BigDecimal("300000"));
+                saveReservation("ATL-2026-0012", "emma.thompson@example.com", 109,
+                                LocalDate.of(2027, 8, 10), LocalDate.of(2027, 8, 12), 4, ReservationStatus.CANCELLED,
+                                List.of());
+                saveReservation("ATL-2026-0013", "emma.thompson@example.com", 101,
+                                LocalDate.of(2026, 8, 3), LocalDate.of(2026, 8, 6), 2, ReservationStatus.CHECKED_OUT,
+                                List.of("breakfast-buffet", "laundry-service"),
+                                new BigDecimal("200000"), new BigDecimal("300000"), new BigDecimal("325000"));
         }
 
             /** Guarda un tipo de habitación creado mediante su builder. */
@@ -407,33 +439,59 @@ public class DataLoader implements CommandLineRunner {
                                 .floor(floor)
                                 .status(status)
                                 .roomType(roomType)
-                                .active(true)
+                                .activationStatus(ActivationStatus.ACTIVE)
                                 .build());
         }
 
         /** Guarda una reserva con la tarifa vigente del tipo de habitación y sus servicios. */
         private void saveReservation(String code, String clientEmail, Integer roomNumber, LocalDate checkIn,
-                        LocalDate checkOut, Integer guestCount, ReservationStatus status, List<String> serviceUrlNames) {
+                        LocalDate checkOut, Integer guestCount, ReservationStatus status, List<String> serviceUrlNames, BigDecimal... paymentAmounts) {
                 Room room = roomRepository.findByNumber(roomNumber).get();
                 List<Service> services = new ArrayList<>();
                 serviceUrlNames.forEach(urlName -> services.add(serviceRepository.findByUrlNameIgnoreCase(urlName).get()));
-                reservationRepository.save(Reservation.builder()
+                LocalDate createdOn = checkIn.minusDays(14);
+                if (createdOn.isAfter(LocalDate.of(2026, 10, 1))) createdOn = LocalDate.of(2026, 10, 1);
+                Reservation reservation = reservationRepository.save(Reservation.builder()
                                 .reservationCode(code)
                                 .checkInDate(checkIn)
                                 .checkOutDate(checkOut)
                                 .guestCount(guestCount)
                                 .nightlyPrice(room.getRoomType().getNightlyPrice())
                                 .status(status)
-                                .createdAt(checkIn.minusDays(14).atTime(10, 0))
+                                .createdAt(createdOn.atTime(10, 0))
                                 .client(clientRepository.findByEmailIgnoreCase(clientEmail).get())
                                 .room(room)
                                 .services(services)
                                 .build());
+                if (clientEmail.equals("emma.thompson@example.com")) saveReservationFolio(reservation, paymentAmounts);
+        }
+
+        /** Crea el historial financiero de Emma con conceptos y tarifas de servicios congelados. */
+        private void saveReservationFolio(Reservation reservation, BigDecimal[] paymentAmounts) {
+                BigDecimal total = reservation.getNightlyPrice().multiply(BigDecimal.valueOf(
+                                ChronoUnit.DAYS.between(reservation.getCheckInDate(), reservation.getCheckOutDate())));
+                for (Service service : reservation.getServices()) total = total.add(service.getPrice());
+                BigDecimal paid = BigDecimal.ZERO;
+                for (BigDecimal amount : paymentAmounts) paid = paid.add(amount);
+                FolioStatus status = reservation.getStatus() == ReservationStatus.CANCELLED ? FolioStatus.CANCELLED
+                                : paid.compareTo(total) == 0 ? FolioStatus.PAID : FolioStatus.PENDING;
+                Folio folio = Folio.builder().reservation(reservation).status(status)
+                                .issuedAt(reservation.getCreatedAt()).build();
+                entityManager.persist(folio);
+                for (Service service : reservation.getServices()) {
+                        entityManager.persist(FolioItem.builder().folio(folio).service(service).concept(service.getName())
+                                        .unitPrice(service.getPrice()).quantity(1).chargedAt(reservation.getCreatedAt()).build());
+                }
+                for (int index = 0; index < paymentAmounts.length; index++) {
+                        entityManager.persist(Payment.builder().folio(folio).amount(paymentAmounts[index])
+                                        .paymentMethod("CARD").status(PaymentStatus.APPROVED)
+                                        .paidAt(reservation.getCreatedAt().plusDays(index + 1)).build());
+                }
         }
 
         /** Guarda un servicio creado mediante su builder. */
         private void saveService(String name, String urlName, String description, BigDecimal price,
-                        String category, Boolean active, String summary, String duration,
+                        String category, ActivationStatus activationStatus, String summary, String duration,
                         String availability, String location, String mainImageUrl) {
                 serviceRepository.save(Service.builder()
                                 .name(name)
@@ -441,7 +499,7 @@ public class DataLoader implements CommandLineRunner {
                                 .description(description)
                                 .price(price)
                                 .category(category)
-                                .active(active)
+                                .activationStatus(activationStatus)
                                 .summary(summary)
                                 .duration(duration)
                                 .availability(availability)
