@@ -3,13 +3,15 @@ import { basePath } from '../../utils/base-path';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { RoomTypeTableComponent } from './components/room-type-table/room-type-table.component';
 import { RoomTypeService } from '../../services/room-type.service';
 import { RoomTypeListDTO } from '../../models/dto/room-type-list-dto';
 import { isAdminArea } from '../../utils/base-path';
+import { apiErrorMessage } from '../../utils/api-error';
+import { errorPageCode, showErrorPage } from '../../utils/error-page';
 
 @Component({
   selector: 'app-room-type-table-page',
@@ -30,6 +32,7 @@ export class RoomTypeTablePageComponent implements OnInit {
   readonly adminArea = isAdminArea(inject(ActivatedRoute));
 
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   get base(): string {
     return basePath(this.route);
   }
@@ -46,9 +49,9 @@ export class RoomTypeTablePageComponent implements OnInit {
       next: (data) => {
         this.roomTypes = data;
       },
-      error: (err) => {
-        console.error('Error loading room types:', err);
-      },
+      // Sin la lista la página no tiene qué mostrar: se muestra la pantalla de error.
+      error: (error: unknown) =>
+        showErrorPage(this.router, this.route, errorPageCode(error)),
     });
   }
 
@@ -71,8 +74,10 @@ export class RoomTypeTablePageComponent implements OnInit {
       // El backend responde 409 con el motivo si hay habitaciones de este tipo.
       error: (err: HttpErrorResponse) => {
         this.triggerToast(
-          err.error?.message ||
+          apiErrorMessage(
+            err,
             `Cannot delete room type "${deletedItem?.name || id}". Please try again.`,
+          ),
         );
       },
     });

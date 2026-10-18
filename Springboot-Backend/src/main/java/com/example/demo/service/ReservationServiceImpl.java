@@ -5,7 +5,9 @@ import com.example.demo.repository.ReservationRepository;
 import com.example.demo.service.interfaces.ReservationService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Consultas de reservas: el perfil del cliente las lista, los servicios de
@@ -31,7 +33,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationDTO findDetail(Integer reservationId) {
-        return ReservationDTO.from(reservationRepository.findById(reservationId).get());
+        return ReservationDTO.from(reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found.")));
     }
 
     @Override

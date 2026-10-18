@@ -1,6 +1,8 @@
 package com.example.demo.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import com.example.demo.entities.enums.ReservationStatus;
 import java.math.BigDecimal;
@@ -27,13 +29,17 @@ public class Reservation {
     // Código único de la reserva. Restricciones: No admite null en la base de datos; valor único; columna de máximo 30 caracteres.
     private String reservationCode;
     @Column(name = "check_in_date", nullable = false)
-    // Fecha programada de llegada. Restricciones: No admite null en la base de datos.
+    @NotNull(message = "Choose a check-in date.")
+    // Fecha programada de llegada. Restricciones: Obligatoria; al reservar no puede ser pasada ni estar a más de dos años.
     private LocalDate checkInDate;
     @Column(name = "check_out_date", nullable = false)
-    // Fecha programada de salida. Restricciones: No admite null en la base de datos.
+    @NotNull(message = "Choose a check-out date.")
+    // Fecha programada de salida. Restricciones: Obligatoria; posterior a la llegada; estancia de máximo 90 noches.
     private LocalDate checkOutDate;
     @Column(name = "guest_count", nullable = false)
-    // Cantidad de huéspedes de la reserva. Restricciones: No admite null en la base de datos.
+    @NotNull(message = "Enter the number of guests.")
+    @Min(value = 1, message = "Enter at least one guest.")
+    // Cantidad de huéspedes de la reserva. Restricciones: Obligatoria; al menos 1 y sin superar la capacidad del tipo de habitación.
     private Integer guestCount;
     @Column(name = "nightly_price", nullable = false, precision = 10, scale = 2)
     // Tarifa acordada por noche. Restricciones: No admite null en la base de datos; columna decimal de precisión 10 y escala 2.

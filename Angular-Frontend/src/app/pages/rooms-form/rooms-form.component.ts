@@ -2,16 +2,14 @@ import { ActivationStatus } from '../../models/enums/activation-status';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, finalize, map, forkJoin, of, switchMap } from 'rxjs';
+import { EMPTY, finalize, map, forkJoin, of, switchMap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -22,12 +20,9 @@ import { RoomDetailDTO } from '../../models/dto/room-detail-dto';
 import { RoomTypeOptionDTO } from '../../models/dto/room-type-option-dto';
 import { RoomStatus } from '../../models/enums/room-status';
 import { basePath } from '../../utils/base-path';
-
-function integer(control: AbstractControl): ValidationErrors | null {
-  return control.value === null || Number.isSafeInteger(control.value)
-    ? null
-    : { integer: true };
-}
+import { clearApiErrors, showApiErrors } from '../../utils/api-error';
+import { catchErrorPage, showErrorPage } from '../../utils/error-page';
+import { wholeNumber } from '../../utils/form-validators';
 
 @Component({
   selector: 'app-rooms-form',
@@ -52,13 +47,13 @@ export class RoomsFormComponent {
   }
   item: RoomDetailDTO | undefined;
   roomTypes: RoomTypeOptionDTO[] = [];
-  loadFailed = false;
   isCreateMode = true;
   submitted = false;
   loading = true;
   saving = false;
   error = '';
-  // Que el número no esté repetido lo revisa el backend: el formulario ya no descarga todas las habitaciones.
+  // Mismos rangos que la entidad Room. Que el número no esté repetido lo revisa el backend:
+  // el formulario ya no descarga todas las habitaciones.
   readonly form = new FormGroup({
     activationStatus: new FormControl(ActivationStatus.ACTIVE, {
       nonNullable: true,
@@ -67,14 +62,14 @@ export class RoomsFormComponent {
     number: new FormControl<number | null>(null, [
       Validators.required,
       Validators.min(1),
-      Validators.max(2147483647),
-      integer,
+      Validators.max(9999),
+      wholeNumber,
     ]),
     floor: new FormControl<number | null>(null, [
       Validators.required,
-      Validators.min(-2147483648),
-      Validators.max(2147483647),
-      integer,
+      Validators.min(0),
+      Validators.max(200),
+      wholeNumber,
     ]),
     status: new FormControl(RoomStatus.AVAILABLE, {
       nonNullable: true,
@@ -98,29 +93,20 @@ export class RoomsFormComponent {
           this.isCreateMode = idParam === null;
           this.loading = true;
           this.error = '';
-          this.loadFailed = false;
           this.item = undefined;
           this.roomTypes = [];
           this.submitted = false;
           this.form.reset();
+          // Una id inválida muestra la pantalla 400; si la carga falla, la que corresponda.
+          if (!this.isCreateMode && (!Number.isSafeInteger(id) || id <= 0)) {
+            showErrorPage(this.router, this.route, 400);
+            return EMPTY;
+          }
           // El selector solo necesita id y nombre de cada tipo.
           return forkJoin({
             roomTypes: this.roomTypeService.getOptions(),
-            item:
-              !this.isCreateMode && Number.isSafeInteger(id) && id > 0
-                ? this.service.getById(id)
-                : of(undefined),
-          }).pipe(
-            catchError(() => {
-              this.loadFailed = true;
-              this.error =
-                'Unable to load room information. Check that Spring Boot is running at localhost:8080.';
-              return of({
-                roomTypes: [] as RoomTypeOptionDTO[],
-                item: undefined,
-              });
-            }),
-          );
+            item: this.isCreateMode ? of(undefined) : this.service.getById(id),
+          }).pipe(catchErrorPage(this.router, this.route));
         }),
         takeUntilDestroyed(),
       )
@@ -140,15 +126,10 @@ export class RoomsFormComponent {
   }
 
   save(): void {
-    if (
-      this.saving ||
-      this.loading ||
-      this.loadFailed ||
-      !this.roomTypes.length
-    )
-      return;
+    if (this.saving || this.loading || !this.roomTypes.length) return;
     this.submitted = true;
     this.error = '';
+    clearApiErrors(this.form);
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
     const value = this.form.getRawValue();
@@ -189,11 +170,11 @@ export class RoomsFormComponent {
             queryParams: { saved: true },
           });
         },
-        // Si el número ya existe, el backend responde 409 con el motivo y aquí se muestra.
+        // Si el número ya existe (409) o un valor no es válido, el motivo se muestra bajo su campo.
         error: (error: HttpErrorResponse) => {
-          this.error =
-            error.error?.message ||
-            'Unable to save this room. Check that the server is available and try again.';
+          this.error = showApiErrors(this.form, error, {
+            roomType: 'roomTypeId',
+          });
         },
       });
   }

@@ -1,15 +1,13 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
   Subject,
-  catchError,
   combineLatest,
   map,
-  of,
   startWith,
   switchMap,
 } from 'rxjs';
@@ -30,6 +28,8 @@ import {
   matchesSearch,
 } from '../../utils/list-state';
 import { ReservationTableComponent } from './components/reservation-table/reservation-table.component';
+import { apiErrorMessage } from '../../utils/api-error';
+import { catchErrorPage } from '../../utils/error-page';
 
 @Component({
   selector: 'app-reservations-list',
@@ -46,6 +46,7 @@ import { ReservationTableComponent } from './components/reservation-table/reserv
 export class ReservationsListComponent {
   private readonly service = inject(ReservationService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly reloadSubject = new Subject<void>();
   private readonly listSubject = new BehaviorSubject(initialListState());
@@ -70,19 +71,10 @@ export class ReservationsListComponent {
     startWith(undefined),
     switchMap(() =>
       this.service.getAll().pipe(
-        map((items) => ({ items, loading: false, error: '' })),
-        catchError(() =>
-          of({
-            items: new Array<ReservationDTO>(),
-            loading: false,
-            error: 'Unable to load reservations. Please try again.',
-          }),
-        ),
-        startWith({
-          items: new Array<ReservationDTO>(),
-          loading: true,
-          error: '',
-        }),
+        map((items) => ({ items, loading: false })),
+        // Sin la lista la página no tiene qué mostrar: se muestra la pantalla de error.
+        catchErrorPage(this.router, this.route),
+        startWith({ items: new Array<ReservationDTO>(), loading: true }),
       ),
     ),
   );
@@ -115,17 +107,18 @@ export class ReservationsListComponent {
         next: () => {
           this.deleting = false;
           this.message = 'Reservation permanently deleted.';
-          this.retry();
+          this.reload();
         },
         error: (error: HttpErrorResponse) => {
           this.deleting = false;
-          this.actionError =
-            error.error?.message ||
-            'Unable to delete the reservation. Please try again.';
+          this.actionError = apiErrorMessage(
+            error,
+            'Unable to delete the reservation. Please try again.',
+          );
         },
       });
   }
-  retry(): void {
+  private reload(): void {
     this.reloadSubject.next();
   }
   private filters(items: ReservationDTO[]): ListFilter[] {

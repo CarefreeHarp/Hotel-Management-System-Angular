@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
@@ -11,6 +12,19 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { FormFieldComponent } from '../../components/form-field/form-field.component';
 import { ButtonComponent } from '../../components/button/button.component';
+import {
+  apiErrorMessage,
+  clearApiErrors,
+  showApiErrors,
+} from '../../utils/api-error';
+import {
+  emailAddress,
+  nationalId,
+  phoneNumber,
+  photoUrl,
+  requiredText,
+} from '../../utils/form-validators';
+import { CLIENT_MESSAGES, LOGIN_MESSAGES } from '../../utils/form-messages';
 
 @Component({
   selector: 'app-auth-page',
@@ -45,6 +59,8 @@ export class AuthPageComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   successMessage = '';
+  protected readonly loginMessages = LOGIN_MESSAGES;
+  protected readonly clientMessages = CLIENT_MESSAGES;
 
   ngOnInit(): void {
     this.initForms();
@@ -67,34 +83,32 @@ export class AuthPageComponent implements OnInit {
     });
   }
 
+  // Las reglas del registro son las de la entidad Client en el backend.
   private initForms(): void {
     this.clientLoginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [requiredText, emailAddress, Validators.maxLength(100)]],
       password: ['', [Validators.required]],
     });
 
     this.clientRegisterForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(60)]],
-      lastName: ['', [Validators.required, Validators.maxLength(60)]],
-      nationalId: ['', [Validators.required, Validators.maxLength(20)]],
-      phone: ['', [Validators.required, Validators.maxLength(20)]],
-      email: [
-        '',
-        [Validators.required, Validators.email, Validators.maxLength(100)],
-      ],
+      name: ['', [requiredText, Validators.maxLength(60)]],
+      lastName: ['', [requiredText, Validators.maxLength(60)]],
+      nationalId: ['', [requiredText, nationalId]],
+      phone: ['', [requiredText, phoneNumber]],
+      email: ['', [requiredText, Validators.maxLength(100), emailAddress]],
       password: [
         '',
         [
           Validators.required,
-          Validators.minLength(6),
+          Validators.minLength(8),
           Validators.maxLength(255),
         ],
       ],
-      profilePhoto: ['', [Validators.maxLength(500)]],
+      profilePhoto: ['', [Validators.maxLength(500), photoUrl]],
     });
 
     this.staffLoginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [requiredText, emailAddress, Validators.maxLength(100)]],
       password: ['', [Validators.required]],
     });
   }
@@ -145,6 +159,7 @@ export class AuthPageComponent implements OnInit {
     this.clientRegisterSubmitted = true;
     this.errorMessage = '';
     this.successMessage = '';
+    clearApiErrors(this.clientRegisterForm);
 
     if (this.clientRegisterForm.invalid) {
       return;
@@ -173,9 +188,14 @@ export class AuthPageComponent implements OnInit {
           });
         }, 1000);
       },
-      error: (err: Error) => {
+      // Si el backend rechaza el registro, cada motivo se muestra bajo su campo.
+      error: (err: unknown) => {
         this.isLoading = false;
-        this.errorMessage = err.message || 'Guest registration failed.';
+        this.errorMessage =
+          err instanceof HttpErrorResponse
+            ? showApiErrors(this.clientRegisterForm, err) ||
+              'Please check the highlighted fields.'
+            : apiErrorMessage(err, 'Guest registration failed.');
       },
     });
   }

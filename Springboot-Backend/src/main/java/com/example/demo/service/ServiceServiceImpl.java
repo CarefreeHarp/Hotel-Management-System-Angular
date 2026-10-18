@@ -6,6 +6,7 @@ import com.example.demo.dto.ServiceCatalogDTO;
 import com.example.demo.dto.ServiceDetailDTO;
 import com.example.demo.dto.ServiceListDTO;
 import com.example.demo.entities.Service;
+import com.example.demo.exception.FieldException;
 import com.example.demo.repository.ServiceRepository;
 import com.example.demo.service.interfaces.ServiceService;
 import java.util.ArrayList;
@@ -43,12 +44,14 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public ServiceDetailDTO findDetailByUrlName(String urlName) {
-        return ServiceDetailDTO.from(serviceRepository.findByUrlNameIgnoreCase(urlName).get());
+        return ServiceDetailDTO.from(serviceRepository.findByUrlNameIgnoreCase(urlName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found.")));
     }
 
     @Override
     public Service findById(Integer serviceId) {
-        return serviceRepository.findById(serviceId).get();
+        return serviceRepository.findById(serviceId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found."));
     }
 
     @Override
@@ -85,13 +88,13 @@ public class ServiceServiceImpl implements ServiceService {
 
     /**
      * El nombre de URL sale del nombre del servicio y es único: si otro servicio ya
-     * lo usa se responde 409 y el formulario muestra el motivo.
+     * lo usa se responde 409 y el formulario muestra el motivo en el campo del nombre.
      */
     private void checkUrlNameIsFree(Service service, Integer serviceId) {
         serviceRepository.findByUrlNameIgnoreCase(service.getUrlName())
                 .filter(other -> !other.getServiceId().equals(serviceId))
                 .ifPresent(other -> {
-                    throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    throw new FieldException(HttpStatus.CONFLICT, "name",
                             "Another service is already called \"" + other.getName() + "\".");
                 });
     }

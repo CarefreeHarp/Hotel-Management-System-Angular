@@ -26,18 +26,6 @@
               [photos]="service.secondaryImageUrls"
             />
           }
-        } @else {
-          <app-page-heading
-            eyebrow="Service catalog"
-            title="Service not found"
-            [description]="
-              state.error ||
-              'This service does not exist or is no longer available.'
-            "
-            ><a appButton [routerLink]="[base, 'services']"
-              >Back to list</a
-            ></app-page-heading
-          >
         }
       }
     }

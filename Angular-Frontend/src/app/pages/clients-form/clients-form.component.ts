@@ -1,12 +1,10 @@
-import { switchMap, catchError, of } from 'rxjs';
+import { switchMap, of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -21,6 +19,19 @@ import { clientQuery } from '../../utils/client-query';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { basePath } from '../../utils/base-path';
+import { clearApiErrors, showApiErrors } from '../../utils/api-error';
+import {
+  catchErrorPage,
+  errorPageCode,
+  showErrorPage,
+} from '../../utils/error-page';
+import {
+  emailAddress,
+  nationalId,
+  phoneNumber,
+  photoUrl,
+  requiredText,
+} from '../../utils/form-validators';
 
 export type ClientForm = FormGroup<{
   name: FormControl<string>;
@@ -31,23 +42,6 @@ export type ClientForm = FormGroup<{
   password: FormControl<string>;
   profilePhoto: FormControl<string>;
 }>;
-
-function requiredText(control: AbstractControl): ValidationErrors | null {
-  return String(control.value ?? '').trim() ? null : { required: true };
-}
-
-function photoUrl(control: AbstractControl): ValidationErrors | null {
-  const value = String(control.value ?? '').trim();
-  if (!value) return null;
-  try {
-    const url = new URL(value);
-    return /^https?:$/.test(url.protocol) && !/\s/.test(value)
-      ? null
-      : { photoUrl: true };
-  } catch {
-    return { photoUrl: true };
-  }
-}
 
 @Component({
   selector: 'app-clients-form',
@@ -81,7 +75,6 @@ export class ClientsFormComponent implements OnInit {
   isLoading = false;
   isSaving = false;
   submitted = false;
-  loadError = '';
   saveError = '';
   readonly form: ClientForm = new FormGroup({
     name: new FormControl('', {
@@ -92,17 +85,18 @@ export class ClientsFormComponent implements OnInit {
       nonNullable: true,
       validators: [requiredText, Validators.maxLength(60)],
     }),
+    // Mismas reglas que la entidad Client en el backend.
     nationalId: new FormControl('', {
       nonNullable: true,
-      validators: [requiredText, Validators.maxLength(20)],
+      validators: [requiredText, nationalId],
     }),
     phone: new FormControl('', {
       nonNullable: true,
-      validators: [requiredText, Validators.maxLength(20)],
+      validators: [requiredText, phoneNumber],
     }),
     email: new FormControl('', {
       nonNullable: true,
-      validators: [requiredText, Validators.email, Validators.maxLength(100)],
+      validators: [requiredText, Validators.maxLength(100), emailAddress],
     }),
     password: new FormControl('', {
       nonNullable: true,
@@ -128,19 +122,15 @@ export class ClientsFormComponent implements OnInit {
           switchMap(() => {
             const id = this.authParams.auth;
             this.clientId = undefined;
-            this.loadError = '';
             this.isLoading = true;
             if (id === undefined) {
               void this.router.navigate(['/login'], { replaceUrl: true });
               return of(undefined);
             }
-            return this.service.getById(id).pipe(
-              catchError(() => {
-                this.loadError =
-                  'The client could not be loaded. Please try again.';
-                return of(undefined);
-              }),
-            );
+            // Si el perfil no carga se muestra la pantalla de error (404, 500…).
+            return this.service
+              .getById(id)
+              .pipe(catchErrorPage(this.router, this.route));
           }),
           takeUntilDestroyed(this.destroyRef),
         )
@@ -154,25 +144,24 @@ export class ClientsFormComponent implements OnInit {
     this.isCreateMode = idParam === null;
     if (this.isCreateMode) return;
     this.form.controls.password.disable();
+    this.isLoading = true;
     const id = Number(idParam);
+    // Una id inválida muestra la pantalla 400; si el cliente no carga, la que corresponda.
     if (!Number.isSafeInteger(id) || id <= 0) {
-      this.loadError = 'Invalid client ID.';
+      showErrorPage(this.router, this.route, 400);
       return;
     }
     this.loadClient(id);
   }
 
   private loadClient(id: number): void {
-    this.isLoading = true;
     this.service.getById(id).subscribe({
       next: (client) => {
         this.fillForm(client);
         this.isLoading = false;
       },
-      error: () => {
-        this.loadError = 'The client could not be loaded. Please try again.';
-        this.isLoading = false;
-      },
+      error: (error: unknown) =>
+        showErrorPage(this.router, this.route, errorPageCode(error)),
     });
   }
 
@@ -191,9 +180,9 @@ export class ClientsFormComponent implements OnInit {
   save(): void {
     this.submitted = true;
     this.saveError = '';
+    clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid || this.isSaving || this.isLoading || this.loadError)
-      return;
+    if (this.form.invalid || this.isSaving || this.isLoading) return;
     const value = this.form.getRawValue();
     const profilePhoto = value.profilePhoto.trim();
     const data = {
@@ -236,11 +225,9 @@ export class ClientsFormComponent implements OnInit {
     }
   }
 
-  // Si el correo o la cédula ya existen, el backend responde 409 y su mensaje se muestra aquí.
+  // Los errores de campo del backend (correo o cédula ya registrados, formatos) se muestran bajo su campo.
   private showSaveError(error: HttpErrorResponse): void {
-    this.saveError =
-      error.error?.message ||
-      'The client could not be saved. Please try again.';
+    this.saveError = showApiErrors(this.form, error);
     this.isSaving = false;
   }
 }

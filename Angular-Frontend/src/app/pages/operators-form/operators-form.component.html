@@ -3,14 +3,7 @@
   <div class="catalog-page__container">
     @if (isLoading) {
       <p class="loading-state" role="status">Loading form…</p>
-    } @else if (loadError) {
-      <app-page-heading
-        eyebrow="Staff management"
-        title="Form unavailable"
-        [description]="loadError"
-        ><a appButton [routerLink]="[base, 'operators']">Back to list</a></app-page-heading
-      >
-    } @else if (isCreateMode || item) {
+    } @else {
       <app-page-heading
         eyebrow="Staff management"
         [title]="isCreateMode ? 'Create operator' : 'Edit operator'"
@@ -58,13 +51,6 @@
           >
         </div>
       </form>
-    } @else {
-      <app-page-heading
-        eyebrow="Staff management"
-        title="Operator not found"
-        description="This operator does not exist or is no longer available."
-        ><a appButton [routerLink]="[base, 'operators']">Back to list</a></app-page-heading
-      >
     }
   </div>
 </main>

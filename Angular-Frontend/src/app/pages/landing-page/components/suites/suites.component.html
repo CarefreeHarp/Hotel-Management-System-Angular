@@ -63,7 +63,11 @@
             </h3>
           </article>
         } @empty {
-          <p class="rooms-empty">No suites are available at the moment.</p>
+          @if (error) {
+            <p class="rooms-empty" role="alert">{{ error }}</p>
+          } @else {
+            <p class="rooms-empty">No suites are available at the moment.</p>
+          }
         }
       </div>
     </div>

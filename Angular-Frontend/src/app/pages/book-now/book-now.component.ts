@@ -1,19 +1,19 @@
 import { clientQuery } from '../../utils/client-query';
+import { apiErrorMessage, apiFieldErrors } from '../../utils/api-error';
+import { errorPageCode, showErrorPage } from '../../utils/error-page';
 import { Component } from '@angular/core';
 import { DestroyRef, inject } from '@angular/core';
 import { Router, ActivatedRoute, RouterLink, Params } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
+  EMPTY,
   Observable,
   of,
   forkJoin,
   switchMap,
   map,
   catchError,
-  Subject,
-  startWith,
-  combineLatest,
 } from 'rxjs';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ReservationService } from '../../services/reservation.service';
@@ -53,7 +53,6 @@ export class BookNowComponent {
   private readonly reservations = inject(ReservationService);
   private readonly services = inject(ServiceService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly reload = new Subject<void>();
   readonly steps: BookingStep[] = [
     'dates',
     'room-types',
@@ -70,6 +69,8 @@ export class BookNowComponent {
   loading = false;
   busy = false;
   error = '';
+  // Errores de la tarjeta que devuelve el backend, por campo del formulario de pago.
+  paymentErrors: Record<string, string> = {};
   private pendingError = '';
   clientId: number | undefined;
   readonly profileUrl = '/profile';
@@ -77,12 +78,9 @@ export class BookNowComponent {
     return clientQuery(this.route);
   }
   ngOnInit(): void {
-    combineLatest([
-      this.route.queryParamMap,
-      this.reload.pipe(startWith(undefined)),
-    ])
+    this.route.queryParamMap
       .pipe(
-        switchMap(([params]) => {
+        switchMap((params) => {
           this.clientId = clientQuery(this.route).auth;
           if (this.clientId === undefined) {
             void this.router.navigate(['/login'], { replaceUrl: true });
@@ -92,6 +90,7 @@ export class BookNowComponent {
           this.step = this.isStep(step) ? step : 'dates';
           this.error = this.pendingError;
           this.pendingError = '';
+          this.paymentErrors = {};
           this.types = [];
           this.quote = undefined;
           this.stay = {
@@ -149,18 +148,22 @@ export class BookNowComponent {
       )
       .subscribe(() => (this.loading = false));
   }
+  // Si el servidor falla o no responde, el paso no puede mostrarse: pantalla de error.
+  // Los 4xx son reglas de la reserva (fechas, capacidad, disponibilidad) y su motivo
+  // se muestra aquí, junto a los botones para cambiar las fechas o volver al paso anterior.
   private failed(error: HttpErrorResponse): Observable<null> {
+    const code = errorPageCode(error);
+    if (code >= 500) {
+      showErrorPage(this.router, this.route, code);
+      return EMPTY;
+    }
     this.error = this.bookingError(error);
     return of(null);
   }
   private bookingError(error: HttpErrorResponse): string {
-    if (error.status === 0)
-      return 'The booking server could not be reached. Please check your connection and try again.';
-    if (error.status >= 500)
-      return 'The hotel could not process the booking request. Please try again.';
-    return (
-      error.error?.message ??
-      'The booking request could not be completed. Please try again.'
+    return apiErrorMessage(
+      error,
+      'The booking request could not be completed. Please try again.',
     );
   }
   private isStep(value: string | null): value is BookingStep {
@@ -199,9 +202,6 @@ export class BookNowComponent {
   chooseServices(ids: number[]): void {
     void this.go('checkout', { 'service-ids': ids.length ? ids : null });
   }
-  retry(): void {
-    this.reload.next();
-  }
   back(): void {
     const index = this.steps.indexOf(this.step);
     const previous = this.steps[index - 1];
@@ -212,6 +212,7 @@ export class BookNowComponent {
       return;
     this.busy = true;
     this.error = '';
+    this.paymentErrors = {};
     this.reservations
       .create(this.clientId, this.draft, payment)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -225,7 +226,18 @@ export class BookNowComponent {
         },
         error: (error: HttpErrorResponse) => {
           this.busy = false;
-          this.error = this.bookingError(error);
+          // Los datos de tarjeta rechazados se muestran bajo su campo; el resto, arriba.
+          const payment: Record<string, string> = {};
+          const others: string[] = [];
+          for (const [field, message] of Object.entries(apiFieldErrors(error))) {
+            if (field.startsWith('initialPayment.'))
+              payment[field.slice('initialPayment.'.length)] = message;
+            else others.push(message);
+          }
+          this.paymentErrors = payment;
+          this.error = Object.keys(payment).length
+            ? others.join(' ')
+            : this.bookingError(error);
           if (error.status === 409) {
             this.pendingError = this.error;
             void this.go('room-types', {

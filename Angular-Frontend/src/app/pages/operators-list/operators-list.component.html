@@ -20,8 +20,6 @@
     }
     @if (isLoading) {
       <p class="state" role="status">Loading operators…</p>
-    } @else if (loadError) {
-      <p class="state is-error" role="alert">{{ loadError }}</p>
     } @else {
       <app-list-controls
         [state]="listState"

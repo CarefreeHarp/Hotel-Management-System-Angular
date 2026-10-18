@@ -5,7 +5,9 @@ import com.example.demo.entities.enums.ActivationStatus;
 import com.example.demo.dto.RoomDetailDTO;
 import com.example.demo.dto.RoomListDTO;
 import com.example.demo.entities.Room;
+import com.example.demo.exception.FieldException;
 import com.example.demo.repository.RoomRepository;
+import com.example.demo.repository.RoomTypeRepository;
 import com.example.demo.service.interfaces.RoomService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -22,7 +24,7 @@ public class RoomServiceImpl implements RoomService {
     RoomRepository roomRepository;
 
     @Autowired
-    private com.example.demo.service.interfaces.RoomTypeService roomTypeService;
+    private RoomTypeRepository roomTypeRepository;
 
 
     @Override
@@ -39,13 +41,13 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room findById(int roomId) {
         return roomRepository.findById(roomId)
-                .get();
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found."));
     }
 
     @Override
     public Room findByNumber(int number) {
         return roomRepository.findByNumber(number)
-                .get();
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found."));
     }
 
     @Override
@@ -84,8 +86,14 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.save(registeredRoom);
     }
 
+    /** El tipo es un campo del formulario: si falta o ya no existe, el error va en ese campo. */
     private void resolveRoomType(Room room) {
-        room.setRoomType(roomTypeService.findById(room.getRoomType().getRoomTypeId()));
+        Integer roomTypeId = room.getRoomType() == null ? null : room.getRoomType().getRoomTypeId();
+        if (roomTypeId == null) {
+            throw new FieldException(HttpStatus.BAD_REQUEST, "roomType", "Select a room type.");
+        }
+        room.setRoomType(roomTypeRepository.findById(roomTypeId)
+                .orElseThrow(() -> new FieldException(HttpStatus.BAD_REQUEST, "roomType", "The selected room type no longer exists.")));
     }
 
     /** El número físico es único: si otra habitación ya lo usa se responde 409 y la pantalla muestra el motivo. */
@@ -93,7 +101,7 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.findByNumber(number)
                 .filter(other -> !other.getRoomId().equals(roomId))
                 .ifPresent(other -> {
-                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Room number " + number + " is already in use.");
+                    throw new FieldException(HttpStatus.CONFLICT, "number", "Room number " + number + " is already in use.");
                 });
     }
 

@@ -1,24 +1,35 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import {
-  AbstractControl,
   FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { RoomTypeCommercialFieldsComponent } from './components/room-type-commercial-fields/room-type-commercial-fields.component';
-import { PhotoFieldsComponent } from '../../components/photo-fields/photo-fields.component';
+import {
+  MAX_ADDITIONAL_PHOTOS,
+  PhotoFieldsComponent,
+} from '../../components/photo-fields/photo-fields.component';
 import { RoomTypeService } from '../../services/room-type.service';
 import { RoomTypeDetailDTO } from '../../models/dto/room-type-detail-dto';
 import { basePath } from '../../utils/base-path';
+import { clearApiErrors, showApiErrors } from '../../utils/api-error';
+import { errorPageCode, showErrorPage } from '../../utils/error-page';
+import {
+  maxDecimals,
+  photoUrl,
+  positive,
+  requiredText,
+  wholeNumber,
+} from '../../utils/form-validators';
 
 export type RoomTypeForm = FormGroup<{
   name: FormControl<string>;
@@ -28,23 +39,6 @@ export type RoomTypeForm = FormGroup<{
   mainPhoto: FormControl<string>;
   secondaryPhotos: FormArray<FormControl<string>>;
 }>;
-
-function requiredText(control: AbstractControl): ValidationErrors | null {
-  return String(control.value ?? '').trim() ? null : { required: true };
-}
-
-function photoUrl(control: AbstractControl): ValidationErrors | null {
-  const value = String(control.value ?? '').trim();
-  if (!value) return null;
-  try {
-    const url = new URL(value);
-    return /^https?:$/.test(url.protocol) && url.hostname && !/\s/.test(value)
-      ? null
-      : { photoUrl: true };
-  } catch {
-    return { photoUrl: true };
-  }
-}
 
 @Component({
   selector: 'app-room-type-form-page',
@@ -70,8 +64,11 @@ export class RoomTypeFormPageComponent {
   roomType: RoomTypeDetailDTO | undefined;
   isCreateMode = false;
   submitted = false;
+  loading = false;
+  saving = false;
   error = '';
 
+  // Mismas reglas que la entidad RoomType en el backend.
   readonly form: RoomTypeForm = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
@@ -83,20 +80,15 @@ export class RoomTypeFormPageComponent {
     }),
     nightlyPrice: new FormControl<number | null>(null, [
       Validators.required,
-      Validators.min(0),
-      (control) =>
-        control.value === null || Number.isFinite(control.value)
-          ? null
-          : { number: true },
+      positive,
+      Validators.max(99999999.99),
+      maxDecimals(2),
     ]),
     maxCapacity: new FormControl<number | null>(null, [
       Validators.required,
       Validators.min(1),
       Validators.max(10),
-      (control) =>
-        control.value === null || Number.isInteger(control.value)
-          ? null
-          : { integer: true },
+      wholeNumber,
     ]),
     mainPhoto: new FormControl('', {
       nonNullable: true,
@@ -113,30 +105,36 @@ export class RoomTypeFormPageComponent {
       const id = Number(idParam);
       this.submitted = false;
       this.error = '';
+      this.roomType = undefined;
       this.form.controls.secondaryPhotos.clear();
       this.form.reset();
+      this.loading = !this.isCreateMode;
+      if (this.isCreateMode) return;
 
-      if (!this.isCreateMode && Number.isSafeInteger(id) && id > 0) {
-        this.service.getById(id).subscribe({
-          next: (roomType) => {
-            this.roomType = roomType;
-            this.form.patchValue(roomType);
-            this.form.controls.secondaryPhotos.clear();
-            roomType.secondaryPhotos.forEach((photo) => this.addPhoto(photo));
-            this.form.markAsPristine();
-          },
-          error: (err) => {
-            console.error('Error fetching room type for edit:', err);
-            this.roomType = undefined;
-          },
-        });
-      } else {
-        this.roomType = undefined;
+      // Una id inválida muestra la pantalla 400; si el tipo no carga, la que corresponda.
+      if (!Number.isSafeInteger(id) || id <= 0) {
+        showErrorPage(this.router, this.route, 400);
+        return;
       }
+      this.service.getById(id).subscribe({
+        next: (roomType) => {
+          this.roomType = roomType;
+          this.form.patchValue(roomType);
+          this.form.controls.secondaryPhotos.clear();
+          roomType.secondaryPhotos.forEach((photo) => this.addPhoto(photo));
+          this.form.markAsPristine();
+          this.loading = false;
+        },
+        error: (error: unknown) =>
+          showErrorPage(this.router, this.route, errorPageCode(error)),
+      });
     });
   }
 
   addPhoto(value = ''): void {
+    // El backend admite como mucho 10 fotos adicionales por tipo.
+    if (this.form.controls.secondaryPhotos.length >= MAX_ADDITIONAL_PHOTOS)
+      return;
     this.form.controls.secondaryPhotos.push(
       new FormControl(value, {
         nonNullable: true,
@@ -146,8 +144,10 @@ export class RoomTypeFormPageComponent {
   }
 
   save(): void {
+    if (this.saving) return;
     this.submitted = true;
     this.error = '';
+    clearApiErrors(this.form);
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
     const value = this.form.getRawValue();
@@ -162,28 +162,31 @@ export class RoomTypeFormPageComponent {
         .map((photo) => photo.trim())
         .filter(Boolean),
     };
+    if (!this.isCreateMode && !this.roomType) return;
+    this.saving = true;
     if (this.isCreateMode) {
-      this.service.add(roomTypeData).subscribe({
-        next: (createdRoomType) => {
-          void this.router.navigate(
-            [this.base, 'room-types', createdRoomType.roomTypeId],
-            {
-              queryParams: { saved: true },
-            },
-          );
-        },
-        error: (err: HttpErrorResponse) => this.showError(err),
-      });
-      return;
-    }
-    if (!this.roomType) {
+      this.service
+        .add(roomTypeData)
+        .pipe(finalize(() => (this.saving = false)))
+        .subscribe({
+          next: (createdRoomType) => {
+            void this.router.navigate(
+              [this.base, 'room-types', createdRoomType.roomTypeId],
+              {
+                queryParams: { saved: true },
+              },
+            );
+          },
+          error: (err: HttpErrorResponse) => this.showError(err),
+        });
       return;
     }
     this.service
-      .update(this.roomType.roomTypeId, {
+      .update(this.roomType!.roomTypeId, {
         ...roomTypeData,
-        roomTypeId: this.roomType.roomTypeId,
+        roomTypeId: this.roomType!.roomTypeId,
       })
+      .pipe(finalize(() => (this.saving = false)))
       .subscribe({
         next: () => {
           void this.router.navigate(
@@ -197,10 +200,8 @@ export class RoomTypeFormPageComponent {
       });
   }
 
-  // Si el nombre ya existe el backend responde 409 y su mensaje se muestra en el formulario.
+  // Si el nombre ya existe (409) o una foto no es válida, el motivo se muestra bajo su campo.
   private showError(err: HttpErrorResponse): void {
-    this.error =
-      err.error?.message ||
-      'Unable to save this room type. Check the server connection and try again.';
+    this.error = showApiErrors(this.form, err);
   }
 }

@@ -3,9 +3,9 @@ package com.example.demo.service;
 import com.example.demo.dto.OperatorDTO;
 import com.example.demo.entities.Administrator;
 import com.example.demo.entities.Operator;
+import com.example.demo.exception.FieldException;
 import com.example.demo.repository.AdministratorRepository;
 import com.example.demo.repository.OperatorRepository;
-import com.example.demo.service.interfaces.AdministratorService;
 import com.example.demo.service.interfaces.OperatorService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -24,9 +24,6 @@ public class OperatorServiceImpl implements OperatorService {
     @Autowired
     public AdministratorRepository administratorRepository;
 
-    @Autowired
-    public AdministratorService administratorService;
-
     @Override
     public List<OperatorDTO> listByAdministrator(Integer adminId) {
         return operatorRepository.findAllForListByAdminId(adminId);
@@ -36,7 +33,7 @@ public class OperatorServiceImpl implements OperatorService {
     public void create(Operator operator, Integer adminId) {
         operator.setOperatorId(null);
         checkEmailIsFree(operator.getEmail(), null);
-        operator.setAdmin(administratorService.findById(adminId));
+        operator.setAdmin(adminInCharge(adminId));
         operatorRepository.save(operator);
     }
 
@@ -58,7 +55,7 @@ public class OperatorServiceImpl implements OperatorService {
     @Override
     public Operator findById(Integer operatorId) {
         return operatorRepository.findById(operatorId)
-                .get();
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Operator not found."));
     }
 
     @Override
@@ -66,7 +63,7 @@ public class OperatorServiceImpl implements OperatorService {
         Operator registeredOperator = findById(operatorId);
 
         checkEmailIsFree(operator.getEmail(), registeredOperator.getOperatorId());
-        Administrator adminInCharge = administratorService.findById(adminId);
+        Administrator adminInCharge = adminInCharge(adminId);
 
         // Se conserva el id para que save() actualice la fila que ya existe en vez
         // de insertar una nueva, y la contraseña porque el CRUD REST no la modifica.
@@ -99,8 +96,17 @@ public class OperatorServiceImpl implements OperatorService {
         boolean usedByAdministrator = administratorRepository.findByEmailIgnoreCase(email == null ? "" : email.trim())
                 .isPresent();
         if (usedByOperator || usedByAdministrator) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Another staff account already uses this email.");
+            throw new FieldException(HttpStatus.CONFLICT, "email", "Another staff account already uses this email.");
         }
+    }
+
+    /** El administrador a cargo es un campo del formulario: si falta o ya no existe, el error va en ese campo. */
+    private Administrator adminInCharge(Integer adminId) {
+        if (adminId == null) {
+            throw new FieldException(HttpStatus.BAD_REQUEST, "admin", "Select the administrator in charge of this operator.");
+        }
+        return administratorRepository.findById(adminId)
+                .orElseThrow(() -> new FieldException(HttpStatus.BAD_REQUEST, "admin", "The selected administrator no longer exists."));
     }
 
 }

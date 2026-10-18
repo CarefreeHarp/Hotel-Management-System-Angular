@@ -18,9 +18,6 @@
     @if (state$ | async; as state) {
       @if (state.loading) {
         <p role="status">Loading reservations…</p>
-      } @else if (state.error) {
-        <p class="notice is-error" role="alert">{{ state.error }}</p>
-        <button type="button" (click)="retry()">Retry</button>
       } @else {
         <app-list-controls
           [state]="state.controls"

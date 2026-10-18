@@ -7,20 +7,6 @@
         <div class="spinner"></div>
         <p>Loading service information...</p>
       </div>
-    } @else if (state.errorMessage) {
-      <div class="error-wrapper">
-        <div class="error-card">
-          <p class="eyebrow">Atlan Suites</p>
-          <h1>Service unavailable</h1>
-          <p>{{ state.errorMessage }}</p>
-          <a
-            appButton
-            [queryParams]="authParams"
-            [routerLink]="[base, 'services-catalog']"
-            >Back to the service catalog</a
-          >
-        </div>
-      </div>
     } @else {
       @if (state.service; as item) {
         <!-- Breadcrumb & Back Navigation -->

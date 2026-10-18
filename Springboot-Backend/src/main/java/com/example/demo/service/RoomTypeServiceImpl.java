@@ -4,6 +4,7 @@ import com.example.demo.dto.RoomTypeDetailDTO;
 import com.example.demo.dto.RoomTypeListDTO;
 import com.example.demo.dto.RoomTypeOptionDTO;
 import com.example.demo.entities.RoomType;
+import com.example.demo.exception.FieldException;
 import com.example.demo.repository.RoomRepository;
 import com.example.demo.repository.RoomTypeRepository;
 import com.example.demo.service.interfaces.RoomTypeService;
@@ -42,13 +43,13 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     @Override
     public RoomType findByName(String name) {
         return typeRoomRepository.findByNameIgnoreCase(name)
-                .get();
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room type not found."));
     }
 
     @Override
     public RoomType findById(int roomTypeId) {
         return typeRoomRepository.findById(roomTypeId)
-                .get();
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room type not found."));
     }
 
     @Override
@@ -96,7 +97,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         typeRoomRepository.findByNameIgnoreCase(name == null ? "" : name.trim())
                 .filter(other -> !other.getRoomTypeId().equals(roomTypeId))
                 .ifPresent(other -> {
-                    throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    throw new FieldException(HttpStatus.CONFLICT, "name",
                             "Another room type is already called \"" + other.getName() + "\".");
                 });
     }

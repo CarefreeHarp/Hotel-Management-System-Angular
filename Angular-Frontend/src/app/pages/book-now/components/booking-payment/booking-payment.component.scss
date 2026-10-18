@@ -75,6 +75,16 @@
   outline: 2px solid var(--color-sky-deep);
   outline-offset: 1px;
 }
+.payment-fields input[aria-invalid="true"] {
+  border-color: #a42c2c;
+}
+.field-error {
+  color: #8b2f2f;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
 .payment-security {
   color: var(--color-charcoal);
   font-size: 0.95rem;

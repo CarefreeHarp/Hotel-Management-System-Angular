@@ -28,14 +28,6 @@
           [guestName]="client.name + ' ' + client.lastName"
         />
       }
-    } @else {
-      <app-page-heading
-        eyebrow="Client management"
-        title="Client unavailable"
-        description="This client does not exist or could not be loaded."
-      >
-        <a appButton [routerLink]="[base, 'clients']">Back to list</a>
-      </app-page-heading>
     }
   </div>
 </main>

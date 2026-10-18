@@ -19,6 +19,7 @@ export class SuitesComponent implements OnInit {
   }
 
   roomTypes: RoomTypeListDTO[] = [];
+  error = '';
   description: string =
     'Our rooms and suites are designed as serene private retreats, pairing generous spaces, handcrafted details and refined comforts with the calm of the coast. Every stay is shaped for deep rest, quiet mornings and effortless luxury.';
 
@@ -31,8 +32,9 @@ export class SuitesComponent implements OnInit {
       next: (data) => {
         this.roomTypes = data;
       },
-      error: (err) => {
-        console.error('Error loading room types in landing page:', err);
+      // Es una sección del landing: el aviso se muestra en ella y el resto de la página sigue.
+      error: () => {
+        this.error = 'Suites could not be loaded.';
       },
     });
   }

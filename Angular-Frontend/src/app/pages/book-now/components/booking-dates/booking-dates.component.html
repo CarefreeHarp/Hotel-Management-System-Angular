@@ -65,7 +65,7 @@
                 <button
                   class="calendar-day"
                   type="button"
-                  [disabled]="day.disabled"
+                  [disabled]="isDisabled(day)"
                   [attr.aria-label]="day.value"
                   [attr.aria-pressed]="
                     day.value === checkIn || day.value === checkOut
@@ -89,7 +89,8 @@
         }
       </div>
       <p class="calendar-hint">
-        Choose a check-in date, then a check-out date.
+        Choose a check-in date, then a check-out date. Stays last up to
+        {{ maxNights }} nights and can start up to two years from today.
       </p>
     </section>
     <aside class="guests-panel" aria-labelledby="guests-title">
@@ -100,7 +101,7 @@
       <div class="guest-stepper">
         <div>
           <p>Guests</p>
-          <span>How many people will stay?</span>
+          <span>How many people will stay? Up to {{ maxGuests }}.</span>
         </div>
         <div class="guest-stepper__controls" aria-label="Guest quantity">
           <button
@@ -114,6 +115,7 @@
           ><button
             type="button"
             aria-label="Increase guests"
+            [disabled]="guests >= maxGuests"
             (click)="guests = guests + 1"
           >
             +

@@ -11,13 +11,15 @@ import {
 } from '../../utils/list-state';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { AdministratorTableComponent } from './components/administrator-table/administrator-table.component';
 import { AdministratorService } from '../../services/administrator.service';
 import { AdministratorListDTO } from '../../models/dto/administrator-list-dto';
 import { basePath } from '../../utils/base-path';
+import { apiErrorMessage } from '../../utils/api-error';
+import { errorPageCode, showErrorPage } from '../../utils/error-page';
 
 @Component({
   selector: 'app-administrators-list',
@@ -74,12 +76,12 @@ export class AdministratorsListComponent implements OnInit {
 
   private readonly administratorService = inject(AdministratorService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   get base(): string {
     return basePath(this.route);
   }
   administrators: AdministratorListDTO[] = [];
   isLoading = true;
-  loadError = '';
   message = '';
   errorMessage = '';
 
@@ -96,14 +98,11 @@ export class AdministratorsListComponent implements OnInit {
     this.administratorService.getAll().subscribe({
       next: (administrators) => {
         this.administrators = administrators;
-        this.loadError = '';
         this.isLoading = false;
       },
-      error: () => {
-        this.loadError =
-          'The administrators could not be loaded. Make sure the Spring Boot backend is running at http://localhost:8080 and reload the page.';
-        this.isLoading = false;
-      },
+      // Sin la lista la página no tiene qué mostrar: se muestra la pantalla de error.
+      error: (error: unknown) =>
+        showErrorPage(this.router, this.route, errorPageCode(error)),
     });
   }
 
@@ -119,9 +118,10 @@ export class AdministratorsListComponent implements OnInit {
       },
       // La regla está en el backend: con operadores a cargo responde 409 con el motivo.
       error: (error: HttpErrorResponse) => {
-        this.errorMessage =
-          error.error?.message ||
-          `Administrator "${item.name}" could not be deleted. Please try again.`;
+        this.errorMessage = apiErrorMessage(
+          error,
+          `Administrator "${item.name}" could not be deleted. Please try again.`,
+        );
       },
     });
   }

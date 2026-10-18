@@ -8,6 +8,7 @@ import { OperatorDTO } from '../models/dto/operator-dto';
 import { ClientService } from './client.service';
 import { AdministratorService } from './administrator.service';
 import { OperatorService } from './operator.service';
+import { apiErrorMessage } from '../utils/api-error';
 
 export type UserRole = 'CLIENT' | 'ADMINISTRATOR' | 'OPERATOR';
 
@@ -26,6 +27,15 @@ function adminToStaff(admin: AdministratorDTO): StaffUser {
     email: admin.email,
     role: 'ADMINISTRATOR',
   };
+}
+
+// Un 401 son credenciales incorrectas; sin conexión o con el servidor caído se explica el motivo real.
+function loginError(error: unknown, invalidCredentials: string): Error {
+  return new Error(
+    error instanceof HttpErrorResponse && error.status === 401
+      ? invalidCredentials
+      : apiErrorMessage(error, 'Sign-in failed. Please try again.'),
+  );
 }
 
 function operatorToStaff(operator: OperatorDTO): StaffUser {
@@ -54,45 +64,45 @@ export class AuthService {
     return this.clientService
       .login(email.trim(), password)
       .pipe(
-        catchError(() =>
-          throwError(() => new Error('Incorrect email or password.')),
+        catchError((error: unknown) =>
+          throwError(() => loginError(error, 'Incorrect email or password.')),
         ),
       );
   }
 
   /**
    * Registra un nuevo cliente en el backend y comprueba sus credenciales. El
-   * backend revisa que el correo y el documento no estén registrados.
+   * backend revisa los campos y que el correo y el documento no estén
+   * registrados; su error HTTP llega intacto para mostrar cada campo rechazado.
    */
   registerClient(
     clientData: Omit<Client, 'clientId'>,
   ): Observable<ClientDetailDTO> {
-    return this.clientService.add(clientData).pipe(
-      catchError((error: HttpErrorResponse) =>
-        throwError(
-          () => new Error(error.error?.message || 'Guest registration failed.'),
-        ),
-      ),
-      mergeMap(() => this.loginClient(clientData.email, clientData.password)),
-    );
+    return this.clientService
+      .add(clientData)
+      .pipe(
+        mergeMap(() => this.loginClient(clientData.email, clientData.password)),
+      );
   }
 
   /**
    * Comprueba las credenciales del personal: primero se prueba como administrador y, si el
-   * backend lo rechaza, como operador.
+   * backend responde 401, como operador. Otros errores no se reintentan.
    */
   loginStaff(email: string, password: string): Observable<StaffUser> {
     const trimmedEmail = email.trim();
 
     return this.adminService.login(trimmedEmail, password).pipe(
       map((admin) => adminToStaff(admin)),
-      catchError(() =>
-        this.operatorService
-          .login(trimmedEmail, password)
-          .pipe(map((operator) => operatorToStaff(operator))),
+      catchError((error: unknown) =>
+        error instanceof HttpErrorResponse && error.status === 401
+          ? this.operatorService
+              .login(trimmedEmail, password)
+              .pipe(map((operator) => operatorToStaff(operator)))
+          : throwError(() => error),
       ),
-      catchError(() =>
-        throwError(() => new Error('Incorrect staff credentials.')),
+      catchError((error: unknown) =>
+        throwError(() => loginError(error, 'Incorrect staff credentials.')),
       ),
     );
   }

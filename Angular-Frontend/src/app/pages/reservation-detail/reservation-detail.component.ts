@@ -3,8 +3,8 @@ import { basePath } from '../../utils/base-path';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { catchError, combineLatest, map, of, switchMap } from 'rxjs';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { EMPTY, catchError, combineLatest, map, of, switchMap } from 'rxjs';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ClientInfoComponent } from '../../components/client-info/client-info.component';
@@ -14,6 +14,7 @@ import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 import { ReservationService } from '../../services/reservation.service';
 import { ClientService } from '../../services/client.service';
 import { clientQuery } from '../../utils/client-query';
+import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 import { ReservationFinanceComponent } from './components/reservation-finance/reservation-finance.component';
 
 @Component({
@@ -34,13 +35,13 @@ import { ReservationFinanceComponent } from './components/reservation-finance/re
 })
 export class ReservationDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly reservations = inject(ReservationService);
   private readonly clients = inject(ClientService);
   private readonly destroyRef = inject(DestroyRef);
   detail: ReservationDetails | undefined;
   client: ClientDetailDTO | undefined;
   isLoading = true;
-  errorMessage = '';
   get saved(): boolean {
     return this.route.snapshot.queryParamMap.get('saved') === 'true';
   }
@@ -73,11 +74,11 @@ export class ReservationDetailComponent implements OnInit {
           this.detail = undefined;
           this.client = undefined;
           this.isLoading = true;
-          this.errorMessage = '';
           const id = Number(params.get('id'));
+          // Una id inválida muestra la pantalla 400; si la reserva no carga, la que corresponda.
           if (!Number.isSafeInteger(id) || id <= 0) {
-            this.errorMessage = 'This reservation could not be found.';
-            return of(undefined);
+            showErrorPage(this.router, this.route, 400);
+            return EMPTY;
           }
           return this.reservations.details(id).pipe(
             switchMap((detail) =>
@@ -85,14 +86,11 @@ export class ReservationDetailComponent implements OnInit {
                 ? of({ detail, client: undefined })
                 : this.clients.getById(detail.clientId).pipe(
                     map((client) => ({ detail, client })),
+                    // El huésped es información secundaria: sin él, la reserva se muestra igual.
                     catchError(() => of({ detail, client: undefined })),
                   ),
             ),
-            catchError(() => {
-              this.errorMessage =
-                'The reservation could not be loaded. Please try again.';
-              return of(undefined);
-            }),
+            catchErrorPage(this.router, this.route),
           );
         }),
         takeUntilDestroyed(this.destroyRef),

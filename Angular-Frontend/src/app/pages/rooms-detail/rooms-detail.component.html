@@ -25,17 +25,6 @@
               [photos]="room.roomType.secondaryPhotos"
             />
           }
-        } @else {
-          <app-page-heading
-            eyebrow="Room catalog"
-            title="Room not found"
-            [description]="
-              state.error ||
-              'This room does not exist or is no longer available.'
-            "
-          >
-            <a appButton [routerLink]="[base, 'rooms']">Back to list</a>
-          </app-page-heading>
         }
       }
     }

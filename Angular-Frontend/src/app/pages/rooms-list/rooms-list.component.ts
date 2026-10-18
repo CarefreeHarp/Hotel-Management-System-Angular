@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -19,6 +19,8 @@ import {
   ListFilter,
 } from '../../utils/list-state';
 import { basePath } from '../../utils/base-path';
+import { apiErrorMessage } from '../../utils/api-error';
+import { errorPageCode, showErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-rooms-list',
   imports: [
@@ -35,6 +37,7 @@ import { basePath } from '../../utils/base-path';
 export class RoomsListComponent {
   private readonly service = inject(RoomService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   get base(): string {
     return basePath(this.route);
   }
@@ -146,10 +149,9 @@ export class RoomsListComponent {
         this.items = items;
         this.loading = false;
       },
-      error: () => {
-        this.error = 'Unable to load rooms.';
-        this.loading = false;
-      },
+      // Sin la lista la página no tiene qué mostrar: se muestra la pantalla de error.
+      error: (error: unknown) =>
+        showErrorPage(this.router, this.route, errorPageCode(error)),
     });
   }
   toggleById(id: number): void {
@@ -169,9 +171,10 @@ export class RoomsListComponent {
         this.load();
       },
       error: (error: HttpErrorResponse) =>
-        (this.error =
-          error.error?.message ??
-          'The activation status could not be changed.'),
+        (this.error = apiErrorMessage(
+          error,
+          'The activation status could not be changed.',
+        )),
     });
   }
 }

@@ -6,6 +6,7 @@ import com.example.demo.entities.Room;
 import com.example.demo.service.interfaces.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,14 +35,14 @@ public class RoomController {
 
     @PostMapping("")
     @Operation(summary = "Crear una habitación", description = "El servidor genera el identificador. La respuesta exitosa no tiene cuerpo.")
-    public void createRoom(@RequestBody Room room) {
+    public void createRoom(@Valid @RequestBody Room room) {
         service.create(room);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar una habitación", description = "Reemplaza los campos editables. El identificador de la ruta se mantiene. roomType.roomTypeId debe corresponder a un tipo de habitación existente.")
     public void updateRoom(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
-                           @RequestBody Room room) {
+                           @Valid @RequestBody Room room) {
         service.update(id, room);
     }
 

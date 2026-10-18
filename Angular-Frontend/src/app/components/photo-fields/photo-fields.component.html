@@ -9,7 +9,7 @@
     [maxlength]="500"
     placeholder="https://example.com/photo.jpg"
     [submitted]="submitted"
-    error="Enter an HTTP or HTTPS photo URL of up to 500 characters."
+    [messages]="messages.main"
   />
   <div class="photo-fields">
     @for (photo of photos.controls; track photo; let i = $index) {
@@ -25,7 +25,7 @@
           [required]="false"
           placeholder="https://example.com/additional-photo.jpg"
           [submitted]="submitted"
-          error="Enter an HTTP or HTTPS URL of up to 500 characters, or leave it empty."
+          [messages]="messages.additional"
         />
         <button
           class="remove-photo"
@@ -38,13 +38,18 @@
       </div>
     }
   </div>
-  <button
-    appButton
-    variant="secondary"
-    class="add-photo"
-    type="button"
-    (click)="addPhoto.emit()"
-  >
-    ＋ Add another photo
-  </button>
+  <div class="add-photo">
+    <button
+      appButton
+      variant="secondary"
+      type="button"
+      [disabled]="photos.length >= maxPhotos"
+      (click)="addPhoto.emit()"
+    >
+      ＋ Add another photo
+    </button>
+    <p class="photo-count" aria-live="polite">
+      {{ photos.length }} of {{ maxPhotos }} additional photos
+    </p>
+  </div>
 </section>

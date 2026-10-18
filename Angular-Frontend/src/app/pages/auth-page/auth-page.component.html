@@ -150,7 +150,8 @@
                 placeholder="example@email.com"
                 [control]="$any(clientLoginForm.controls['email'])"
                 [submitted]="clientLoginSubmitted"
-                error="Enter a valid email address."
+                [maxlength]="100"
+                [messages]="loginMessages.email"
               />
 
               <app-form-field
@@ -215,7 +216,8 @@
                   placeholder="John"
                   [control]="$any(clientRegisterForm.controls['name'])"
                   [submitted]="clientRegisterSubmitted"
-                  error="Enter your first name (max. 60 characters)."
+                  [maxlength]="60"
+                  [messages]="clientMessages.name"
                 />
                 <app-form-field
                   fieldId="client-reg-lastname"
@@ -224,7 +226,8 @@
                   placeholder="Smith"
                   [control]="$any(clientRegisterForm.controls['lastName'])"
                   [submitted]="clientRegisterSubmitted"
-                  error="Enter your last name (max. 60 characters)."
+                  [maxlength]="60"
+                  [messages]="clientMessages.lastName"
                 />
               </div>
 
@@ -236,7 +239,9 @@
                   placeholder="1001001001"
                   [control]="$any(clientRegisterForm.controls['nationalId'])"
                   [submitted]="clientRegisterSubmitted"
-                  error="Enter your unique ID number."
+                  [maxlength]="20"
+                  hint="5 to 20 letters or numbers"
+                  [messages]="clientMessages.nationalId"
                 />
                 <app-form-field
                   fieldId="client-reg-phone"
@@ -245,7 +250,11 @@
                   placeholder="3001234567"
                   [control]="$any(clientRegisterForm.controls['phone'])"
                   [submitted]="clientRegisterSubmitted"
-                  error="Enter your contact phone number."
+                  restrict="phone"
+                  inputmode="tel"
+                  [maxlength]="16"
+                  hint="7 to 15 digits, + optional"
+                  [messages]="clientMessages.phone"
                 />
               </div>
 
@@ -256,18 +265,19 @@
                 placeholder="name@example.com"
                 [control]="$any(clientRegisterForm.controls['email'])"
                 [submitted]="clientRegisterSubmitted"
-                error="Enter a valid email address."
+                [maxlength]="100"
+                [messages]="clientMessages.email"
               />
 
               <app-form-field
                 fieldId="client-reg-password"
                 label="Password"
                 type="password"
-                placeholder="At least 6 characters"
+                placeholder="At least 8 characters"
                 [control]="$any(clientRegisterForm.controls['password'])"
                 [submitted]="clientRegisterSubmitted"
-                hint="At least 6 characters"
-                error="Enter a secure password of at least 6 characters."
+                hint="At least 8 characters"
+                error="Enter a secure password of at least 8 characters."
               />
 
               <app-form-field
@@ -278,7 +288,9 @@
                 [control]="$any(clientRegisterForm.controls['profilePhoto'])"
                 [submitted]="clientRegisterSubmitted"
                 [required]="false"
+                [maxlength]="500"
                 hint="Web link to an image (optional)"
+                [messages]="clientMessages.profilePhoto"
               />
 
               <div class="auth-actions">
@@ -343,7 +355,8 @@
               placeholder="admin@atlansuites.com or operator@atlansuites.com"
               [control]="$any(staffLoginForm.controls['email'])"
               [submitted]="staffLoginSubmitted"
-              error="Enter your work email."
+              [maxlength]="100"
+              [messages]="loginMessages.email"
             />
 
             <app-form-field

@@ -32,6 +32,7 @@ import { BookNowComponent } from './pages/book-now/book-now.component';
 
 import { ReservationsListComponent } from './pages/reservations-list/reservations-list.component';
 import { ReservationFormComponent } from './pages/reservation-form/reservation-form.component';
+import { ErrorPageComponent } from './pages/error-page/error-page.component';
 
 export const routes: Routes = [
   // Sitio público, sin sesión.
@@ -49,6 +50,8 @@ export const routes: Routes = [
   },
   { path: 'book-now', component: BookNowComponent },
   { path: 'reservation/:id', component: ReservationDetailComponent },
+  // Pantallas de error (400, 404, 500 y 503); las páginas llegan a ellas sin cambiar la URL.
+  { path: 'error/:code', component: ErrorPageComponent },
 
   // Páginas del administrador, igual que /admin/panel/{id} en la aplicación de Thymeleaf.
   {
@@ -85,6 +88,9 @@ export const routes: Routes = [
       { path: 'clients/new', component: ClientsFormComponent },
       { path: 'clients/:id/edit', component: ClientsFormComponent },
       { path: 'clients/:id', component: ClientsDetailComponent },
+      // Dentro del área, las pantallas de error conservan la barra de administración.
+      { path: 'error/:code', component: ErrorPageComponent },
+      { path: '**', component: ErrorPageComponent, data: { code: 404 } },
     ],
   },
   {
@@ -98,7 +104,10 @@ export const routes: Routes = [
       { path: 'clients/new', component: ClientsFormComponent },
       { path: 'clients/:id/edit', component: ClientsFormComponent },
       { path: 'clients/:id', component: ClientsDetailComponent },
+      { path: 'error/:code', component: ErrorPageComponent },
+      { path: '**', component: ErrorPageComponent, data: { code: 404 } },
     ],
   },
-  { path: '**', redirectTo: '' },
+  // Una dirección que no existe muestra la pantalla 404 en vez de volver a la landing en silencio.
+  { path: '**', component: ErrorPageComponent, data: { code: 404 } },
 ];

@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.AdministratorDTO;
 import com.example.demo.dto.AdministratorListDTO;
 import com.example.demo.entities.Administrator;
+import com.example.demo.exception.FieldException;
 import com.example.demo.repository.AdministratorRepository;
 import com.example.demo.repository.OperatorRepository;
 import com.example.demo.service.interfaces.AdministratorService;
@@ -64,7 +65,7 @@ public class AdministratorServiceImpl implements AdministratorService {
     @Override
     public Administrator findById(Integer adminId) {
         return administratorRepository.findById(adminId)
-                .get();
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Administrator not found."));
     }
 
     @Override
@@ -103,7 +104,7 @@ public class AdministratorServiceImpl implements AdministratorService {
         boolean usedByOperator = operatorRepository.findByEmailIgnoreCase(email == null ? "" : email.trim())
                 .isPresent();
         if (usedByAdministrator || usedByOperator) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Another staff account already uses this email.");
+            throw new FieldException(HttpStatus.CONFLICT, "email", "Another staff account already uses this email.");
         }
     }
 

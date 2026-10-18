@@ -4,7 +4,7 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { catchError, finalize, forkJoin, of, switchMap } from 'rxjs';
+import { EMPTY, finalize, forkJoin, switchMap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
@@ -15,6 +15,8 @@ import { ReservationService } from '../../services/reservation.service';
 import { RoomTypeService } from '../../services/room-type.service';
 import { ServiceService } from '../../services/service.service';
 import { basePath } from '../../utils/base-path';
+import { clearApiErrors, showApiErrors } from '../../utils/api-error';
+import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 import {
   createReservationForm,
   ReservationFieldsComponent,
@@ -41,11 +43,18 @@ export class ReservationFormComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  readonly form = createReservationForm();
   detail: ReservationDetails | undefined;
   roomTypes: RoomTypeListDTO[] = [];
   services: ServiceListDTO[] = [];
   originalServiceIds: number[] = [];
+  // Las reglas consultan la llegada guardada y la capacidad de cada tipo cuando ya se cargaron.
+  // Va después de roomTypes: los validadores se ejecutan al crear el formulario.
+  readonly form = createReservationForm({
+    originalCheckIn: () => this.detail?.reservation.checkInDate,
+    capacity: (roomTypeId) =>
+      this.roomTypes.find((type) => type.roomTypeId === roomTypeId)
+        ?.maxCapacity,
+  });
   loading = true;
   saving = false;
   submitted = false;
@@ -91,27 +100,21 @@ export class ReservationFormComponent {
           this.detail = undefined;
           this.submitted = false;
           const id = Number(params.get('id'));
+          // Una id inválida muestra la pantalla 400; si la reserva no carga, la que corresponda.
           if (!Number.isSafeInteger(id) || id < 1) {
-            this.error = 'Reservation not found.';
-            return of(undefined);
+            showErrorPage(this.router, this.route, 400);
+            return EMPTY;
           }
           return forkJoin({
             detail: this.reservations.details(id),
             roomTypes: this.types.getAll(),
             services: this.hotelServices.getAll(),
-          }).pipe(
-            catchError(() => {
-              this.error =
-                'Unable to load reservation information. Please try again.';
-              return of(undefined);
-            }),
-          );
+          }).pipe(catchErrorPage(this.router, this.route));
         }),
         takeUntilDestroyed(),
       )
       .subscribe((data) => {
         this.loading = false;
-        if (!data) return;
         this.detail = data.detail;
         this.roomTypes = data.roomTypes;
         this.services = data.services;
@@ -133,16 +136,11 @@ export class ReservationFormComponent {
     if (this.saving || this.loading || !this.detail) return;
     this.submitted = true;
     this.error = '';
+    clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid) {
-      this.error = 'Please check the required fields.';
-      return;
-    }
+    // El orden de las fechas, las 90 noches y la capacidad ya los revisan los validadores del formulario.
+    if (this.form.invalid) return;
     const draft = this.form.getRawValue();
-    if (draft.checkOut <= draft.checkIn) {
-      this.error = 'The check-out date must be after the check-in date.';
-      return;
-    }
     const id = this.detail.reservation.reservationId;
     this.saving = true;
     this.reservations
@@ -159,10 +157,15 @@ export class ReservationFormComponent {
             queryParams: { saved: true },
           });
         },
+        // Los campos del backend se llaman como la entidad Reservation; aquí se traducen a los controles.
         error: (error: HttpErrorResponse) => {
-          this.error =
-            error.error?.message ||
-            'Unable to save this reservation. Please try again.';
+          this.error = showApiErrors(this.form, error, {
+            checkInDate: 'checkIn',
+            checkOutDate: 'checkOut',
+            guestCount: 'guests',
+            roomType: 'roomTypeId',
+            services: 'serviceIds',
+          });
         },
       });
   }

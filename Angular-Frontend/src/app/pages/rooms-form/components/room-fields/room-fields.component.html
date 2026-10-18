@@ -19,21 +19,23 @@
       type="number"
       [control]="form.controls.number"
       [min]="1"
-      [max]="2147483647"
+      [max]="9999"
       [step]="1"
+      hint="From 1 to 9999."
       [submitted]="submitted"
-      [error]="error(form.controls.number)"
+      [messages]="messages.number"
     />
     <app-form-field
       fieldId="floor"
       label="Floor"
       type="number"
       [control]="form.controls.floor"
-      [min]="-2147483648"
-      [max]="2147483647"
+      [min]="0"
+      [max]="200"
       [step]="1"
+      hint="From 0 to 200."
       [submitted]="submitted"
-      [error]="error(form.controls.floor)"
+      [messages]="messages.floor"
     />
     <div class="select-field">
       <label for="status">Status <span aria-hidden="true">*</span></label>
@@ -57,7 +59,9 @@
         }
       </select>
       @if (invalid(form.controls.status)) {
-        <small id="status-error" role="alert">Select a status.</small>
+        <small id="status-error" role="alert">{{
+          form.controls.status.getError("server") ?? messages.status.required
+        }}</small>
       }
     </div>
     <div class="select-field">
@@ -77,9 +81,10 @@
         }
       </select>
       @if (invalid(form.controls.roomTypeId)) {
-        <small id="roomTypeId-error" role="alert"
-          >Select an existing room type.</small
-        >
+        <small id="roomTypeId-error" role="alert">{{
+          form.controls.roomTypeId.getError("server") ??
+            messages.roomTypeId.required
+        }}</small>
       }
     </div>
   </div>

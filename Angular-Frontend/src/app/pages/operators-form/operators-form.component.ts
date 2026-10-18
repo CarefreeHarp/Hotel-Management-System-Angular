@@ -1,11 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -19,18 +17,9 @@ import { OperatorService } from '../../services/operator.service';
 import { AdministratorDTO } from '../../models/dto/administrator-dto';
 import { OperatorDTO } from '../../models/dto/operator-dto';
 import { basePath } from '../../utils/base-path';
-
-function requiredText(control: AbstractControl): ValidationErrors | null {
-  return String(control.value ?? '').trim() ? null : { required: true };
-}
-
-// Mismo formato de correo que validaba el proyecto anterior en Spring Boot.
-function emailAddress(control: AbstractControl): ValidationErrors | null {
-  const value = String(control.value ?? '').trim();
-  return !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-    ? null
-    : { email: true };
-}
+import { clearApiErrors, showApiErrors } from '../../utils/api-error';
+import { errorPageCode, showErrorPage } from '../../utils/error-page';
+import { emailAddress, requiredText } from '../../utils/form-validators';
 
 @Component({
   selector: 'app-operators-form',
@@ -59,21 +48,21 @@ export class OperatorsFormComponent implements OnInit {
   isLoading = true;
   isSaving = false;
   submitted = false;
-  loadError = '';
   saveError = '';
+  // Mismos límites que la entidad Operator en el backend.
   readonly form = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [requiredText, Validators.maxLength(50)],
+      validators: [requiredText, Validators.maxLength(60)],
     }),
     lastName: new FormControl('', {
       nonNullable: true,
-      validators: [requiredText, Validators.maxLength(50)],
+      validators: [requiredText, Validators.maxLength(60)],
     }),
     email: new FormControl('', {
       nonNullable: true,
       // Que no se repita entre administradores y operarios lo revisa el backend (409).
-      validators: [requiredText, Validators.maxLength(80), emailAddress],
+      validators: [requiredText, Validators.maxLength(100), emailAddress],
     }),
     adminId: new FormControl<number | null>(null, Validators.required),
     password: new FormControl('', {
@@ -94,12 +83,14 @@ export class OperatorsFormComponent implements OnInit {
       // Al editar no se pide contraseña: el backend conserva la guardada.
       this.form.controls.password.disable();
     }
+    // Una id inválida muestra la pantalla 400; si la carga falla, la que corresponda.
     if (!this.isCreateMode && (!Number.isSafeInteger(id) || id <= 0)) {
-      this.isLoading = false;
+      showErrorPage(this.router, this.route, 400);
       return;
     }
     // El selector solo necesita id y nombre de cada administrador (/administrators/options)
-    // y, al editar, se pide únicamente este operario.
+    // y, al editar, se pide únicamente este operario. Sin el selector no se puede guardar,
+    // así que también al crear un fallo muestra la pantalla de error.
     forkJoin({
       administrators: this.administratorService.getOptions(),
       operator: this.isCreateMode
@@ -131,17 +122,15 @@ export class OperatorsFormComponent implements OnInit {
         }
         this.isLoading = false;
       },
-      error: () => {
-        this.loadError =
-          'The form could not be loaded. Make sure the Spring Boot backend is running at http://localhost:8080 and reload the page.';
-        this.isLoading = false;
-      },
+      error: (error: unknown) =>
+        showErrorPage(this.router, this.route, errorPageCode(error)),
     });
   }
 
   save(): void {
     this.submitted = true;
     this.saveError = '';
+    clearApiErrors(this.form);
     this.form.markAllAsTouched();
     if (this.form.invalid || this.isSaving) return;
     const value = this.form.getRawValue();
@@ -178,11 +167,10 @@ export class OperatorsFormComponent implements OnInit {
     }
   }
 
-  // Si el correo ya lo usa otra cuenta del staff, el backend responde 409 y su mensaje se muestra aquí.
+  // Los errores de campo del backend (como un correo ya usado, 409) se muestran bajo su campo;
+  // el administrador a cargo llega como admin y corresponde al selector adminId.
   private showSaveError(error: HttpErrorResponse): void {
-    this.saveError =
-      error.error?.message ||
-      'The operator could not be saved. Make sure the backend is running and try again.';
+    this.saveError = showApiErrors(this.form, error, { admin: 'adminId' });
     this.isSaving = false;
   }
 }

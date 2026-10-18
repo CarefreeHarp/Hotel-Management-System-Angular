@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
 import { RoomTypeOptionDTO } from '../../../../models/dto/room-type-option-dto';
 import { RoomStatus } from '../../../../models/enums/room-status';
+import { ROOM_MESSAGES } from '../../../../utils/form-messages';
 
 @Component({
   selector: 'app-room-fields',
@@ -27,15 +28,7 @@ export class RoomFieldsComponent {
     RoomStatus.OCCUPIED,
     RoomStatus.MAINTENANCE,
   ];
-  error(control: FormControl): string {
-    if (control.hasError('required')) return 'This field is required.';
-    if (control.hasError('integer')) return 'Enter a whole number.';
-    if (control.hasError('min'))
-      return 'Minimum value: ' + control.getError('min').min + '.';
-    if (control.hasError('max'))
-      return 'Maximum value: ' + control.getError('max').max + '.';
-    return 'Check this value.';
-  }
+  protected readonly messages = ROOM_MESSAGES;
   invalid(control: FormControl): boolean {
     return control.invalid && (control.touched || this.submitted);
   }

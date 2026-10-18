@@ -1,6 +1,12 @@
 package com.example.demo.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import com.example.demo.entities.enums.ActivationStatus;
 import lombok.*;
 import java.math.BigDecimal;
@@ -21,45 +27,68 @@ public class Service {
     // Identificador del servicio. Restricciones: Clave primaria única y autogenerada; se conserva el identificador de la ruta al actualizar.
     private Integer serviceId;
     @Column(nullable = false, length = 100)
-    // Nombre del registro. Restricciones: No admite null en la base de datos; columna de máximo 100 caracteres.
+    @NotBlank(message = "Enter the service name.")
+    @Size(max = 100, message = "The name cannot exceed 100 characters.")
+    // Nombre del registro. Restricciones: Obligatorio; máximo 100 caracteres.
     private String name;
     @Column(name = "url_name", nullable = false, unique = true, length = 100)
-    // Nombre único apto para URL. Restricciones: No admite null en la base de datos; valor único en la base de datos; columna de máximo 100 caracteres.
+    @NotBlank(message = "The service needs a URL name.")
+    @Size(max = 100, message = "The URL name cannot exceed 100 characters.")
+    // Nombre único apto para URL, generado a partir del nombre. Restricciones: Obligatorio; máximo 100 caracteres; único.
     private String urlName;
     @Lob
     @Column(nullable = false)
-    // Descripción detallada. Restricciones: No admite null en la base de datos.
+    @NotBlank(message = "Enter a description.")
+    @Size(max = 5000, message = "The description cannot exceed 5,000 characters.")
+    // Descripción detallada. Restricciones: Obligatoria; máximo 5.000 caracteres.
     private String description;
     @Column(nullable = false, precision = 10, scale = 2)
-    // Precio del servicio. Restricciones: No admite null en la base de datos; columna decimal de precisión 10 y escala 2.
+    @NotNull(message = "Enter the price.")
+    @PositiveOrZero(message = "The price cannot be negative.")
+    @Digits(integer = 8, fraction = 2, message = "Enter a price of up to 99,999,999.99 with at most two decimals.")
+    // Precio del servicio. Restricciones: Obligatorio; cero o mayor; decimal de precisión 10 y escala 2.
     private BigDecimal price;
     @Column(nullable = false, length = 50)
-    // Categoría del servicio. Restricciones: No admite null en la base de datos; columna de máximo 50 caracteres.
+    @NotBlank(message = "Enter the category.")
+    @Size(max = 50, message = "The category cannot exceed 50 characters.")
+    // Categoría del servicio. Restricciones: Obligatoria; máximo 50 caracteres.
     private String category;
     @Enumerated(EnumType.STRING)
     @Column(name = "activation_status", nullable = false, length = 8)
+    @NotNull(message = "Select the activation status.")
     @Builder.Default
-    // Disponibilidad para nuevas reservas. Restricciones: No admite null; enum ACTIVE o INACTIVE; editable en formulario y mediante Activate/Deactivate, sin alterar reservas existentes.
+    // Disponibilidad para nuevas reservas. Restricciones: Obligatoria; enum ACTIVE o INACTIVE; editable en formulario y mediante Activate/Deactivate, sin alterar reservas existentes.
     private ActivationStatus activationStatus = ActivationStatus.ACTIVE;
     @Column(length = 255)
-    // Resumen corto opcional. Restricciones: Opcional; columna de máximo 255 caracteres.
+    @Size(max = 255, message = "The summary cannot exceed 255 characters.")
+    // Resumen corto opcional. Restricciones: Opcional; máximo 255 caracteres.
     private String summary;
     @Column(length = 50)
-    // Duración opcional del servicio. Restricciones: Opcional; columna de máximo 50 caracteres.
+    @Size(max = 50, message = "The duration cannot exceed 50 characters.")
+    // Duración opcional del servicio. Restricciones: Opcional; máximo 50 caracteres.
     private String duration;
     @Column(length = 100)
-    // Información opcional de disponibilidad. Restricciones: Opcional; columna de máximo 100 caracteres.
+    @Size(max = 100, message = "The schedule cannot exceed 100 characters.")
+    // Información opcional de disponibilidad. Restricciones: Opcional; máximo 100 caracteres.
     private String availability;
     @Column(length = 100)
-    // Ubicación opcional del servicio. Restricciones: Opcional; columna de máximo 100 caracteres.
+    @Size(max = 100, message = "The location cannot exceed 100 characters.")
+    // Ubicación opcional del servicio. Restricciones: Opcional; máximo 100 caracteres.
     private String location;
     @Column(nullable = false, name = "main_image_url", length = 500)
-    // URL de la imagen principal del servicio. Restricciones: No admite null en la base de datos; columna de máximo 500 caracteres.
+    @NotBlank(message = "Enter the main photo URL.")
+    @Size(max = 500, message = "The photo URL cannot exceed 500 characters.")
+    @Pattern(regexp = "(https?://\\S+)?", message = "Enter a photo URL that starts with http:// or https://.")
+    // URL de la imagen principal del servicio. Restricciones: Obligatoria; dirección http o https de máximo 500 caracteres.
     private String mainImageUrl;
     @ElementCollection
     @CollectionTable(name = "service_secondary_image", joinColumns = @JoinColumn(name = "service_id"))
     @Column(name = "image_url", nullable = false, length = 500)
+    @Size(max = 10, message = "Add at most 10 additional photos.")
     @Builder.Default
-    // Lista de imágenes secundarias. Restricciones: Colección opcional; cada elemento no admite null y su columna tiene un máximo de 500 caracteres.
-    private List<String> secondaryImageUrls = new ArrayList<>();
+    // Lista de imágenes secundarias. Restricciones: Opcional; máximo 10; cada una es una dirección http o https de máximo 500 caracteres.
+    private List<
+            @Size(max = 500, message = "The photo URL cannot exceed 500 characters.")
+            @Pattern(regexp = "(https?://\\S+)?", message = "Enter a photo URL that starts with http:// or https://.")
+            String> secondaryImageUrls = new ArrayList<>();
 }

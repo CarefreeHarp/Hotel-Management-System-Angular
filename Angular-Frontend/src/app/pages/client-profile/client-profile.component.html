@@ -34,13 +34,6 @@
           {{ isDeleting ? "Deleting…" : "Delete account" }}
         </button>
       </footer>
-    } @else {
-      <app-page-heading
-        eyebrow="My profile"
-        title="Profile unavailable"
-        [description]="loadError"
-        ><a appButton routerLink="/login">Sign in</a></app-page-heading
-      >
     }
   </div>
 </main>

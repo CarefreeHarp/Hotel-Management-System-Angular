@@ -12,7 +12,7 @@
         [control]="form.controls.name"
         [maxlength]="60"
         [submitted]="submitted"
-        error="Enter a first name with up to 60 characters."
+        [messages]="messages.name"
       />
       <app-form-field
         fieldId="lastName"
@@ -21,7 +21,7 @@
         [control]="form.controls.lastName"
         [maxlength]="60"
         [submitted]="submitted"
-        error="Enter a last name with up to 60 characters."
+        [messages]="messages.lastName"
       />
       <app-form-field
         fieldId="nationalId"
@@ -30,16 +30,20 @@
         [control]="form.controls.nationalId"
         [maxlength]="20"
         [submitted]="submitted"
-        error="Enter a national ID with up to 20 characters."
+        hint="5 to 20 letters or numbers, without spaces."
+        [messages]="messages.nationalId"
       />
       <app-form-field
         fieldId="phone"
         label="Phone"
         type="tel"
         [control]="form.controls.phone"
-        [maxlength]="20"
+        restrict="phone"
+        inputmode="tel"
+        [maxlength]="16"
         [submitted]="submitted"
-        error="Enter a phone number with up to 20 characters."
+        hint="7 to 15 digits; it may start with +."
+        [messages]="messages.phone"
       />
       <app-form-field
         fieldId="email"
@@ -48,7 +52,7 @@
         [control]="form.controls.email"
         [maxlength]="100"
         [submitted]="submitted"
-        error="Enter a valid email address with up to 100 characters."
+        [messages]="messages.email"
       />
       <app-form-field
         fieldId="profilePhoto"
@@ -57,7 +61,7 @@
         [control]="form.controls.profilePhoto"
         [maxlength]="500"
         [submitted]="submitted"
-        error="Enter an HTTP or HTTPS URL with up to 500 characters."
+        [messages]="messages.profilePhoto"
         [required]="false"
       />
     </div>

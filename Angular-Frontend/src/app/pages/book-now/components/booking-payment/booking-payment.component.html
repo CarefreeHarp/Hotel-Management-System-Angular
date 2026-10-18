@@ -17,6 +17,7 @@
       class="payment-form"
       (ngSubmit)="submit()"
       aria-labelledby="payment-details-title"
+      novalidate
     >
       <section>
         <h2 id="payment-details-title">Choose your payment</h2>
@@ -29,14 +30,21 @@
               type="number"
               name="amount"
               [(ngModel)]="amount"
+              (ngModelChange)="clearError('amount')"
+              (blur)="touch('amount')"
               min="100000"
               [max]="quote.total"
-              step="any"
+              step="0.01"
               required
-          /></label>
+              [attr.aria-invalid]="!!errorFor('amount')"
+            />
+            @if (errorFor("amount"); as message) {
+              <small class="field-error" role="alert">{{ message }}</small>
+            }
+          </label>
         </div>
         <p class="payment-security">
-          You can pay all or part of your stay total today.
+          You can pay all or part of your stay total today, from COP 100,000.
         </p>
       </section>
       <section>
@@ -44,9 +52,18 @@
         <div class="payment-fields">
           <label
             >Name on card<input
+              #nameInput
               name="cardholderName"
-              [(ngModel)]="cardholderName"
-              autocomplete="cc-name" /></label
+              [ngModel]="cardholderName"
+              (input)="formatName(nameInput)"
+              (blur)="touch('cardholderName')"
+              maxlength="100"
+              autocomplete="cc-name"
+              [attr.aria-invalid]="!!errorFor('cardholderName')"
+            />
+            @if (errorFor("cardholderName"); as message) {
+              <small class="field-error" role="alert">{{ message }}</small>
+            }</label
           ><label
             >Card number<input
               #cardNumberInput
@@ -56,10 +73,17 @@
               (keydown.backspace)="
                 eraseSeparator($event, cardNumberInput, 'card')
               "
+              (blur)="touch('cardNumber')"
               inputmode="numeric"
+              maxlength="23"
               autocomplete="cc-number"
               placeholder="0000 0000 0000 0000"
-          /></label>
+              [attr.aria-invalid]="!!errorFor('cardNumber')"
+            />
+            @if (errorFor("cardNumber"); as message) {
+              <small class="field-error" role="alert">{{ message }}</small>
+            }
+          </label>
         </div>
         <div class="payment-fields payment-fields--two">
           <label
@@ -71,22 +95,40 @@
               (keydown.backspace)="
                 eraseSeparator($event, expiryInput, 'expiry')
               "
+              (blur)="touch('expiryDate')"
               inputmode="numeric"
+              maxlength="5"
               autocomplete="cc-exp"
-              placeholder="MM/YY" /></label
+              placeholder="MM/YY"
+              [attr.aria-invalid]="!!errorFor('expiryDate')"
+            />
+            @if (errorFor("expiryDate"); as message) {
+              <small class="field-error" role="alert">{{ message }}</small>
+            }</label
           ><label
             >Security code<input
+              #securityCodeInput
               name="securityCode"
-              [(ngModel)]="securityCode"
+              [ngModel]="securityCode"
+              (input)="formatSecurityCode(securityCodeInput)"
+              (blur)="touch('securityCode')"
               type="text"
               inputmode="numeric"
+              maxlength="4"
               autocomplete="cc-csc"
               placeholder="CVV"
-          /></label>
+              [attr.aria-invalid]="!!errorFor('securityCode')"
+            />
+            @if (errorFor("securityCode"); as message) {
+              <small class="field-error" role="alert">{{ message }}</small>
+            }
+          </label>
         </div>
       </section>
-      @if (submitted && validationMessage) {
-        <p class="payment-error" role="alert">{{ validationMessage }}</p>
+      @if ((submitted && !valid()) || hasFieldErrors) {
+        <p class="payment-error" role="alert">
+          Please check the highlighted payment details.
+        </p>
       }
       <button class="payment-submit" type="submit" [disabled]="busy">
         {{ busy ? "Processing…" : "Confirm and pay" }}

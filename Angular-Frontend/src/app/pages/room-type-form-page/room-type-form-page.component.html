@@ -2,7 +2,9 @@
 
 <main class="catalog-page">
   <div class="catalog-page__container">
-    @if (isCreateMode || roomType) {
+    @if (loading) {
+      <p role="status">Loading room type…</p>
+    } @else {
       <app-page-heading
         [title]="isCreateMode ? 'Create room type' : 'Edit room type'"
         [description]="
@@ -36,8 +38,14 @@
           (addPhoto)="addPhoto()"
         />
         <div class="form-actions">
-          <button appButton type="submit">
-            {{ isCreateMode ? "Create room type" : "Save room type" }}
+          <button appButton type="submit" [disabled]="saving">
+            {{
+              saving
+                ? "Saving…"
+                : isCreateMode
+                  ? "Create room type"
+                  : "Save room type"
+            }}
             <span aria-hidden="true">→</span>
           </button>
           <a

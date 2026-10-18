@@ -10,7 +10,7 @@
       [control]="form.controls.name"
       [maxlength]="50"
       [submitted]="submitted"
-      error="Enter a name of up to 50 characters."
+      [messages]="messages.name"
     />
     <app-form-field
       fieldId="maxCapacity"
@@ -20,8 +20,9 @@
       [min]="1"
       [max]="10"
       [step]="1"
+      hint="From 1 to 10 guests."
       [submitted]="submitted"
-      error="Enter a whole number from 1 to 10."
+      [messages]="messages.maxCapacity"
     />
     <app-form-field
       class="full-width"
@@ -32,7 +33,7 @@
       [maxlength]="500"
       hint="Maximum 500 characters."
       [submitted]="submitted"
-      error="Enter a description of up to 500 characters."
+      [messages]="messages.description"
     />
     <app-form-field
       fieldId="nightlyPrice"
@@ -40,10 +41,12 @@
       type="number"
       prefix="$"
       [control]="form.controls.nightlyPrice"
-      [min]="0"
+      [min]="0.01"
+      [max]="99999999.99"
       [step]="0.01"
+      hint="Greater than zero, up to two decimals."
       [submitted]="submitted"
-      error="Enter a price equal to or greater than zero."
+      [messages]="messages.nightlyPrice"
     />
   </div>
 </section>

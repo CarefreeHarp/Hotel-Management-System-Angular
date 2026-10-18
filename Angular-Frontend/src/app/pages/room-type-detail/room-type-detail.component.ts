@@ -1,8 +1,8 @@
 import { AsyncPipe } from '@angular/common';
 import { clientQuery } from '../../utils/client-query';
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { EMPTY, map, switchMap } from 'rxjs';
 import { HeaderComponent } from '../../components/header/header.component';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
@@ -11,6 +11,7 @@ import { RoomTypeInfoComponent } from './components/room-type-info/room-type-inf
 import { GalleryComponent } from '../../components/gallery/gallery.component';
 import { RoomTypeService } from '../../services/room-type.service';
 import { basePath, isAdminArea } from '../../utils/base-path';
+import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 
 @Component({
   selector: 'app-room-type-detail',
@@ -32,17 +33,23 @@ export class RoomTypeDetailComponent {
     return clientQuery(this.route);
   }
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly service = inject(RoomTypeService);
   get base(): string {
     return basePath(this.route);
   }
   readonly adminArea = isAdminArea(this.route);
+  // Una id inválida muestra la pantalla 400; si la carga falla, la que corresponda (404, 500…).
   readonly roomType$ = this.route.paramMap.pipe(
     switchMap((params) => {
       const id = Number(params.get('id'));
-      return Number.isSafeInteger(id) && id > 0
-        ? this.service.getById(id).pipe(catchError(() => of(undefined)))
-        : of(undefined);
+      if (!Number.isSafeInteger(id) || id <= 0) {
+        showErrorPage(this.router, this.route, 400);
+        return EMPTY;
+      }
+      return this.service
+        .getById(id)
+        .pipe(catchErrorPage(this.router, this.route));
     }),
   );
   readonly saved$ = this.route.queryParamMap.pipe(

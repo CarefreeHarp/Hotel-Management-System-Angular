@@ -2,7 +2,22 @@ import { BookingReservationSummaryComponent } from '../booking-reservation-summa
 import { Component, Input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
-import { BookingQuote, CardPayment } from '../../../../models/booking';
+import {
+  BookingQuote,
+  CardPayment,
+  MAX_PAYMENT,
+  MIN_PAYMENT,
+} from '../../../../models/booking';
+import { PAYMENT_MESSAGES } from '../../../../utils/form-messages';
+import { hasMaxDecimals } from '../../../../utils/form-validators';
+
+type PaymentErrors = Partial<Record<keyof CardPayment, string>>;
+
+// Mismo formato que usa el backend en sus mensajes: COP 1,215,000.
+function cop(value: number): string {
+  return `COP ${new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(value)}`;
+}
+
 @Component({
   selector: 'app-booking-payment',
   imports: [BookingReservationSummaryComponent, FormsModule, CurrencyPipe],
@@ -14,35 +29,105 @@ export class BookingPaymentComponent {
   @Input() busy = false;
   readonly pay = output<CardPayment>();
   readonly payLater = output<void>();
-  amount = 0;
+  // Mensajes del backend por campo; cada uno desaparece cuando se edita su campo.
+  fieldErrors: PaymentErrors = {};
+  @Input() set serverErrors(value: Record<string, string>) {
+    this.fieldErrors = { ...value };
+  }
+  get hasFieldErrors(): boolean {
+    return Object.keys(this.fieldErrors).length > 0;
+  }
+  clearError(field: keyof CardPayment): void {
+    delete this.fieldErrors[field];
+  }
+  amount: number | null = 0;
   cardholderName = '';
   cardNumber = '';
   expiryDate = '';
   securityCode = '';
   submitted = false;
+  // Campos que el usuario ya dejó: sus errores se muestran sin esperar al envío.
+  private readonly touched = new Set<keyof CardPayment>();
   ngOnInit(): void {
     this.amount = this.quote?.total ?? 0;
   }
-  get validationMessage(): string {
-    if (
-      !Number.isFinite(this.amount) ||
-      this.amount < 100000 ||
-      this.amount > (this.quote?.total ?? 0)
-    )
-      return 'Enter at least COP 100,000 without exceeding the total.';
-    const month = Number(this.expiryDate.split('/')[0]);
-    if (!Number.isInteger(month) || month < 1 || month > 12)
-      return 'Enter an expiry month from 1 to 12.';
-    return '';
+  touch(field: keyof CardPayment): void {
+    this.touched.add(field);
+  }
+  // Mismas reglas y mensajes que BookingService.checkPayment() en el backend.
+  get clientErrors(): PaymentErrors {
+    const messages = PAYMENT_MESSAGES;
+    const errors: PaymentErrors = {};
+    const total = this.quote?.total ?? 0;
+    const amount = this.amount;
+    if (amount === null || !Number.isFinite(amount))
+      errors.amount = messages.amount.required;
+    else if (!hasMaxDecimals(amount, 2))
+      errors.amount = messages.amount.decimals;
+    else if (amount < MIN_PAYMENT || amount > total)
+      errors.amount = `Payment must be at least ${cop(MIN_PAYMENT)} and cannot exceed the total of ${cop(total)}.`;
+    else if (amount > MAX_PAYMENT) errors.amount = messages.amount.max;
+    const name = this.cardholderName.trim();
+    if (!name) errors.cardholderName = messages.cardholderName.required;
+    else if (name.length > 100 || !/^[\p{L} .'-]+$/u.test(name))
+      errors.cardholderName = messages.cardholderName.letters;
+    const digits = this.cardNumber.replace(/\s/g, '');
+    if (!digits) errors.cardNumber = messages.cardNumber.required;
+    else if (!/^\d{13,19}$/.test(digits))
+      errors.cardNumber = messages.cardNumber.length;
+    const expiry = this.expiryDate.trim();
+    if (!expiry) errors.expiryDate = messages.expiryDate.required;
+    else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry))
+      errors.expiryDate = messages.expiryDate.format;
+    else {
+      const now = new Date();
+      const currentMonth = now.getFullYear() * 12 + now.getMonth();
+      const expiryMonth =
+        (2000 + Number(expiry.slice(3))) * 12 + Number(expiry.slice(0, 2)) - 1;
+      if (expiryMonth < currentMonth)
+        errors.expiryDate = messages.expiryDate.expired;
+      else if (expiryMonth > currentMonth + 20 * 12)
+        errors.expiryDate = messages.expiryDate.tooFar;
+    }
+    const code = this.securityCode.trim();
+    if (!code) errors.securityCode = messages.securityCode.required;
+    else if (!/^\d{3,4}$/.test(code))
+      errors.securityCode = messages.securityCode.length;
+    return errors;
+  }
+  // El mensaje del backend tiene prioridad; el local aparece al dejar el campo o al enviar.
+  errorFor(field: keyof CardPayment): string | undefined {
+    return (
+      this.fieldErrors[field] ??
+      (this.submitted || this.touched.has(field)
+        ? this.clientErrors[field]
+        : undefined)
+    );
   }
   valid(): boolean {
-    return !this.validationMessage;
+    return Object.keys(this.clientErrors).length === 0;
+  }
+  // Solo letras (con tildes y ñ), espacios, puntos, apóstrofes y guiones, como en el backend.
+  formatName(control: HTMLInputElement): void {
+    this.clearError('cardholderName');
+    const value = control.value.replace(/[^\p{L} .'-]/gu, '').slice(0, 100);
+    if (value !== control.value) control.value = value;
+    this.cardholderName = value;
   }
   formatCardNumber(control: HTMLInputElement): void {
+    this.clearError('cardNumber');
     this.format(control, 'card');
   }
   formatExpiry(control: HTMLInputElement): void {
+    this.clearError('expiryDate');
     this.format(control, 'expiry');
+  }
+  // El código de seguridad solo admite 3 o 4 dígitos.
+  formatSecurityCode(control: HTMLInputElement): void {
+    this.clearError('securityCode');
+    const value = control.value.replace(/\D/g, '').slice(0, 4);
+    if (value !== control.value) control.value = value;
+    this.securityCode = value;
   }
   eraseSeparator(
     event: Event,
@@ -68,7 +153,8 @@ export class BookingPaymentComponent {
       .slice(0, control.selectionStart ?? control.value.length)
       .replace(/\D/g, '').length;
     const rawDigits = control.value.replace(/\D/g, '');
-    const digits = kind === 'expiry' ? rawDigits.slice(0, 4) : rawDigits;
+    // Una tarjeta tiene como mucho 19 dígitos y la fecha MM/YY, 4.
+    const digits = rawDigits.slice(0, kind === 'expiry' ? 4 : 19);
     const formatted =
       kind === 'card'
         ? (digits.match(/.{1,4}/g)?.join(' ') ?? '')
@@ -93,7 +179,7 @@ export class BookingPaymentComponent {
   }
   submit(): void {
     this.submitted = true;
-    if (this.quote && this.valid() && !this.busy)
+    if (this.quote && this.amount !== null && this.valid() && !this.busy)
       this.pay.emit({
         amount: this.amount,
         cardholderName: this.cardholderName.trim(),

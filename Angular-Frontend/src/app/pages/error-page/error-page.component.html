@@ -1,0 +1,33 @@
+@if (staffArea) {
+  <app-admin-header />
+} @else {
+  <app-header [solid]="true" />
+}
+<main class="error-page" [class.is-server]="serverError">
+  <div class="error-page__container">
+    <p class="error-code" aria-hidden="true">{{ code }}</p>
+    <section class="error-copy" aria-labelledby="error-title">
+      <p class="eyebrow">Error {{ code }} · {{ copy.label }}</p>
+      <h1 id="error-title">{{ copy.title }}</h1>
+      <p class="message">{{ copy.message }}</p>
+      <p class="address">
+        Address <code>{{ address }}</code>
+      </p>
+      <div class="actions">
+        @if (serverError) {
+          <button appButton type="button" (click)="retry()">Try again</button>
+        }
+        <a
+          appButton
+          [variant]="serverError ? 'secondary' : 'primary'"
+          [routerLink]="home"
+          [queryParams]="homeParams"
+          >{{ homeLabel }}</a
+        >
+        <button appButton variant="secondary" type="button" (click)="back()">
+          Go back
+        </button>
+      </div>
+    </section>
+  </div>
+</main>

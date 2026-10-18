@@ -448,8 +448,7 @@
   }
 }
 
-.loading-wrapper,
-.error-wrapper {
+.loading-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -470,24 +469,5 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-.error-card {
-  text-align: center;
-  background: #fff;
-  padding: 3rem;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  max-width: 500px;
-
-  h1 {
-    font-family: var(--font-display);
-    margin: 0.5rem 0 1rem;
-  }
-
-  p {
-    color: #666;
-    margin-bottom: 1.5rem;
   }
 }

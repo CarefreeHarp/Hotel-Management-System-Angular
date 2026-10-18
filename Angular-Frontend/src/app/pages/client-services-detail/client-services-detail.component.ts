@@ -1,9 +1,17 @@
-import { Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  filter,
+  map,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { clientQuery } from '../../utils/client-query';
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ServiceService } from '../../services/service.service';
 import { ServiceDetailDTO } from '../../models/dto/service-detail-dto';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -11,6 +19,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ServiceGalleryComponent } from './components/service-gallery/service-gallery.component';
 import { basePath } from '../../utils/base-path';
+import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 
 @Component({
   selector: 'app-client-services-detail',
@@ -31,15 +40,16 @@ export class ClientServicesDetailComponent {
     return clientQuery(this.route);
   }
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly serviceService = inject(ServiceService);
   get base(): string {
     return basePath(this.route);
   }
 
+  // Si el servicio no existe o falla la carga, se muestra la pantalla de error que corresponda.
   readonly state$: Observable<{
     service?: ServiceDetailDTO;
     isLoading: boolean;
-    errorMessage: string;
   }> = this.route.paramMap.pipe(
     map((params) => params.get('id') ?? ''),
     switchMap((idOrSlug) => {
@@ -53,28 +63,15 @@ export class ClientServicesDetailComponent {
               )
           : this.serviceService.getByUrlName(idOrSlug);
       return request.pipe(
-        map(
-          (
-            service,
-          ): {
-            service?: ServiceDetailDTO;
-            isLoading: boolean;
-            errorMessage: string;
-          } =>
-            service.activationStatus === 'ACTIVE'
-              ? { service, isLoading: false, errorMessage: '' }
-              : {
-                  isLoading: false,
-                  errorMessage: 'The requested service is inactive.',
-                },
-        ),
-        catchError(() =>
-          of({
-            isLoading: false,
-            errorMessage: 'The requested service is not available.',
-          }),
-        ),
-        startWith({ isLoading: true, errorMessage: '' }),
+        // Un servicio inactivo no está en el catálogo: para el huésped no existe.
+        tap((service) => {
+          if (service.activationStatus !== 'ACTIVE')
+            showErrorPage(this.router, this.route, 404);
+        }),
+        filter((service) => service.activationStatus === 'ACTIVE'),
+        map((service) => ({ service, isLoading: false })),
+        catchErrorPage(this.router, this.route),
+        startWith({ isLoading: true }),
       );
     }),
   );

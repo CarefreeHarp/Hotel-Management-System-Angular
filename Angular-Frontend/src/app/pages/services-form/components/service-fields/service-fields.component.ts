@@ -1,7 +1,8 @@
 import { ActivationStatus } from '../../../../models/enums/activation-status';
 import { Component, Input } from '@angular/core';
-import { AbstractControl, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
+import { SERVICE_MESSAGES } from '../../../../utils/form-messages';
 import type { ServicesFormComponent } from '../../services-form.component';
 
 @Component({
@@ -17,6 +18,7 @@ export class ServiceFieldsComponent {
   }));
   @Input({ required: true }) form!: ServicesFormComponent['form'];
   @Input() submitted = false;
+  protected readonly messages = SERVICE_MESSAGES;
   readonly textFields = [
     { key: 'name', label: 'Name', required: true, max: 100 },
     { key: 'category', label: 'Category', required: true, max: 50 },
@@ -25,13 +27,4 @@ export class ServiceFieldsComponent {
     { key: 'availability', label: 'Schedule', required: false, max: 100 },
     { key: 'location', label: 'Location', required: false, max: 100 },
   ] as const;
-
-  error(control: AbstractControl): string {
-    if (control.hasError('required')) return 'This field is required.';
-    if (control.hasError('maxlength'))
-      return `Maximum ${control.getError('maxlength').requiredLength} characters.`;
-    if (control.hasError('photoUrl'))
-      return 'Enter a valid HTTP or HTTPS image URL.';
-    return 'Enter a price from 0 to 99,999,999.99 with up to two decimal places.';
-  }
 }

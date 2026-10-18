@@ -47,7 +47,17 @@
 }
 
 .add-photo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
   margin-top: 1rem;
+}
+
+.photo-count {
+  margin: 0;
+  color: #9faeb9;
+  font-size: 0.75rem;
 }
 
 @media (max-width: 575px) {

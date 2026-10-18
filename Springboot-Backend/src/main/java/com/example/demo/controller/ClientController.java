@@ -6,7 +6,11 @@ import com.example.demo.entities.Client;
 import com.example.demo.service.interfaces.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import com.example.demo.validation.OnCreate;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,14 +38,14 @@ public class ClientController {
 
     @PostMapping("")
     @Operation(summary = "Crear un cliente", description = "El servidor genera el identificador. La respuesta exitosa no tiene cuerpo.")
-    public void createClient(@RequestBody Client client) {
+    public void createClient(@Validated(OnCreate.class) @RequestBody Client client) {
         service.register(client);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un cliente", description = "Reemplaza los campos editables. El identificador de la ruta se mantiene. Se conserva la contraseña existente; el campo password solo se utiliza al crear el registro.")
     public void updateClient(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
-                           @RequestBody Client client) {
+                           @Valid @RequestBody Client client) {
         service.updateProfile(id, client);
     }
 
@@ -53,7 +57,8 @@ public class ClientController {
 
     @GetMapping("/login")
     @Operation(summary = "Iniciar sesión como cliente", description = "Recibe el correo y la contraseña como parámetros de la URL (?email=&password=) y devuelve el cliente; su id va en la URL del perfil.")
-    public ClientDetailDTO login(@RequestParam String email, @RequestParam String password) {
+    public ClientDetailDTO login(@RequestParam @NotBlank(message = "Enter your email address.") String email,
+            @RequestParam @NotBlank(message = "Enter your password.") String password) {
         return service.login(email, password);
     }
 }

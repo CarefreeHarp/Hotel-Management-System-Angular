@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -7,6 +7,7 @@ import { OperatorInfoComponent } from './components/operator-info/operator-info.
 import { OperatorService } from '../../services/operator.service';
 import { OperatorDTO } from '../../models/dto/operator-dto';
 import { basePath } from '../../utils/base-path';
+import { errorPageCode, showErrorPage } from '../../utils/error-page';
 
 @Component({
   selector: 'app-operators-detail',
@@ -22,6 +23,7 @@ import { basePath } from '../../utils/base-path';
 })
 export class OperatorsDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly operatorService = inject(OperatorService);
   get base(): string {
     return basePath(this.route);
@@ -37,8 +39,10 @@ export class OperatorsDetailComponent implements OnInit {
         this.route.snapshot.paramMap.get('operatorId'),
     );
     this.saved = this.route.snapshot.queryParamMap.get('saved') === 'true';
+    // Una id inválida muestra la pantalla 400; si la carga falla, la que corresponda (404, 500…).
+    // También aplica a /operator/:operatorId, que es el perfil del propio operador.
     if (!Number.isSafeInteger(id) || id <= 0) {
-      this.isLoading = false;
+      showErrorPage(this.router, this.route, 400);
       return;
     }
     // La respuesta ya incluye la id y el nombre del administrador a cargo.
@@ -47,10 +51,9 @@ export class OperatorsDetailComponent implements OnInit {
         this.item = operator;
         this.isLoading = false;
       },
-      // El backend también responde con error cuando el id no existe.
-      error: () => {
-        this.isLoading = false;
-      },
+      // El backend responde 404 cuando el id no existe.
+      error: (error: unknown) =>
+        showErrorPage(this.router, this.route, errorPageCode(error)),
     });
   }
 }

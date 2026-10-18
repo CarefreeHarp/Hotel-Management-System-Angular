@@ -1,18 +1,9 @@
-import {
-  BehaviorSubject,
-  Subject,
-  catchError,
-  combineLatest,
-  map,
-  of,
-  startWith,
-  switchMap,
-} from 'rxjs';
+import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { clientQuery } from '../../utils/client-query';
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ServiceService } from '../../services/service.service';
 import { ServiceCatalogDTO } from '../../models/dto/service-catalog-dto';
@@ -20,6 +11,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { basePath } from '../../utils/base-path';
+import { catchErrorPage } from '../../utils/error-page';
 
 @Component({
   selector: 'app-client-services-list',
@@ -41,33 +33,18 @@ export class ClientServicesListComponent {
   }
   private readonly serviceService = inject(ServiceService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   get base(): string {
     return basePath(this.route);
   }
 
-  private readonly reloadSubject = new Subject<void>();
   private readonly selectedCategorySubject = new BehaviorSubject('ALL');
   private readonly searchQuerySubject = new BehaviorSubject('');
-  private readonly catalog$ = this.reloadSubject.pipe(
-    startWith(undefined),
-    switchMap(() =>
-      this.serviceService.getCatalog().pipe(
-        map((services) => ({ services, isLoading: false, errorMessage: '' })),
-        catchError(() =>
-          of({
-            services: new Array<ServiceCatalogDTO>(),
-            isLoading: false,
-            errorMessage:
-              'The service catalog could not be loaded. Please try again.',
-          }),
-        ),
-        startWith({
-          services: new Array<ServiceCatalogDTO>(),
-          isLoading: true,
-          errorMessage: '',
-        }),
-      ),
-    ),
+  // Si el catálogo no carga, la pantalla de error ofrece volver a intentarlo.
+  private readonly catalog$ = this.serviceService.getCatalog().pipe(
+    map((services) => ({ services, isLoading: false })),
+    catchErrorPage(this.router, this.route),
+    startWith({ services: new Array<ServiceCatalogDTO>(), isLoading: true }),
   );
   readonly state$ = combineLatest([
     this.catalog$,
@@ -97,9 +74,6 @@ export class ClientServicesListComponent {
       };
     }),
   );
-  loadServices(): void {
-    this.reloadSubject.next();
-  }
   selectCategory(category: string): void {
     this.selectedCategorySubject.next(category);
   }

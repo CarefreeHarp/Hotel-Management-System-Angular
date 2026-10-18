@@ -7,19 +7,6 @@
   <div class="catalog-page__container">
     @if (isLoading) {
       <p class="loading-state" role="status">Loading form…</p>
-    } @else if (loadError) {
-      <app-page-heading
-        [eyebrow]="isProfile ? 'My profile' : 'Client management'"
-        title="Form unavailable"
-        [description]="loadError"
-      >
-        <a
-          appButton
-          [queryParams]="isProfile ? authParams : {}"
-          [routerLink]="isProfile ? ['/profile'] : [base, 'clients']"
-          >{{ isProfile ? "Back to profile" : "Back to list" }}</a
-        >
-      </app-page-heading>
     } @else {
       <app-page-heading
         [eyebrow]="isProfile ? 'My profile' : 'Client management'"

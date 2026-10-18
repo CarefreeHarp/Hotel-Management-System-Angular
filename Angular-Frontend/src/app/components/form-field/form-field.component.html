@@ -47,15 +47,20 @@
     />
   } @else {
     <input
+      #input
       class="field-input"
       [type]="type"
       [id]="fieldId"
       [formControl]="control"
       [attr.maxlength]="maxlength"
+      [attr.min]="min"
+      [attr.max]="max"
+      [attr.inputmode]="inputmode"
       [attr.required]="required || null"
       [attr.placeholder]="placeholder || null"
       [attr.aria-invalid]="invalid"
       [attr.aria-describedby]="describedBy"
+      (input)="restrictInput(input)"
     />
   }
 </div>
@@ -64,6 +69,6 @@
 }
 <p class="field-error" [id]="fieldId + '-error'">
   @if (invalid) {
-    {{ error }}
+    {{ errorMessage }}
   }
 </p>

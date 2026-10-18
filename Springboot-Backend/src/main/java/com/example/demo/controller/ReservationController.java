@@ -4,6 +4,7 @@ import com.example.demo.dto.ReservationDTO;
 import com.example.demo.service.interfaces.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,11 +43,11 @@ public class ReservationController {
         return booking.quote(roomTypeId, checkIn, checkOut, guests, serviceIds);
     }
     @PostMapping
-    public com.example.demo.dto.ReservationDetailDTO createReservation(@RequestBody com.example.demo.entities.Reservation reservation) {
+    public com.example.demo.dto.ReservationDetailDTO createReservation(@Valid @RequestBody com.example.demo.entities.Reservation reservation) {
         return booking.create(reservation);
     }
     @PutMapping("/{id}")
-    public void updateReservation(@PathVariable Integer id, @RequestBody com.example.demo.entities.Reservation reservation) {
+    public void updateReservation(@PathVariable Integer id, @Valid @RequestBody com.example.demo.entities.Reservation reservation) {
         booking.update(id, reservation);
     }
     @DeleteMapping("/{id}")

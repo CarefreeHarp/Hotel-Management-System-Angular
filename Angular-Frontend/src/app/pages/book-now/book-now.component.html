@@ -34,7 +34,6 @@
     }
     @if (error) {
       <p role="alert" class="error">{{ error }}</p>
-      <button type="button" (click)="retry()">Retry</button>
     }
     @if (loading) {
       <p role="status">Loading your stay…</p>
@@ -81,6 +80,7 @@
             <app-booking-payment
               [quote]="quote"
               [busy]="busy"
+              [serverErrors]="paymentErrors"
               (pay)="confirm($event)"
               (payLater)="confirm()"
             />

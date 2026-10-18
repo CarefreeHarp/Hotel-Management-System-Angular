@@ -6,7 +6,11 @@ import com.example.demo.entities.Administrator;
 import com.example.demo.service.interfaces.AdministratorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import com.example.demo.validation.OnCreate;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,14 +44,14 @@ public class AdministratorController {
 
     @PostMapping("")
     @Operation(summary = "Crear un administrador", description = "El servidor genera el identificador. La respuesta exitosa no tiene cuerpo.")
-    public void createAdministrator(@RequestBody Administrator administrator) {
+    public void createAdministrator(@Validated(OnCreate.class) @RequestBody Administrator administrator) {
         service.create(administrator);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un administrador", description = "Reemplaza los campos editables. El identificador de la ruta se mantiene. Se conserva la contraseña existente; el campo password solo se utiliza al crear el registro.")
     public void updateAdministrator(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
-                           @RequestBody Administrator administrator) {
+                           @Valid @RequestBody Administrator administrator) {
         service.update(id, administrator);
     }
 
@@ -59,7 +63,8 @@ public class AdministratorController {
 
     @GetMapping("/login")
     @Operation(summary = "Iniciar sesión como administrador", description = "Recibe el correo y la contraseña como parámetros de la URL (?email=&password=) y devuelve el administrador; su id va en la URL del panel.")
-    public AdministratorDTO login(@RequestParam String email, @RequestParam String password) {
+    public AdministratorDTO login(@RequestParam @NotBlank(message = "Enter your email address.") String email,
+            @RequestParam @NotBlank(message = "Enter your password.") String password) {
         return service.login(email, password);
     }
 }

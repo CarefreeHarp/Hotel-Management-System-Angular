@@ -6,7 +6,7 @@
     }
     @if (loading) {
       <p role="status">Loading room information...</p>
-    } @else if (isCreateMode || item) {
+    } @else {
       <app-page-heading
         eyebrow="Room catalog"
         [title]="isCreateMode ? 'Create room' : 'Edit room'"
@@ -20,7 +20,7 @@
             Please check the highlighted fields before saving.
           </p>
         }
-        @if (!loadFailed && !roomTypes.length) {
+        @if (!roomTypes.length) {
           <p class="form-alert" role="alert">
             A room type must exist before a room can be saved.
           </p>
@@ -38,7 +38,7 @@
           <button
             appButton
             type="submit"
-            [disabled]="saving || loadFailed || !roomTypes.length"
+            [disabled]="saving || !roomTypes.length"
           >
             {{
               saving ? "Saving..." : isCreateMode ? "Create room" : "Save room"
@@ -52,13 +52,6 @@
           >
         </div>
       </form>
-    } @else {
-      <app-page-heading
-        eyebrow="Room catalog"
-        title="Room not found"
-        description="This room does not exist or is no longer available."
-        ><a appButton [routerLink]="[base, 'rooms']">Back to list</a></app-page-heading
-      >
     }
   </div>
 </main>

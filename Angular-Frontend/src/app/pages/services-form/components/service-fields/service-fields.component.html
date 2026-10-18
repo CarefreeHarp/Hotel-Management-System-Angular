@@ -18,7 +18,7 @@
         [required]="field.required"
         [maxlength]="field.max"
         [submitted]="submitted"
-        [error]="error(form.controls[field.key])"
+        [messages]="messages[field.key]"
       />
     }
     <app-form-field
@@ -30,8 +30,9 @@
       [min]="0"
       [max]="99999999.99"
       [step]="0.01"
+      hint="From 0 to 99,999,999.99, up to two decimals."
       [submitted]="submitted"
-      [error]="error(form.controls.price)"
+      [messages]="messages.price"
     />
     <app-form-field
       class="full-width"
@@ -40,8 +41,10 @@
       [multiline]="true"
       [rows]="6"
       [control]="form.controls.description"
+      [maxlength]="5000"
+      hint="Maximum 5,000 characters."
       [submitted]="submitted"
-      [error]="error(form.controls.description)"
+      [messages]="messages.description"
     />
   </div>
 </section>

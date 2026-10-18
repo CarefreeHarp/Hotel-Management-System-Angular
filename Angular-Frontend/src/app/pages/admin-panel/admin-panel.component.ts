@@ -1,11 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonComponent } from '../../components/button/button.component';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { AdministratorService } from '../../services/administrator.service';
 import { PanelService } from '../../services/panel.service';
 import { PanelCounts } from '../../models/panel-counts';
 import { basePath } from '../../utils/base-path';
+import { errorPageCode, showErrorPage } from '../../utils/error-page';
 
 interface PanelCard {
   key: keyof PanelCounts;
@@ -24,6 +25,7 @@ interface PanelCard {
 export class AdminPanelComponent implements OnInit {
   private readonly administrators = inject(AdministratorService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   administratorName = '';
   private readonly panelService = inject(PanelService);
   // /admin/:adminId: las tarjetas enlazan a las secciones de este administrador.
@@ -91,14 +93,21 @@ export class AdminPanelComponent implements OnInit {
   loading = true;
   loadError = false;
 
-  // Una sola petición: el backend devuelve solo los totales, no los registros.
   ngOnInit(): void {
+    // La id del administrador sale de la URL: si no es válida (400) o no existe (404),
+    // se muestra la pantalla de error en lugar de un panel sin nombre.
     const id = Number(this.route.snapshot.paramMap.get('adminId'));
-    if (Number.isSafeInteger(id) && id > 0)
-      this.administrators.getById(id).subscribe({
-        next: (admin) => (this.administratorName = admin.name),
-        error: () => (this.administratorName = ''),
-      });
+    if (!Number.isSafeInteger(id) || id <= 0) {
+      showErrorPage(this.router, this.route, 400);
+      return;
+    }
+    this.administrators.getById(id).subscribe({
+      next: (admin) => (this.administratorName = admin.name),
+      error: (error: unknown) =>
+        showErrorPage(this.router, this.route, errorPageCode(error)),
+    });
+    // Una sola petición: el backend devuelve solo los totales, no los registros. Son
+    // secundarios: si fallan, el panel lo avisa y sus enlaces siguen funcionando.
     this.panelService.getCounts().subscribe({
       next: (counts) => {
         this.counts = counts;

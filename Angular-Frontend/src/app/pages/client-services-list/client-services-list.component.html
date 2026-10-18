@@ -76,14 +76,6 @@
         </nav>
       </div>
 
-      <!-- Error state -->
-      @if (state.errorMessage) {
-        <div class="alert-box error" role="alert">
-          <p>{{ state.errorMessage }}</p>
-          <button appButton (click)="loadServices()">Try again</button>
-        </div>
-      }
-
       <!-- Loading state -->
       @if (state.isLoading) {
         <div class="loading-container" role="status">

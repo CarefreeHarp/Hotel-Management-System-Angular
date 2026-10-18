@@ -18,6 +18,11 @@
     }
     @if (detail; as item) {
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
+        @if (submitted && form.invalid) {
+          <p class="form-alert" role="alert">
+            Please check the highlighted fields before saving.
+          </p>
+        }
         <fieldset [disabled]="saving">
           <section
             class="booking-summary"

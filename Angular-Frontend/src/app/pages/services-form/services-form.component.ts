@@ -1,12 +1,10 @@
 import { ActivationStatus } from '../../models/enums/activation-status';
 import { Component, inject } from '@angular/core';
 import {
-  AbstractControl,
   FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -14,30 +12,23 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { PhotoFieldsComponent } from '../../components/photo-fields/photo-fields.component';
+import {
+  MAX_ADDITIONAL_PHOTOS,
+  PhotoFieldsComponent,
+} from '../../components/photo-fields/photo-fields.component';
 import { ServiceFieldsComponent } from './components/service-fields/service-fields.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ServiceService, ServiceData } from '../../services/service.service';
 import { ServiceDetailDTO } from '../../models/dto/service-detail-dto';
-import { catchError, finalize, map, of, switchMap } from 'rxjs';
+import { EMPTY, finalize, map, of, switchMap } from 'rxjs';
 import { basePath } from '../../utils/base-path';
-
-function requiredText(control: AbstractControl): ValidationErrors | null {
-  return String(control.value ?? '').trim() ? null : { required: true };
-}
-
-function photoUrl(control: AbstractControl): ValidationErrors | null {
-  const value = String(control.value ?? '').trim();
-  if (!value) return null;
-  try {
-    const url = new URL(value);
-    return /^https?:$/.test(url.protocol) && !/\s/.test(value)
-      ? null
-      : { photoUrl: true };
-  } catch {
-    return { photoUrl: true };
-  }
-}
+import { clearApiErrors, showApiErrors } from '../../utils/api-error';
+import { catchErrorPage, showErrorPage } from '../../utils/error-page';
+import {
+  maxDecimals,
+  photoUrl,
+  requiredText,
+} from '../../utils/form-validators';
 
 @Component({
   selector: 'app-services-form',
@@ -66,6 +57,7 @@ export class ServicesFormComponent {
   loading = false;
   saving = false;
   error = '';
+  // Mismas reglas que la entidad Service en el backend.
   readonly form = new FormGroup({
     activationStatus: new FormControl(ActivationStatus.ACTIVE, {
       nonNullable: true,
@@ -77,20 +69,13 @@ export class ServicesFormComponent {
     }),
     description: new FormControl('', {
       nonNullable: true,
-      validators: [requiredText],
+      validators: [requiredText, Validators.maxLength(5000)],
     }),
     price: new FormControl<number | null>(null, [
       Validators.required,
       Validators.min(0),
       Validators.max(99999999.99),
-      (control) => {
-        const value = control.value;
-        return value === null ||
-          (Number.isFinite(value) &&
-            Math.abs(value * 100 - Math.round(value * 100)) < 0.000001)
-          ? null
-          : { price: true };
-      },
+      maxDecimals(2),
     ]),
     category: new FormControl('', {
       nonNullable: true,
@@ -132,14 +117,15 @@ export class ServicesFormComponent {
           this.submitted = false;
           this.form.controls.secondaryImageUrls.clear();
           this.form.reset();
-          return !this.isCreateMode && Number.isSafeInteger(id) && id > 0
-            ? this.service.getById(id).pipe(
-                catchError(() => {
-                  this.error = 'Unable to load this service from the server.';
-                  return of(undefined);
-                }),
-              )
-            : of(undefined);
+          if (this.isCreateMode) return of(undefined);
+          // Una id inválida muestra la pantalla 400; si el servicio no carga, la que corresponda.
+          if (!Number.isSafeInteger(id) || id <= 0) {
+            showErrorPage(this.router, this.route, 400);
+            return EMPTY;
+          }
+          return this.service
+            .getById(id)
+            .pipe(catchErrorPage(this.router, this.route));
         }),
         takeUntilDestroyed(),
       )
@@ -160,6 +146,9 @@ export class ServicesFormComponent {
   }
 
   addPhoto(value = ''): void {
+    // El backend admite como mucho 10 fotos adicionales por servicio.
+    if (this.form.controls.secondaryImageUrls.length >= MAX_ADDITIONAL_PHOTOS)
+      return;
     this.form.controls.secondaryImageUrls.push(
       new FormControl(value, {
         nonNullable: true,
@@ -185,6 +174,7 @@ export class ServicesFormComponent {
     if (this.saving || this.loading) return;
     this.error = '';
     this.submitted = true;
+    clearApiErrors(this.form);
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
     const value = this.form.getRawValue();
@@ -208,7 +198,7 @@ export class ServicesFormComponent {
     if (!this.isCreateMode && !this.item) return;
     this.saving = true;
     // Ya no se descargan todos los servicios para revisar el nombre: si se repite,
-    // el backend responde 409 y su mensaje se muestra en el formulario.
+    // el backend responde 409 y su mensaje se muestra bajo el campo del nombre.
     const request = this.isCreateMode
       ? this.service.add(data).pipe(map((created) => created.serviceId))
       : this.service
@@ -226,10 +216,9 @@ export class ServicesFormComponent {
             queryParams: { saved: true },
           });
         },
+        // El nombre de URL se genera a partir del nombre: sus errores se muestran en ese campo.
         error: (error: HttpErrorResponse) => {
-          this.error =
-            error.error?.message ||
-            'Unable to save this service. Check the server connection and try again.';
+          this.error = showApiErrors(this.form, error, { urlName: 'name' });
         },
       });
   }

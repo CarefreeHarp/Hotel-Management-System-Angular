@@ -6,21 +6,21 @@
       fieldId="name"
       label="First name"
       placeholder="Operator first name"
-      hint="Up to 50 characters."
+      hint="Up to 60 characters."
       [control]="form.controls.name"
-      [maxlength]="50"
+      [maxlength]="60"
       [submitted]="submitted"
-      [error]="nameError()"
+      [messages]="messages.name"
     />
     <app-form-field
       fieldId="lastName"
       label="Last name"
       placeholder="Operator last name"
-      hint="Up to 50 characters."
+      hint="Up to 60 characters."
       [control]="form.controls.lastName"
-      [maxlength]="50"
+      [maxlength]="60"
       [submitted]="submitted"
-      [error]="lastNameError()"
+      [messages]="messages.lastName"
     />
   </div>
 </section>
@@ -37,9 +37,9 @@
       placeholder="name@atlansuites.com"
       hint="Must not be used by another staff account."
       [control]="form.controls.email"
-      [maxlength]="80"
+      [maxlength]="100"
       [submitted]="submitted"
-      [error]="emailError()"
+      [messages]="messages.email"
     />
     <div>
       <label class="field-label" for="adminId">Administrator in charge</label>
@@ -71,7 +71,10 @@
       }
       <p class="field-error" id="adminId-error">
         @if (adminInvalid) {
-          Select the administrator in charge of this operator.
+          {{
+            form.controls.adminId.getError("server") ??
+              messages.adminId.required
+          }}
         }
       </p>
     </div>

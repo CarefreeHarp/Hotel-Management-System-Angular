@@ -71,8 +71,29 @@ export interface ReservationDetails {
   charges: ReservationCharge[];
   payments: ReservationPayment[];
 }
+// Límites de una reserva y del pago simulado: los mismos que BookingService en el backend.
+export const MAX_NIGHTS = 90;
+export const MAX_YEARS_AHEAD = 2;
+// Ningún tipo de habitación admite más de 10 huéspedes (RoomType.maxCapacity).
+export const MAX_GUESTS = 10;
+export const MIN_PAYMENT = 100000;
+export const MAX_PAYMENT = 99999999.99;
 export function localDate(date = new Date()): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+export function addDays(value: string, days: number): string {
+  const date = new Date(`${value}T12:00:00`);
+  date.setDate(date.getDate() + days);
+  return localDate(date);
+}
+// Última llegada que se puede reservar: hoy más dos años.
+export function latestCheckIn(): string {
+  const date = new Date();
+  date.setFullYear(date.getFullYear() + MAX_YEARS_AHEAD);
+  return localDate(date);
+}
+export function stayNights(checkIn: string, checkOut: string): number {
+  return Math.round((Date.parse(checkOut) - Date.parse(checkIn)) / 86400000);
 }
 export function validStay(stay: BookingStay): boolean {
   const validDate = (value: string): boolean => {
@@ -84,8 +105,11 @@ export function validStay(stay: BookingStay): boolean {
     validDate(stay.checkIn) &&
     validDate(stay.checkOut) &&
     stay.checkIn >= localDate() &&
+    stay.checkIn <= latestCheckIn() &&
     stay.checkOut > stay.checkIn &&
+    stayNights(stay.checkIn, stay.checkOut) <= MAX_NIGHTS &&
     Number.isSafeInteger(stay.guests) &&
-    stay.guests > 0
+    stay.guests > 0 &&
+    stay.guests <= MAX_GUESTS
   );
 }

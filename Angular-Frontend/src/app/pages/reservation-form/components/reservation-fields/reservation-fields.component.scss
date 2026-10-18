@@ -33,6 +33,18 @@ select {
   background: #111e28;
   font: inherit;
 }
+select[aria-invalid="true"] {
+  border-color: #da7e76;
+}
+.select-field small,
+.services-error {
+  color: #ffd6d2;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+.services-error {
+  margin: -0.75rem 0 1rem;
+}
 select:focus-visible,
 input:focus-visible {
   outline: 2px solid #d3ae7b;

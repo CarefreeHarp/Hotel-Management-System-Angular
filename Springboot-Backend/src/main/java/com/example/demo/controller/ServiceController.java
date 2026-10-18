@@ -7,6 +7,7 @@ import com.example.demo.entities.Service;
 import com.example.demo.service.interfaces.ServiceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,14 +42,14 @@ public class ServiceController {
 
     @PostMapping("")
     @Operation(summary = "Crear un servicio", description = "El servidor genera el identificador. La respuesta exitosa no tiene cuerpo.")
-    public void createService(@RequestBody Service hotelService) {
+    public void createService(@Valid @RequestBody Service hotelService) {
         service.create(hotelService);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un servicio", description = "Reemplaza los campos editables. El identificador de la ruta se mantiene.")
     public void updateService(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
-                           @RequestBody Service hotelService) {
+                           @Valid @RequestBody Service hotelService) {
         service.update(id, hotelService);
     }
 

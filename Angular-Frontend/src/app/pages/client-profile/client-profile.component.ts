@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, forkJoin, of, switchMap } from 'rxjs';
+import { forkJoin, of, switchMap } from 'rxjs';
 import { HeaderComponent } from '../../components/header/header.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -13,6 +13,8 @@ import { ReservationService } from '../../services/reservation.service';
 import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 import { ReservationDetails } from '../../models/booking';
 import { clientQuery } from '../../utils/client-query';
+import { apiErrorMessage } from '../../utils/api-error';
+import { catchErrorPage } from '../../utils/error-page';
 
 @Component({
   selector: 'app-client-profile',
@@ -38,7 +40,6 @@ export class ClientProfileComponent implements OnInit {
   isLoading = true;
   isDeleting = false;
   saved = false;
-  loadError = '';
   errorMessage = '';
   get authParams(): { auth?: number } {
     return clientQuery(this.route);
@@ -50,23 +51,17 @@ export class ClientProfileComponent implements OnInit {
           const id = this.authParams.auth;
           this.client = undefined;
           this.reservations = [];
-          this.loadError = '';
           this.isLoading = true;
           this.saved = params.get('saved') === 'true';
           if (id === undefined) {
             void this.router.navigate(['/login'], { replaceUrl: true });
             return of(undefined);
           }
+          // Si auth apunta a un cliente que no existe o falla el servidor, se muestra la pantalla de error.
           return forkJoin({
             client: this.clients.getById(id),
             reservations: this.reservationsService.history(id),
-          }).pipe(
-            catchError(() => {
-              this.loadError =
-                'Your profile could not be loaded. Please try again.';
-              return of(undefined);
-            }),
-          );
+          }).pipe(catchErrorPage(this.router, this.route));
         }),
         takeUntilDestroyed(this.destroyRef),
       )
@@ -93,8 +88,10 @@ export class ClientProfileComponent implements OnInit {
           void this.router.navigate(['/']);
         },
         error: (error: HttpErrorResponse) => {
-          this.errorMessage =
-            error.error?.message ?? 'Your account could not be deleted.';
+          this.errorMessage = apiErrorMessage(
+            error,
+            'Your account could not be deleted.',
+          );
           this.isDeleting = false;
         },
       });
