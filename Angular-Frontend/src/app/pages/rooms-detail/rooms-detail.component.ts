@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -15,6 +16,7 @@ import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-rooms-detail',
   imports: [
+    SkeletonComponent,
     AsyncPipe,
     RouterLink,
     AdminHeaderComponent,

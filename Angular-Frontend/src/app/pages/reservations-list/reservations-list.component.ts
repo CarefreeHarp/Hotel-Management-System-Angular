@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject } from '@angular/core';
@@ -34,6 +35,7 @@ import { catchErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-reservations-list',
   imports: [
+    SkeletonComponent,
     AsyncPipe,
     AdminHeaderComponent,
     ListControlsComponent,

@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../../../components/skeleton/skeleton.component';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -7,7 +8,7 @@ import { clientQuery } from '../../../../utils/client-query';
 
 @Component({
   selector: 'app-suites',
-  imports: [OptimizedImageDirective, RouterLink],
+  imports: [SkeletonComponent, OptimizedImageDirective, RouterLink],
   templateUrl: './suites.component.html',
   styleUrl: './suites.component.scss',
 })
@@ -19,6 +20,7 @@ export class SuitesComponent implements OnInit {
   }
 
   roomTypes: RoomTypeListDTO[] = [];
+  isLoading = true;
   error = '';
   description: string =
     'Our rooms and suites are designed as serene private retreats, pairing generous spaces, handcrafted details and refined comforts with the calm of the coast. Every stay is shaped for deep rest, quiet mornings and effortless luxury.';
@@ -31,10 +33,12 @@ export class SuitesComponent implements OnInit {
     this.roomTypeService.getAll().subscribe({
       next: (data) => {
         this.roomTypes = data;
+        this.isLoading = false;
       },
       // Es una sección del landing: el aviso se muestra en ella y el resto de la página sigue.
       error: () => {
         this.error = 'Suites could not be loaded.';
+        this.isLoading = false;
       },
     });
   }

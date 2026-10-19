@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { clientQuery } from '../../utils/client-query';
 import { apiErrorMessage, apiFieldErrors } from '../../utils/api-error';
 import { errorPageCode, showErrorPage } from '../../utils/error-page';
@@ -36,6 +37,7 @@ import { BookingPaymentComponent } from './components/booking-payment/booking-pa
 @Component({
   selector: 'app-book-now',
   imports: [
+    SkeletonComponent,
     HeaderComponent,
     RouterLink,
     BookingDatesComponent,

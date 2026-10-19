@@ -2,7 +2,7 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <p class="loading-state" role="status">Loading client…</p>
+      <app-skeleton variant="detail" label="Loading client…" />
     } @else if (client) {
       <app-page-heading
         eyebrow="Client management"
@@ -18,7 +18,7 @@
       }
       <app-client-info [client]="client" [staff]="true" />
       @if (historyLoading) {
-        <p role="status">Loading reservations…</p>
+        <app-skeleton variant="cards" label="Loading reservations…" />
       } @else if (historyError) {
         <p role="alert">{{ historyError }}</p>
       } @else {

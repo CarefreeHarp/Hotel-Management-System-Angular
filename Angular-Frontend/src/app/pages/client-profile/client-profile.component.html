@@ -2,7 +2,7 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <p role="status">Loading your profile…</p>
+      <app-skeleton variant="detail" label="Loading your profile…" />
     } @else if (client) {
       <app-page-heading
         eyebrow="My profile"

@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { switchMap, of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
@@ -46,6 +47,7 @@ export type ClientForm = FormGroup<{
 @Component({
   selector: 'app-clients-form',
   imports: [
+    SkeletonComponent,
     ReactiveFormsModule,
     RouterLink,
     HeaderComponent,

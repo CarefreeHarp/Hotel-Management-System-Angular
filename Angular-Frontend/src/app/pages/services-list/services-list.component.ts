@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -25,6 +26,7 @@ import { errorPageCode, showErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-services-list',
   imports: [
+    SkeletonComponent,
     AdminHeaderComponent,
     RouterLink,
     ButtonComponent,

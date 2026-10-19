@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { basePath } from '../../utils/base-path';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -16,6 +17,7 @@ import { errorPageCode, showErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-room-type-table-page',
   imports: [
+    SkeletonComponent,
     CommonModule,
     HeaderComponent,
     AdminHeaderComponent,
@@ -36,6 +38,7 @@ export class RoomTypeTablePageComponent implements OnInit {
   get base(): string {
     return basePath(this.route);
   }
+  isLoading = true;
   roomTypes: RoomTypeListDTO[] = [];
   toastMessage: string | null = null;
   private toastTimeout?: ReturnType<typeof setTimeout>;
@@ -45,9 +48,11 @@ export class RoomTypeTablePageComponent implements OnInit {
   }
 
   loadRoomTypes(): void {
+    this.isLoading = true;
     this.roomTypeService.getAll().subscribe({
       next: (data) => {
         this.roomTypes = data;
+        this.isLoading = false;
       },
       // Sin la lista la página no tiene qué mostrar: se muestra la pantalla de error.
       error: (error: unknown) =>

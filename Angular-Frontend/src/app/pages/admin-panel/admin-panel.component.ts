@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -18,7 +19,7 @@ interface PanelCard {
 
 @Component({
   selector: 'app-admin-panel',
-  imports: [RouterLink, ButtonComponent, AdminHeaderComponent],
+  imports: [SkeletonComponent, RouterLink, ButtonComponent, AdminHeaderComponent],
   templateUrl: './admin-panel.component.html',
   styleUrl: './admin-panel.component.scss',
 })

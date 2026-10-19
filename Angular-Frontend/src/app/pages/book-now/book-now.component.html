@@ -36,7 +36,7 @@
       <p role="alert" class="error">{{ error }}</p>
     }
     @if (loading) {
-      <p role="status">Loading your stay…</p>
+      <app-skeleton [variant]="step === 'room-types' || step === 'services' ? 'cards' : step === 'checkout' ? 'detail' : 'form'" label="Loading your stay…" />
     } @else {
       @switch (step) {
         @case ("dates") {

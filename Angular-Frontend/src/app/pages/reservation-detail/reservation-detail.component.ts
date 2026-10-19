@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { basePath } from '../../utils/base-path';
 import { CurrencyPipe, DatePipe } from '@angular/common';
@@ -20,6 +21,7 @@ import { ReservationFinanceComponent } from './components/reservation-finance/re
 @Component({
   selector: 'app-reservation-detail',
   imports: [
+    SkeletonComponent,
     CurrencyPipe,
     DatePipe,
     RouterLink,

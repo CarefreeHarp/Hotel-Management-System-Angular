@@ -23,53 +23,57 @@
     aria-label="Suites carousel"
   >
     <div class="carousel-inner">
-      <div class="suite-carousel-track" [style.transform]="trackTransform">
-        @for (roomType of roomTypes; track roomType.roomTypeId) {
-          <article class="room-card" tabindex="0">
-            <div class="room-card-inner">
-              <div class="room-card-face room-card-front">
-                <img
-                  appImage
-                  imageWidth="960"
-                  [src]="roomType.mainPhoto"
-                  [alt]="roomType.name"
-                  loading="lazy"
-                />
+      @if (isLoading) {
+        <app-skeleton variant="cards" label="Loading suites..." />
+      } @else {
+        <div class="suite-carousel-track" [style.transform]="trackTransform">
+          @for (roomType of roomTypes; track roomType.roomTypeId) {
+            <article class="room-card" tabindex="0">
+              <div class="room-card-inner">
+                <div class="room-card-face room-card-front">
+                  <img
+                    appImage
+                    imageWidth="960"
+                    [src]="roomType.mainPhoto"
+                    [alt]="roomType.name"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="room-card-face room-card-back">
+                  <p class="room-card-back-text">{{ roomType.description }}</p>
+                  <ul class="room-card-list">
+                    <li>{{ roomType.maxCapacity }} guests</li>
+                    <li>
+                      From COP
+                      {{ roomType.nightlyPrice.toLocaleString("en-US") }} per
+                      night
+                    </li>
+                  </ul>
+                  <a
+                    class="room-card-link"
+                    [routerLink]="['/room-types', roomType.roomTypeId]"
+                    [queryParams]="authParams"
+                    >View details
+                  </a>
+                </div>
               </div>
-              <div class="room-card-face room-card-back">
-                <p class="room-card-back-text">{{ roomType.description }}</p>
-                <ul class="room-card-list">
-                  <li>{{ roomType.maxCapacity }} guests</li>
-                  <li>
-                    From COP
-                    {{ roomType.nightlyPrice.toLocaleString("en-US") }} per
-                    night
-                  </li>
-                </ul>
+              <h3 class="room-card-name">
                 <a
-                  class="room-card-link"
                   [routerLink]="['/room-types', roomType.roomTypeId]"
                   [queryParams]="authParams"
-                  >View details
-                </a>
-              </div>
-            </div>
-            <h3 class="room-card-name">
-              <a
-                [routerLink]="['/room-types', roomType.roomTypeId]"
-                [queryParams]="authParams"
-                >{{ roomType.name }}</a
-              >
-            </h3>
-          </article>
-        } @empty {
-          @if (error) {
-            <p class="rooms-empty" role="alert">{{ error }}</p>
-          } @else {
-            <p class="rooms-empty">No suites are available at the moment.</p>
+                  >{{ roomType.name }}</a
+                >
+              </h3>
+            </article>
+          } @empty {
+            @if (error) {
+              <p class="rooms-empty" role="alert">{{ error }}</p>
+            } @else {
+              <p class="rooms-empty">No suites are available at the moment.</p>
+            }
           }
-        }
-      </div>
+        </div>
+      }
     </div>
 
     <button

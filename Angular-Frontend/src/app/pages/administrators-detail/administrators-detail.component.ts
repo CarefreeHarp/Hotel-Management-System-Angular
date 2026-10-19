@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { mergeMap } from 'rxjs';
@@ -16,6 +17,7 @@ import { errorPageCode, showErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-administrators-detail',
   imports: [
+    SkeletonComponent,
     RouterLink,
     AdminHeaderComponent,
     PageHeadingComponent,

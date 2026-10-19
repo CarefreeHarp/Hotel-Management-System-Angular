@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../../../components/skeleton/skeleton.component';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -7,7 +8,12 @@ import { clientQuery } from '../../../../utils/client-query';
 import { ServiceCardComponent } from './components/service-card/service-card.component';
 @Component({
   selector: 'app-landing-services',
-  imports: [OptimizedImageDirective, RouterLink, ServiceCardComponent],
+  imports: [
+    SkeletonComponent,
+    OptimizedImageDirective,
+    RouterLink,
+    ServiceCardComponent,
+  ],
   templateUrl: './landing-services.component.html',
   styleUrl: './landing-services.component.scss',
 })

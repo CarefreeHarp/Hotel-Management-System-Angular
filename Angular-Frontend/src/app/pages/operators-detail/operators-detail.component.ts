@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
@@ -12,6 +13,7 @@ import { errorPageCode, showErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-operators-detail',
   imports: [
+    SkeletonComponent,
     RouterLink,
     AdminHeaderComponent,
     PageHeadingComponent,

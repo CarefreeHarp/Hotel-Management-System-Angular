@@ -16,7 +16,11 @@
       >
     </header>
 
+    @if (isLoading) {
+      <app-skeleton variant="table" label="Loading room types..." />
+    }
     <app-room-type-table
+      [style.display]="isLoading ? 'none' : null"
       [roomTypes]="roomTypes"
       (delete)="handleDelete($event)"
     />

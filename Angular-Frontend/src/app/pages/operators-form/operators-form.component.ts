@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import {
@@ -24,6 +25,7 @@ import { emailAddress, requiredText } from '../../utils/form-validators';
 @Component({
   selector: 'app-operators-form',
   imports: [
+    SkeletonComponent,
     ReactiveFormsModule,
     RouterLink,
     AdminHeaderComponent,

@@ -78,10 +78,7 @@
 
       <!-- Loading state -->
       @if (state.isLoading) {
-        <div class="loading-container" role="status">
-          <div class="spinner"></div>
-          <p>Loading the service catalog...</p>
-        </div>
+        <app-skeleton variant="cards" label="Loading the service catalog..." />
       } @else {
         <!-- Results Grid -->
         @if (state.filteredServices.length > 0) {

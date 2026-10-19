@@ -25,7 +25,7 @@
       <p class="notice is-error" role="alert">{{ errorMessage }}</p>
     }
     @if (isLoading) {
-      <p class="state" role="status">Loading administrators…</p>
+      <app-skeleton [variant]="listState.view === 'table' ? 'table' : 'cards'" label="Loading administrators…" />
     } @else {
       <app-list-controls
         [state]="listState"

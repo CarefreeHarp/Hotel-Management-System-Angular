@@ -19,7 +19,7 @@
       }}</a
     >
     @if (isLoading) {
-      <p role="status">Loading reservation…</p>
+      <app-skeleton variant="detail" label="Loading reservation…" />
     } @else if (detail) {
       @let item = detail;
       @if (staff && saved) {

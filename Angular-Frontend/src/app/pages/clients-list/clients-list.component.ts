@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { ListControlsComponent } from '../../components/list-controls/list-controls.component';
 import {
   RecordCardsComponent,
@@ -24,6 +25,7 @@ import { errorPageCode, showErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-clients-list',
   imports: [
+    SkeletonComponent,
     ListControlsComponent,
     RecordCardsComponent,
     AdminHeaderComponent,

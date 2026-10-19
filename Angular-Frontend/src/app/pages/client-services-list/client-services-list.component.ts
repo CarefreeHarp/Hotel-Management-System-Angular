@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { clientQuery } from '../../utils/client-query';
@@ -16,6 +17,7 @@ import { catchErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-client-services-list',
   imports: [
+    SkeletonComponent,
     OptimizedImageDirective,
     CommonModule,
     RouterLink,

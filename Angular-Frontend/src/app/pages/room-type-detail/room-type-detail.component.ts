@@ -1,8 +1,9 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { AsyncPipe } from '@angular/common';
 import { clientQuery } from '../../utils/client-query';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EMPTY, map, switchMap } from 'rxjs';
+import { EMPTY, map, startWith, switchMap } from 'rxjs';
 import { HeaderComponent } from '../../components/header/header.component';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
@@ -16,6 +17,7 @@ import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-room-type-detail',
   imports: [
+    SkeletonComponent,
     AsyncPipe,
     RouterLink,
     HeaderComponent,
@@ -49,7 +51,7 @@ export class RoomTypeDetailComponent {
       }
       return this.service
         .getById(id)
-        .pipe(catchErrorPage(this.router, this.route));
+        .pipe(catchErrorPage(this.router, this.route), startWith(null));
     }),
   );
   readonly saved$ = this.route.queryParamMap.pipe(

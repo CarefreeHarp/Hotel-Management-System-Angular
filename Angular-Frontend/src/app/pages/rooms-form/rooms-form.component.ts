@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { ActivationStatus } from '../../models/enums/activation-status';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
@@ -27,6 +28,7 @@ import { wholeNumber } from '../../utils/form-validators';
 @Component({
   selector: 'app-rooms-form',
   imports: [
+    SkeletonComponent,
     ReactiveFormsModule,
     RouterLink,
     AdminHeaderComponent,

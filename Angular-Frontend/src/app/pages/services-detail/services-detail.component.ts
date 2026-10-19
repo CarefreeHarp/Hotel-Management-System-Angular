@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { ServiceDetailDTO } from '../../models/dto/service-detail-dto';
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
@@ -15,6 +16,7 @@ import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-services-detail',
   imports: [
+    SkeletonComponent,
     AsyncPipe,
     ServiceInfoComponent,
     RouterLink,

@@ -17,7 +17,7 @@
     }
     @if (state$ | async; as state) {
       @if (state.loading) {
-        <p role="status">Loading reservations…</p>
+        <app-skeleton [variant]="state.controls.view === 'table' ? 'table' : 'cards'" label="Loading reservations…" />
       } @else {
         <app-list-controls
           [state]="state.controls"

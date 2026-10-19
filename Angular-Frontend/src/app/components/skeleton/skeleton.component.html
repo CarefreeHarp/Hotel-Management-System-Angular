@@ -1,0 +1,68 @@
+<span
+  [class]="'skeleton skeleton--' + variant"
+  role="status"
+  aria-live="polite"
+  aria-busy="true"
+>
+  <span class="sr-only">{{ label }}</span>
+  <span class="layout" aria-hidden="true">
+    @switch (variant) {
+      @case ('stat') {
+        <span class="block stat"></span>
+      }
+      @case ('table') {
+        <span class="toolbar">
+          <span class="block search"></span>
+          <span class="block button"></span>
+        </span>
+        @for (row of rows; track row) {
+          <span class="row">
+            <span class="block avatar"></span>
+            <span class="block line"></span>
+            <span class="block line"></span>
+            <span class="block button"></span>
+          </span>
+        }
+      }
+      @case ('cards') {
+        <span class="cards">
+          @for (card of cards; track card) {
+            <span class="card">
+              <span class="block image"></span>
+              <span class="block title"></span>
+              <span class="block line"></span>
+              <span class="block short"></span>
+            </span>
+          }
+        </span>
+      }
+      @case ('form') {
+        <span class="form">
+          <span class="block title"></span>
+          <span class="fields">
+            @for (row of rows; track row) {
+              <span class="field">
+                <span class="block short"></span>
+                <span class="block input"></span>
+              </span>
+            }
+          </span>
+          <span class="block button"></span>
+        </span>
+      }
+      @case ('detail') {
+        <span class="detail">
+          <span class="block image"></span>
+          <span class="copy">
+            <span class="block title"></span>
+            @for (row of rows; track row) {
+              <span class="block line"></span>
+            }
+            <span class="block short"></span>
+            <span class="block button"></span>
+          </span>
+        </span>
+      }
+    }
+  </span>
+</span>

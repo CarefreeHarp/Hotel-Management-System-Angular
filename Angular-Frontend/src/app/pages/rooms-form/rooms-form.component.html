@@ -5,7 +5,7 @@
       <p class="form-alert" role="alert">{{ error }}</p>
     }
     @if (loading) {
-      <p role="status">Loading room information...</p>
+      <app-skeleton variant="form" label="Loading room information..." />
     } @else {
       <app-page-heading
         eyebrow="Room catalog"

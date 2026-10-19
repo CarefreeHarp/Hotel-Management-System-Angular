@@ -6,7 +6,7 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <p class="loading-state" role="status">Loading form…</p>
+      <app-skeleton variant="form" label="Loading form…" />
     } @else {
       <app-page-heading
         [eyebrow]="isProfile ? 'My profile' : 'Client management'"

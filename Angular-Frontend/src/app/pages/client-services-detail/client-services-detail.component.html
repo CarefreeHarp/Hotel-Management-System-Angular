@@ -3,10 +3,7 @@
 <main class="client-detail-page">
   @if (state$ | async; as state) {
     @if (state.isLoading) {
-      <div class="loading-wrapper" role="status">
-        <div class="spinner"></div>
-        <p>Loading service information...</p>
-      </div>
+      <app-skeleton variant="detail" label="Loading service information..." />
     } @else {
       @if (state.service; as item) {
         <!-- Breadcrumb & Back Navigation -->

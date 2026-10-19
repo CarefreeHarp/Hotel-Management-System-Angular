@@ -2,7 +2,7 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <p class="loading-state" role="status">Loading operator…</p>
+      <app-skeleton variant="detail" label="Loading operator…" />
     } @else {
       @if (item; as operator) {
         <app-page-heading

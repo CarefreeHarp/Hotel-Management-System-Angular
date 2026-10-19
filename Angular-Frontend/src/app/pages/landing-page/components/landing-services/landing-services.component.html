@@ -39,7 +39,7 @@
     </header>
     <section class="services-carousel" aria-label="Hotel services carousel">
       @if (loading) {
-        <p role="status">Loading services…</p>
+        <app-skeleton variant="cards" label="Loading services…" />
       } @else if (error) {
         <p role="alert">{{ error }}</p>
       } @else if (!services.length) {

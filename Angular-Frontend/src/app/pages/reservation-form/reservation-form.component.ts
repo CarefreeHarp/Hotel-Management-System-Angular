@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject } from '@angular/core';
@@ -25,6 +26,7 @@ import {
 @Component({
   selector: 'app-reservation-form',
   imports: [
+    SkeletonComponent,
     CurrencyPipe,
     ReactiveFormsModule,
     RouterLink,

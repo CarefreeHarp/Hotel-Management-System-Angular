@@ -3,7 +3,7 @@
   <div class="catalog-page__container">
     @if (state$ | async; as state) {
       @if (state.loading) {
-        <p role="status">Loading service...</p>
+        <app-skeleton variant="detail" label="Loading service..." />
       } @else {
         @if (state.service; as service) {
           <app-page-heading

@@ -11,7 +11,7 @@
       >
     </app-page-heading>
     @if (loading) {
-      <p role="status">Loading reservation…</p>
+      <app-skeleton variant="form" label="Loading reservation…" />
     }
     @if (error) {
       <p class="form-alert" role="alert">{{ error }}</p>

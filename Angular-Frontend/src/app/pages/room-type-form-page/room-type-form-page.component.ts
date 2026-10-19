@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import {
@@ -43,6 +44,7 @@ export type RoomTypeForm = FormGroup<{
 @Component({
   selector: 'app-room-type-form-page',
   imports: [
+    SkeletonComponent,
     ReactiveFormsModule,
     RouterLink,
     AdminHeaderComponent,

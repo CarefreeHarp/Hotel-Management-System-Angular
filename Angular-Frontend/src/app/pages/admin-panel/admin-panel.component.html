@@ -28,7 +28,7 @@
             <h2 class="panel-card__title">{{ card.title }}</h2>
             <span class="panel-card__count">
               @if (loading) {
-                …
+                <app-skeleton variant="stat" label="Loading total..." />
               } @else {
                 {{ counts?.[card.key] ?? "–" }}
               }

@@ -2,7 +2,7 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <p class="loading-state" role="status">Loading administrator…</p>
+      <app-skeleton variant="detail" label="Loading administrator…" />
     } @else {
       @if (item; as administrator) {
         <app-page-heading

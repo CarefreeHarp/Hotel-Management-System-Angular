@@ -2,7 +2,7 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (error) { <p class="form-alert" role="alert">{{ error }}</p> }
-    @if (loading) { <p role="status">Loading service...</p> } @else {
+    @if (loading) { <app-skeleton variant="form" label="Loading service..." /> } @else {
       <app-page-heading
         eyebrow="Service catalog"
         [title]="isCreateMode ? 'Create service' : 'Edit service'"

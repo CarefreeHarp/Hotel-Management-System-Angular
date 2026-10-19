@@ -1,0 +1,168 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.skeleton,
+.layout {
+  display: block;
+}
+
+.skeleton {
+  padding-block: 1rem;
+}
+
+.block {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  border-radius: 4px;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 15%,
+    color-mix(in srgb, var(--color-sky-deep) 25%, transparent) 50%,
+    transparent 85%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 1.6s var(--ease) infinite;
+}
+
+.title {
+  width: 70%;
+  height: 1.75rem;
+}
+
+.line {
+  width: 100%;
+  height: 0.875rem;
+}
+
+.short {
+  width: 45%;
+  height: 0.875rem;
+}
+
+.button {
+  width: 7rem;
+  max-width: 100%;
+  height: 2.5rem;
+}
+
+.input {
+  height: 3rem;
+}
+
+.image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+}
+
+.avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.search {
+  width: 50%;
+  height: 2.5rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr 7rem;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.row > :nth-child(3) {
+  display: none;
+}
+
+.cards,
+.card,
+.form,
+.fields,
+.field,
+.detail,
+.copy {
+  display: grid;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.card,
+.field {
+  gap: 1rem;
+}
+
+.copy {
+  align-content: start;
+}
+
+.form {
+  max-width: 920px;
+  margin-inline: auto;
+}
+
+.skeleton--stat {
+  padding: 0;
+}
+
+.stat {
+  width: 3rem;
+  height: 2rem;
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (min-width: 640px) {
+  .cards,
+  .fields,
+  .detail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .row {
+    grid-template-columns: 2.5rem 1fr 1fr 7rem;
+  }
+
+  .row > :nth-child(3) {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .block::after {
+    animation: none;
+  }
+}

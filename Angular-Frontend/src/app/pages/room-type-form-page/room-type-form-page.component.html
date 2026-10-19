@@ -3,7 +3,7 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (loading) {
-      <p role="status">Loading room type…</p>
+      <app-skeleton variant="form" label="Loading room type…" />
     } @else {
       <app-page-heading
         [title]="isCreateMode ? 'Create room type' : 'Edit room type'"

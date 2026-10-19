@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -24,6 +25,7 @@ import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-clients-detail',
   imports: [
+    SkeletonComponent,
     RouterLink,
     AdminHeaderComponent,
     PageHeadingComponent,

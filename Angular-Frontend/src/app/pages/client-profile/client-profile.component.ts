@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -19,6 +20,7 @@ import { catchErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-client-profile',
   imports: [
+    SkeletonComponent,
     RouterLink,
     HeaderComponent,
     PageHeadingComponent,

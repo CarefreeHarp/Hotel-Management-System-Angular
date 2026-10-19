@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import {
   Observable,
   catchError,
@@ -24,6 +25,7 @@ import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 @Component({
   selector: 'app-client-services-detail',
   imports: [
+    SkeletonComponent,
     OptimizedImageDirective,
     CommonModule,
     RouterLink,

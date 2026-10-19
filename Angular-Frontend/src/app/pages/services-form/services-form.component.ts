@@ -1,3 +1,4 @@
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { ActivationStatus } from '../../models/enums/activation-status';
 import { Component, inject } from '@angular/core';
 import {
@@ -33,6 +34,7 @@ import {
 @Component({
   selector: 'app-services-form',
   imports: [
+    SkeletonComponent,
     ReactiveFormsModule,
     RouterLink,
     AdminHeaderComponent,
