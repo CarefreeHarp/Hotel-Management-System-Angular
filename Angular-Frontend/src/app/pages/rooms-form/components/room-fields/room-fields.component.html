@@ -4,14 +4,23 @@
     All fields are required. The room number must be unique.
   </p>
   <div class="form-grid">
-    <label class="select-field"
-      >Activation<select formControlName="activationStatus" required>
+    <label class="select-field" for="activation-status"
+      >Activation<select
+        id="activation-status"
+        formControlName="activationStatus"
+        required
+        [attr.aria-invalid]="invalid(form.controls.activationStatus)"
+        aria-describedby="activation-status-error"
+      >
         @for (status of activationStatuses; track status) {
           <option [ngValue]="status">
             {{ status === "ACTIVE" ? "Active" : "Inactive" }}
           </option>
         }
-      </select></label
+      </select>
+      @if (form.controls.activationStatus.getError("server"); as activationError) {
+        <small id="activation-status-error" role="alert">{{ activationError }}</small>
+      }</label
     >
     <app-form-field
       fieldId="number"

@@ -171,7 +171,11 @@ export const RESERVATION_MESSAGES = {
     integer: 'Enter a whole number of guests.',
   },
   roomTypeId: { min: 'Select a room type.' },
-  status: { required: 'Choose a reservation status.' },
+  status: {
+    required: 'Choose a reservation status.',
+    unpaid:
+      'Check-out is not allowed while the reservation has an outstanding balance. Settle the balance first.',
+  },
 } satisfies Record<string, FieldMessages>;
 
 // El pago de la reserva no es un formulario reactivo: sus reglas se revisan en BookingPaymentComponent.

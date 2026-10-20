@@ -75,7 +75,10 @@
       </select>
       @if (invalid(form.controls.status)) {
         <small id="status-error" role="alert">{{
-          form.controls.status.getError("server") ?? messages.status.required
+          form.controls.status.getError("server") ??
+            (form.controls.status.hasError("unpaid")
+              ? messages.status.unpaid
+              : messages.status.required)
         }}</small>
       }
     </label>

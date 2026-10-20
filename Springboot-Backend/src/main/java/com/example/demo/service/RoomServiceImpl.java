@@ -1,15 +1,18 @@
 package com.example.demo.service;
 
 import com.example.demo.entities.enums.ActivationStatus;
+import com.example.demo.entities.enums.ReservationStatus;
 
 import com.example.demo.dto.RoomDetailDTO;
 import com.example.demo.dto.RoomListDTO;
 import com.example.demo.entities.Room;
 import com.example.demo.exception.FieldException;
 import com.example.demo.repository.RoomRepository;
+import com.example.demo.repository.ReservationRepository;
 import com.example.demo.repository.RoomTypeRepository;
 import com.example.demo.service.interfaces.RoomService;
 import java.util.List;
+import java.time.LocalDate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,9 @@ public class RoomServiceImpl implements RoomService {
 
     @Autowired
     private RoomTypeRepository roomTypeRepository;
+
+    @Autowired
+    private ReservationRepository reservationRepository;
 
 
     @Override
@@ -63,6 +69,11 @@ public class RoomServiceImpl implements RoomService {
     public void update(int roomId, Room room) {
         Room registeredRoom = findById(roomId);
 
+        if (room.getActivationStatus() == ActivationStatus.INACTIVE
+                && registeredRoom.getActivationStatus() == ActivationStatus.ACTIVE) {
+            checkCanDeactivate(roomId);
+        }
+
         checkNumberIsFree(room.getNumber(), registeredRoom.getRoomId());
         resolveRoomType(room);
 
@@ -82,8 +93,17 @@ public class RoomServiceImpl implements RoomService {
     public void deactivate(int roomId) {
         // Conserva el estado físico y las reservas existentes.
         Room registeredRoom = findById(roomId);
+        checkCanDeactivate(roomId);
         registeredRoom.setActivationStatus(ActivationStatus.INACTIVE);
         roomRepository.save(registeredRoom);
+    }
+
+    private void checkCanDeactivate(int roomId) {
+        if (reservationRepository.existsByRoom_RoomIdAndStatusNotAndCheckOutDateAfter(
+                roomId, ReservationStatus.CANCELLED, LocalDate.now())) {
+            throw new FieldException(HttpStatus.CONFLICT, "activationStatus",
+                    "This room cannot be deactivated because it has upcoming or ongoing reservations. Cancel or reassign those reservations first.");
+        }
     }
 
     /** El tipo es un campo del formulario: si falta o ya no existe, el error va en ese campo. */

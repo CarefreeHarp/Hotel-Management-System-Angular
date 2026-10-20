@@ -32,6 +32,7 @@ export interface ReservationLimits {
   // Llegada guardada: si no cambia, puede seguir en el pasado (estancias en curso o terminadas).
   originalCheckIn: () => string | undefined;
   capacity: (roomTypeId: number) => number | undefined;
+  balance?: () => number;
 }
 
 const noLimits: ReservationLimits = {
@@ -67,6 +68,14 @@ function capacityRule(limits: ReservationLimits): ValidatorFn {
   };
 }
 
+function checkOutBalanceRule(limits: ReservationLimits): ValidatorFn {
+  return (control) =>
+    control.value === ReservationStatus.CHECKED_OUT &&
+    Math.round((limits.balance?.() ?? 0) * 100) > 0
+      ? { unpaid: true }
+      : null;
+}
+
 export function createReservationForm(limits: ReservationLimits = noLimits) {
   const form = new FormGroup({
     checkIn: new FormControl('', {
@@ -92,7 +101,7 @@ export function createReservationForm(limits: ReservationLimits = noLimits) {
     }),
     status: new FormControl(ReservationStatus.PENDING, {
       nonNullable: true,
-      validators: Validators.required,
+      validators: [Validators.required, checkOutBalanceRule(limits)],
     }),
     serviceIds: new FormControl<number[]>([], { nonNullable: true }),
   });
@@ -102,6 +111,10 @@ export function createReservationForm(limits: ReservationLimits = noLimits) {
   );
   form.controls.roomTypeId.valueChanges.subscribe(() =>
     form.controls.guests.updateValueAndValidity(),
+  );
+  // Fechas, tipo y servicios pueden cambiar el saldo antes de guardar.
+  form.valueChanges.subscribe(() =>
+    form.controls.status.updateValueAndValidity({ emitEvent: false }),
   );
   return form;
 }

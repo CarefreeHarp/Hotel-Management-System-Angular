@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entities.enums.ActivationStatus;
+import com.example.demo.entities.enums.ReservationStatus;
 
 import com.example.demo.dto.ServiceCatalogDTO;
 import com.example.demo.dto.ServiceDetailDTO;
@@ -8,9 +9,11 @@ import com.example.demo.dto.ServiceListDTO;
 import com.example.demo.entities.Service;
 import com.example.demo.exception.FieldException;
 import com.example.demo.repository.ServiceRepository;
+import com.example.demo.repository.ReservationRepository;
 import com.example.demo.service.interfaces.ServiceService;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,9 +23,11 @@ import org.springframework.web.server.ResponseStatusException;
 @Transactional
 public class ServiceServiceImpl implements ServiceService {
     private final ServiceRepository serviceRepository;
+    private final ReservationRepository reservationRepository;
 
-    public ServiceServiceImpl(ServiceRepository serviceRepository) {
+    public ServiceServiceImpl(ServiceRepository serviceRepository, ReservationRepository reservationRepository) {
         this.serviceRepository = serviceRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -65,6 +70,10 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public void update(Integer serviceId, Service service) {
         Service registered = findById(serviceId);
+        if (service.getActivationStatus() == ActivationStatus.INACTIVE
+                && registered.getActivationStatus() == ActivationStatus.ACTIVE) {
+            checkCanDeactivate(serviceId);
+        }
         checkUrlNameIsFree(service, registered.getServiceId());
         service.setServiceId(registered.getServiceId());
         if (service.getSecondaryImageUrls() == null) service.setSecondaryImageUrls(new ArrayList<>());
@@ -82,8 +91,17 @@ public class ServiceServiceImpl implements ServiceService {
     public void deactivate(Integer serviceId) {
         // Sale del catálogo sin modificar los cargos existentes.
         Service registered = findById(serviceId);
+        checkCanDeactivate(serviceId);
         registered.setActivationStatus(ActivationStatus.INACTIVE);
         serviceRepository.save(registered);
+    }
+
+    private void checkCanDeactivate(Integer serviceId) {
+        if (reservationRepository.existsByServices_ServiceIdAndStatusNotAndCheckOutDateAfter(
+                serviceId, ReservationStatus.CANCELLED, LocalDate.now())) {
+            throw new FieldException(HttpStatus.CONFLICT, "activationStatus",
+                    "This service cannot be deactivated because it is included in upcoming or ongoing reservations. Cancel those reservations or remove the service first.");
+        }
     }
 
     /**

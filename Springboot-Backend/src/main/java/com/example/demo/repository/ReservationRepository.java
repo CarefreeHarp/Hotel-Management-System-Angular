@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 import com.example.demo.dto.ReservationDTO;
 import com.example.demo.entities.Reservation;
+import com.example.demo.entities.enums.ReservationStatus;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -62,4 +64,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
 
     /* Total de reservas que incluyen un servicio. */
     long countByServices_ServiceId(Integer serviceId);
+
+    // La salida marca el final de la estancia: también protege reservas en curso.
+    boolean existsByRoom_RoomIdAndStatusNotAndCheckOutDateAfter(
+            Integer roomId, ReservationStatus status, LocalDate date);
+
+    boolean existsByServices_ServiceIdAndStatusNotAndCheckOutDateAfter(
+            Integer serviceId, ReservationStatus status, LocalDate date);
 }

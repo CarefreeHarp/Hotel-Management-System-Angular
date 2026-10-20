@@ -53,6 +53,7 @@ export class ReservationFormComponent {
   // Va después de roomTypes: los validadores se ejecutan al crear el formulario.
   readonly form = createReservationForm({
     originalCheckIn: () => this.detail?.reservation.checkInDate,
+    balance: () => this.previewTotal - (this.detail?.paidTotal ?? 0),
     capacity: (roomTypeId) =>
       this.roomTypes.find((type) => type.roomTypeId === roomTypeId)
         ?.maxCapacity,

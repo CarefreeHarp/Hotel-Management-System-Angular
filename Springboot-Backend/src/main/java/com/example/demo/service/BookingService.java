@@ -156,6 +156,8 @@ public class BookingService {
         BigDecimal total = nightly.multiply(BigDecimal.valueOf(ChronoUnit.DAYS.between(input.getCheckInDate(), input.getCheckOutDate())))
             .add(charges.stream().map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity()))).reduce(BigDecimal.ZERO, BigDecimal::add));
         BigDecimal paid = previous.paidTotal();
+        if (input.getStatus() == ReservationStatus.CHECKED_OUT && total.compareTo(paid) > 0)
+            throw invalid("status", "Check-out is not allowed while the reservation has an outstanding balance. Settle the balance first.");
         if (financialChange && paid.signum() > 0 && total.compareTo(paid) <= 0)
             throw problem("The recalculated total must be greater than the amount already paid (" + cop(paid) + "). Payments cannot be changed here.");
         ReservationStatus status = input.getStatus();
