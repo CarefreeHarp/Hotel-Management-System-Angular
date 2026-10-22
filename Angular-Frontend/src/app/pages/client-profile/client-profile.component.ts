@@ -1,22 +1,23 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin, of, switchMap } from 'rxjs';
-import { HeaderComponent } from '../../components/header/header.component';
-import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { EMPTY, Observable, Subject, catchError, exhaustMap, forkJoin, of, switchMap, tap } from 'rxjs';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ClientInfoComponent } from '../../components/client-info/client-info.component';
+import { HeaderComponent } from '../../components/header/header.component';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ReservationHistoryComponent } from '../../components/reservation-history/reservation-history.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
+import { ReservationDetails } from '../../models/booking';
+import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 import { ClientService } from '../../services/client.service';
 import { ReservationService } from '../../services/reservation.service';
-import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
-import { ReservationDetails } from '../../models/booking';
-import { clientQuery } from '../../utils/client-query';
 import { apiErrorMessage } from '../../utils/api-error';
+import { clientQuery } from '../../utils/client-query';
 import { catchErrorPage } from '../../utils/error-page';
 
+/** Carga el cliente indicado por auth y reutiliza el historial compartido para presentar sus reservas. */
 @Component({
   selector: 'app-client-profile',
   imports: [
@@ -32,6 +33,8 @@ import { catchErrorPage } from '../../utils/error-page';
   styleUrl: './client-profile.component.scss',
 })
 export class ClientProfileComponent implements OnInit {
+
+  private readonly actionSubject = new Subject<void>();
   private readonly clients = inject(ClientService);
   private readonly reservationsService = inject(ReservationService);
   private readonly route = inject(ActivatedRoute);
@@ -43,12 +46,21 @@ export class ClientProfileComponent implements OnInit {
   isDeleting = false;
   saved = false;
   errorMessage = '';
+
+  constructor() {
+    // exhaustMap evita ejecutar otra acción mientras termina la petición actual.
+    this.actionSubject.pipe(
+      exhaustMap(() => this.performAction()),
+      takeUntilDestroyed(),
+    ).subscribe();
+  }
   get authParams(): { auth?: number } {
     return clientQuery(this.route);
   }
   ngOnInit(): void {
     this.route.queryParamMap
       .pipe(
+        // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
         switchMap((params) => {
           const id = this.authParams.auth;
           this.client = undefined;
@@ -60,6 +72,7 @@ export class ClientProfileComponent implements OnInit {
             return of(undefined);
           }
           // Si auth apunta a un cliente que no existe o falla el servidor, se muestra la pantalla de error.
+          // forkJoin espera que terminen todas estas consultas y entrega sus resultados juntos.
           return forkJoin({
             client: this.clients.getById(id),
             reservations: this.reservationsService.history(id),
@@ -74,28 +87,33 @@ export class ClientProfileComponent implements OnInit {
       });
   }
   deleteAccount(): void {
+    this.actionSubject.next();
+  }
+
+  private performAction(): Observable<unknown> {
     if (
       !this.client ||
       this.isDeleting ||
       !confirm('Delete your Atlan Suites account? This cannot be undone.')
     )
-      return;
+      return EMPTY;
     this.isDeleting = true;
     this.errorMessage = '';
-    this.clients
+    return this.clients
       .delete(this.client.clientId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
+      .pipe(
+        tap(() => {
           void this.router.navigate(['/']);
-        },
-        error: (error: HttpErrorResponse) => {
+        }),
+        catchError((error: HttpErrorResponse) => {
           this.errorMessage = apiErrorMessage(
             error,
             'Your account could not be deleted.',
           );
           this.isDeleting = false;
-        },
-      });
+
+          return EMPTY;
+        }),
+      );
   }
 }

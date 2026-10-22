@@ -46,6 +46,24 @@ flowchart LR
     Repositories <--> Database[(H2)]
 ```
 
+## Booking implementation
+
+`BookingService` prepares and creates new bookings (availability, quotes and room allocation). `ReservationService` and its implementation, `ReservationServiceImpl`, query and manage existing reservations (editing, deletion, detailed reads and client history). Both use `ReservationRules` for the existing date, capacity and service-selection rules, without depending on each other. `ReservationBillingService` handles folios, contracted service prices, simulated payment records and financial details. `BookingPaymentValidator` checks the transient card input and reports all rejected fields together. Dependencies are supplied through constructors; these classes use the existing repositories and error responses.
+
+| Service | Operation | Stages |
+| --- | --- | --- |
+| `BookingService` | `listAvailableRoomTypes` | Validate the stay → query available rooms → group by room type. |
+| `BookingService` | `quoteReservation` | Validate dates and capacity → resolve active services → calculate nights and totals. |
+| `BookingService` | `createReservation` | Resolve the client → lock the room type → quote and recheck availability → validate optional payment → save reservation, folio and charges → return details. |
+| `ReservationServiceImpl` | `updateReservation` | Lock the reservation → validate the changes and lock the room type → keep or reassign a room → resolve services → reconcile charges and balance → apply the reservation and folio statuses. |
+| `ReservationServiceImpl` | `deleteReservation` | Lock the reservation → delete payments, charges and folio → delete the reservation. |
+| `ReservationServiceImpl` | `listClientHistory` | Read the client's reservation list → compose each reservation's details. |
+| `ReservationServiceImpl` | `readReservationDetails` | Find the reservation → read its folio, charges and payments → calculate totals and balance. |
+
+The room-type lock remains held until the transaction completes, so availability is checked after acquiring it. Editing preserves existing nightly rates when the room type is unchanged and preserves retained service charge snapshots. New charges use current catalog prices. Financial changes and reservation changes commit or roll back together.
+
+On Angular, `BookNowComponent` reconstructs the draft from query parameters, verifies the prerequisites for the requested step and loads that step's data. Saving is a separate request from those cancellable reads. Card data is sent only in the POST body.
+
 ## Angular components
 
 The router chooses the page displayed inside `RouterOutlet`. Each page combines shared components with components used only by that page.
@@ -60,7 +78,26 @@ flowchart TD
     Services --> API[Spring Boot REST API]
 ```
 
-Frontend reactive state uses RxJS Observables and Subjects, consumed through `async`. Component inputs use `@Input`; the application does not use Angular signals. Route-dependent detail queries cancel superseded reads with `switchMap`.
+Frontend reactive state uses RxJS Observables and Subjects, consumed through `async`. Component inputs use `@Input`. Outputs expose read-only Observables backed by local Subjects, with `@Output` aliases preserving template event names. The application does not use Angular signals or EventEmitter. Route-dependent detail queries cancel superseded reads with `switchMap`.
+
+## Reading the code
+
+Prefer explicit steps and ordinary loops for selection and totals. Keep framework mechanisms when they solve a concrete problem, and explain their role near the relevant flow. Pages coordinate HTTP calls and navigation, child components present fields or emit user actions, and services handle backend communication. Comments explain decisions and unfamiliar mechanisms rather than narrating each line.
+
+| Construct | Role in this project |
+| --- | --- |
+| Java `Optional`, `orElse` and `orElseThrow` | Represent a query that may find nothing, then choose a fallback or the existing error. |
+| Java `record` and DTO constructors | Group the fields returned to Angular without exposing the full persistence entity. |
+| `@Transactional` and pessimistic locks | Keep reservation and folio changes together and serialize conflicting assignments. |
+| JPQL `SELECT new`, `JOIN` and `LEFT JOIN` | Build a DTO directly from entity fields. `JOIN` follows a relationship, while `LEFT JOIN` also keeps rows whose related record is absent. Long projections list fields in constructor order. |
+| JPQL `NOT EXISTS` and stay dates | Keep a room only when no conflicting reservation exists. Strict `<` and `>` comparisons allow one stay to start on the day another ends. |
+| Angular `@Input`, `@Output` and RxJS `Subject` | Pass data into a child and publish its actions. The child emits through a protected Subject and exposes `asObservable()` for its parent to listen. |
+| RxJS `Observable` and names ending in `$` | Represent values or HTTP results that arrive asynchronously. `pipe` connects the processing steps, and `map` transforms each emitted value. |
+| `switchMap` and `forkJoin` | Cancel superseded reads or wait for several HTTP queries to finish together. |
+| `concatMap` and `exhaustMap` | Keep dependent operations in order or ignore repeated submissions while the current request finishes. Recoverable errors stay inside each action so a later submission still works. |
+| `fromEvent` and `timer` | Listen to browser events and manage delayed actions. Component destruction releases listeners and cancels pending waits. |
+| `BehaviorSubject` and `combineLatest` | Store local selections and recalculate a view when its data or filters change. |
+| `AsyncPipe` and `takeUntilDestroyed` | Subscribe for rendering or component logic and release the subscription with the component. |
 
 ## Navigation
 

@@ -1,9 +1,11 @@
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { fromEvent } from 'rxjs';
 import { SkeletonComponent } from '../../../../components/skeleton/skeleton.component';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
-import { Component, HostListener, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ServiceService } from '../../../../services/service.service';
 import { ServiceCatalogDTO } from '../../../../models/dto/service-catalog-dto';
+import { ServiceService } from '../../../../services/service.service';
 import { clientQuery } from '../../../../utils/client-query';
 import { ServiceCardComponent } from './components/service-card/service-card.component';
 @Component({
@@ -18,6 +20,8 @@ import { ServiceCardComponent } from './components/service-card/service-card.com
   styleUrl: './landing-services.component.scss',
 })
 export class LandingServicesComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+
   private readonly service = inject(ServiceService);
   private readonly route = inject(ActivatedRoute);
   services: ServiceCatalogDTO[] = [];
@@ -25,6 +29,11 @@ export class LandingServicesComponent implements OnInit {
   error = '';
   index = 0;
   visibleCount = this.count();
+
+  constructor() {
+    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
+    fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => this.resize());
+  }
   get featured(): ServiceCatalogDTO | undefined {
     return this.services[0];
   }
@@ -38,7 +47,7 @@ export class LandingServicesComponent implements OnInit {
     return `translateX(calc(-${this.index} * (100% + 1.5rem) / ${this.visibleCount}))`;
   }
   ngOnInit(): void {
-    this.service.getCatalog().subscribe({
+    this.service.getCatalog().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (items) => {
         this.services = items;
         this.loading = false;
@@ -55,7 +64,7 @@ export class LandingServicesComponent implements OnInit {
   next(): void {
     this.index = Math.min(this.maxIndex, this.index + 1);
   }
-  @HostListener('window:resize') resize(): void {
+  resize(): void {
     this.visibleCount = this.count();
     this.index = Math.min(this.index, this.maxIndex);
   }

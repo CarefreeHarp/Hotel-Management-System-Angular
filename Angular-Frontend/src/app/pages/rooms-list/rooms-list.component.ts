@@ -1,27 +1,30 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { Component, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { catchError, EMPTY, exhaustMap, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ListControlsComponent } from '../../components/list-controls/list-controls.component';
 import {
-  RecordCardsComponent,
   RecordCard,
+  RecordCardsComponent,
 } from '../../components/record-cards/record-cards.component';
-import { RoomTableComponent } from './components/room-table/room-table.component';
-import { RoomService } from '../../services/room.service';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { RoomListDTO } from '../../models/dto/room-list-dto';
+import { RoomService } from '../../services/room.service';
+import { apiErrorMessage } from '../../utils/api-error';
+import { basePath } from '../../utils/base-path';
+import { errorPageCode, showErrorPage } from '../../utils/error-page';
 import {
-  initialListState,
-  matchesSearch,
   compareRecords,
   defaultSortOptions,
+  initialListState,
   ListFilter,
+  matchesSearch,
 } from '../../utils/list-state';
-import { basePath } from '../../utils/base-path';
-import { apiErrorMessage } from '../../utils/api-error';
-import { errorPageCode, showErrorPage } from '../../utils/error-page';
+import { RoomTableComponent } from './components/room-table/room-table.component';
+/** Coordina la lista de habitaciones, sus filtros y acciones. Los componentes hijos presentan los registros. */
 @Component({
   selector: 'app-rooms-list',
   imports: [
@@ -37,6 +40,8 @@ import { errorPageCode, showErrorPage } from '../../utils/error-page';
   styleUrl: './rooms-list.component.scss',
 })
 export class RoomsListComponent {
+  private readonly actionSubject = new Subject<RoomListDTO>();
+  private readonly loadSubject = new Subject<void>();
   private readonly service = inject(RoomService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -58,6 +63,17 @@ export class RoomsListComponent {
   error = '';
   message = '';
   constructor() {
+    // exhaustMap evita ejecutar otra acción mientras termina la petición actual.
+    this.actionSubject.pipe(
+      exhaustMap((item) => this.performAction(item)),
+      takeUntilDestroyed(),
+    ).subscribe();
+    // Una recarga sustituye la lectura anterior. Las escrituras usan un flujo independiente.
+    this.loadSubject.pipe(
+      switchMap(() => this.loadRecords()),
+      takeUntilDestroyed(),
+    ).subscribe();
+
     this.load();
   }
   get filters(): ListFilter[] {
@@ -145,38 +161,48 @@ export class RoomsListComponent {
     }));
   }
   load(): void {
+    this.loadSubject.next();
+  }
+
+  private loadRecords(): Observable<unknown> {
     this.loading = true;
-    this.service.getAll().subscribe({
-      next: (items) => {
+    return this.service.getAll().pipe(
+      tap((items) => {
         this.items = items;
         this.loading = false;
-      },
-      // Sin la lista la página no tiene qué mostrar: se muestra la pantalla de error.
-      error: (error: unknown) =>
-        showErrorPage(this.router, this.route, errorPageCode(error)),
-    });
+      }),
+      catchError((error: unknown) => {
+        showErrorPage(this.router, this.route, errorPageCode(error));
+        return EMPTY;
+      }),
+    );
   }
   toggleById(id: number): void {
     const item = this.items.find((item) => item.roomId === id);
     if (item) this.toggle(item);
   }
   toggle(item: RoomListDTO): void {
+    this.actionSubject.next(item);
+  }
+
+  private performAction(item: RoomListDTO): Observable<unknown> {
     this.error = '';
     this.message = '';
     const request =
       item.activationStatus === 'ACTIVE'
         ? this.service.deactivate(item.roomId)
         : this.service.activate(item.roomId);
-    request.subscribe({
-      next: () => {
+    return request.pipe(
+      tap(() => {
         this.message = 'Activation status updated.';
         this.load();
-      },
-      error: (error: HttpErrorResponse) =>
+      }),
+      catchError((error: HttpErrorResponse) => {
         (this.error = apiErrorMessage(
           error,
           'The activation status could not be changed.',
-        )),
-    });
+        )); return EMPTY;
+      }),
+    );
   }
 }

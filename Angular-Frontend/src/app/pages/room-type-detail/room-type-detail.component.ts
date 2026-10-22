@@ -1,18 +1,18 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { AsyncPipe } from '@angular/common';
-import { clientQuery } from '../../utils/client-query';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY, map, startWith, switchMap } from 'rxjs';
-import { HeaderComponent } from '../../components/header/header.component';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
-import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { RoomTypeInfoComponent } from './components/room-type-info/room-type-info.component';
 import { GalleryComponent } from '../../components/gallery/gallery.component';
+import { HeaderComponent } from '../../components/header/header.component';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { RoomTypeService } from '../../services/room-type.service';
 import { basePath, isAdminArea } from '../../utils/base-path';
+import { clientQuery } from '../../utils/client-query';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
+import { RoomTypeInfoComponent } from './components/room-type-info/room-type-info.component';
 
 @Component({
   selector: 'app-room-type-detail',
@@ -41,8 +41,9 @@ export class RoomTypeDetailComponent {
     return basePath(this.route);
   }
   readonly adminArea = isAdminArea(this.route);
-  // Una id inválida muestra la pantalla 400; si la carga falla, la que corresponda (404, 500…).
+  // Una id inválida muestra la pantalla 400. Si la carga falla, la que corresponda (404, 500…).
   readonly roomType$ = this.route.paramMap.pipe(
+    // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
     switchMap((params) => {
       const id = Number(params.get('id'));
       if (!Number.isSafeInteger(id) || id <= 0) {

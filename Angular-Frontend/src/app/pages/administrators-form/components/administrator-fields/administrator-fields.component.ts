@@ -10,7 +10,7 @@ import type { AdministratorsFormComponent } from '../../administrators-form.comp
   styleUrl: './administrator-fields.component.scss',
 })
 export class AdministratorFieldsComponent {
-  @Input({ required: true }) form!: AdministratorsFormComponent['form'];
+  @Input({ required: true }) form?: AdministratorsFormComponent['form'];
   @Input() submitted = false;
   @Input() isCreateMode = true;
   protected readonly messages = ADMINISTRATOR_MESSAGES;

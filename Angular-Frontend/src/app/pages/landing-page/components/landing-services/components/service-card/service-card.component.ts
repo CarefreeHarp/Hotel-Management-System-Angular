@@ -1,6 +1,6 @@
-import { OptimizedImageDirective } from '../../../../../../directives/optimized-image.directive';
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { OptimizedImageDirective } from '../../../../../../directives/optimized-image.directive';
 import { ServiceCatalogDTO } from '../../../../../../models/dto/service-catalog-dto';
 @Component({
   selector: 'app-service-card',

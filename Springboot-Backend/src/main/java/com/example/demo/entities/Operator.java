@@ -1,12 +1,23 @@
 package com.example.demo.entities;
 
 import com.example.demo.validation.OnCreate;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -19,33 +30,33 @@ public class Operator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "operator_id")
-    // Identificador del operario. Restricciones: Clave primaria única y autogenerada; se conserva el identificador de la ruta al actualizar.
+    // Identificador del operario. Restricciones: Clave primaria única y autogenerada. Se conserva el identificador de la ruta al actualizar.
     private Integer operatorId;
     @Column(nullable = false, length = 60)
     @NotBlank(message = "Enter the operator's first name.")
     @Size(max = 60, message = "The first name cannot exceed 60 characters.")
-    // Nombre del registro. Restricciones: Obligatorio; máximo 60 caracteres.
+    // Nombre del registro. Restricciones: Obligatorio. Máximo 60 caracteres.
     private String name;
     @Column(nullable = false, length = 60)
     @NotBlank(message = "Enter the operator's last name.")
     @Size(max = 60, message = "The last name cannot exceed 60 characters.")
-    // Apellido de la persona. Restricciones: Obligatorio; máximo 60 caracteres.
+    // Apellido de la persona. Restricciones: Obligatorio. Máximo 60 caracteres.
     private String lastName;
     @Column(nullable = false, unique = true, length = 100)
     @NotBlank(message = "Enter the email address.")
     @Size(max = 100, message = "The email address cannot exceed 100 characters.")
     @Email(regexp = "[^\\s@]+@[^\\s@]+\\.[^\\s@]+", message = "Enter a valid email address, for example name@atlansuites.com.")
-    // Correo electrónico de contacto e inicio de sesión. Restricciones: Obligatorio; formato de correo; máximo 100 caracteres; único entre operarios y administradores.
+    // Correo electrónico de contacto e inicio de sesión. Restricciones: Obligatorio. Formato de correo. Máximo 100 caracteres. Único entre operarios y administradores.
     private String email;
     @Column(nullable = false, length = 255)
     @NotBlank(groups = OnCreate.class, message = "Enter a password.")
     @Size(min = 8, max = 255, groups = OnCreate.class, message = "The password must have between 8 and 255 characters.")
-    // Contraseña de la cuenta. Restricciones: Obligatoria al crear, entre 8 y 255 caracteres; se conserva al actualizar.
+    // Contraseña de la cuenta. Restricciones: Obligatoria al crear, entre 8 y 255 caracteres. Se conserva al actualizar.
     private String password;
     @ManyToOne(optional = false)
     @JoinColumn(name = "admin_id", nullable = false)
     @NotNull(message = "Select the administrator in charge of this operator.")
-    // Administrador responsable del operario. Restricciones: Obligatorio; admin.adminId debe ser un administrador existente; los campos adicionales recibidos no modifican ese registro.
+    // Administrador responsable del operario. Restricciones: Obligatorio. admin.adminId debe ser un administrador existente. Los campos adicionales recibidos no modifican ese registro.
     private Administrator admin;
 
 }

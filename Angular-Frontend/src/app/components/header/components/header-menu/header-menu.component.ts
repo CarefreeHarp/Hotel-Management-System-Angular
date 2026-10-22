@@ -2,12 +2,14 @@ import { DOCUMENT } from '@angular/common';
 import {
   Component,
   ElementRef,
-  OnDestroy,
-  ViewChild,
   inject,
   Input,
+  OnDestroy,
+  ViewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Subject, switchMap, takeUntil, timer } from 'rxjs';
 
 @Component({
   selector: 'app-header-menu',
@@ -22,7 +24,16 @@ export class HeaderMenuComponent implements OnDestroy {
   private previousOverflow: string | undefined;
   isOpen = false;
   isClosing = false;
-  private closeTimer: ReturnType<typeof setTimeout> | undefined;
+  private readonly closeSubject = new Subject<void>();
+  private readonly cancelCloseSubject = new Subject<void>();
+
+  constructor() {
+    // Cada cierre inicia su respaldo. La transición o un reinicio pueden cancelar esa espera.
+    this.closeSubject.pipe(
+      switchMap(() => timer(350).pipe(takeUntil(this.cancelCloseSubject))),
+      takeUntilDestroyed(),
+    ).subscribe(() => this.finishClose());
+  }
 
   open(): void {
     const dialog = this.drawer?.nativeElement;
@@ -44,7 +55,7 @@ export class HeaderMenuComponent implements OnDestroy {
       return;
     }
     // Respaldo si el navegador interrumpe la transición antes de emitir transitionend.
-    this.closeTimer = setTimeout(() => this.finishClose(), 350);
+    this.closeSubject.next();
   }
 
   finishClose(event?: TransitionEvent): void {
@@ -60,8 +71,7 @@ export class HeaderMenuComponent implements OnDestroy {
   }
 
   resetState(): void {
-    clearTimeout(this.closeTimer);
-    this.closeTimer = undefined;
+    this.cancelCloseSubject.next();
     this.isClosing = false;
     this.isOpen = false;
     if (this.previousOverflow !== undefined) {

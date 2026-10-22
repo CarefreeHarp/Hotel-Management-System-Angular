@@ -1,6 +1,6 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   EMPTY,
   catchError,
@@ -9,19 +9,20 @@ import {
   of,
   switchMap,
 } from 'rxjs';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
-import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { ClientService } from '../../services/client.service';
 import { ClientInfoComponent } from '../../components/client-info/client-info.component';
-import { ReservationDetails } from '../../models/booking';
-import { ReservationService } from '../../services/reservation.service';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ReservationHistoryComponent } from '../../components/reservation-history/reservation-history.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
+import { ReservationDetails } from '../../models/booking';
 import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
+import { ClientService } from '../../services/client.service';
+import { ReservationService } from '../../services/reservation.service';
 import { basePath } from '../../utils/base-path';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 
+/** Carga el perfil del cliente y su historial para el personal del hotel. */
 @Component({
   selector: 'app-clients-detail',
   imports: [
@@ -55,6 +56,7 @@ export class ClientsDetailComponent implements OnInit {
   ngOnInit(): void {
     combineLatest([this.route.paramMap, this.route.queryParamMap])
       .pipe(
+        // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
         switchMap(([params, query]) => {
           const id = Number(params.get('id'));
           this.saved = query.get('saved') === 'true';
@@ -63,11 +65,12 @@ export class ClientsDetailComponent implements OnInit {
           this.historyError = '';
           this.isLoading = true;
           this.historyLoading = true;
-          // Una id inválida muestra la pantalla 400; si el cliente no carga, la que corresponda.
+          // Una id inválida muestra la pantalla 400. Si el cliente no carga, la que corresponda.
           if (!Number.isSafeInteger(id) || id <= 0) {
             showErrorPage(this.router, this.route, 400);
             return EMPTY;
           }
+          // forkJoin espera que terminen todas estas consultas y entrega sus resultados juntos.
           return forkJoin({
             client: this.service.getById(id),
             // El historial es secundario: si falla, se avisa en la página y el cliente se muestra igual.

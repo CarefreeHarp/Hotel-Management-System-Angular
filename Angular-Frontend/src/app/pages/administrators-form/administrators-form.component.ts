@@ -1,24 +1,27 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
+import { EMPTY, Observable, Subject, catchError, exhaustMap, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
-import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { AdministratorFieldsComponent } from './components/administrator-fields/administrator-fields.component';
-import { AdministratorService } from '../../services/administrator.service';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { AdministratorDTO } from '../../models/dto/administrator-dto';
-import { basePath } from '../../utils/base-path';
+import { AdministratorService } from '../../services/administrator.service';
 import { clearApiErrors, showApiErrors } from '../../utils/api-error';
+import { basePath } from '../../utils/base-path';
 import { errorPageCode, showErrorPage } from '../../utils/error-page';
 import { emailAddress, requiredText } from '../../utils/form-validators';
+import { AdministratorFieldsComponent } from './components/administrator-fields/administrator-fields.component';
 
+/** Coordina la carga y el guardado de administradores. Los campos reutilizables reciben el formulario. */
 @Component({
   selector: 'app-administrators-form',
   imports: [
@@ -34,6 +37,9 @@ import { emailAddress, requiredText } from '../../utils/form-validators';
   styleUrl: './administrators-form.component.scss',
 })
 export class AdministratorsFormComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly saveSubject = new Subject<void>();
+
   private readonly administratorService = inject(AdministratorService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -67,8 +73,28 @@ export class AdministratorsFormComponent implements OnInit {
     }),
   });
 
+  constructor() {
+    // exhaustMap ignora nuevos envíos mientras termina el guardado actual.
+    this.saveSubject.pipe(
+      exhaustMap(() => this.saveChanges()),
+      takeUntilDestroyed(),
+    ).subscribe();
+  }
+
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
+    this.route.paramMap.pipe(
+      // Cambiar de registro cancela sus lecturas anteriores y conserva solo el resultado vigente.
+      switchMap((params) => this.loadRecord(params)),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe();
+  }
+
+  private loadRecord(params: ParamMap): Observable<unknown> {
+    this.item = undefined;
+    this.isLoading = true;
+    this.form.reset();
+    this.form.controls.password.enable();
+    const idParam = params.get('id');
     const id = Number(idParam);
     this.isCreateMode = idParam === null;
     if (!this.isCreateMode) {
@@ -77,62 +103,73 @@ export class AdministratorsFormComponent implements OnInit {
     }
     if (this.isCreateMode) {
       this.isLoading = false;
-      return;
+      return EMPTY;
     }
-    // Una id inválida muestra la pantalla 400; si el administrador no carga, la que corresponda.
+    // Una id inválida muestra la pantalla 400. Si el administrador no carga, la que corresponda.
     if (!Number.isSafeInteger(id) || id <= 0) {
       showErrorPage(this.router, this.route, 400);
-      return;
+      return EMPTY;
     }
     // Al editar se pide solo este administrador, no la lista completa.
-    this.administratorService.getById(id).subscribe({
-      next: (administrator) => {
+    return this.administratorService.getById(id).pipe(
+      tap((administrator) => {
         this.item = administrator;
         this.form.patchValue({
           name: administrator.name,
           email: administrator.email,
         });
         this.isLoading = false;
-      },
-      error: (error: unknown) =>
-        showErrorPage(this.router, this.route, errorPageCode(error)),
-    });
+      }),
+      catchError((error: unknown) => {
+        showErrorPage(this.router, this.route, errorPageCode(error));
+        return EMPTY;
+      }),
+    );
   }
 
   save(): void {
+    this.saveSubject.next();
+  }
+
+  private saveChanges(): Observable<unknown> {
     this.submitted = true;
     this.saveError = '';
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid || this.isSaving) return;
+    if (this.form.invalid || this.isSaving) return EMPTY;
     const value = this.form.getRawValue();
     const name = value.name.trim();
     const email = value.email.trim();
     this.isSaving = true;
     if (this.isCreateMode) {
-      this.administratorService
-        .add({ name, email, password: value.password })
-        .subscribe({
-          next: () => {
+      return this.administratorService
+        .add({ name, email, password: value.password }).pipe(
+          tap(() => {
             void this.router.navigate([this.base, 'administrators'], {
               queryParams: { created: true },
             });
-          },
-          error: (error: HttpErrorResponse) => this.showSaveError(error),
-        });
+          }),
+          catchError((error: HttpErrorResponse) => {
+            this.showSaveError(error);
+            return EMPTY;
+          }),
+        );
     } else if (this.item) {
       const id = this.item.adminId;
-      this.administratorService
-        .update(id, { adminId: id, name, email })
-        .subscribe({
-          next: () => {
+      return this.administratorService
+        .update(id, { adminId: id, name, email }).pipe(
+          tap(() => {
             void this.router.navigate([this.base, 'administrators', id], {
               queryParams: { saved: true },
             });
-          },
-          error: (error: HttpErrorResponse) => this.showSaveError(error),
-        });
+          }),
+          catchError((error: HttpErrorResponse) => {
+            this.showSaveError(error);
+            return EMPTY;
+          }),
+        );
     }
+    return EMPTY;
   }
 
   // Los errores de campo del backend (como un correo ya usado, 409) se muestran bajo su campo.

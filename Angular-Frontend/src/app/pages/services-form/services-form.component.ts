@@ -1,6 +1,6 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { ActivationStatus } from '../../models/enums/activation-status';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormArray,
   FormControl,
@@ -9,28 +9,29 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EMPTY, Observable, Subject, catchError, exhaustMap, finalize, map, of, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
-import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import {
   MAX_ADDITIONAL_PHOTOS,
   PhotoFieldsComponent,
 } from '../../components/photo-fields/photo-fields.component';
-import { ServiceFieldsComponent } from './components/service-fields/service-fields.component';
-import { HttpErrorResponse } from '@angular/common/http';
-import { ServiceService, ServiceData } from '../../services/service.service';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { ServiceDetailDTO } from '../../models/dto/service-detail-dto';
-import { EMPTY, finalize, map, of, switchMap } from 'rxjs';
-import { basePath } from '../../utils/base-path';
+import { ActivationStatus } from '../../models/enums/activation-status';
+import { ServiceData, ServiceService } from '../../services/service.service';
 import { clearApiErrors, showApiErrors } from '../../utils/api-error';
+import { basePath } from '../../utils/base-path';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 import {
   maxDecimals,
   photoUrl,
   requiredText,
 } from '../../utils/form-validators';
+import { ServiceFieldsComponent } from './components/service-fields/service-fields.component';
 
+/** Coordina la carga y el guardado de servicios. Los campos reutilizables reciben el formulario. */
 @Component({
   selector: 'app-services-form',
   imports: [
@@ -47,6 +48,7 @@ import {
   styleUrl: './services-form.component.scss',
 })
 export class ServicesFormComponent {
+  private readonly saveSubject = new Subject<void>();
   private readonly service = inject(ServiceService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -107,8 +109,15 @@ export class ServicesFormComponent {
   });
 
   constructor() {
+    // exhaustMap ignora nuevos envíos mientras termina el guardado actual.
+    this.saveSubject.pipe(
+      exhaustMap(() => this.saveChanges()),
+      takeUntilDestroyed(),
+    ).subscribe();
+
     this.route.paramMap
       .pipe(
+        // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
         switchMap((params) => {
           const idParam = params.get('id');
           const id = Number(idParam);
@@ -120,7 +129,7 @@ export class ServicesFormComponent {
           this.form.controls.secondaryImageUrls.clear();
           this.form.reset();
           if (this.isCreateMode) return of(undefined);
-          // Una id inválida muestra la pantalla 400; si el servicio no carga, la que corresponda.
+          // Una id inválida muestra la pantalla 400. Si el servicio no carga, la que corresponda.
           if (!Number.isSafeInteger(id) || id <= 0) {
             showErrorPage(this.router, this.route, 400);
             return EMPTY;
@@ -159,6 +168,7 @@ export class ServicesFormComponent {
     );
   }
 
+  // En edición se conserva el nombre de URL guardado para no romper enlaces existentes.
   private generateUrlName(name: string): string {
     const base =
       name
@@ -173,14 +183,18 @@ export class ServicesFormComponent {
   }
 
   save(): void {
-    if (this.saving || this.loading) return;
+    this.saveSubject.next();
+  }
+
+  private saveChanges(): Observable<unknown> {
+    if (this.saving || this.loading) return EMPTY;
     this.error = '';
     this.submitted = true;
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid) return;
+    if (this.form.invalid) return EMPTY;
     const value = this.form.getRawValue();
-    if (value.price === null) return;
+    if (value.price === null) return EMPTY;
     const data: ServiceData = {
       ...value,
       name: value.name.trim(),
@@ -197,31 +211,32 @@ export class ServicesFormComponent {
         .map((url) => url.trim())
         .filter(Boolean),
     };
-    if (!this.isCreateMode && !this.item) return;
+    const item = this.item;
+    if (!this.isCreateMode && !item) return EMPTY;
     this.saving = true;
     // Ya no se descargan todos los servicios para revisar el nombre: si se repite,
     // el backend responde 409 y su mensaje se muestra bajo el campo del nombre.
-    const request = this.isCreateMode
-      ? this.service.add(data).pipe(map((created) => created.serviceId))
-      : this.service
-          .update(this.item!.serviceId, data)
-          .pipe(map(() => this.item!.serviceId));
-    request
+    const request = item && !this.isCreateMode
+      ? this.service.update(item.serviceId, data).pipe(map(() => item.serviceId))
+      : this.service.add(data).pipe(map((created) => created.serviceId));
+    return request
       .pipe(
+        // finalize restablece el estado de guardado tanto si la petición termina bien como si falla.
         finalize(() => {
           this.saving = false;
         }),
-      )
-      .subscribe({
-        next: (id) => {
+      ).pipe(
+        tap((id) => {
           void this.router.navigate([this.base, 'services', id], {
             queryParams: { saved: true },
           });
-        },
-        // El nombre de URL se genera a partir del nombre: sus errores se muestran en ese campo.
-        error: (error: HttpErrorResponse) => {
+        }),
+        catchError((error: HttpErrorResponse) => {
           this.error = showApiErrors(this.form, error, { urlName: 'name' });
-        },
-      });
+
+          return EMPTY;
+        }),
+      );
+    return EMPTY;
   }
 }

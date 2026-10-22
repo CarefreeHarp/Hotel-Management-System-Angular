@@ -1,28 +1,29 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EMPTY, finalize, forkJoin, switchMap } from 'rxjs';
+import { catchError, EMPTY, exhaustMap, finalize, forkJoin, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { ReservationDetails } from '../../models/booking';
 import { RoomTypeListDTO } from '../../models/dto/room-type-list-dto';
 import { ServiceListDTO } from '../../models/dto/service-list-dto';
 import { ReservationService } from '../../services/reservation.service';
 import { RoomTypeService } from '../../services/room-type.service';
 import { ServiceService } from '../../services/service.service';
-import { basePath } from '../../utils/base-path';
 import { clearApiErrors, showApiErrors } from '../../utils/api-error';
+import { basePath } from '../../utils/base-path';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 import {
   createReservationForm,
   ReservationFieldsComponent,
 } from './components/reservation-fields/reservation-fields.component';
 
+/** Coordina la edición y su vista previa. Los campos y sus reglas se definen en ReservationFieldsComponent. */
 @Component({
   selector: 'app-reservation-form',
   imports: [
@@ -39,6 +40,7 @@ import {
   styleUrl: './reservation-form.component.scss',
 })
 export class ReservationFormComponent {
+  private readonly saveSubject = new Subject<void>();
   private readonly reservations = inject(ReservationService);
   private readonly types = inject(RoomTypeService);
   private readonly hotelServices = inject(ServiceService);
@@ -65,6 +67,7 @@ export class ReservationFormComponent {
   get base(): string {
     return basePath(this.route);
   }
+  // La vista previa conserva cargos contratados y solo toma el precio actual de los servicios nuevos.
   get previewTotal(): number {
     const detail = this.detail;
     if (!detail) return 0;
@@ -73,41 +76,47 @@ export class ReservationFormComponent {
       0,
       (Date.parse(draft.checkOut) - Date.parse(draft.checkIn)) / 86400000,
     );
-    const rate =
-      draft.roomTypeId === detail.reservation.roomTypeId
-        ? detail.nightlyPrice
-        : (this.roomTypes.find((type) => type.roomTypeId === draft.roomTypeId)
-            ?.nightlyPrice ?? 0);
-    const charges = detail.charges
-      .filter(
-        (charge) =>
-          charge.serviceId === undefined ||
-          draft.serviceIds.includes(charge.serviceId),
-      )
-      .reduce((sum, charge) => sum + charge.subtotal, 0);
-    const additions = this.services
-      .filter(
-        (service) =>
-          draft.serviceIds.includes(service.serviceId) &&
-          !this.originalServiceIds.includes(service.serviceId),
-      )
-      .reduce((sum, service) => sum + service.price, 0);
+    let rate = detail.nightlyPrice;
+    if (draft.roomTypeId !== detail.reservation.roomTypeId) {
+      const selectedType = this.roomTypes.find((type) => type.roomTypeId === draft.roomTypeId);
+      rate = selectedType?.nightlyPrice ?? 0;
+    }
+    let charges = 0;
+    for (const charge of detail.charges) {
+      if (charge.serviceId === undefined || draft.serviceIds.includes(charge.serviceId)) {
+        charges += charge.subtotal;
+      }
+    }
+    let additions = 0;
+    for (const service of this.services) {
+      const selected = draft.serviceIds.includes(service.serviceId);
+      const alreadyCharged = this.originalServiceIds.includes(service.serviceId);
+      if (selected && !alreadyCharged) additions += service.price;
+    }
     return (Number.isFinite(nights) ? nights : 0) * rate + charges + additions;
   }
   constructor() {
+    // exhaustMap ignora nuevos envíos mientras termina el guardado actual.
+    this.saveSubject.pipe(
+      exhaustMap(() => this.saveChanges()),
+      takeUntilDestroyed(),
+    ).subscribe();
+
     this.route.paramMap
       .pipe(
+        // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
         switchMap((params) => {
           this.loading = true;
           this.error = '';
           this.detail = undefined;
           this.submitted = false;
           const id = Number(params.get('id'));
-          // Una id inválida muestra la pantalla 400; si la reserva no carga, la que corresponda.
+          // Una id inválida muestra la pantalla 400. Si la reserva no carga, la que corresponda.
           if (!Number.isSafeInteger(id) || id < 1) {
             showErrorPage(this.router, this.route, 400);
             return EMPTY;
           }
+          // forkJoin espera que terminen todas estas consultas y entrega sus resultados juntos.
           return forkJoin({
             detail: this.reservations.details(id),
             roomTypes: this.types.getAll(),
@@ -121,9 +130,10 @@ export class ReservationFormComponent {
         this.detail = data.detail;
         this.roomTypes = data.roomTypes;
         this.services = data.services;
-        this.originalServiceIds = data.detail.charges.flatMap((charge) =>
-          charge.serviceId === undefined ? [] : [charge.serviceId],
-        );
+        this.originalServiceIds = [];
+        for (const charge of data.detail.charges) {
+          if (charge.serviceId !== undefined) this.originalServiceIds.push(charge.serviceId);
+        }
         const item = data.detail.reservation;
         this.form.reset({
           checkIn: item.checkInDate,
@@ -136,32 +146,35 @@ export class ReservationFormComponent {
       });
   }
   save(): void {
-    if (this.saving || this.loading || !this.detail) return;
+    this.saveSubject.next();
+  }
+
+  private saveChanges(): Observable<unknown> {
+    if (this.saving || this.loading || !this.detail) return EMPTY;
     this.submitted = true;
     this.error = '';
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
     // El orden de las fechas, las 90 noches y la capacidad ya los revisan los validadores del formulario.
-    if (this.form.invalid) return;
+    if (this.form.invalid) return EMPTY;
     const draft = this.form.getRawValue();
     const id = this.detail.reservation.reservationId;
     this.saving = true;
-    this.reservations
+    return this.reservations
       .update(id, draft)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
+        // finalize restablece el estado de guardado tanto si la petición termina bien como si falla.
         finalize(() => {
           this.saving = false;
         }),
-      )
-      .subscribe({
-        next: () => {
+      ).pipe(
+        tap(() => {
           void this.router.navigate([this.base, 'reservations', id], {
             queryParams: { saved: true },
           });
-        },
-        // Los campos del backend se llaman como la entidad Reservation; aquí se traducen a los controles.
-        error: (error: HttpErrorResponse) => {
+        }),
+        catchError((error: HttpErrorResponse) => {
           this.error = showApiErrors(this.form, error, {
             checkInDate: 'checkIn',
             checkOutDate: 'checkOut',
@@ -169,7 +182,10 @@ export class ReservationFormComponent {
             roomType: 'roomTypeId',
             services: 'serviceIds',
           });
-        },
-      });
+
+          return EMPTY;
+        }),
+      );
+    return EMPTY;
   }
 }

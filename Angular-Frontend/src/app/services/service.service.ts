@@ -1,12 +1,12 @@
-import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, switchMap } from 'rxjs';
-import { Service } from '../models/service';
-import { ServiceListDTO } from '../models/dto/service-list-dto';
+import { Injectable, inject } from '@angular/core';
+import { Observable, concatMap } from 'rxjs';
 import { ServiceCatalogDTO } from '../models/dto/service-catalog-dto';
 import { ServiceDetailDTO } from '../models/dto/service-detail-dto';
+import { ServiceListDTO } from '../models/dto/service-list-dto';
+import { Service } from '../models/service';
 
-// Los formularios incluyen la disponibilidad independiente del registro.
+// Omit conserva los campos del modelo salvo el id que genera la base de datos.
 export type ServiceData = Omit<Service, 'serviceId'>;
 
 @Injectable({ providedIn: 'root' })
@@ -29,10 +29,11 @@ export class ServiceService {
       this.apiUrl + '/by-url-name/' + encodeURIComponent(urlName),
     );
   }
+  // El POST devuelve un cuerpo vacío. concatMap espera su respuesta antes de consultar el id para navegar.
   add(service: ServiceData): Observable<ServiceDetailDTO> {
     return this.http
       .post<void>(this.apiUrl, service)
-      .pipe(switchMap(() => this.getByUrlName(service.urlName)));
+      .pipe(concatMap(() => this.getByUrlName(service.urlName)));
   }
   update(id: number, service: ServiceData): Observable<void> {
     return this.http.put<void>(this.apiUrl + '/' + id, service);

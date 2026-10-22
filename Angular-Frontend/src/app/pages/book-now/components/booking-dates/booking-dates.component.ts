@@ -1,18 +1,29 @@
-import { AsyncPipe } from '@angular/common';
-import { BehaviorSubject, map } from 'rxjs';
-import { Component, Input, output } from '@angular/core';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { Component, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common';
+import { BehaviorSubject, map, Subject } from 'rxjs';
 import {
-  BookingStay,
-  MAX_GUESTS,
-  MAX_NIGHTS,
   addDays,
+  BookingStay,
   latestCheckIn,
   localDate,
+  MAX_GUESTS,
+  MAX_NIGHTS,
   stayNights,
   validStay,
 } from '../../../../models/booking';
+interface CalendarDay {
+  value: string;
+  label: number;
+  disabled: boolean;
+}
+
+interface CalendarMonth {
+  title: string;
+  days: CalendarDay[];
+}
+
+/** Construye el calendario y emite la estancia elegida. La disponibilidad la consulta el padre. */
 @Component({
   selector: 'app-booking-dates',
   imports: [AsyncPipe, FormsModule, DatePipe],
@@ -25,7 +36,9 @@ export class BookingDatesComponent {
     checkOut: '',
     guests: 1,
   };
-  readonly continueBooking = output<BookingStay>();
+  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
+  protected readonly continueBookingSubject = new Subject<BookingStay>();
+  @Output('continueBooking') readonly continueBooking$ = this.continueBookingSubject.asObservable();
   checkIn = '';
   checkOut = '';
   guests = 1;
@@ -34,40 +47,34 @@ export class BookingDatesComponent {
   readonly lastCheckIn = latestCheckIn();
   readonly maxNights = MAX_NIGHTS;
   readonly maxGuests = MAX_GUESTS;
+  // BehaviorSubject conserva el valor actual. next publica un cambio a quienes lo observan.
   private readonly monthSubject = new BehaviorSubject(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1),
   );
   readonly months$ = this.monthSubject.pipe(
-    map((month) =>
-      [0, 1].map((offset) => {
-        const first = new Date(
-          month.getFullYear(),
-          month.getMonth() + offset,
-          1,
-        );
-        return {
-          title: first.toLocaleDateString('en', {
-            month: 'long',
-            year: 'numeric',
-          }),
-          days: Array.from({ length: 42 }, (_, index) => {
-            const date = new Date(
-              first.getFullYear(),
-              first.getMonth(),
-              index - first.getDay() + 1,
-            );
-            return {
-              value: localDate(date),
-              label: date.getDate(),
-              disabled:
-                date.getMonth() !== first.getMonth() ||
-                localDate(date) < this.today,
-            };
-          }),
-        };
-      }),
-    ),
+    map((month) => [this.buildMonth(month, 0), this.buildMonth(month, 1)]),
   );
+
+  private buildMonth(month: Date, offset: number): CalendarMonth {
+    const first = new Date(month.getFullYear(), month.getMonth() + offset, 1);
+    const days: CalendarDay[] = [];
+    // Seis semanas completas mantienen estable la cuadrícula incluso en meses largos.
+    const calendarCells = 6 * 7;
+    for (let index = 0;index < calendarCells;index++) {
+      const date = new Date(first.getFullYear(), first.getMonth(), index - first.getDay() + 1);
+      const value = localDate(date);
+      days.push({
+        value,
+        label: date.getDate(),
+        disabled: date.getMonth() !== first.getMonth() || value < this.today,
+      });
+    }
+    return {
+      title: first.toLocaleDateString('en', { month: 'long', year: 'numeric' }),
+      days,
+    };
+  }
+
   ngOnInit(): void {
     const value = this.stay;
     this.checkIn = value.checkIn;
@@ -117,7 +124,7 @@ export class BookingDatesComponent {
   }
   submit(): void {
     if (this.valid())
-      this.continueBooking.emit({
+      this.continueBookingSubject.next({
         checkIn: this.checkIn,
         checkOut: this.checkOut,
         guests: this.guests,

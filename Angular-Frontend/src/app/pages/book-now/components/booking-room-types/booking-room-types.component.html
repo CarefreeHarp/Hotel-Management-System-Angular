@@ -12,7 +12,7 @@
     <dd>{{ stay.guests }}</dd>
   </div>
   <div>
-    <button class="change-dates" type="button" (click)="changeDates.emit()">
+    <button class="change-dates" type="button" (click)="changeDatesSubject.next()">
       Change booking details
     </button>
   </div>
@@ -62,7 +62,7 @@
           <button
             class="choose-room"
             type="button"
-            (click)="selected.emit(type.roomTypeId)"
+            (click)="selectedSubject.next(type.roomTypeId)"
           >
             Select room type <span aria-hidden="true">→</span>
           </button>

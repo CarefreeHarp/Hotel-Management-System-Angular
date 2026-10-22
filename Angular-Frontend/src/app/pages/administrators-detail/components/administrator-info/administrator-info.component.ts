@@ -12,7 +12,7 @@ import { basePath } from '../../../../utils/base-path';
   styleUrl: './administrator-info.component.scss',
 })
 export class AdministratorInfoComponent {
-  @Input({ required: true }) administrator!: AdministratorDTO;
+  @Input({ required: true }) administrator?: AdministratorDTO;
   @Input() operatorCount = 0;
   private readonly route = inject(ActivatedRoute);
   get base(): string {

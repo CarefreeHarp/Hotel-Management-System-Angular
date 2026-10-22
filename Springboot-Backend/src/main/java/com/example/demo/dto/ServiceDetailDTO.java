@@ -1,8 +1,7 @@
 package com.example.demo.dto;
 
-import com.example.demo.entities.enums.ActivationStatus;
-
 import com.example.demo.entities.Service;
+import com.example.demo.entities.enums.ActivationStatus;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

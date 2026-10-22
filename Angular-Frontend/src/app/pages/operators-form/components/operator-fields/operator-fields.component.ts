@@ -14,7 +14,7 @@ import type { OperatorsFormComponent } from '../../operators-form.component';
   styleUrl: './operator-fields.component.scss',
 })
 export class OperatorFieldsComponent {
-  @Input({ required: true }) form!: OperatorsFormComponent['form'];
+  @Input({ required: true }) form?: OperatorsFormComponent['form'];
   @Input({ required: true }) administrators: AdministratorDTO[] = [];
   @Input() submitted = false;
   @Input() isCreateMode = true;
@@ -25,9 +25,10 @@ export class OperatorFieldsComponent {
 
   protected readonly messages = OPERATOR_MESSAGES;
 
-  // FormFieldComponent no tiene selector: aquí se replica su regla de error.
+  // El selector de administrador usa la misma regla de visibilidad de errores que los demás campos.
   get adminInvalid(): boolean {
-    const adminId = this.form.controls.adminId;
+    const adminId = this.form?.controls.adminId;
+    if (!adminId) return false;
     return adminId.invalid && (adminId.touched || this.submitted);
   }
 }

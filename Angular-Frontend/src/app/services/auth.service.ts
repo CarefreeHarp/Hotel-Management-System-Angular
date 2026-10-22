@@ -1,14 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, catchError, map, mergeMap, throwError } from 'rxjs';
+import { Observable, catchError, concatMap, map, throwError } from 'rxjs';
 import { Client } from '../models/client';
-import { ClientDetailDTO } from '../models/dto/client-detail-dto';
 import { AdministratorDTO } from '../models/dto/administrator-dto';
+import { ClientDetailDTO } from '../models/dto/client-detail-dto';
 import { OperatorDTO } from '../models/dto/operator-dto';
-import { ClientService } from './client.service';
-import { AdministratorService } from './administrator.service';
-import { OperatorService } from './operator.service';
 import { apiErrorMessage } from '../utils/api-error';
+import { AdministratorService } from './administrator.service';
+import { ClientService } from './client.service';
+import { OperatorService } from './operator.service';
 
 export type UserRole = 'CLIENT' | 'ADMINISTRATOR' | 'OPERATOR';
 
@@ -29,7 +29,7 @@ function adminToStaff(admin: AdministratorDTO): StaffUser {
   };
 }
 
-// Un 401 son credenciales incorrectas; sin conexión o con el servidor caído se explica el motivo real.
+// Un 401 son credenciales incorrectas. Sin conexión o con el servidor caído se explica el motivo real.
 function loginError(error: unknown, invalidCredentials: string): Error {
   return new Error(
     error instanceof HttpErrorResponse && error.status === 401
@@ -58,7 +58,7 @@ export class AuthService {
 
   /**
    * Comprueba las credenciales del cliente. El backend busca el correo, valida la contraseña
-   * y devuelve el cliente; su id es la que va en la URL del perfil.
+   * y devuelve el cliente. Su id es la que va en la URL del perfil.
    */
   loginClient(email: string, password: string): Observable<ClientDetailDTO> {
     return this.clientService
@@ -73,7 +73,7 @@ export class AuthService {
   /**
    * Registra un nuevo cliente en el backend y comprueba sus credenciales. El
    * backend revisa los campos y que el correo y el documento no estén
-   * registrados; su error HTTP llega intacto para mostrar cada campo rechazado.
+   * registrados. Su error HTTP llega intacto para mostrar cada campo rechazado.
    */
   registerClient(
     clientData: Omit<Client, 'clientId'>,
@@ -81,7 +81,8 @@ export class AuthService {
     return this.clientService
       .add(clientData)
       .pipe(
-        mergeMap(() => this.loginClient(clientData.email, clientData.password)),
+        // concatMap ejecuta el login después de que termine el registro, conservando ese orden.
+        concatMap(() => this.loginClient(clientData.email, clientData.password)),
       );
   }
 
@@ -94,13 +95,14 @@ export class AuthService {
 
     return this.adminService.login(trimmedEmail, password).pipe(
       map((admin) => adminToStaff(admin)),
-      catchError((error: unknown) =>
-        error instanceof HttpErrorResponse && error.status === 401
-          ? this.operatorService
-              .login(trimmedEmail, password)
-              .pipe(map((operator) => operatorToStaff(operator)))
-          : throwError(() => error),
-      ),
+      catchError((error: unknown) => {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          return this.operatorService.login(trimmedEmail, password).pipe(
+            map((operator) => operatorToStaff(operator)),
+          );
+        }
+        return throwError(() => error);
+      }),
       catchError((error: unknown) =>
         throwError(() => loginError(error, 'Incorrect staff credentials.')),
       ),

@@ -4,27 +4,30 @@ import com.example.demo.dto.ClientDetailDTO;
 import com.example.demo.dto.ClientListDTO;
 import com.example.demo.entities.Client;
 import com.example.demo.exception.FieldException;
+import com.example.demo.repository.ClientRepository;
 import com.example.demo.service.interfaces.ClientService;
 import com.example.demo.service.interfaces.ReservationService;
-import com.example.demo.repository.ClientRepository;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 /** Operaciones CRUD de clientes con persistencia en H2. */
 @Service
-@org.springframework.transaction.annotation.Transactional
+@Transactional
 public class ClientServiceImpl implements ClientService {
 
-    @Autowired
-    public ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
-    @Autowired
-    public ReservationService reservationService;
+    private final ReservationService reservationService;
+
+    public ClientServiceImpl(ClientRepository clientRepository, ReservationService reservationService) {
+        this.clientRepository = clientRepository;
+        this.reservationService = reservationService;
+    }
 
     @Override
     public List<ClientListDTO> listClients() {
@@ -79,12 +82,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientDetailDTO login(String email, String password) {
-        // La base de datos busca al cliente por su correo: no se descargan todos los clientes.
-        // Se devuelve el DTO, así la contraseña no viaja de vuelta al navegador.
-        return clientRepository.findByEmailIgnoreCase(email == null ? "" : email.trim())
-                .filter(client -> client.getPassword().equals(password))
-                .map(ClientDetailDTO::from)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password."));
+        // orElse(null) extrae el resultado de Optional y devuelve null cuando el correo no existe.
+        Client account = clientRepository.findByEmailIgnoreCase(email == null ? "" : email.trim()).orElse(null);
+        if (account == null || !account.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password.");
+        }
+        return ClientDetailDTO.from(account);
     }
 
     /**
@@ -94,12 +97,14 @@ public class ClientServiceImpl implements ClientService {
      */
     private void checkUniqueFields(Client client, Integer clientId) {
         Map<String, String> conflicts = new LinkedHashMap<>();
-        clientRepository.findByEmailIgnoreCase(client.getEmail())
-                .filter(other -> !other.getClientId().equals(clientId))
-                .ifPresent(other -> conflicts.put("email", "This email is already registered."));
-        clientRepository.findByNationalId(client.getNationalId())
-                .filter(other -> !other.getClientId().equals(clientId))
-                .ifPresent(other -> conflicts.put("nationalId", "This national ID is already registered."));
+        Client sameEmail = clientRepository.findByEmailIgnoreCase(client.getEmail()).orElse(null);
+        if (sameEmail != null && !sameEmail.getClientId().equals(clientId)) {
+            conflicts.put("email", "This email is already registered.");
+        }
+        Client sameNationalId = clientRepository.findByNationalId(client.getNationalId()).orElse(null);
+        if (sameNationalId != null && !sameNationalId.getClientId().equals(clientId)) {
+            conflicts.put("nationalId", "This national ID is already registered.");
+        }
         if (!conflicts.isEmpty()) {
             throw new FieldException(HttpStatus.CONFLICT, conflicts);
         }

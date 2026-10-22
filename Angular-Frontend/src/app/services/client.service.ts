@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Client } from '../models/client';
-import { ClientListDTO } from '../models/dto/client-list-dto';
 import { ClientDetailDTO } from '../models/dto/client-detail-dto';
+import { ClientListDTO } from '../models/dto/client-list-dto';
 
 type ClientResponse = Omit<ClientDetailDTO, 'profilePhoto'> & { profilePhoto?: string | null };
 
-// H2 represents an absent optional photo as null; models omit missing values.
+// H2 devuelve null si falta la foto. El modelo de Angular omite esa propiedad.
 function normalizeClient({ profilePhoto, ...client }: ClientResponse): ClientDetailDTO {
   return profilePhoto ? { ...client, profilePhoto } : client;
 }

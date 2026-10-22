@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Administrator } from '../models/administrator';
-import { AdministratorListDTO } from '../models/dto/administrator-list-dto';
 import { AdministratorDTO } from '../models/dto/administrator-dto';
+import { AdministratorListDTO } from '../models/dto/administrator-list-dto';
 
 @Injectable({
   providedIn: 'root',

@@ -8,9 +8,9 @@ import {
   CardPayment,
   ReservationDetails,
 } from '../models/booking';
+import { ReservationDTO } from '../models/dto/reservation-dto';
 import { RoomTypeListDTO } from '../models/dto/room-type-list-dto';
 import { ReservationStatus } from '../models/enums/reservation-status';
-import { ReservationDTO } from '../models/dto/reservation-dto';
 
 export interface ReservationUpdate extends BookingDraft {
   status: ReservationStatus;
@@ -51,6 +51,7 @@ export class ReservationService {
       },
     });
   }
+  // La API recibe relaciones con identificadores. Asigna la habitación y fija los precios en el backend.
   create(
     clientId: number,
     draft: BookingDraft,
@@ -69,6 +70,7 @@ export class ReservationService {
       payment ? { ...body, initialPayment: payment } : body,
     );
   }
+  // La edición no reenvía pagos: solo cambia estancia, servicios y estado.
   update(id: number, draft: ReservationUpdate): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, {
       checkInDate: draft.checkIn,

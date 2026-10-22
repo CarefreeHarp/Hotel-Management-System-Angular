@@ -1,13 +1,15 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { PriceRangeComponent } from '../price-range/price-range.component';
+import { Subject } from 'rxjs';
 import {
   ListFilter,
   ListOption,
   ListState,
-  initialListState,
   defaultSortOptions,
+  initialListState,
 } from '../../utils/list-state';
+import { PriceRangeComponent } from '../price-range/price-range.component';
+/** Recibe los filtros y emite el estado elegido. La página decide cómo aplicarlo a sus registros. */
 @Component({
   selector: 'app-list-controls',
   imports: [FormsModule, PriceRangeComponent],
@@ -37,10 +39,12 @@ export class ListControlsComponent {
     });
   }
   @Input() total = 0;
-  @Output() changed = new EventEmitter<ListState>();
+  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
+  protected readonly changedSubject = new Subject<ListState>();
+  @Output('changed') readonly changed$ = this.changedSubject.asObservable();
   update(patch: Partial<ListState>): void {
     this.state = { ...this.state, ...patch };
-    this.changed.emit(this.state);
+    this.changedSubject.next(this.state);
   }
   filter(key: string, value: string | number | null): void {
     this.update({
@@ -52,6 +56,6 @@ export class ListControlsComponent {
   }
   reset(): void {
     this.state = initialListState(this.state.view);
-    this.changed.emit(this.state);
+    this.changedSubject.next(this.state);
   }
 }

@@ -12,7 +12,7 @@ import { basePath } from '../../../../utils/base-path';
   styleUrl: './assigned-operators.component.scss',
 })
 export class AssignedOperatorsComponent {
-  // Administrador que se está consultando; puede ser distinto del que tiene la sesión.
+  // Administrador que se está consultando. Puede ser distinto del que tiene la sesión.
   @Input({ required: true }) adminId = 0;
   @Input({ required: true }) operators: OperatorDTO[] = [];
   private readonly route = inject(ActivatedRoute);

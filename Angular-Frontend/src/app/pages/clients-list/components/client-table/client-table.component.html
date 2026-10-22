@@ -43,7 +43,7 @@
                       {{ client.name }} {{ client.lastName }}</span
                     ></a
                   >
-                  <button type="button" (click)="delete.emit(client)">
+                  <button type="button" (click)="deleteSubject.next(client)">
                     Delete<span class="sr-only">
                       {{ client.name }} {{ client.lastName }}</span
                     >

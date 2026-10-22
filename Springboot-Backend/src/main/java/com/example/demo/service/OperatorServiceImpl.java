@@ -9,20 +9,23 @@ import com.example.demo.repository.OperatorRepository;
 import com.example.demo.service.interfaces.OperatorService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-/** Operaciones CRUD de operarios; su administrador se obtiene mediante AdministratorService. */
+/** Operaciones CRUD de operarios. Su administrador se resuelve desde el repositorio. */
 @Service
-@org.springframework.transaction.annotation.Transactional
+@Transactional
 public class OperatorServiceImpl implements OperatorService {
 
-    @Autowired
-    public OperatorRepository operatorRepository;
+    private final OperatorRepository operatorRepository;
 
-    @Autowired
-    public AdministratorRepository administratorRepository;
+    private final AdministratorRepository administratorRepository;
+
+    public OperatorServiceImpl(OperatorRepository operatorRepository, AdministratorRepository administratorRepository) {
+        this.operatorRepository = operatorRepository;
+        this.administratorRepository = administratorRepository;
+    }
 
     @Override
     public List<OperatorDTO> listByAdministrator(Integer adminId) {
@@ -76,12 +79,12 @@ public class OperatorServiceImpl implements OperatorService {
 
     @Override
     public OperatorDTO login(String email, String password) {
-        // La base de datos busca al operario por su correo: no se descargan todos.
-        // Se devuelve el DTO, así la contraseña no viaja de vuelta al navegador.
-        return operatorRepository.findByEmailIgnoreCase(email == null ? "" : email.trim())
-                .filter(operator -> operator.getPassword().equals(password))
-                .map(OperatorDTO::from)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password."));
+        // orElse(null) extrae el resultado de Optional y devuelve null cuando el correo no existe.
+        Operator account = operatorRepository.findByEmailIgnoreCase(email == null ? "" : email.trim()).orElse(null);
+        if (account == null || !account.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password.");
+        }
+        return OperatorDTO.from(account);
     }
 
     /**
@@ -90,12 +93,11 @@ public class OperatorServiceImpl implements OperatorService {
      * descargando las dos tablas completas.
      */
     private void checkEmailIsFree(String email, Integer operatorId) {
-        boolean usedByOperator = operatorRepository.findByEmailIgnoreCase(email == null ? "" : email.trim())
-                .filter(other -> !other.getOperatorId().equals(operatorId))
-                .isPresent();
-        boolean usedByAdministrator = administratorRepository.findByEmailIgnoreCase(email == null ? "" : email.trim())
-                .isPresent();
-        if (usedByOperator || usedByAdministrator) {
+        String normalizedEmail = email == null ? "" : email.trim();
+        Operator sameRole = operatorRepository.findByEmailIgnoreCase(normalizedEmail).orElse(null);
+        boolean usedBySameRole = sameRole != null && !sameRole.getOperatorId().equals(operatorId);
+        boolean usedByOtherRole = administratorRepository.findByEmailIgnoreCase(normalizedEmail).isPresent();
+        if (usedBySameRole || usedByOtherRole) {
             throw new FieldException(HttpStatus.CONFLICT, "email", "Another staff account already uses this email.");
         }
     }
@@ -103,10 +105,12 @@ public class OperatorServiceImpl implements OperatorService {
     /** El administrador a cargo es un campo del formulario: si falta o ya no existe, el error va en ese campo. */
     private Administrator adminInCharge(Integer adminId) {
         if (adminId == null) {
-            throw new FieldException(HttpStatus.BAD_REQUEST, "admin", "Select the administrator in charge of this operator.");
+            throw new FieldException(HttpStatus.BAD_REQUEST, "admin",
+                    "Select the administrator in charge of this operator.");
         }
         return administratorRepository.findById(adminId)
-                .orElseThrow(() -> new FieldException(HttpStatus.BAD_REQUEST, "admin", "The selected administrator no longer exists."));
+                .orElseThrow(() -> new FieldException(HttpStatus.BAD_REQUEST, "admin",
+                        "The selected administrator no longer exists."));
     }
 
 }

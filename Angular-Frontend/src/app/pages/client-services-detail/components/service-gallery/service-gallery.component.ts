@@ -1,5 +1,5 @@
-import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 @Component({
   selector: 'app-service-gallery',
   imports: [OptimizedImageDirective],

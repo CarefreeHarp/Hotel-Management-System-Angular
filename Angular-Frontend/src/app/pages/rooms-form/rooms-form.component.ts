@@ -1,7 +1,6 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { ActivationStatus } from '../../models/enums/activation-status';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -9,22 +8,24 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { EMPTY, finalize, map, forkJoin, of, switchMap } from 'rxjs';
+import { EMPTY, Observable, Subject, catchError, exhaustMap, finalize, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
-import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { RoomFieldsComponent } from './components/room-fields/room-fields.component';
-import { RoomService, RoomData } from '../../services/room.service';
-import { RoomTypeService } from '../../services/room-type.service';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { RoomDetailDTO } from '../../models/dto/room-detail-dto';
 import { RoomTypeOptionDTO } from '../../models/dto/room-type-option-dto';
+import { ActivationStatus } from '../../models/enums/activation-status';
 import { RoomStatus } from '../../models/enums/room-status';
-import { basePath } from '../../utils/base-path';
+import { RoomTypeService } from '../../services/room-type.service';
+import { RoomData, RoomService } from '../../services/room.service';
 import { clearApiErrors, showApiErrors } from '../../utils/api-error';
+import { basePath } from '../../utils/base-path';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 import { wholeNumber } from '../../utils/form-validators';
+import { RoomFieldsComponent } from './components/room-fields/room-fields.component';
 
+/** Coordina la carga y el guardado de habitaciones. Los campos reutilizables reciben el formulario. */
 @Component({
   selector: 'app-rooms-form',
   imports: [
@@ -40,6 +41,7 @@ import { wholeNumber } from '../../utils/form-validators';
   styleUrl: './rooms-form.component.scss',
 })
 export class RoomsFormComponent {
+  private readonly saveSubject = new Subject<void>();
   private readonly service = inject(RoomService);
   private readonly roomTypeService = inject(RoomTypeService);
   private readonly route = inject(ActivatedRoute);
@@ -87,8 +89,15 @@ export class RoomsFormComponent {
   });
 
   constructor() {
+    // exhaustMap ignora nuevos envíos mientras termina el guardado actual.
+    this.saveSubject.pipe(
+      exhaustMap(() => this.saveChanges()),
+      takeUntilDestroyed(),
+    ).subscribe();
+
     this.route.paramMap
       .pipe(
+        // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
         switchMap((params) => {
           const idParam = params.get('id');
           const id = Number(idParam);
@@ -99,12 +108,13 @@ export class RoomsFormComponent {
           this.roomTypes = [];
           this.submitted = false;
           this.form.reset();
-          // Una id inválida muestra la pantalla 400; si la carga falla, la que corresponda.
+          // Una id inválida muestra la pantalla 400. Si la carga falla, la que corresponda.
           if (!this.isCreateMode && (!Number.isSafeInteger(id) || id <= 0)) {
             showErrorPage(this.router, this.route, 400);
             return EMPTY;
           }
           // El selector solo necesita id y nombre de cada tipo.
+          // forkJoin espera que terminen todas estas consultas y entrega sus resultados juntos.
           return forkJoin({
             roomTypes: this.roomTypeService.getOptions(),
             item: this.isCreateMode ? of(undefined) : this.service.getById(id),
@@ -128,24 +138,29 @@ export class RoomsFormComponent {
   }
 
   save(): void {
-    if (this.saving || this.loading || !this.roomTypes.length) return;
+    this.saveSubject.next();
+  }
+
+  private saveChanges(): Observable<unknown> {
+    if (this.saving || this.loading || !this.roomTypes.length) return EMPTY;
     this.submitted = true;
     this.error = '';
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid) return;
+    if (this.form.invalid) return EMPTY;
     const value = this.form.getRawValue();
     if (
       value.number === null ||
       value.floor === null ||
       value.roomTypeId === null
     )
-      return;
+      return EMPTY;
     if (!this.roomTypes.some((type) => type.roomTypeId === value.roomTypeId)) {
       this.error = 'Select an existing room type.';
-      return;
+      return EMPTY;
     }
-    if (!this.isCreateMode && !this.item) return;
+    const item = this.item;
+    if (!this.isCreateMode && !item) return EMPTY;
     const data: RoomData = {
       number: value.number,
       floor: value.floor,
@@ -155,29 +170,29 @@ export class RoomsFormComponent {
     };
     this.saving = true;
     // Las dos peticiones terminan en la id de la habitación guardada.
-    const request = this.isCreateMode
-      ? this.service.add(data).pipe(map((created) => created.roomId))
-      : this.service
-          .update(this.item!.roomId, data)
-          .pipe(map(() => this.item!.roomId));
-    request
+    const request = item && !this.isCreateMode
+      ? this.service.update(item.roomId, data).pipe(map(() => item.roomId))
+      : this.service.add(data).pipe(map((created) => created.roomId));
+    return request
       .pipe(
+        // finalize restablece el estado de guardado tanto si la petición termina bien como si falla.
         finalize(() => {
           this.saving = false;
         }),
-      )
-      .subscribe({
-        next: (id) => {
+      ).pipe(
+        tap((id) => {
           void this.router.navigate([this.base, 'rooms', id], {
             queryParams: { saved: true },
           });
-        },
-        // Si el número ya existe (409) o un valor no es válido, el motivo se muestra bajo su campo.
-        error: (error: HttpErrorResponse) => {
+        }),
+        catchError((error: HttpErrorResponse) => {
           this.error = showApiErrors(this.form, error, {
             roomType: 'roomTypeId',
           });
-        },
-      });
+
+          return EMPTY;
+        }),
+      );
+    return EMPTY;
   }
 }

@@ -1,52 +1,54 @@
-<section aria-labelledby="type-data-title">
-  <h2 class="section-title" id="type-data-title">Commercial information</h2>
-  <p class="section-description">
-    Display name, description, base rate, and permitted occupancy.
-  </p>
-  <div class="form-grid">
-    <app-form-field
-      fieldId="name"
-      label="Name"
-      [control]="form.controls.name"
-      [maxlength]="50"
-      [submitted]="submitted"
-      [messages]="messages.name"
-    />
-    <app-form-field
-      fieldId="maxCapacity"
-      label="Maximum capacity"
-      type="number"
-      [control]="form.controls.maxCapacity"
-      [min]="1"
-      [max]="10"
-      [step]="1"
-      hint="From 1 to 10 guests."
-      [submitted]="submitted"
-      [messages]="messages.maxCapacity"
-    />
-    <app-form-field
-      class="full-width"
-      fieldId="description"
-      label="Description"
-      [multiline]="true"
-      [control]="form.controls.description"
-      [maxlength]="500"
-      hint="Maximum 500 characters."
-      [submitted]="submitted"
-      [messages]="messages.description"
-    />
-    <app-form-field
-      fieldId="nightlyPrice"
-      label="Price per night (COP)"
-      type="number"
-      prefix="$"
-      [control]="form.controls.nightlyPrice"
-      [min]="0.01"
-      [max]="99999999.99"
-      [step]="0.01"
-      hint="Greater than zero, up to two decimals."
-      [submitted]="submitted"
-      [messages]="messages.nightlyPrice"
-    />
-  </div>
-</section>
+@if (form; as form) {
+  <section aria-labelledby="type-data-title">
+    <h2 class="section-title" id="type-data-title">Commercial information</h2>
+    <p class="section-description">
+      Display name, description, base rate, and permitted occupancy.
+    </p>
+    <div class="form-grid">
+      <app-form-field
+        fieldId="name"
+        label="Name"
+        [control]="form.controls.name"
+        [maxlength]="50"
+        [submitted]="submitted"
+        [messages]="messages.name"
+      />
+      <app-form-field
+        fieldId="maxCapacity"
+        label="Maximum capacity"
+        type="number"
+        [control]="form.controls.maxCapacity"
+        [min]="1"
+        [max]="10"
+        [step]="1"
+        hint="From 1 to 10 guests."
+        [submitted]="submitted"
+        [messages]="messages.maxCapacity"
+      />
+      <app-form-field
+        class="full-width"
+        fieldId="description"
+        label="Description"
+        [multiline]="true"
+        [control]="form.controls.description"
+        [maxlength]="500"
+        hint="Maximum 500 characters."
+        [submitted]="submitted"
+        [messages]="messages.description"
+      />
+      <app-form-field
+        fieldId="nightlyPrice"
+        label="Price per night (COP)"
+        type="number"
+        prefix="$"
+        [control]="form.controls.nightlyPrice"
+        [min]="0.01"
+        [max]="99999999.99"
+        [step]="0.01"
+        hint="Greater than zero, up to two decimals."
+        [submitted]="submitted"
+        [messages]="messages.nightlyPrice"
+      />
+    </div>
+  </section>
+}

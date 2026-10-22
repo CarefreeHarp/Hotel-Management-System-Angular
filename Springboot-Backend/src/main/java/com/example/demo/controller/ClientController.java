@@ -4,14 +4,23 @@ import com.example.demo.dto.ClientDetailDTO;
 import com.example.demo.dto.ClientListDTO;
 import com.example.demo.entities.Client;
 import com.example.demo.service.interfaces.ClientService;
+import com.example.demo.validation.OnCreate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import com.example.demo.validation.OnCreate;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/clients")
@@ -32,7 +41,8 @@ public class ClientController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Consultar un cliente", description = "Devuelve todos los atributos del cliente menos la contraseña.")
-    public ClientDetailDTO readClient(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+    public ClientDetailDTO readClient(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         return service.findDetail(id);
     }
 
@@ -45,13 +55,14 @@ public class ClientController {
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un cliente", description = "Reemplaza los campos editables. El identificador de la ruta se mantiene. Se conserva la contraseña existente; el campo password solo se utiliza al crear el registro.")
     public void updateClient(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
-                           @Valid @RequestBody Client client) {
+            @Valid @RequestBody Client client) {
         service.updateProfile(id, client);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un cliente", description = "Elimina el registro. No se permite si el cliente tiene reservas. La respuesta exitosa no tiene cuerpo.")
-    public void deleteClient(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+    public void deleteClient(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         service.deleteProfile(id);
     }
 

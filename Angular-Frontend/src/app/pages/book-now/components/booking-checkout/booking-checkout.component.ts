@@ -1,5 +1,6 @@
-import { Component, Input, output } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
+import { Component, Input, Output } from '@angular/core';
+import { Subject } from 'rxjs';
 import { BookingQuote } from '../../../../models/booking';
 @Component({
   selector: 'app-booking-checkout',
@@ -10,6 +11,9 @@ import { BookingQuote } from '../../../../models/booking';
 export class BookingCheckoutComponent {
   @Input({ required: true }) quote: BookingQuote | undefined;
   @Input() busy = false;
-  readonly payLater = output<void>();
-  readonly payNow = output<void>();
+  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
+  protected readonly payLaterSubject = new Subject<void>();
+  @Output('payLater') readonly payLater$ = this.payLaterSubject.asObservable();
+  protected readonly payNowSubject = new Subject<void>();
+  @Output('payNow') readonly payNow$ = this.payNowSubject.asObservable();
 }

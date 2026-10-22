@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, Input, output } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'app-price-range',
   imports: [CurrencyPipe],
@@ -11,16 +12,18 @@ export class PriceRangeComponent {
   @Input({ required: true }) limit: number = 0;
   @Input() minimum = 0;
   @Input({ required: true }) maximum: number = 0;
-  readonly changed = output<{ minimum: number; maximum: number }>();
+  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
+  protected readonly changedSubject = new Subject<{ minimum: number; maximum: number }>();
+  @Output('changed') readonly changed$ = this.changedSubject.asObservable();
   changeMinimum(control: HTMLInputElement): void {
     const minimum = Math.min(Number(control.value), this.maximum);
     control.value = String(minimum);
-    this.changed.emit({ minimum, maximum: this.maximum });
+    this.changedSubject.next({ minimum, maximum: this.maximum });
   }
   changeMaximum(control: HTMLInputElement): void {
     const maximum = Math.max(Number(control.value), this.minimum);
     control.value = String(maximum);
-    this.changed.emit({ minimum: this.minimum, maximum });
+    this.changedSubject.next({ minimum: this.minimum, maximum });
   }
   get start(): number {
     const span = this.limit - this.floor;

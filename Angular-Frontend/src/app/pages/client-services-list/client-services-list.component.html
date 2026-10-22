@@ -2,7 +2,7 @@
 
 <main class="client-services-page">
   @if (state$ | async; as state) {
-    <!-- Hero / Introduction for Guests -->
+    <!-- Presentación del catálogo para huéspedes -->
     <section class="services-hero">
       <div class="services-hero__content">
         <p class="eyebrow">Atlan Suites · Experiences & Hospitality</p>
@@ -16,7 +16,7 @@
     </section>
 
     <div class="services-container">
-      <!-- Filter Bar: Search and Category Pills -->
+      <!-- Búsqueda y filtros por categoría -->
       <div class="filter-bar">
         <div class="search-box">
           <svg
@@ -80,7 +80,7 @@
       @if (state.isLoading) {
         <app-skeleton variant="cards" label="Loading the service catalog..." />
       } @else {
-        <!-- Results Grid -->
+        <!-- Cuadrícula de resultados -->
         @if (state.filteredServices.length > 0) {
           <div class="services-grid">
             @for (service of state.filteredServices; track service.serviceId) {

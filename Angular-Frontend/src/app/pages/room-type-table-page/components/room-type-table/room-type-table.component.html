@@ -102,7 +102,7 @@
                       >
                       <button
                         type="button"
-                        (click)="delete.emit(item.roomTypeId)"
+                        (click)="deleteSubject.next(item.roomTypeId)"
                       >
                         Delete<span class="sr-only"> {{ item.name }}</span>
                       </button>
@@ -117,7 +117,7 @@
     </div>
   }
 
-  <!-- CARDS / GRID VIEW -->
+  <!-- Vista de tarjetas -->
   @if (viewMode === "cards" && filteredRoomTypes.length > 0) {
     <div class="cards-grid">
       @for (item of filteredRoomTypes; track item.roomTypeId) {
@@ -177,7 +177,7 @@
                     [routerLink]="[base, 'room-types', item.roomTypeId, 'edit']"
                     >Edit<span class="sr-only"> {{ item.name }}</span></a
                   >
-                  <button type="button" (click)="delete.emit(item.roomTypeId)">
+                  <button type="button" (click)="deleteSubject.next(item.roomTypeId)">
                     Delete<span class="sr-only"> {{ item.name }}</span>
                   </button>
                 }

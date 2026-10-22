@@ -1,10 +1,10 @@
-import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, switchMap } from 'rxjs';
-import { RoomType } from '../models/room-type';
+import { Injectable, inject } from '@angular/core';
+import { Observable, concatMap, map } from 'rxjs';
+import { RoomTypeDetailDTO } from '../models/dto/room-type-detail-dto';
 import { RoomTypeListDTO } from '../models/dto/room-type-list-dto';
 import { RoomTypeOptionDTO } from '../models/dto/room-type-option-dto';
-import { RoomTypeDetailDTO } from '../models/dto/room-type-detail-dto';
+import { RoomType } from '../models/room-type';
 
 @Injectable({
   providedIn: 'root',
@@ -26,9 +26,10 @@ export class RoomTypeService {
     return this.http.get<RoomTypeDetailDTO>(`${this.apiUrl}/${id}`);
   }
 
+  // El POST devuelve un cuerpo vacío. concatMap espera su respuesta antes de consultar el id para navegar.
   add(roomType: Omit<RoomType, 'roomTypeId'>): Observable<RoomTypeListDTO> {
     return this.http.post<void>(this.apiUrl, roomType).pipe(
-      switchMap(() => this.getAll()),
+      concatMap(() => this.getAll()),
       map((roomTypes) => {
         const created = roomTypes.find(
           (rt) => rt.name.trim().toLowerCase() === roomType.name.trim().toLowerCase(),

@@ -1,17 +1,17 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EMPTY, Observable, startWith, map, switchMap } from 'rxjs';
+import { EMPTY, map, Observable, startWith, switchMap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
-import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { GalleryComponent } from '../../components/gallery/gallery.component';
-import { RoomInfoComponent } from './components/room-info/room-info.component';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { RoomDetailDTO } from '../../models/dto/room-detail-dto';
 import { RoomService } from '../../services/room.service';
 import { basePath } from '../../utils/base-path';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
+import { RoomInfoComponent } from './components/room-info/room-info.component';
 
 @Component({
   selector: 'app-rooms-detail',
@@ -35,9 +35,10 @@ export class RoomsDetailComponent {
   get base(): string {
     return basePath(this.route);
   }
-  // Una id inválida muestra la pantalla 400; si la carga falla, la que corresponda (404, 500…).
+  // Una id inválida muestra la pantalla 400. Si la carga falla, la que corresponda (404, 500…).
   readonly state$: Observable<{ room?: RoomDetailDTO; loading: boolean }> =
     this.route.paramMap.pipe(
+      // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
       switchMap((params) => {
         const id = Number(params.get('id'));
         if (!Number.isSafeInteger(id) || id <= 0) {

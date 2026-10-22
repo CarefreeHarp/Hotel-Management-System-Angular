@@ -1,6 +1,6 @@
-import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { clientQuery } from '../../utils/client-query';
 
 @Component({

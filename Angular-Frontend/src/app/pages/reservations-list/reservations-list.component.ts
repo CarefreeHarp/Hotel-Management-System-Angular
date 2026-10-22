@@ -1,27 +1,22 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  BehaviorSubject,
-  Subject,
-  combineLatest,
-  map,
-  startWith,
-  switchMap,
-} from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, catchError, combineLatest, EMPTY, exhaustMap, map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ListControlsComponent } from '../../components/list-controls/list-controls.component';
 import {
-  RecordCardsComponent,
   RecordCard,
+  RecordCardsComponent,
 } from '../../components/record-cards/record-cards.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { ReservationDTO } from '../../models/dto/reservation-dto';
 import { ReservationStatus } from '../../models/enums/reservation-status';
 import { ReservationService } from '../../services/reservation.service';
+import { apiErrorMessage } from '../../utils/api-error';
 import { basePath } from '../../utils/base-path';
+import { catchErrorPage } from '../../utils/error-page';
 import {
   initialListState,
   ListFilter,
@@ -29,8 +24,6 @@ import {
   matchesSearch,
 } from '../../utils/list-state';
 import { ReservationTableComponent } from './components/reservation-table/reservation-table.component';
-import { apiErrorMessage } from '../../utils/api-error';
-import { catchErrorPage } from '../../utils/error-page';
 
 @Component({
   selector: 'app-reservations-list',
@@ -46,11 +39,14 @@ import { catchErrorPage } from '../../utils/error-page';
   styleUrl: './reservations-list.component.scss',
 })
 export class ReservationsListComponent {
+
+  private readonly actionSubject = new Subject<number>();
   private readonly service = inject(ReservationService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly reloadSubject = new Subject<void>();
+  // BehaviorSubject conserva el valor actual. next publica un cambio a quienes lo observan.
   private readonly listSubject = new BehaviorSubject(initialListState());
   private readonly dates = new DatePipe('en-US');
   message = '';
@@ -71,6 +67,7 @@ export class ReservationsListComponent {
   ];
   private readonly records$ = this.reloadSubject.pipe(
     startWith(undefined),
+    // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
     switchMap(() =>
       this.service.getAll().pipe(
         map((items) => ({ items, loading: false })),
@@ -80,6 +77,7 @@ export class ReservationsListComponent {
       ),
     ),
   );
+  // combineLatest recalcula la vista con los últimos datos y filtros, sin repetir la consulta HTTP.
   readonly state$ = combineLatest([this.records$, this.listSubject]).pipe(
     map(([data, controls]) => ({
       ...data,
@@ -88,37 +86,50 @@ export class ReservationsListComponent {
       filters: this.filters(data.items),
     })),
   );
+
+  constructor() {
+    // exhaustMap evita ejecutar otra acción mientras termina la petición actual.
+    this.actionSubject.pipe(
+      exhaustMap((id) => this.performAction(id)),
+      takeUntilDestroyed(),
+    ).subscribe();
+  }
   changeControls(state: ListState): void {
     this.listSubject.next(state);
   }
   remove(id: number): void {
+    this.actionSubject.next(id);
+  }
+
+  private performAction(id: number): Observable<unknown> {
     if (
       this.deleting ||
       !window.confirm(
         'Permanent deletion is only for special cases. In normal cases, changing the status to CANCELLED may be sufficient. This will delete the reservation, its folio, charges and payments. This action is irreversible. Continue?',
       )
     )
-      return;
+      return EMPTY;
     this.deleting = true;
     this.actionError = '';
     this.message = '';
-    this.service
+    return this.service
       .delete(id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
+      .pipe(
+        tap(() => {
           this.deleting = false;
           this.message = 'Reservation permanently deleted.';
           this.reload();
-        },
-        error: (error: HttpErrorResponse) => {
+        }),
+        catchError((error: HttpErrorResponse) => {
           this.deleting = false;
           this.actionError = apiErrorMessage(
             error,
             'Unable to delete the reservation. Please try again.',
           );
-        },
-      });
+
+          return EMPTY;
+        }),
+      );
   }
   private reload(): void {
     this.reloadSubject.next();

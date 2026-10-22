@@ -1,5 +1,6 @@
-import { Component, inject, Input, output } from '@angular/core';
+import { Component, inject, Input, Output } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
 import { ClientListDTO } from '../../../../models/dto/client-list-dto';
 import { basePath } from '../../../../utils/base-path';
 
@@ -11,7 +12,9 @@ import { basePath } from '../../../../utils/base-path';
 })
 export class ClientTableComponent {
   @Input() clients: ClientListDTO[] = [];
-  readonly delete = output<ClientListDTO>();
+  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
+  protected readonly deleteSubject = new Subject<ClientListDTO>();
+  @Output('delete') readonly delete$ = this.deleteSubject.asObservable();
   private readonly route = inject(ActivatedRoute);
   get base(): string {
     return basePath(this.route);

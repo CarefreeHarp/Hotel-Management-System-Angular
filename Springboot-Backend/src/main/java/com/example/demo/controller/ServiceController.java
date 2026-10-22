@@ -9,7 +9,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import java.util.List;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/services")
@@ -36,7 +43,8 @@ public class ServiceController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Consultar un servicio", description = "Devuelve todos los atributos del servicio.")
-    public ServiceDetailDTO readService(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+    public ServiceDetailDTO readService(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         return service.findDetail(id);
     }
 
@@ -49,25 +57,28 @@ public class ServiceController {
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un servicio", description = "Reemplaza los campos editables. El identificador de la ruta se mantiene.")
     public void updateService(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
-                           @Valid @RequestBody Service hotelService) {
+            @Valid @RequestBody Service hotelService) {
         service.update(id, hotelService);
     }
 
     @PutMapping("/{id}/deactivate")
     @Operation(summary = "Desactivar un servicio", description = "El servicio se conserva con sus reservas, sale del catálogo y pasa a la sección de inactivos.")
-    public void deactivateService(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+    public void deactivateService(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         service.deactivate(id);
     }
 
     @PutMapping("/{id}/activate")
     @Operation(summary = "Activar un servicio", description = "El servicio vuelve a la lista principal y al catálogo.")
-    public void activateService(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+    public void activateService(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         service.activate(id);
     }
 
     @GetMapping("/by-url-name/{urlName}")
     @Operation(summary = "Consultar un servicio por su nombre de URL", description = "Consulta el catálogo mediante el campo único urlName.")
-    public ServiceDetailDTO readServiceByUrlName(@Parameter(description = "Unique service slug", example = "spa-ritual") @PathVariable String urlName) {
+    public ServiceDetailDTO readServiceByUrlName(
+            @Parameter(description = "Unique service slug", example = "spa-ritual") @PathVariable String urlName) {
         return service.findDetailByUrlName(urlName);
     }
 }

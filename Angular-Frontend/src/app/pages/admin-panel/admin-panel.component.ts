@@ -1,11 +1,13 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ButtonComponent } from '../../components/button/button.component';
+import { EMPTY, catchError, forkJoin, of, switchMap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
+import { ButtonComponent } from '../../components/button/button.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
+import { PanelCounts } from '../../models/panel-counts';
 import { AdministratorService } from '../../services/administrator.service';
 import { PanelService } from '../../services/panel.service';
-import { PanelCounts } from '../../models/panel-counts';
 import { basePath } from '../../utils/base-path';
 import { errorPageCode, showErrorPage } from '../../utils/error-page';
 
@@ -17,6 +19,7 @@ interface PanelCard {
   createLabel?: string;
 }
 
+/** Carga los totales del panel. Los servicios HTTP se encargan de consultar el backend. */
 @Component({
   selector: 'app-admin-panel',
   imports: [SkeletonComponent, RouterLink, ButtonComponent, AdminHeaderComponent],
@@ -24,6 +27,7 @@ interface PanelCard {
   styleUrl: './admin-panel.component.scss',
 })
 export class AdminPanelComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly administrators = inject(AdministratorService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -95,29 +99,36 @@ export class AdminPanelComponent implements OnInit {
   loadError = false;
 
   ngOnInit(): void {
-    // La id del administrador sale de la URL: si no es válida (400) o no existe (404),
-    // se muestra la pantalla de error en lugar de un panel sin nombre.
-    const id = Number(this.route.snapshot.paramMap.get('adminId'));
-    if (!Number.isSafeInteger(id) || id <= 0) {
-      showErrorPage(this.router, this.route, 400);
-      return;
-    }
-    this.administrators.getById(id).subscribe({
-      next: (admin) => (this.administratorName = admin.name),
-      error: (error: unknown) =>
-        showErrorPage(this.router, this.route, errorPageCode(error)),
-    });
-    // Una sola petición: el backend devuelve solo los totales, no los registros. Son
-    // secundarios: si fallan, el panel lo avisa y sus enlaces siguen funcionando.
-    this.panelService.getCounts().subscribe({
-      next: (counts) => {
-        this.counts = counts;
-        this.loading = false;
-      },
-      error: () => {
-        this.loadError = true;
-        this.loading = false;
-      },
+    this.route.paramMap.pipe(
+      switchMap((params) => {
+        const id = Number(params.get('adminId'));
+        this.loading = true;
+        this.loadError = false;
+        this.counts = undefined;
+        this.administratorName = '';
+        if (!Number.isSafeInteger(id) || id <= 0) {
+          showErrorPage(this.router, this.route, 400);
+          return EMPTY;
+        }
+        // El administrador es obligatorio. Si fallan los totales, los enlaces del panel siguen disponibles.
+        return forkJoin({
+          administrator: this.administrators.getById(id),
+          counts: this.panelService.getCounts().pipe(
+            catchError(() => {
+              this.loadError = true;
+              return of(undefined);
+            }),
+          ),
+        }).pipe(catchError((error: unknown) => {
+          showErrorPage(this.router, this.route, errorPageCode(error));
+          return EMPTY;
+        }));
+      }),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(({ administrator, counts }) => {
+      this.administratorName = administrator.name;
+      this.counts = counts;
+      this.loading = false;
     });
   }
 }

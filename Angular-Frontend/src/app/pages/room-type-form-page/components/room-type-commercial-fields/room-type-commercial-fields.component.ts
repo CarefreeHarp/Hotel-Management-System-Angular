@@ -10,7 +10,7 @@ import type { RoomTypeForm } from '../../room-type-form-page.component';
   styleUrl: './room-type-commercial-fields.component.scss',
 })
 export class RoomTypeCommercialFieldsComponent {
-  @Input({ required: true }) form!: RoomTypeForm;
+  @Input({ required: true }) form?: RoomTypeForm;
   @Input() submitted = false;
   protected readonly messages = ROOM_TYPE_MESSAGES;
 }

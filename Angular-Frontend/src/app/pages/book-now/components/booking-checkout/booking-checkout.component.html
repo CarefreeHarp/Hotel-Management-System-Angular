@@ -13,7 +13,7 @@
           Your reservation will remain in your account. You may pay it in
           several payments whenever you are ready.
         </p>
-        <button type="button" [disabled]="busy" (click)="payLater.emit()">
+        <button type="button" [disabled]="busy" (click)="payLaterSubject.next()">
           {{ busy ? "Booking…" : "Book and pay later" }}
           <span aria-hidden="true">→</span>
         </button>
@@ -54,7 +54,7 @@
           class="pay-now"
           type="button"
           [disabled]="busy"
-          (click)="payNow.emit()"
+          (click)="payNowSubject.next()"
         >
           Pay now <span aria-hidden="true">→</span>
         </button>

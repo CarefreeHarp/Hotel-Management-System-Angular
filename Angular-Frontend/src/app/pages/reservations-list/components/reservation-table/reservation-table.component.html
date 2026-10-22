@@ -70,7 +70,7 @@
                 ><button
                   type="button"
                   [disabled]="busy"
-                  (click)="deleteRecord.emit(item.reservationId)"
+                  (click)="deleteRecordSubject.next(item.reservationId)"
                 >
                   Delete<span class="sr-only"> {{ item.reservationCode }}</span>
                 </button>

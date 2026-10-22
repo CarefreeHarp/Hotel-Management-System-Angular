@@ -12,7 +12,7 @@ import { basePath } from '../../../../utils/base-path';
   styleUrl: './operator-info.component.scss',
 })
 export class OperatorInfoComponent {
-  @Input({ required: true }) operator!: OperatorDTO;
+  @Input({ required: true }) operator?: OperatorDTO;
   private readonly route = inject(ActivatedRoute);
   readonly isOperatorProfile = this.route.snapshot.paramMap.has('operatorId');
   get base(): string {

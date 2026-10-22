@@ -9,20 +9,24 @@ import com.example.demo.repository.OperatorRepository;
 import com.example.demo.service.interfaces.AdministratorService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 /** Operaciones CRUD de administradores con persistencia en H2. */
 @Service
-@org.springframework.transaction.annotation.Transactional
+@Transactional
 public class AdministratorServiceImpl implements AdministratorService {
 
-    @Autowired
-    public AdministratorRepository administratorRepository;
+    private final AdministratorRepository administratorRepository;
 
-    @Autowired
-    public OperatorRepository operatorRepository;
+    private final OperatorRepository operatorRepository;
+
+    public AdministratorServiceImpl(AdministratorRepository administratorRepository,
+            OperatorRepository operatorRepository) {
+        this.administratorRepository = administratorRepository;
+        this.operatorRepository = operatorRepository;
+    }
 
     @Override
     public void create(Administrator administrator) {
@@ -84,12 +88,13 @@ public class AdministratorServiceImpl implements AdministratorService {
 
     @Override
     public AdministratorDTO login(String email, String password) {
-        // La base de datos busca al administrador por su correo: no se descargan todos.
-        // Se devuelve el DTO, así la contraseña no viaja de vuelta al navegador.
-        return administratorRepository.findByEmailIgnoreCase(email == null ? "" : email.trim())
-                .filter(administrator -> administrator.getPassword().equals(password))
-                .map(AdministratorDTO::from)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password."));
+        // orElse(null) extrae el resultado de Optional y devuelve null cuando el correo no existe.
+        Administrator account = administratorRepository.findByEmailIgnoreCase(email == null ? "" : email.trim())
+                .orElse(null);
+        if (account == null || !account.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password.");
+        }
+        return AdministratorDTO.from(account);
     }
 
     /**
@@ -98,12 +103,11 @@ public class AdministratorServiceImpl implements AdministratorService {
      * descargando las dos tablas completas.
      */
     private void checkEmailIsFree(String email, Integer adminId) {
-        boolean usedByAdministrator = administratorRepository.findByEmailIgnoreCase(email == null ? "" : email.trim())
-                .filter(other -> !other.getAdminId().equals(adminId))
-                .isPresent();
-        boolean usedByOperator = operatorRepository.findByEmailIgnoreCase(email == null ? "" : email.trim())
-                .isPresent();
-        if (usedByAdministrator || usedByOperator) {
+        String normalizedEmail = email == null ? "" : email.trim();
+        Administrator sameRole = administratorRepository.findByEmailIgnoreCase(normalizedEmail).orElse(null);
+        boolean usedBySameRole = sameRole != null && !sameRole.getAdminId().equals(adminId);
+        boolean usedByOtherRole = operatorRepository.findByEmailIgnoreCase(normalizedEmail).isPresent();
+        if (usedBySameRole || usedByOtherRole) {
             throw new FieldException(HttpStatus.CONFLICT, "email", "Another staff account already uses this email.");
         }
     }

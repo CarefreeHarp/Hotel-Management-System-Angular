@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, Input, Output, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
 import { StaffAvatarComponent } from '../../../../components/staff-avatar/staff-avatar.component';
 import { OperatorDTO } from '../../../../models/dto/operator-dto';
 import { basePath } from '../../../../utils/base-path';
@@ -12,7 +13,9 @@ import { basePath } from '../../../../utils/base-path';
 })
 export class OperatorTableComponent {
   @Input({ required: true }) operators: OperatorDTO[] = [];
-  @Output() delete = new EventEmitter<OperatorDTO>();
+  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
+  protected readonly deleteSubject = new Subject<OperatorDTO>();
+  @Output('delete') readonly delete$ = this.deleteSubject.asObservable();
   private readonly route = inject(ActivatedRoute);
   get base(): string {
     return basePath(this.route);

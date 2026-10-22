@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { BookingQuote } from '../../../../models/booking';
+import { Component, Input } from '@angular/core';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
+import { BookingQuote } from '../../../../models/booking';
 @Component({
   selector: 'app-booking-reservation-summary',
   imports: [CurrencyPipe, DatePipe, OptimizedImageDirective],

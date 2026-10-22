@@ -1,6 +1,6 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormArray,
   FormControl,
@@ -9,21 +9,20 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs';
+import { EMPTY, Observable, Subject, catchError, exhaustMap, finalize, of, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
-import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { RoomTypeCommercialFieldsComponent } from './components/room-type-commercial-fields/room-type-commercial-fields.component';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import {
   MAX_ADDITIONAL_PHOTOS,
   PhotoFieldsComponent,
 } from '../../components/photo-fields/photo-fields.component';
-import { RoomTypeService } from '../../services/room-type.service';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { RoomTypeDetailDTO } from '../../models/dto/room-type-detail-dto';
-import { basePath } from '../../utils/base-path';
+import { RoomTypeService } from '../../services/room-type.service';
 import { clearApiErrors, showApiErrors } from '../../utils/api-error';
-import { errorPageCode, showErrorPage } from '../../utils/error-page';
+import { basePath } from '../../utils/base-path';
+import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 import {
   maxDecimals,
   photoUrl,
@@ -31,6 +30,7 @@ import {
   requiredText,
   wholeNumber,
 } from '../../utils/form-validators';
+import { RoomTypeCommercialFieldsComponent } from './components/room-type-commercial-fields/room-type-commercial-fields.component';
 
 export type RoomTypeForm = FormGroup<{
   name: FormControl<string>;
@@ -57,6 +57,7 @@ export type RoomTypeForm = FormGroup<{
   styleUrl: './room-type-form-page.component.scss',
 })
 export class RoomTypeFormPageComponent {
+  private readonly saveSubject = new Subject<void>();
   private readonly service = inject(RoomTypeService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -100,36 +101,42 @@ export class RoomTypeFormPageComponent {
   });
 
   constructor() {
-    // Ya no se descargan todos los tipos para revisar el nombre: lo valida el backend.
-    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
-      const idParam = params.get('id');
-      this.isCreateMode = idParam === null;
-      const id = Number(idParam);
-      this.submitted = false;
-      this.error = '';
-      this.roomType = undefined;
-      this.form.controls.secondaryPhotos.clear();
-      this.form.reset();
-      this.loading = !this.isCreateMode;
-      if (this.isCreateMode) return;
+    // exhaustMap ignora nuevos envíos mientras termina el guardado actual.
+    this.saveSubject.pipe(
+      exhaustMap(() => this.saveChanges()),
+      takeUntilDestroyed(),
+    ).subscribe();
 
-      // Una id inválida muestra la pantalla 400; si el tipo no carga, la que corresponda.
-      if (!Number.isSafeInteger(id) || id <= 0) {
-        showErrorPage(this.router, this.route, 400);
-        return;
-      }
-      this.service.getById(id).subscribe({
-        next: (roomType) => {
-          this.roomType = roomType;
-          this.form.patchValue(roomType);
-          this.form.controls.secondaryPhotos.clear();
-          roomType.secondaryPhotos.forEach((photo) => this.addPhoto(photo));
-          this.form.markAsPristine();
-          this.loading = false;
-        },
-        error: (error: unknown) =>
-          showErrorPage(this.router, this.route, errorPageCode(error)),
-      });
+    this.route.paramMap.pipe(
+      // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
+      switchMap((params) => {
+        const idParam = params.get('id');
+        this.isCreateMode = idParam === null;
+        const id = Number(idParam);
+        this.submitted = false;
+        this.error = '';
+        this.roomType = undefined;
+        this.form.controls.secondaryPhotos.clear();
+        this.form.reset();
+        this.loading = !this.isCreateMode;
+        if (this.isCreateMode) return of(undefined);
+
+        // Una id inválida muestra la pantalla 400. Si el tipo no carga, la que corresponda.
+        if (!Number.isSafeInteger(id) || id <= 0) {
+          showErrorPage(this.router, this.route, 400);
+          return EMPTY;
+        }
+        return this.service.getById(id).pipe(catchErrorPage(this.router, this.route));
+      }),
+      takeUntilDestroyed(),
+    ).subscribe((roomType) => {
+      if (!roomType) return;
+      this.roomType = roomType;
+      this.form.patchValue(roomType);
+      this.form.controls.secondaryPhotos.clear();
+      for (const photo of roomType.secondaryPhotos) this.addPhoto(photo);
+      this.form.markAsPristine();
+      this.loading = false;
     });
   }
 
@@ -146,14 +153,18 @@ export class RoomTypeFormPageComponent {
   }
 
   save(): void {
-    if (this.saving) return;
+    this.saveSubject.next();
+  }
+
+  private saveChanges(): Observable<unknown> {
+    if (this.saving) return EMPTY;
     this.submitted = true;
     this.error = '';
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid) return;
+    if (this.form.invalid) return EMPTY;
     const value = this.form.getRawValue();
-    if (value.nightlyPrice === null || value.maxCapacity === null) return;
+    if (value.nightlyPrice === null || value.maxCapacity === null) return EMPTY;
     const roomTypeData = {
       name: value.name.trim(),
       description: value.description.trim(),
@@ -164,42 +175,49 @@ export class RoomTypeFormPageComponent {
         .map((photo) => photo.trim())
         .filter(Boolean),
     };
-    if (!this.isCreateMode && !this.roomType) return;
+    const roomType = this.roomType;
+    if (!this.isCreateMode && !roomType) return EMPTY;
     this.saving = true;
     if (this.isCreateMode) {
-      this.service
+      return this.service
         .add(roomTypeData)
-        .pipe(finalize(() => (this.saving = false)))
-        .subscribe({
-          next: (createdRoomType) => {
+        .pipe(finalize(() => (this.saving = false))).pipe(
+          tap((createdRoomType) => {
             void this.router.navigate(
               [this.base, 'room-types', createdRoomType.roomTypeId],
               {
                 queryParams: { saved: true },
               },
             );
-          },
-          error: (err: HttpErrorResponse) => this.showError(err),
-        });
-      return;
+          }),
+          catchError((err: HttpErrorResponse) => {
+            this.showError(err);
+            return EMPTY;
+          }),
+        );
+      return EMPTY;
     }
-    this.service
-      .update(this.roomType!.roomTypeId, {
+    if (!roomType) return EMPTY;
+    return this.service
+      .update(roomType.roomTypeId, {
         ...roomTypeData,
-        roomTypeId: this.roomType!.roomTypeId,
+        roomTypeId: roomType.roomTypeId,
       })
-      .pipe(finalize(() => (this.saving = false)))
-      .subscribe({
-        next: () => {
+      .pipe(finalize(() => (this.saving = false))).pipe(
+        tap(() => {
           void this.router.navigate(
-            [this.base, 'room-types', this.roomType!.roomTypeId],
+            [this.base, 'room-types', roomType.roomTypeId],
             {
               queryParams: { saved: true },
             },
           );
-        },
-        error: (err: HttpErrorResponse) => this.showError(err),
-      });
+        }),
+        catchError((err: HttpErrorResponse) => {
+          this.showError(err);
+          return EMPTY;
+        }),
+      );
+    return EMPTY;
   }
 
   // Si el nombre ya existe (409) o una foto no es válida, el motivo se muestra bajo su campo.

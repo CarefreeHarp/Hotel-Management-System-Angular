@@ -1,7 +1,7 @@
-import { ActivationStatus } from '../../../../models/enums/activation-status';
 import { Component, Input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
+import { ActivationStatus } from '../../../../models/enums/activation-status';
 import { SERVICE_MESSAGES } from '../../../../utils/form-messages';
 import type { ServicesFormComponent } from '../../services-form.component';
 
@@ -16,7 +16,7 @@ export class ServiceFieldsComponent {
     value,
     label: value === ActivationStatus.ACTIVE ? 'Active' : 'Inactive',
   }));
-  @Input({ required: true }) form!: ServicesFormComponent['form'];
+  @Input({ required: true }) form?: ServicesFormComponent['form'];
   @Input() submitted = false;
   protected readonly messages = SERVICE_MESSAGES;
   readonly textFields = [

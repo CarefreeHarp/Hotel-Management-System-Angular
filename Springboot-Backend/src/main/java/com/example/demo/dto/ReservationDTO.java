@@ -1,9 +1,9 @@
 package com.example.demo.dto;
 
+import java.time.LocalDateTime;
 import com.example.demo.entities.Reservation;
 import com.example.demo.entities.enums.ReservationStatus;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,7 +39,8 @@ public class ReservationDTO {
                 hasRoom ? reservation.getRoom().getRoomType().getRoomTypeId() : null,
                 hasRoom ? reservation.getRoom().getRoomType().getName() : null,
                 reservation.getClient() == null ? null : reservation.getClient().getClientId(),
-                reservation.getClient() == null ? null : reservation.getClient().getName() + " " + reservation.getClient().getLastName(),
+                reservation.getClient() == null ? null
+                        : reservation.getClient().getName() + " " + reservation.getClient().getLastName(),
                 reservation.getCreatedAt(),
                 hasRoom ? reservation.getRoom().getRoomType().getMainPhoto() : null);
     }

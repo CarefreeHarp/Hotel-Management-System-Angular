@@ -1,19 +1,20 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
-import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
-import { clientQuery } from '../../utils/client-query';
-import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ServiceService } from '../../services/service.service';
-import { ServiceCatalogDTO } from '../../models/dto/service-catalog-dto';
-import { HeaderComponent } from '../../components/header/header.component';
-import { FooterComponent } from '../../components/footer/footer.component';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
 import { ButtonComponent } from '../../components/button/button.component';
+import { FooterComponent } from '../../components/footer/footer.component';
+import { HeaderComponent } from '../../components/header/header.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
+import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
+import { ServiceCatalogDTO } from '../../models/dto/service-catalog-dto';
+import { ServiceService } from '../../services/service.service';
 import { basePath } from '../../utils/base-path';
+import { clientQuery } from '../../utils/client-query';
 import { catchErrorPage } from '../../utils/error-page';
 
+/** Carga el catálogo una vez y calcula la búsqueda y las categorías en la vista. */
 @Component({
   selector: 'app-client-services-list',
   imports: [
@@ -40,6 +41,7 @@ export class ClientServicesListComponent {
     return basePath(this.route);
   }
 
+  // BehaviorSubject conserva el valor actual. next publica un cambio a quienes lo observan.
   private readonly selectedCategorySubject = new BehaviorSubject('ALL');
   private readonly searchQuerySubject = new BehaviorSubject('');
   // Si el catálogo no carga, la pantalla de error ofrece volver a intentarlo.
@@ -48,6 +50,7 @@ export class ClientServicesListComponent {
     catchErrorPage(this.router, this.route),
     startWith({ services: new Array<ServiceCatalogDTO>(), isLoading: true }),
   );
+  // combineLatest recalcula la vista con los últimos datos y filtros, sin repetir la consulta HTTP.
   readonly state$ = combineLatest([
     this.catalog$,
     this.selectedCategorySubject,
@@ -55,27 +58,36 @@ export class ClientServicesListComponent {
   ]).pipe(
     map(([state, selectedCategory, searchQuery]) => {
       const query = searchQuery.trim().toLowerCase();
+      const categories: string[] = [];
+      for (const service of state.services) {
+        if (service.category && !categories.includes(service.category)) {
+          categories.push(service.category);
+        }
+      }
+      categories.sort();
       return {
         ...state,
         selectedCategory,
         searchQuery,
-        categories: [
-          ...new Set(
-            state.services.map((item) => item.category).filter(Boolean),
-          ),
-        ].sort(),
-        filteredServices: state.services.filter(
-          (item) =>
-            (selectedCategory === 'ALL' ||
-              item.category === selectedCategory) &&
-            (!query ||
-              [item.name, item.summary, item.description, item.category].some(
-                (value) => value?.toLowerCase().includes(query),
-              )),
-        ),
+        categories,
+        filteredServices: this.filterServices(state.services, selectedCategory, query),
       };
     }),
   );
+  private filterServices(services: ServiceCatalogDTO[], category: string, query: string): ServiceCatalogDTO[] {
+    const result: ServiceCatalogDTO[] = [];
+    for (const service of services) {
+      if (category !== 'ALL' && service.category !== category) continue;
+      const values = [service.name, service.summary, service.description, service.category];
+      let matches = !query;
+      for (const value of values) {
+        if (value?.toLowerCase().includes(query)) matches = true;
+      }
+      if (matches) result.push(service);
+    }
+    return result;
+  }
+
   selectCategory(category: string): void {
     this.selectedCategorySubject.next(category);
   }

@@ -1,7 +1,6 @@
 package com.example.demo.dto;
 
 import com.example.demo.entities.enums.ActivationStatus;
-
 import com.example.demo.entities.enums.RoomStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;

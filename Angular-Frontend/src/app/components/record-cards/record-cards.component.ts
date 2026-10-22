@@ -1,6 +1,7 @@
-import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
+import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { ActivationStatus } from '../../models/enums/activation-status';
 export interface RecordCard {
   id: number;
@@ -12,6 +13,7 @@ export interface RecordCard {
   activationStatus?: ActivationStatus;
   canDelete?: boolean;
 }
+/** Presenta tarjetas recibidas y emite acciones al padre. No consulta ni modifica el backend. */
 @Component({
   selector: 'app-record-cards',
   imports: [OptimizedImageDirective, RouterLink],
@@ -20,6 +22,9 @@ export interface RecordCard {
 })
 export class RecordCardsComponent {
   @Input() cards: RecordCard[] = [];
-  @Output() deleteRecord = new EventEmitter<number>();
-  @Output() toggleActivation = new EventEmitter<number>();
+  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
+  protected readonly deleteRecordSubject = new Subject<number>();
+  @Output('deleteRecord') readonly deleteRecord$ = this.deleteRecordSubject.asObservable();
+  protected readonly toggleActivationSubject = new Subject<number>();
+  @Output('toggleActivation') readonly toggleActivation$ = this.toggleActivationSubject.asObservable();
 }

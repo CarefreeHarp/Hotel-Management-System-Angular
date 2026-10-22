@@ -14,7 +14,7 @@ interface ErrorCopy {
   message: string;
 }
 
-// 400 y 404 son problemas de la dirección; 500 y 503, del servidor.
+// 400 y 404 son problemas de la dirección. 500 y 503, del servidor.
 const COPY: Record<ErrorPageCode, ErrorCopy> = {
   400: {
     label: 'Invalid request',
@@ -57,7 +57,7 @@ export class ErrorPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
-  // /error/500 trae el código en la ruta; las rutas inexistentes, en sus datos (404).
+  // /error/500 trae el código en la ruta. Las rutas inexistentes, en sus datos (404).
   readonly code = toCode(
     this.route.snapshot.paramMap.get('code') ??
       this.route.snapshot.data['code'],

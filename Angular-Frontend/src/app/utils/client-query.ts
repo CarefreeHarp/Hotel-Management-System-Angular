@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 
-/** Client context is read from the current URL; it is never stored as a session. */
+/** El contexto del cliente se lee de la URL actual. Nunca se guarda como una sesión. */
 export function clientIdFromUrl(route: ActivatedRoute): number | undefined {
   const value = Number(route.snapshot.queryParamMap.get('auth'));
   return Number.isSafeInteger(value) && value > 0 ? value : undefined;

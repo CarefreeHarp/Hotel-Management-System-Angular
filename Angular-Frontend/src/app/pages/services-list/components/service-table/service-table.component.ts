@@ -1,7 +1,8 @@
-import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { Component, Input, Output, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
+import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 import { ServiceListDTO } from '../../../../models/dto/service-list-dto';
 import { basePath } from '../../../../utils/base-path';
 
@@ -13,7 +14,9 @@ import { basePath } from '../../../../utils/base-path';
 })
 export class ServiceTableComponent {
   @Input({ required: true }) services: ServiceListDTO[] = [];
-  @Output() toggleActivation = new EventEmitter<ServiceListDTO>();
+  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
+  protected readonly toggleActivationSubject = new Subject<ServiceListDTO>();
+  @Output('toggleActivation') readonly toggleActivation$ = this.toggleActivationSubject.asObservable();
   private readonly route = inject(ActivatedRoute);
   get base(): string {
     return basePath(this.route);

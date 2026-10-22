@@ -3,14 +3,23 @@ package com.example.demo.controller;
 import com.example.demo.dto.OperatorDTO;
 import com.example.demo.entities.Operator;
 import com.example.demo.service.interfaces.OperatorService;
+import com.example.demo.validation.OnCreate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import com.example.demo.validation.OnCreate;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/operators")
@@ -25,13 +34,15 @@ public class OperatorController {
 
     @GetMapping
     @Operation(summary = "Listar operadores", description = "Devuelve las filas de la tabla; del administrador a cargo solo llegan su id y su nombre.")
-    public List<OperatorDTO> listOperators(@Parameter(description = "Optional administrator ID to filter assigned operators", example = "1") @RequestParam(required = false) Integer adminId) {
+    public List<OperatorDTO> listOperators(
+            @Parameter(description = "Optional administrator ID to filter assigned operators", example = "1") @RequestParam(required = false) Integer adminId) {
         return adminId == null ? service.listOperators() : service.listByAdministrator(adminId);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Consultar un operador", description = "Devuelve los datos visibles del operador; la contraseña no se envía.")
-    public OperatorDTO readOperator(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+    public OperatorDTO readOperator(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         return service.findDetail(id);
     }
 
@@ -43,14 +54,16 @@ public class OperatorController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un operador", description = "Reemplaza los campos editables. El identificador de la ruta se mantiene. Se conserva la contraseña existente; el campo password solo se utiliza al crear el registro. admin.adminId debe corresponder a un administrador existente.")
-    public void updateOperator(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
-                           @Valid @RequestBody Operator operator) {
+    public void updateOperator(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
+            @Valid @RequestBody Operator operator) {
         service.update(id, operator, operator.getAdmin().getAdminId());
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un operador", description = "Elimina el registro. La respuesta exitosa no tiene cuerpo.")
-    public void deleteOperator(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+    public void deleteOperator(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         service.delete(id);
     }
 

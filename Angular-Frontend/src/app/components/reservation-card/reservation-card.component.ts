@@ -1,11 +1,11 @@
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { Component, inject, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
+import { ReservationDetails } from '../../models/booking';
 import { basePath } from '../../utils/base-path';
 import { clientQuery } from '../../utils/client-query';
-import { Component, inject, Input } from '@angular/core';
-import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ButtonComponent } from '../button/button.component';
-import { ReservationDetails } from '../../models/booking';
-import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 
 @Component({
   selector: 'app-reservation-card',

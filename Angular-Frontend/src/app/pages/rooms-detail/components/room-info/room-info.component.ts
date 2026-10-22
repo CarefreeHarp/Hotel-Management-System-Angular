@@ -1,8 +1,8 @@
-import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
-import { Component, Input, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { Component, Input, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ButtonComponent } from '../../../../components/button/button.component';
+import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 import { RoomDetailDTO } from '../../../../models/dto/room-detail-dto';
 import { basePath } from '../../../../utils/base-path';
 
@@ -13,7 +13,7 @@ import { basePath } from '../../../../utils/base-path';
   styleUrl: './room-info.component.scss',
 })
 export class RoomInfoComponent {
-  @Input({ required: true }) room!: RoomDetailDTO;
+  @Input({ required: true }) room?: RoomDetailDTO;
   private readonly route = inject(ActivatedRoute);
   get base(): string {
     return basePath(this.route);

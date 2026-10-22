@@ -1,11 +1,11 @@
-import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, switchMap } from 'rxjs';
-import { Room } from '../models/room';
-import { RoomListDTO } from '../models/dto/room-list-dto';
+import { Injectable, inject } from '@angular/core';
+import { Observable, concatMap, map } from 'rxjs';
 import { RoomDetailDTO } from '../models/dto/room-detail-dto';
+import { RoomListDTO } from '../models/dto/room-list-dto';
+import { Room } from '../models/room';
 
-// Los formularios incluyen la disponibilidad independiente del registro.
+// Omit parte del modelo y excluye el id y la relación completa. Al crear solo se envía el id del tipo.
 export type RoomData = Omit<Room, 'roomId' | 'roomType'> & {
   roomType: { roomTypeId: number };
 };
@@ -21,9 +21,10 @@ export class RoomService {
   getById(id: number): Observable<RoomDetailDTO> {
     return this.http.get<RoomDetailDTO>(this.apiUrl + '/' + id);
   }
+  // El POST devuelve un cuerpo vacío. concatMap espera su respuesta antes de consultar el id para navegar.
   add(room: RoomData): Observable<RoomListDTO> {
     return this.http.post<void>(this.apiUrl, room).pipe(
-      switchMap(() => this.getAll()),
+      concatMap(() => this.getAll()),
       map((rooms) => {
         const created = rooms.find((item) => item.number === room.number);
         if (!created) throw new Error('Created room could not be retrieved.');

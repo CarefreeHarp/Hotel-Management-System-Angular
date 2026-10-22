@@ -1,17 +1,17 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { ServiceDetailDTO } from '../../models/dto/service-detail-dto';
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EMPTY, Observable, startWith, map, switchMap } from 'rxjs';
+import { EMPTY, map, Observable, startWith, switchMap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
-import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { GalleryComponent } from '../../components/gallery/gallery.component';
-import { ServiceInfoComponent } from './components/service-info/service-info.component';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
+import { ServiceDetailDTO } from '../../models/dto/service-detail-dto';
 import { ServiceService } from '../../services/service.service';
 import { basePath } from '../../utils/base-path';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
+import { ServiceInfoComponent } from './components/service-info/service-info.component';
 
 @Component({
   selector: 'app-services-detail',
@@ -35,9 +35,10 @@ export class ServicesDetailComponent {
   get base(): string {
     return basePath(this.route);
   }
-  // Una id inválida muestra la pantalla 400; si la carga falla, la que corresponda (404, 500…).
+  // Una id inválida muestra la pantalla 400. Si la carga falla, la que corresponda (404, 500…).
   readonly state$: Observable<{ service?: ServiceDetailDTO; loading: boolean }> =
     this.route.paramMap.pipe(
+      // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
       switchMap((params) => {
         const id = Number(params.get('id'));
         if (!Number.isSafeInteger(id) || id <= 0) {

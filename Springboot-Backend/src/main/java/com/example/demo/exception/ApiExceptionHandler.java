@@ -1,11 +1,10 @@
 package com.example.demo.exception;
 
+import java.time.LocalDateTime;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ import tools.jackson.core.JacksonException;
 
 /**
  * Convierte cualquier error de la API en el mismo JSON (ApiError). Los errores de
- * validación y de negocio indican en fieldErrors el mensaje de cada campo; los
+ * validación y de negocio indican en fieldErrors el mensaje de cada campo. Los
  * errores inesperados responden 500 sin detalles técnicos (ni SQL ni trazas) y el
  * detalle queda en el log del servidor.
  */
@@ -51,12 +50,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         Map<String, String> fields = new LinkedHashMap<>();
         Object target = ex.getBindingResult().getTarget();
-        List<String> order = target == null ? List.of()
-                : Arrays.stream(target.getClass().getDeclaredFields()).map(Field::getName).toList();
-        // Los mensajes se informan en el orden de los campos de la entidad, como en el formulario.
-        ex.getBindingResult().getFieldErrors().stream()
-                .sorted(Comparator.comparingInt(error -> declaredIndex(order, error.getField())))
-                .forEach(error -> addFieldError(fields, error.getField(), error.getDefaultMessage(), error.getCode()));
+        List<String> order = new java.util.ArrayList<>();
+        // La reflexión permite leer el orden de los campos sin escribir una lista por cada entidad.
+        if (target != null) {
+            for (Field field : target.getClass().getDeclaredFields()) {
+                order.add(field.getName());
+            }
+        }
+        List<FieldError> errors = new java.util.ArrayList<>(ex.getBindingResult().getFieldErrors());
+        errors.sort((first, second) -> Integer.compare(
+                declaredIndex(order, first.getField()), declaredIndex(order, second.getField())));
+        for (FieldError error : errors) {
+            addFieldError(fields, error.getField(), error.getDefaultMessage(), error.getCode());
+        }
         return respond(ex, HttpStatus.BAD_REQUEST, null, fields, headers, request);
     }
 
@@ -94,7 +100,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
             HttpStatusCode status, WebRequest request) {
         String name = ex.getPropertyName() == null ? "value" : ex.getPropertyName();
-        return respond(ex, HttpStatus.BAD_REQUEST, "The value \"" + ex.getValue() + "\" is not valid for \"" + name + "\".",
+        return respond(ex, HttpStatus.BAD_REQUEST,
+                "The value \"" + ex.getValue() + "\" is not valid for \"" + name + "\".",
                 Map.of(name, "Enter a valid value."), headers, request);
     }
 
@@ -144,16 +151,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleUnexpected(Exception ex, WebRequest request) {
         // Al confirmar la transacción, Spring envuelve los errores de validación y de integridad.
         ConstraintViolationException violation = findCause(ex, ConstraintViolationException.class);
-        if (violation != null) return handleConstraintViolation(violation, request);
+        if (violation != null)
+            return handleConstraintViolation(violation, request);
         DataIntegrityViolationException integrity = findCause(ex, DataIntegrityViolationException.class);
-        if (integrity != null) return handleDataIntegrity(integrity, request);
+        if (integrity != null)
+            return handleDataIntegrity(integrity, request);
         logger.error("Unexpected error on " + path(request), ex);
         return respond(ex, HttpStatus.INTERNAL_SERVER_ERROR, UNEXPECTED, Map.of(), new HttpHeaders(), request);
     }
 
     /**
      * Las demás excepciones de Spring (ResponseStatusException, rutas inexistentes,
-     * métodos no permitidos...) llegan aquí con un ProblemDetail; se convierte en ApiError.
+     * métodos no permitidos...) llegan aquí con un ProblemDetail. Se convierte en ApiError.
      */
     @Override
     protected ResponseEntity<Object> createResponseEntity(Object body, HttpHeaders headers,
@@ -181,10 +190,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private static void addFieldError(Map<String, String> fields, String field, String message, String rule) {
-        if (!fields.containsKey(field) || REQUIRED_RULES.contains(rule)) fields.put(field, message);
+        if (!fields.containsKey(field) || REQUIRED_RULES.contains(rule))
+            fields.put(field, message);
     }
 
-    /** Posición del campo en la clase; secondaryPhotos[2] usa la de secondaryPhotos. */
+    /** Posición del campo en la clase. secondaryPhotos[2] usa la de secondaryPhotos. */
     private static int declaredIndex(List<String> order, String field) {
         int index = order.indexOf(field.replaceAll("[.\\[].*", ""));
         return index < 0 ? order.size() : index;
@@ -198,7 +208,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     /** Campo del JSON que Jackson no pudo leer, por ejemplo status o room.roomType.roomTypeId. */
     private static String jsonField(HttpMessageNotReadableException ex) {
         JacksonException jackson = findCause(ex, JacksonException.class);
-        if (jackson == null) return null;
+        if (jackson == null)
+            return null;
         StringBuilder field = new StringBuilder();
         for (JacksonException.Reference reference : jackson.getPath()) {
             if (reference.getPropertyName() != null) {
@@ -212,7 +223,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static <T extends Throwable> T findCause(Throwable ex, Class<T> type) {
         for (Throwable cause = ex; cause != null; cause = cause.getCause() == cause ? null : cause.getCause()) {
-            if (type.isInstance(cause)) return type.cast(cause);
+            if (type.isInstance(cause))
+                return type.cast(cause);
         }
         return null;
     }

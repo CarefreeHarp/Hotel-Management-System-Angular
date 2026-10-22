@@ -4,14 +4,23 @@ import com.example.demo.dto.AdministratorDTO;
 import com.example.demo.dto.AdministratorListDTO;
 import com.example.demo.entities.Administrator;
 import com.example.demo.service.interfaces.AdministratorService;
+import com.example.demo.validation.OnCreate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import com.example.demo.validation.OnCreate;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/administrators")
@@ -38,7 +47,8 @@ public class AdministratorController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Consultar un administrador", description = "Devuelve el id, el nombre y el correo; la contraseña no se envía.")
-    public AdministratorDTO readAdministrator(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+    public AdministratorDTO readAdministrator(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         return service.findDetail(id);
     }
 
@@ -50,14 +60,16 @@ public class AdministratorController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un administrador", description = "Reemplaza los campos editables. El identificador de la ruta se mantiene. Se conserva la contraseña existente; el campo password solo se utiliza al crear el registro.")
-    public void updateAdministrator(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
-                           @Valid @RequestBody Administrator administrator) {
+    public void updateAdministrator(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
+            @Valid @RequestBody Administrator administrator) {
         service.update(id, administrator);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un administrador", description = "Elimina el registro. La respuesta exitosa no tiene cuerpo.")
-    public void deleteAdministrator(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+    public void deleteAdministrator(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         service.delete(id);
     }
 

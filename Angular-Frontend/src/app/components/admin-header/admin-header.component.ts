@@ -1,11 +1,13 @@
-import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ActivatedRoute,
   Router,
   RouterLink,
   RouterLinkActive,
 } from '@angular/router';
+import { fromEvent } from 'rxjs';
+import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { basePath } from '../../utils/base-path';
 
 export interface AdminSection {
@@ -35,15 +37,16 @@ export const ADMIN_SECTIONS: AdminSection[] = [
   styleUrl: './admin-header.component.scss',
 })
 export class AdminHeaderComponent {
+
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
   readonly isOperator = this.route.snapshot.paramMap.has('operatorId');
   readonly sections = this.isOperator
     ? ADMIN_SECTIONS.filter(
-        (section) =>
-          section.path === 'clients' || section.path === 'reservations',
-      )
+      (section) =>
+        section.path === 'clients' || section.path === 'reservations',
+    )
     : ADMIN_SECTIONS;
   get base(): string {
     return basePath(this.route);
@@ -56,6 +59,11 @@ export class AdminHeaderComponent {
   }
   menuOpen = false;
 
+  constructor() {
+    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
+    fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => this.closeDesktopMenu());
+  }
+
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
   }
@@ -67,8 +75,6 @@ export class AdminHeaderComponent {
   logout(): void {
     void this.router.navigate(['/']);
   }
-
-  @HostListener('window:resize')
   closeDesktopMenu(): void {
     if (window.innerWidth > 1180) this.closeMenu();
   }

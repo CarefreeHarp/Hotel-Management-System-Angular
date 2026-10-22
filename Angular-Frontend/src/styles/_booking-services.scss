@@ -482,7 +482,7 @@
     color: #111417;
   }
 
-  /* RESPONSIVE DESIGN FOR CARDS GRID */
+  /* Adaptación de la cuadrícula de tarjetas a pantallas pequeñas */
   @media (max-width: 1099px) {
     .services-grid {
       grid-template-columns: repeat(2, 1fr);

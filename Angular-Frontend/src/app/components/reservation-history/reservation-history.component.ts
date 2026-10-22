@@ -4,6 +4,7 @@ import { ReservationStatus } from '../../models/enums/reservation-status';
 import { ButtonComponent } from '../button/button.component';
 import { ReservationCardComponent } from '../reservation-card/reservation-card.component';
 
+/** Comparte las tarjetas y filtros del historial entre cliente y personal. */
 @Component({
   selector: 'app-reservation-history',
   imports: [ButtonComponent, ReservationCardComponent],
@@ -26,6 +27,7 @@ export class ReservationHistoryComponent {
     { label: 'Awaiting payment', status: ReservationStatus.PENDING },
     { label: 'Cancelled', status: ReservationStatus.CANCELLED },
   ];
+  // Cliente y personal comparten las reservas. Cambian únicamente las etiquetas de sus filtros.
   get filters(): { label: string; status: 'all' | ReservationStatus }[] {
     return this.staff
       ? [

@@ -15,17 +15,27 @@ export interface ApiError {
   fieldErrors?: Record<string, string>;
 }
 
+/** El cuerpo HTTP es externo: solo se aceptan mensajes y errores de campo que sean texto. */
 function apiBody(error: unknown): Partial<ApiError> {
-  return error instanceof HttpErrorResponse &&
-    error.error &&
-    typeof error.error === 'object'
-    ? (error.error as Partial<ApiError>)
-    : {};
+  const body: unknown = error instanceof HttpErrorResponse ? error.error : undefined;
+  if (!body || typeof body !== 'object') return {};
+  const result: Partial<ApiError> = {};
+  if ('message' in body && typeof body.message === 'string') {
+    result.message = body.message;
+  }
+  if ('fieldErrors' in body && body.fieldErrors && typeof body.fieldErrors === 'object') {
+    const fields: Record<string, string> = {};
+    for (const [field, message] of Object.entries(body.fieldErrors)) {
+      if (typeof message === 'string') fields[field] = message;
+    }
+    result.fieldErrors = fields;
+  }
+  return result;
 }
 
 /**
  * Mensaje de una petición fallida según su código HTTP: sin conexión y los
- * errores 5xx tienen su propio texto, sin detalles técnicos; los demás
+ * errores 5xx tienen su propio texto, sin detalles técnicos. Los demás
  * muestran el motivo que explica el backend.
  */
 export function apiErrorMessage(
@@ -63,7 +73,7 @@ export function apiFieldErrors(error: unknown): Record<string, string> {
  * Muestra cada error de campo del backend bajo su control, como el error
  * `server`, y devuelve el texto para la alerta del formulario: vacío cuando
  * todos los problemas ya se ven en sus campos. `fields` traduce los nombres
- * del backend a rutas de controles, por ejemplo { roomType: 'roomTypeId' };
+ * del backend a rutas de controles, por ejemplo { roomType: 'roomTypeId' }.
  * secondaryPhotos[1] se busca como secondaryPhotos.1.
  */
 export function showApiErrors(

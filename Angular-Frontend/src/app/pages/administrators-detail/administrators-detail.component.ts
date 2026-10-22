@@ -1,18 +1,19 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { mergeMap } from 'rxjs';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
+import { EMPTY, Observable, catchError, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
-import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { AdministratorInfoComponent } from './components/administrator-info/administrator-info.component';
-import { AssignedOperatorsComponent } from './components/assigned-operators/assigned-operators.component';
-import { AdministratorService } from '../../services/administrator.service';
-import { OperatorService } from '../../services/operator.service';
+import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { AdministratorDTO } from '../../models/dto/administrator-dto';
 import { OperatorDTO } from '../../models/dto/operator-dto';
+import { AdministratorService } from '../../services/administrator.service';
+import { OperatorService } from '../../services/operator.service';
 import { basePath } from '../../utils/base-path';
 import { errorPageCode, showErrorPage } from '../../utils/error-page';
+import { AdministratorInfoComponent } from './components/administrator-info/administrator-info.component';
+import { AssignedOperatorsComponent } from './components/assigned-operators/assigned-operators.component';
 
 @Component({
   selector: 'app-administrators-detail',
@@ -29,6 +30,7 @@ import { errorPageCode, showErrorPage } from '../../utils/error-page';
   styleUrl: './administrators-detail.component.scss',
 })
 export class AdministratorsDetailComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly administratorService = inject(AdministratorService);
@@ -42,30 +44,40 @@ export class AdministratorsDetailComponent implements OnInit {
   saved = false;
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.route.paramMap.pipe(
+      // Cambiar de registro cancela sus lecturas anteriores y conserva solo el resultado vigente.
+      switchMap((params) => this.loadRecord(params)),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe();
+  }
+
+  private loadRecord(params: ParamMap): Observable<unknown> {
+    this.isLoading = true;
+    this.item = undefined;
+    const id = Number(params.get('id'));
     this.saved = this.route.snapshot.queryParamMap.get('saved') === 'true';
-    // Una id inválida muestra la pantalla 400; si la carga falla, la que corresponda (404, 500…).
+    // Una id inválida muestra la pantalla 400. Si la carga falla, la que corresponda (404, 500…).
     if (!Number.isSafeInteger(id) || id <= 0) {
       showErrorPage(this.router, this.route, 400);
-      return;
+      return EMPTY;
     }
     // Primero llega el administrador y después se piden sus operadores.
-    this.administratorService
+    return this.administratorService
       .getById(id)
       .pipe(
-        mergeMap((administrator) => {
+        switchMap((administrator) => {
           this.item = administrator;
           return this.operatorService.getByAdministrator(id);
         }),
-      )
-      .subscribe({
-        next: (operators) => {
+      ).pipe(
+        tap((operators) => {
           this.operators = operators;
           this.isLoading = false;
-        },
-        // El backend responde 404 cuando el id no existe.
-        error: (error: unknown) =>
-          showErrorPage(this.router, this.route, errorPageCode(error)),
-      });
+        }),
+        catchError((error: unknown) => {
+          showErrorPage(this.router, this.route, errorPageCode(error));
+          return EMPTY;
+        }),
+      );
   }
 }

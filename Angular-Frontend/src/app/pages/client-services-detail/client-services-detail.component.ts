@@ -1,4 +1,6 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
+import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   Observable,
   catchError,
@@ -8,20 +10,19 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
-import { clientQuery } from '../../utils/client-query';
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ServiceService } from '../../services/service.service';
-import { ServiceDetailDTO } from '../../models/dto/service-detail-dto';
-import { HeaderComponent } from '../../components/header/header.component';
-import { FooterComponent } from '../../components/footer/footer.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { ServiceGalleryComponent } from './components/service-gallery/service-gallery.component';
+import { FooterComponent } from '../../components/footer/footer.component';
+import { HeaderComponent } from '../../components/header/header.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
+import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
+import { ServiceDetailDTO } from '../../models/dto/service-detail-dto';
+import { ServiceService } from '../../services/service.service';
 import { basePath } from '../../utils/base-path';
+import { clientQuery } from '../../utils/client-query';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
+import { ServiceGalleryComponent } from './components/service-gallery/service-gallery.component';
 
+/** Resuelve un servicio por id o nombre de URL y presenta su información pública. */
 @Component({
   selector: 'app-client-services-detail',
   imports: [
@@ -54,6 +55,7 @@ export class ClientServicesDetailComponent {
     isLoading: boolean;
   }> = this.route.paramMap.pipe(
     map((params) => params.get('id') ?? ''),
+    // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
     switchMap((idOrSlug) => {
       const numericId = Number(idOrSlug);
       const request =

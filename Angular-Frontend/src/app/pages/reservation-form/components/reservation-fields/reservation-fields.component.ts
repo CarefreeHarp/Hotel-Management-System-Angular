@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormControl,
@@ -71,7 +72,7 @@ function capacityRule(limits: ReservationLimits): ValidatorFn {
 function checkOutBalanceRule(limits: ReservationLimits): ValidatorFn {
   return (control) =>
     control.value === ReservationStatus.CHECKED_OUT &&
-    Math.round((limits.balance?.() ?? 0) * 100) > 0
+      Math.round((limits.balance?.() ?? 0) * 100) > 0
       ? { unpaid: true }
       : null;
 }
@@ -105,15 +106,16 @@ export function createReservationForm(limits: ReservationLimits = noLimits) {
     }),
     serviceIds: new FormControl<number[]>([], { nonNullable: true }),
   });
+  // Se crea en el contexto del componente. Sus flujos terminan con él.
   // Las reglas que comparan dos campos se recalculan cuando cambia el otro.
-  form.controls.checkIn.valueChanges.subscribe(() =>
+  form.controls.checkIn.valueChanges.pipe(takeUntilDestroyed()).subscribe(() =>
     form.controls.checkOut.updateValueAndValidity(),
   );
-  form.controls.roomTypeId.valueChanges.subscribe(() =>
+  form.controls.roomTypeId.valueChanges.pipe(takeUntilDestroyed()).subscribe(() =>
     form.controls.guests.updateValueAndValidity(),
   );
   // Fechas, tipo y servicios pueden cambiar el saldo antes de guardar.
-  form.valueChanges.subscribe(() =>
+  form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() =>
     form.controls.status.updateValueAndValidity({ emitEvent: false }),
   );
   return form;

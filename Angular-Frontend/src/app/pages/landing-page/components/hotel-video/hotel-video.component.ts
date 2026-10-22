@@ -2,13 +2,13 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter,
-  HostListener,
   OnDestroy,
   Output,
   ViewChild,
   inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, fromEvent } from 'rxjs';
 
 @Component({
   selector: 'app-hotel-video',
@@ -17,8 +17,11 @@ import {
   styleUrl: './hotel-video.component.scss',
 })
 export class HotelVideoComponent implements AfterViewInit, OnDestroy {
+
   @ViewChild('hotelVideo') hotelVideo?: ElementRef<HTMLVideoElement>;
-  @Output() fullscreenChange = new EventEmitter<boolean>();
+  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
+  protected readonly fullscreenChangeSubject = new Subject<boolean>();
+  @Output('fullscreenChange') readonly fullscreenChange$ = this.fullscreenChangeSubject.asObservable();
 
   eyebrow: string = 'The hotel';
   title: string = 'Hotel drone view';
@@ -30,7 +33,12 @@ export class HotelVideoComponent implements AfterViewInit, OnDestroy {
   private isInView = false;
   private isFullscreen = false;
 
-  // Entering starts a new playback only before the first run or after completion.
+  constructor() {
+    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
+    fromEvent(window, 'scroll').pipe(takeUntilDestroyed()).subscribe(() => this.updateFullscreen());
+  }
+
+  // Al entrar, el video solo empieza desde cero si aún no se ha reproducido o si ya terminó.
   ngAfterViewInit(): void {
     this.videoObserver = new IntersectionObserver(
       ([entry]) => {
@@ -49,7 +57,6 @@ export class HotelVideoComponent implements AfterViewInit, OnDestroy {
   }
 
   // Avisa a la landing cuando el video cubre toda la pantalla para ocultar el header.
-  @HostListener('window:scroll')
   updateFullscreen(): void {
     const { top, bottom } =
       this.elementRef.nativeElement.getBoundingClientRect();
@@ -58,7 +65,7 @@ export class HotelVideoComponent implements AfterViewInit, OnDestroy {
       top <= tolerance && bottom >= window.innerHeight - tolerance;
     if (isFullscreen !== this.isFullscreen) {
       this.isFullscreen = isFullscreen;
-      this.fullscreenChange.emit(isFullscreen);
+      this.fullscreenChangeSubject.next(isFullscreen);
     }
   }
 
@@ -66,7 +73,7 @@ export class HotelVideoComponent implements AfterViewInit, OnDestroy {
     const video = this.hotelVideo?.nativeElement;
     if (!video || (this.hasStarted && !video.ended)) return;
     this.hasStarted = true;
-    // Angular no aplica el atributo muted como propiedad; el navegador lo exige para reproducir solo.
+    // Angular no aplica el atributo muted como propiedad. El navegador lo exige para reproducir solo.
     video.muted = true;
     video.playbackRate = 2;
     video.currentTime = 0;

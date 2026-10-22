@@ -1,23 +1,24 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
-import { basePath } from '../../utils/base-path';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EMPTY, catchError, combineLatest, map, of, switchMap } from 'rxjs';
-import { HeaderComponent } from '../../components/header/header.component';
+import { catchError, combineLatest, EMPTY, map, of, switchMap } from 'rxjs';
+import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ClientInfoComponent } from '../../components/client-info/client-info.component';
+import { HeaderComponent } from '../../components/header/header.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { ReservationDetails } from '../../models/booking';
 import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
-import { ReservationService } from '../../services/reservation.service';
 import { ClientService } from '../../services/client.service';
+import { ReservationService } from '../../services/reservation.service';
+import { basePath } from '../../utils/base-path';
 import { clientQuery } from '../../utils/client-query';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 import { ReservationFinanceComponent } from './components/reservation-finance/reservation-finance.component';
 
+/** Carga reserva y huésped. El componente de finanzas presenta los cargos y pagos recibidos. */
 @Component({
   selector: 'app-reservation-detail',
   imports: [
@@ -72,26 +73,28 @@ export class ReservationDetailComponent implements OnInit {
   ngOnInit(): void {
     combineLatest([this.route.paramMap, this.route.queryParamMap])
       .pipe(
+        // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
         switchMap(([params]) => {
           this.detail = undefined;
           this.client = undefined;
           this.isLoading = true;
           const id = Number(params.get('id'));
-          // Una id inválida muestra la pantalla 400; si la reserva no carga, la que corresponda.
+          // Una id inválida muestra la pantalla 400. Si la reserva no carga, la que corresponda.
           if (!Number.isSafeInteger(id) || id <= 0) {
             showErrorPage(this.router, this.route, 400);
             return EMPTY;
           }
           return this.reservations.details(id).pipe(
-            switchMap((detail) =>
-              detail.clientId === undefined
-                ? of({ detail, client: undefined })
-                : this.clients.getById(detail.clientId).pipe(
-                    map((client) => ({ detail, client })),
-                    // El huésped es información secundaria: sin él, la reserva se muestra igual.
-                    catchError(() => of({ detail, client: undefined })),
-                  ),
-            ),
+            switchMap((detail) => {
+              if (detail.clientId === undefined) {
+                return of({ detail, client: undefined });
+              }
+              return this.clients.getById(detail.clientId).pipe(
+                map((client) => ({ detail, client })),
+                // El huésped es información secundaria. Su ausencia no impide mostrar la reserva.
+                catchError(() => of({ detail, client: undefined })),
+              );
+            }),
             catchErrorPage(this.router, this.route),
           );
         }),

@@ -1,27 +1,30 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { ListControlsComponent } from '../../components/list-controls/list-controls.component';
-import {
-  RecordCardsComponent,
-  RecordCard,
-} from '../../components/record-cards/record-cards.component';
-import {
-  initialListState,
-  matchesSearch,
-  compareRecords,
-  ListFilter,
-} from '../../utils/list-state';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { catchError, EMPTY, exhaustMap, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { OperatorTableComponent } from './components/operator-table/operator-table.component';
-import { OperatorService } from '../../services/operator.service';
+import { ListControlsComponent } from '../../components/list-controls/list-controls.component';
+import {
+  RecordCard,
+  RecordCardsComponent,
+} from '../../components/record-cards/record-cards.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { OperatorDTO } from '../../models/dto/operator-dto';
-import { basePath } from '../../utils/base-path';
+import { OperatorService } from '../../services/operator.service';
 import { apiErrorMessage } from '../../utils/api-error';
+import { basePath } from '../../utils/base-path';
 import { errorPageCode, showErrorPage } from '../../utils/error-page';
+import {
+  compareRecords,
+  initialListState,
+  ListFilter,
+  matchesSearch,
+} from '../../utils/list-state';
+import { OperatorTableComponent } from './components/operator-table/operator-table.component';
 
+/** Coordina la lista de operarios, sus filtros y acciones. Los componentes hijos presentan los registros. */
 @Component({
   selector: 'app-operators-list',
   imports: [
@@ -37,6 +40,9 @@ import { errorPageCode, showErrorPage } from '../../utils/error-page';
   styleUrl: './operators-list.component.scss',
 })
 export class OperatorsListComponent implements OnInit {
+
+  private readonly actionSubject = new Subject<OperatorDTO>();
+  private readonly loadSubject = new Subject<void>();
   listState = initialListState();
   get filters(): ListFilter[] {
     return [
@@ -106,6 +112,19 @@ export class OperatorsListComponent implements OnInit {
   message = '';
   errorMessage = '';
 
+  constructor() {
+    // exhaustMap evita ejecutar otra acción mientras termina la petición actual.
+    this.actionSubject.pipe(
+      exhaustMap((item) => this.performAction(item)),
+      takeUntilDestroyed(),
+    ).subscribe();
+    // Una recarga sustituye la lectura anterior. Las escrituras usan un flujo independiente.
+    this.loadSubject.pipe(
+      switchMap(() => this.loadRecords()),
+      takeUntilDestroyed(),
+    ).subscribe();
+  }
+
   ngOnInit(): void {
     if (this.route.snapshot.queryParamMap.get('created') === 'true') {
       this.message = 'Operator created successfully.';
@@ -114,34 +133,45 @@ export class OperatorsListComponent implements OnInit {
   }
 
   loadOperators(): void {
-    this.operatorService.getAll().subscribe({
-      next: (operators) => {
+    this.loadSubject.next();
+  }
+
+  private loadRecords(): Observable<unknown> {
+    return this.operatorService.getAll().pipe(
+      tap((operators) => {
         this.operators = operators;
         this.isLoading = false;
-      },
-      // Sin la lista la página no tiene qué mostrar: se muestra la pantalla de error.
-      error: (error: unknown) =>
-        showErrorPage(this.router, this.route, errorPageCode(error)),
-    });
+      }),
+      catchError((error: unknown) => {
+        showErrorPage(this.router, this.route, errorPageCode(error));
+        return EMPTY;
+      }),
+    );
   }
 
   deleteOperator(item: OperatorDTO): void {
+    this.actionSubject.next(item);
+  }
+
+  private performAction(item: OperatorDTO): Observable<unknown> {
     this.message = '';
     this.errorMessage = '';
     const fullName = `${item.name} ${item.lastName}`;
     if (!confirm(`Delete operator "${fullName}"? This cannot be undone.`))
-      return;
-    this.operatorService.delete(item.operatorId).subscribe({
-      next: () => {
+      return EMPTY;
+    return this.operatorService.delete(item.operatorId).pipe(
+      tap(() => {
         this.message = `Operator "${fullName}" deleted successfully.`;
         this.loadOperators();
-      },
-      error: (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         this.errorMessage = apiErrorMessage(
           error,
           `Operator "${fullName}" could not be deleted. Please try again.`,
         );
-      },
-    });
+
+        return EMPTY;
+      }),
+    );
   }
 }

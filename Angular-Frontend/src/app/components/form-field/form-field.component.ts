@@ -11,6 +11,7 @@ const keepAllowed: Record<InputRestriction, (value: string) => string> = {
   phone: (value) => value.replace(/[^\d+]/g, '').replace(/(?!^)\+/g, ''),
 };
 
+/** Presenta un FormControl recibido y sus errores. El formulario padre define las reglas y el envío. */
 @Component({
   selector: 'app-form-field',
   imports: [ReactiveFormsModule],
@@ -18,7 +19,7 @@ const keepAllowed: Record<InputRestriction, (value: string) => string> = {
   styleUrl: './form-field.component.scss',
 })
 export class FormFieldComponent {
-  @Input({ required: true }) control!: FormControl;
+  @Input({ required: true }) control = new FormControl<string | number | null>(null);
   @Input({ required: true }) fieldId = '';
   @Input({ required: true }) label = '';
   @Input() hideLabel = false;
@@ -46,10 +47,10 @@ export class FormFieldComponent {
     return this.control.invalid && (this.control.touched || this.submitted);
   }
 
-  // El mensaje del backend para este campo tiene prioridad; luego, el de la regla local que falla.
+  // El mensaje del backend para este campo tiene prioridad. Luego, el de la regla local que falla.
   get errorMessage(): string {
     const server = this.control.getError('server');
-    if (server) return server;
+    if (typeof server === 'string' && server) return server;
     const rule = Object.keys(this.control.errors ?? {}).find(
       (key) => this.messages[key],
     );

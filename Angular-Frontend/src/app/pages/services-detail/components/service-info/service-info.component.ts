@@ -1,8 +1,8 @@
-import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
-import { Component, Input, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { Component, Input, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ButtonComponent } from '../../../../components/button/button.component';
+import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 import { ServiceDetailDTO } from '../../../../models/dto/service-detail-dto';
 import { basePath } from '../../../../utils/base-path';
 
@@ -13,7 +13,7 @@ import { basePath } from '../../../../utils/base-path';
   styleUrl: './service-info.component.scss',
 })
 export class ServiceInfoComponent {
-  @Input({ required: true }) service!: ServiceDetailDTO;
+  @Input({ required: true }) service?: ServiceDetailDTO;
   private readonly route = inject(ActivatedRoute);
   get base(): string {
     return basePath(this.route);

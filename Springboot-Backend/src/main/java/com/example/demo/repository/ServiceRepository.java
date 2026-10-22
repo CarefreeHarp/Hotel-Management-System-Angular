@@ -1,10 +1,9 @@
 package com.example.demo.repository;
 
-import com.example.demo.entities.enums.ActivationStatus;
-
 import com.example.demo.dto.ServiceCatalogDTO;
 import com.example.demo.dto.ServiceListDTO;
 import com.example.demo.entities.Service;
+import com.example.demo.entities.enums.ActivationStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,20 +25,36 @@ public interface ServiceRepository extends JpaRepository<Service, Integer> {
     /* Total de servicios del catálogo para el panel. */
     long countByActivationStatus(ActivationStatus activationStatus);
 
-    /* Tabla de servicios del panel: activos e inactivos, sin descripción ni galería. */
+    // Servicios activos e inactivos del panel, sin descripción ni galería.
     @Query("""
-            SELECT new com.example.demo.dto.ServiceListDTO(service.serviceId, service.name, service.summary,
-                    service.category, service.price, service.mainImageUrl, service.activationStatus)
+            SELECT new com.example.demo.dto.ServiceListDTO(
+                service.serviceId,
+                service.name,
+                service.summary,
+                service.category,
+                service.price,
+                service.mainImageUrl,
+                service.activationStatus
+            )
             FROM Service service
             ORDER BY service.serviceId
             """)
     List<ServiceListDTO> findAllForList();
 
-    /* Catálogo de los huéspedes: solo los servicios activos y sin la galería. */
+    // Servicios activos para los huéspedes, sin la galería.
     @Query("""
-            SELECT new com.example.demo.dto.ServiceCatalogDTO(service.serviceId, service.name, service.summary,
-                    service.description, service.category, service.price, service.duration,
-                    service.availability, service.location, service.mainImageUrl)
+            SELECT new com.example.demo.dto.ServiceCatalogDTO(
+                service.serviceId,
+                service.name,
+                service.summary,
+                service.description,
+                service.category,
+                service.price,
+                service.duration,
+                service.availability,
+                service.location,
+                service.mainImageUrl
+            )
             FROM Service service
             WHERE service.activationStatus = com.example.demo.entities.enums.ActivationStatus.ACTIVE
             ORDER BY service.serviceId

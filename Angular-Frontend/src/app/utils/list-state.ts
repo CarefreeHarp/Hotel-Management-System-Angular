@@ -17,19 +17,18 @@ export interface ListState {
 export function initialListState(view: 'table' | 'cards' = 'table'): ListState {
   return { search: '', filters: {}, sort: 'id-asc', view };
 }
+/** La misma búsqueda se aplica a identificadores y textos, ignorando espacios externos y mayúsculas. */
 export function matchesSearch(
   search: string,
   values: (string | number | undefined)[],
 ): boolean {
   const term = search.trim().toLocaleLowerCase();
-  return (
-    !term ||
-    values.some((value) =>
-      String(value ?? '')
-        .toLocaleLowerCase()
-        .includes(term),
-    )
-  );
+  if (!term) return true;
+  for (const value of values) {
+    const candidate = String(value ?? '').toLocaleLowerCase();
+    if (candidate.includes(term)) return true;
+  }
+  return false;
 }
 export function priceMatches(price: number, state: ListState): boolean {
   const min = state.filters['minPrice'];
@@ -42,6 +41,7 @@ export const defaultSortOptions: ListOption[] = [
   { value: 'name-asc', label: 'Name: A–Z' },
   { value: 'name-desc', label: 'Name: Z–A' },
 ];
+/** El sufijo controla la dirección. El prefijo elige entre nombre e identificador. */
 export function compareRecords(
   sort: string,
   aId: number,
@@ -50,8 +50,8 @@ export function compareRecords(
   bName: string,
 ): number {
   const direction = sort.endsWith('-desc') ? -1 : 1;
-  return (
-    direction *
-    (sort.startsWith('name-') ? aName.localeCompare(bName) : aId - bId)
-  );
+  if (sort.startsWith('name-')) {
+    return direction * aName.localeCompare(bName);
+  }
+  return direction * (aId - bId);
 }

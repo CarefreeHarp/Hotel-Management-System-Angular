@@ -1,38 +1,38 @@
 import { Routes } from '@angular/router';
+import { AdministratorsDetailComponent } from './pages/administrators-detail/administrators-detail.component';
+import { AdministratorsFormComponent } from './pages/administrators-form/administrators-form.component';
+import { AdministratorsListComponent } from './pages/administrators-list/administrators-list.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
+import { OperatorsDetailComponent } from './pages/operators-detail/operators-detail.component';
+import { OperatorsFormComponent } from './pages/operators-form/operators-form.component';
+import { OperatorsListComponent } from './pages/operators-list/operators-list.component';
 import { RoomTypeDetailComponent } from './pages/room-type-detail/room-type-detail.component';
 import { RoomTypeFormPageComponent } from './pages/room-type-form-page/room-type-form-page.component';
 import { RoomTypeTablePageComponent } from './pages/room-type-table-page/room-type-table-page.component';
-import { ServicesListComponent } from './pages/services-list/services-list.component';
 import { ServicesDetailComponent } from './pages/services-detail/services-detail.component';
 import { ServicesFormComponent } from './pages/services-form/services-form.component';
-import { AdministratorsListComponent } from './pages/administrators-list/administrators-list.component';
-import { AdministratorsDetailComponent } from './pages/administrators-detail/administrators-detail.component';
-import { AdministratorsFormComponent } from './pages/administrators-form/administrators-form.component';
-import { OperatorsListComponent } from './pages/operators-list/operators-list.component';
-import { OperatorsDetailComponent } from './pages/operators-detail/operators-detail.component';
-import { OperatorsFormComponent } from './pages/operators-form/operators-form.component';
+import { ServicesListComponent } from './pages/services-list/services-list.component';
 
-import { ClientsListComponent } from './pages/clients-list/clients-list.component';
 import { ClientsDetailComponent } from './pages/clients-detail/clients-detail.component';
 import { ClientsFormComponent } from './pages/clients-form/clients-form.component';
+import { ClientsListComponent } from './pages/clients-list/clients-list.component';
 
-import { RoomsListComponent } from './pages/rooms-list/rooms-list.component';
 import { RoomsDetailComponent } from './pages/rooms-detail/rooms-detail.component';
 import { RoomsFormComponent } from './pages/rooms-form/rooms-form.component';
+import { RoomsListComponent } from './pages/rooms-list/rooms-list.component';
 
-import { ClientProfileComponent } from './pages/client-profile/client-profile.component';
 import { AdminPanelComponent } from './pages/admin-panel/admin-panel.component';
 import { AuthPageComponent } from './pages/auth-page/auth-page.component';
-import { ClientServicesListComponent } from './pages/client-services-list/client-services-list.component';
+import { ClientProfileComponent } from './pages/client-profile/client-profile.component';
 import { ClientServicesDetailComponent } from './pages/client-services-detail/client-services-detail.component';
+import { ClientServicesListComponent } from './pages/client-services-list/client-services-list.component';
 
-import { ReservationDetailComponent } from './pages/reservation-detail/reservation-detail.component';
 import { BookNowComponent } from './pages/book-now/book-now.component';
+import { ReservationDetailComponent } from './pages/reservation-detail/reservation-detail.component';
 
-import { ReservationsListComponent } from './pages/reservations-list/reservations-list.component';
-import { ReservationFormComponent } from './pages/reservation-form/reservation-form.component';
 import { ErrorPageComponent } from './pages/error-page/error-page.component';
+import { ReservationFormComponent } from './pages/reservation-form/reservation-form.component';
+import { ReservationsListComponent } from './pages/reservations-list/reservations-list.component';
 
 export const routes: Routes = [
   // Sitio público, sin sesión.
@@ -50,7 +50,7 @@ export const routes: Routes = [
   },
   { path: 'book-now', component: BookNowComponent },
   { path: 'reservation/:id', component: ReservationDetailComponent },
-  // Pantallas de error (400, 404, 500 y 503); las páginas llegan a ellas sin cambiar la URL.
+  // Pantallas de error (400, 404, 500 y 503). Las páginas llegan a ellas sin cambiar la URL.
   { path: 'error/:code', component: ErrorPageComponent },
 
   // Páginas del administrador, igual que /admin/panel/{id} en la aplicación de Thymeleaf.

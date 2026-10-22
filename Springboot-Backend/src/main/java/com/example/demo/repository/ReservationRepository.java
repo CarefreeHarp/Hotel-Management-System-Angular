@@ -3,9 +3,12 @@ package com.example.demo.repository;
 import com.example.demo.dto.ReservationDTO;
 import com.example.demo.entities.Reservation;
 import com.example.demo.entities.enums.ReservationStatus;
+import jakarta.persistence.LockModeType;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,42 +24,80 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
-    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT reservation FROM Reservation reservation WHERE reservation.reservationId = :id")
-    java.util.Optional<Reservation> lockForEditing(@Param("id") Integer id);
+    // PESSIMISTIC_WRITE hace esperar otras escrituras sobre esta reserva hasta que termine la transacción.
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+            SELECT reservation
+            FROM Reservation reservation
+            WHERE reservation.reservationId = :id
+            """)
+    Optional<Reservation> lockForEditing(@Param("id") Integer id);
 
     /*
-     * Reservas de un cliente para su perfil, de la llegada más reciente a la más
-     * antigua. LEFT JOIN porque la reserva podría no tener habitación asignada.
+     * 1. Incorpora habitación, tipo y cliente con LEFT JOIN.
+     * 2. Filtra por clientId y arma el DTO con los datos disponibles.
+     * 3. Ordena por llegada, de la más reciente a la más antigua.
      */
     @Query("""
-            SELECT new com.example.demo.dto.ReservationDTO(reservation.reservationId, reservation.reservationCode,
-                    reservation.checkInDate, reservation.checkOutDate, reservation.guestCount, reservation.status,
-                    room.number, roomType.roomTypeId, roomType.name, client.clientId,
-                    CONCAT(client.name, ' ', client.lastName), reservation.createdAt, roomType.mainPhoto)
-            FROM Reservation reservation LEFT JOIN reservation.room room LEFT JOIN room.roomType roomType LEFT JOIN reservation.client client
+            SELECT new com.example.demo.dto.ReservationDTO(
+                reservation.reservationId,
+                reservation.reservationCode,
+                reservation.checkInDate,
+                reservation.checkOutDate,
+                reservation.guestCount,
+                reservation.status,
+                room.number,
+                roomType.roomTypeId,
+                roomType.name,
+                client.clientId,
+                CONCAT(client.name, ' ', client.lastName),
+                reservation.createdAt,
+                roomType.mainPhoto
+            )
+            FROM Reservation reservation
+            LEFT JOIN reservation.room room
+            LEFT JOIN room.roomType roomType
+            LEFT JOIN reservation.client client
             WHERE reservation.client.clientId = :clientId
             ORDER BY reservation.checkInDate DESC
             """)
     List<ReservationDTO> findAllForListByClientId(@Param("clientId") Integer clientId);
 
-    /* Todas las reservas, con los mismos datos que el perfil. */
+    /*
+     * 1. LEFT JOIN conserva reservas aunque falten habitación o cliente.
+     * 2. Arma los DTO y los ordena de la llegada más reciente a la más antigua.
+     */
     @Query("""
-            SELECT new com.example.demo.dto.ReservationDTO(reservation.reservationId, reservation.reservationCode,
-                    reservation.checkInDate, reservation.checkOutDate, reservation.guestCount, reservation.status,
-                    room.number, roomType.roomTypeId, roomType.name, client.clientId,
-                    CONCAT(client.name, ' ', client.lastName), reservation.createdAt, roomType.mainPhoto)
-            FROM Reservation reservation LEFT JOIN reservation.room room LEFT JOIN room.roomType roomType LEFT JOIN reservation.client client
+            SELECT new com.example.demo.dto.ReservationDTO(
+                reservation.reservationId,
+                reservation.reservationCode,
+                reservation.checkInDate,
+                reservation.checkOutDate,
+                reservation.guestCount,
+                reservation.status,
+                room.number,
+                roomType.roomTypeId,
+                roomType.name,
+                client.clientId,
+                CONCAT(client.name, ' ', client.lastName),
+                reservation.createdAt,
+                roomType.mainPhoto
+            )
+            FROM Reservation reservation
+            LEFT JOIN reservation.room room
+            LEFT JOIN room.roomType roomType
+            LEFT JOIN reservation.client client
             ORDER BY reservation.checkInDate DESC
             """)
     List<ReservationDTO> findAllForList();
 
-    /*
-     * Antes de borrar un cliente se deja su client_id en null: las reservas siguen
-     * en el historial, sin cliente. Es un UPDATE, por eso lleva @Modifying.
-     */
     @Modifying
-    @Query("UPDATE Reservation reservation SET reservation.client = null WHERE reservation.client.clientId = :clientId")
+    // Desvincula al cliente y conserva sus reservas.
+    @Query("""
+            UPDATE Reservation reservation
+            SET reservation.client = null
+            WHERE reservation.client.clientId = :clientId
+            """)
     int clearClient(@Param("clientId") Integer clientId);
 
     /* Total de reservas de una habitación. */

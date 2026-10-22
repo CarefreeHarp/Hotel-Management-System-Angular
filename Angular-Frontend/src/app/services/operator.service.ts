@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Operator } from '../models/operator';
 import { OperatorDTO } from '../models/dto/operator-dto';
+import { Operator } from '../models/operator';
 
 // Cuerpo de POST y PUT: del administrador solo se envía su id.
 export type OperatorData = Omit<Operator, 'operatorId' | 'admin'> & {

@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.entities.enums.ActivationStatus;
-
 import com.example.demo.repository.AdministratorRepository;
 import com.example.demo.repository.ClientRepository;
 import com.example.demo.repository.OperatorRepository;
@@ -12,37 +11,43 @@ import com.example.demo.repository.ServiceRepository;
 import com.example.demo.service.interfaces.PanelService;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Totales del panel de administración. count() hace un SELECT COUNT(*) en la base
  * de datos, así el panel no tiene que descargar todos los registros para contarlos.
  */
 @Service
-@org.springframework.transaction.annotation.Transactional(readOnly = true)
+@Transactional(readOnly = true)
 public class PanelServiceImpl implements PanelService {
 
-    @Autowired
-    public ServiceRepository serviceRepository;
+    private final ServiceRepository serviceRepository;
 
-    @Autowired
-    public RoomTypeRepository roomTypeRepository;
+    private final RoomTypeRepository roomTypeRepository;
 
-    @Autowired
-    public RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
-    @Autowired
-    public ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
-    @Autowired
-    public AdministratorRepository administratorRepository;
+    private final AdministratorRepository administratorRepository;
 
-    @Autowired
-    public OperatorRepository operatorRepository;
+    private final OperatorRepository operatorRepository;
 
-    @Autowired
-    public ReservationRepository reservationRepository;
+    private final ReservationRepository reservationRepository;
+
+    public PanelServiceImpl(ServiceRepository serviceRepository, RoomTypeRepository roomTypeRepository,
+            RoomRepository roomRepository, ClientRepository clientRepository,
+            AdministratorRepository administratorRepository, OperatorRepository operatorRepository,
+            ReservationRepository reservationRepository) {
+        this.serviceRepository = serviceRepository;
+        this.roomTypeRepository = roomTypeRepository;
+        this.roomRepository = roomRepository;
+        this.clientRepository = clientRepository;
+        this.administratorRepository = administratorRepository;
+        this.operatorRepository = operatorRepository;
+        this.reservationRepository = reservationRepository;
+    }
 
     @Override
     public Map<String, Long> countRecords() {

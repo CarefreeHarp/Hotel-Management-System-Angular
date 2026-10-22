@@ -1,35 +1,37 @@
-<section class="detail-grid" aria-label="Administrator information">
-  <figure class="staff-visual" data-role="Admin">
-    <app-staff-avatar [name]="administrator.name" tone="gold" size="large" />
-    <figcaption>Administrator</figcaption>
-  </figure>
-  <article class="detail-content">
-    <header class="info-card-heading">
-      <p class="card-eyebrow">Registered details</p>
-      <span class="record-id">ID #{{ administrator.adminId }}</span>
-    </header>
-    <dl class="detail-list">
-      <div>
-        <dt>Name</dt>
-        <dd>{{ administrator.name }}</dd>
+@if (administrator; as administrator) {
+  <section class="detail-grid" aria-label="Administrator information">
+    <figure class="staff-visual" data-role="Admin">
+      <app-staff-avatar [name]="administrator.name" tone="gold" size="large" />
+      <figcaption>Administrator</figcaption>
+    </figure>
+    <article class="detail-content">
+      <header class="info-card-heading">
+        <p class="card-eyebrow">Registered details</p>
+        <span class="record-id">ID #{{ administrator.adminId }}</span>
+      </header>
+      <dl class="detail-list">
+        <div>
+          <dt>Name</dt>
+          <dd>{{ administrator.name }}</dd>
+        </div>
+        <div>
+          <dt>Email</dt>
+          <dd>{{ administrator.email }}</dd>
+        </div>
+        <div>
+          <dt>Role</dt>
+          <dd>Administrator</dd>
+        </div>
+        <div>
+          <dt>Operators in charge</dt>
+          <dd>{{ operatorCount }}</dd>
+        </div>
+      </dl>
+      <div class="detail-actions">
+        <a appButton variant="secondary" [routerLink]="[base, 'administrators']"
+          >Back to list</a
+        >
       </div>
-      <div>
-        <dt>Email</dt>
-        <dd>{{ administrator.email }}</dd>
-      </div>
-      <div>
-        <dt>Role</dt>
-        <dd>Administrator</dd>
-      </div>
-      <div>
-        <dt>Operators in charge</dt>
-        <dd>{{ operatorCount }}</dd>
-      </div>
-    </dl>
-    <div class="detail-actions">
-      <a appButton variant="secondary" [routerLink]="[base, 'administrators']"
-        >Back to list</a
-      >
-    </div>
-  </article>
-</section>
+    </article>
+  </section>
+}

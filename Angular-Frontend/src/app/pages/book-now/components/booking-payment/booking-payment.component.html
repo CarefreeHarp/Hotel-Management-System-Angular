@@ -3,7 +3,7 @@
     class="go-back"
     type="button"
     [disabled]="busy"
-    (click)="payLater.emit()"
+    (click)="payLaterSubject.next()"
   >
     <span aria-hidden="true">←</span> Or book and pay later
   </button>

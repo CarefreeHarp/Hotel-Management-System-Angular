@@ -1,7 +1,7 @@
-import { BookingReservationSummaryComponent } from '../booking-reservation-summary/booking-reservation-summary.component';
-import { Component, Input, output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
+import { Component, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
 import {
   BookingQuote,
   CardPayment,
@@ -10,6 +10,7 @@ import {
 } from '../../../../models/booking';
 import { PAYMENT_MESSAGES } from '../../../../utils/form-messages';
 import { hasMaxDecimals } from '../../../../utils/form-validators';
+import { BookingReservationSummaryComponent } from '../booking-reservation-summary/booking-reservation-summary.component';
 
 type PaymentErrors = Partial<Record<keyof CardPayment, string>>;
 
@@ -18,6 +19,7 @@ function cop(value: number): string {
   return `COP ${new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(value)}`;
 }
 
+/** Comprueba y emite el pago al padre. Los datos de tarjeta se mantienen fuera de la URL. */
 @Component({
   selector: 'app-booking-payment',
   imports: [BookingReservationSummaryComponent, FormsModule, CurrencyPipe],
@@ -27,9 +29,12 @@ function cop(value: number): string {
 export class BookingPaymentComponent {
   @Input({ required: true }) quote: BookingQuote | undefined;
   @Input() busy = false;
-  readonly pay = output<CardPayment>();
-  readonly payLater = output<void>();
-  // Mensajes del backend por campo; cada uno desaparece cuando se edita su campo.
+  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
+  protected readonly paySubject = new Subject<CardPayment>();
+  @Output('pay') readonly pay$ = this.paySubject.asObservable();
+  protected readonly payLaterSubject = new Subject<void>();
+  @Output('payLater') readonly payLater$ = this.payLaterSubject.asObservable();
+  // Mensajes del backend por campo. Cada uno desaparece cuando se edita su campo.
   fieldErrors: PaymentErrors = {};
   @Input() set serverErrors(value: Record<string, string>) {
     this.fieldErrors = { ...value };
@@ -95,7 +100,7 @@ export class BookingPaymentComponent {
       errors.securityCode = messages.securityCode.length;
     return errors;
   }
-  // El mensaje del backend tiene prioridad; el local aparece al dejar el campo o al enviar.
+  // El mensaje del backend tiene prioridad. El local aparece al dejar el campo o al enviar.
   errorFor(field: keyof CardPayment): string | undefined {
     return (
       this.fieldErrors[field] ??
@@ -155,15 +160,20 @@ export class BookingPaymentComponent {
     const rawDigits = control.value.replace(/\D/g, '');
     // Una tarjeta tiene como mucho 19 dígitos y la fecha MM/YY, 4.
     const digits = rawDigits.slice(0, kind === 'expiry' ? 4 : 19);
-    const formatted =
-      kind === 'card'
-        ? (digits.match(/.{1,4}/g)?.join(' ') ?? '')
-        : digits.length >= 2
-          ? `${digits.slice(0, 2)}/${digits.slice(2)}`
-          : digits;
+    let formatted = digits;
+    if (kind === 'card') {
+      const groups: string[] = [];
+      for (let index = 0;index < digits.length;index += 4) {
+        groups.push(digits.slice(index, index + 4));
+      }
+      formatted = groups.join(' ');
+    } else if (digits.length >= 2) {
+      formatted = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    }
     if (kind === 'card') this.cardNumber = formatted;
     else this.expiryDate = formatted;
     control.value = formatted;
+    // Se recoloca el cursor contando dígitos para que los separadores no interrumpan la escritura.
     let position = 0;
     let count = 0;
     while (position < formatted.length && count < digitsBefore) {
@@ -180,7 +190,7 @@ export class BookingPaymentComponent {
   submit(): void {
     this.submitted = true;
     if (this.quote && this.amount !== null && this.valid() && !this.busy)
-      this.pay.emit({
+      this.paySubject.next({
         amount: this.amount,
         cardholderName: this.cardholderName.trim(),
         cardNumber: this.cardNumber.replace(/ /g, ''),

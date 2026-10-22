@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
  * datos con IDENTITY.
  *
  * Las consultas derivadas permiten contar operarios por administrador o buscar
- * por correo; las de @Query arman los DTO de la tabla en la misma consulta.
+ * por correo. Las de @Query arman los DTO de la tabla en la misma consulta.
  */
 @Repository
 public interface OperatorRepository extends JpaRepository<Operator, Integer> {
@@ -27,20 +27,40 @@ public interface OperatorRepository extends JpaRepository<Operator, Integer> {
     /* Busca un operario por correo electrónico sin distinguir mayúsculas de minúsculas. */
     Optional<Operator> findByEmailIgnoreCase(String email);
 
-    /* Tabla de operarios: del administrador solo se leen su id y su nombre. */
+    /*
+     * 1. Relaciona cada operario con su administrador.
+     * 2. Devuelve el DTO con id y nombre del administrador, ordenado por id de operario.
+     */
     @Query("""
-            SELECT new com.example.demo.dto.OperatorDTO(operator.operatorId, operator.name, operator.lastName,
-                    operator.email, admin.adminId, admin.name)
-            FROM Operator operator JOIN operator.admin admin
+            SELECT new com.example.demo.dto.OperatorDTO(
+                operator.operatorId,
+                operator.name,
+                operator.lastName,
+                operator.email,
+                admin.adminId,
+                admin.name
+            )
+            FROM Operator operator
+            JOIN operator.admin admin
             ORDER BY operator.operatorId
             """)
     List<OperatorDTO> findAllForList();
 
-    /* Operarios a cargo de un administrador, para su detalle. */
+    /*
+     * 1. Relaciona los operarios con su administrador y filtra por adminId.
+     * 2. Devuelve sus DTO, ordenados por id de operario.
+     */
     @Query("""
-            SELECT new com.example.demo.dto.OperatorDTO(operator.operatorId, operator.name, operator.lastName,
-                    operator.email, admin.adminId, admin.name)
-            FROM Operator operator JOIN operator.admin admin
+            SELECT new com.example.demo.dto.OperatorDTO(
+                operator.operatorId,
+                operator.name,
+                operator.lastName,
+                operator.email,
+                admin.adminId,
+                admin.name
+            )
+            FROM Operator operator
+            JOIN operator.admin admin
             WHERE admin.adminId = :adminId
             ORDER BY operator.operatorId
             """)

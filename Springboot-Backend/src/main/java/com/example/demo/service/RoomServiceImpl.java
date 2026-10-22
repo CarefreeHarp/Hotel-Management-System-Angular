@@ -1,37 +1,39 @@
 package com.example.demo.service;
 
-import com.example.demo.entities.enums.ActivationStatus;
-import com.example.demo.entities.enums.ReservationStatus;
-
 import com.example.demo.dto.RoomDetailDTO;
 import com.example.demo.dto.RoomListDTO;
 import com.example.demo.entities.Room;
+import com.example.demo.entities.enums.ActivationStatus;
+import com.example.demo.entities.enums.ReservationStatus;
 import com.example.demo.exception.FieldException;
-import com.example.demo.repository.RoomRepository;
 import com.example.demo.repository.ReservationRepository;
+import com.example.demo.repository.RoomRepository;
 import com.example.demo.repository.RoomTypeRepository;
 import com.example.demo.service.interfaces.RoomService;
-import java.util.List;
 import java.time.LocalDate;
+import java.util.List;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-/** Operaciones CRUD de habitaciones; roomId se conserva aunque cambie el número físico. */
+/** Operaciones CRUD de habitaciones. roomId se conserva aunque cambie el número físico. */
 @Service
-@org.springframework.transaction.annotation.Transactional
+@Transactional
 public class RoomServiceImpl implements RoomService {
 
-    @Autowired
-    RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
-    @Autowired
-    private RoomTypeRepository roomTypeRepository;
+    private final RoomTypeRepository roomTypeRepository;
 
-    @Autowired
-    private ReservationRepository reservationRepository;
+    private final ReservationRepository reservationRepository;
 
+    public RoomServiceImpl(RoomRepository roomRepository, RoomTypeRepository roomTypeRepository,
+            ReservationRepository reservationRepository) {
+        this.roomRepository = roomRepository;
+        this.roomTypeRepository = roomTypeRepository;
+        this.reservationRepository = reservationRepository;
+    }
 
     @Override
     public List<RoomListDTO> listRooms() {
@@ -113,16 +115,16 @@ public class RoomServiceImpl implements RoomService {
             throw new FieldException(HttpStatus.BAD_REQUEST, "roomType", "Select a room type.");
         }
         room.setRoomType(roomTypeRepository.findById(roomTypeId)
-                .orElseThrow(() -> new FieldException(HttpStatus.BAD_REQUEST, "roomType", "The selected room type no longer exists.")));
+                .orElseThrow(() -> new FieldException(HttpStatus.BAD_REQUEST, "roomType",
+                        "The selected room type no longer exists.")));
     }
 
     /** El número físico es único: si otra habitación ya lo usa se responde 409 y la pantalla muestra el motivo. */
     private void checkNumberIsFree(Integer number, Integer roomId) {
-        roomRepository.findByNumber(number)
-                .filter(other -> !other.getRoomId().equals(roomId))
-                .ifPresent(other -> {
-                    throw new FieldException(HttpStatus.CONFLICT, "number", "Room number " + number + " is already in use.");
-                });
+        Room existingRoom = roomRepository.findByNumber(number).orElse(null);
+        if (existingRoom != null && !existingRoom.getRoomId().equals(roomId)) {
+            throw new FieldException(HttpStatus.CONFLICT, "number", "Room number " + number + " is already in use.");
+        }
     }
 
 }

@@ -1,8 +1,8 @@
-import { ActivationStatus } from '../../../../models/enums/activation-status';
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
 import { RoomTypeOptionDTO } from '../../../../models/dto/room-type-option-dto';
+import { ActivationStatus } from '../../../../models/enums/activation-status';
 import { RoomStatus } from '../../../../models/enums/room-status';
 import { ROOM_MESSAGES } from '../../../../utils/form-messages';
 
@@ -14,7 +14,7 @@ import { ROOM_MESSAGES } from '../../../../utils/form-messages';
 })
 export class RoomFieldsComponent {
   readonly activationStatuses = Object.values(ActivationStatus);
-  @Input({ required: true }) form!: FormGroup<{
+  @Input({ required: true }) form?: FormGroup<{
     number: FormControl<number | null>;
     floor: FormControl<number | null>;
     status: FormControl<RoomStatus>;

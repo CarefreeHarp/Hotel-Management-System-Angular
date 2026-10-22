@@ -5,7 +5,7 @@ import { basePath } from './base-path';
 
 /**
  * Pantallas de error: 400 y 404 cuando la dirección no sirve (un valor inválido o
- * algo que no existe); 500 y 503 cuando falla o no responde el servidor.
+ * algo que no existe). 500 y 503 cuando falla o no responde el servidor.
  */
 export type ErrorPageCode = 400 | 404 | 500 | 503;
 

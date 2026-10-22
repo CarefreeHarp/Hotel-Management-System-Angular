@@ -152,14 +152,14 @@
           ><button
             class="service-cart__skip"
             type="button"
-            (click)="selected.emit([])"
+            (click)="selectedSubject.next([])"
           >
             Skip services →</button
           ><button
             class="service-cart__submit"
             type="button"
             [disabled]="!state.cart.length"
-            (click)="selected.emit(state.ids)"
+            (click)="selectedSubject.next(state.ids)"
           >
             Add selected services →
           </button>

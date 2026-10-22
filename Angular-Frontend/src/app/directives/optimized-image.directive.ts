@@ -85,12 +85,12 @@ const localImages: Record<string, ImageVariant[]> = {
   ],
 };
 
-// Optimized static paths retain their responsive variants as well.
+// Las rutas ya optimizadas también reutilizan las variantes de tamaño de la imagen original.
 for (const variants of Object.values(localImages)) {
   for (const variant of variants) localImages[variant.src] = variants;
 }
 
-/** Request reduced source images; CSS dimensions alone do not reduce download size. */
+/** Solicita imágenes del tamaño necesario. Reducirlas solo con CSS no reduce la descarga. */
 @Directive({ selector: 'img[appImage]' })
 export class OptimizedImageDirective {
   @Input() src: string | undefined;
@@ -102,6 +102,7 @@ export class OptimizedImageDirective {
       ? localImages[this.src.startsWith('/') ? this.src : '/' + this.src]
       : undefined;
   }
+  // Solo Unsplash permite ajustar el tamaño por URL. Las demás fuentes se conservan intactas.
   private unsplash(width: number): string | undefined {
     if (!this.src) return undefined;
     try {

@@ -1,6 +1,6 @@
+import { ReservationDTO } from './dto/reservation-dto';
 import { RoomTypeListDTO } from './dto/room-type-list-dto';
 import { ServiceCatalogDTO } from './dto/service-catalog-dto';
-import { ReservationDTO } from './dto/reservation-dto';
 export type BookingStep =
   | 'dates'
   | 'room-types'
@@ -12,6 +12,7 @@ export interface BookingStay {
   checkOut: string;
   guests: number;
 }
+// El borrador se puede reconstruir desde la URL. Los datos de tarjeta viajan por separado.
 export interface BookingDraft extends BookingStay {
   roomTypeId: number;
   serviceIds: number[];
@@ -78,6 +79,7 @@ export const MAX_YEARS_AHEAD = 2;
 export const MAX_GUESTS = 10;
 export const MIN_PAYMENT = 100000;
 export const MAX_PAYMENT = 99999999.99;
+// El calendario usa la fecha local. Convertirla a UTC podría desplazar el día.
 export function localDate(date = new Date()): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
@@ -92,6 +94,7 @@ export function latestCheckIn(): string {
   date.setFullYear(date.getFullYear() + MAX_YEARS_AHEAD);
   return localDate(date);
 }
+// Las fechas ISO sin hora se comparan como días completos, independientemente del horario local.
 export function stayNights(checkIn: string, checkOut: string): number {
   return Math.round((Date.parse(checkOut) - Date.parse(checkIn)) / 86400000);
 }

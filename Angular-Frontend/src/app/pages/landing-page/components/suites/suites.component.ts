@@ -1,7 +1,9 @@
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { fromEvent } from 'rxjs';
 import { SkeletonComponent } from '../../../../components/skeleton/skeleton.component';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
-import { Component, HostListener, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RoomTypeListDTO } from '../../../../models/dto/room-type-list-dto';
 import { RoomTypeService } from '../../../../services/room-type.service';
 import { clientQuery } from '../../../../utils/client-query';
@@ -13,6 +15,8 @@ import { clientQuery } from '../../../../utils/client-query';
   styleUrl: './suites.component.scss',
 })
 export class SuitesComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+
   private roomTypeService = inject(RoomTypeService);
   private readonly route = inject(ActivatedRoute);
   get authParams(): { auth?: number } {
@@ -29,8 +33,13 @@ export class SuitesComponent implements OnInit {
   suiteIndex: number = 0;
   visibleCount: number = this.getVisibleCount();
 
+  constructor() {
+    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
+    fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => this.updateVisibleCount());
+  }
+
   ngOnInit(): void {
-    this.roomTypeService.getAll().subscribe({
+    this.roomTypeService.getAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.roomTypes = data;
         this.isLoading = false;
@@ -59,8 +68,6 @@ export class SuitesComponent implements OnInit {
   next(): void {
     this.suiteIndex = Math.min(this.maxIndex, this.suiteIndex + 1);
   }
-
-  @HostListener('window:resize')
   updateVisibleCount(): void {
     this.visibleCount = this.getVisibleCount();
     this.suiteIndex = Math.min(this.suiteIndex, this.maxIndex);

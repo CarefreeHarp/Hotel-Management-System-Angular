@@ -1,19 +1,18 @@
 package com.example.demo.service;
 
-import com.example.demo.entities.enums.ActivationStatus;
-import com.example.demo.entities.enums.ReservationStatus;
-
 import com.example.demo.dto.ServiceCatalogDTO;
 import com.example.demo.dto.ServiceDetailDTO;
 import com.example.demo.dto.ServiceListDTO;
 import com.example.demo.entities.Service;
+import com.example.demo.entities.enums.ActivationStatus;
+import com.example.demo.entities.enums.ReservationStatus;
 import com.example.demo.exception.FieldException;
-import com.example.demo.repository.ServiceRepository;
 import com.example.demo.repository.ReservationRepository;
+import com.example.demo.repository.ServiceRepository;
 import com.example.demo.service.interfaces.ServiceService;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -63,7 +62,8 @@ public class ServiceServiceImpl implements ServiceService {
     public void create(Service service) {
         service.setServiceId(null);
         checkUrlNameIsFree(service, null);
-        if (service.getSecondaryImageUrls() == null) service.setSecondaryImageUrls(new ArrayList<>());
+        if (service.getSecondaryImageUrls() == null)
+            service.setSecondaryImageUrls(new ArrayList<>());
         serviceRepository.save(service);
     }
 
@@ -76,7 +76,8 @@ public class ServiceServiceImpl implements ServiceService {
         }
         checkUrlNameIsFree(service, registered.getServiceId());
         service.setServiceId(registered.getServiceId());
-        if (service.getSecondaryImageUrls() == null) service.setSecondaryImageUrls(new ArrayList<>());
+        if (service.getSecondaryImageUrls() == null)
+            service.setSecondaryImageUrls(new ArrayList<>());
         serviceRepository.save(service);
     }
 
@@ -109,12 +110,11 @@ public class ServiceServiceImpl implements ServiceService {
      * lo usa se responde 409 y el formulario muestra el motivo en el campo del nombre.
      */
     private void checkUrlNameIsFree(Service service, Integer serviceId) {
-        serviceRepository.findByUrlNameIgnoreCase(service.getUrlName())
-                .filter(other -> !other.getServiceId().equals(serviceId))
-                .ifPresent(other -> {
-                    throw new FieldException(HttpStatus.CONFLICT, "name",
-                            "Another service is already called \"" + other.getName() + "\".");
-                });
+        Service existingService = serviceRepository.findByUrlNameIgnoreCase(service.getUrlName()).orElse(null);
+        if (existingService != null && !existingService.getServiceId().equals(serviceId)) {
+            throw new FieldException(HttpStatus.CONFLICT, "name",
+                    "Another service is already called \"" + existingService.getName() + "\".");
+        }
     }
 
 }

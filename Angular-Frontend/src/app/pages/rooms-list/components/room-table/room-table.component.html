@@ -65,7 +65,7 @@
                   ><button
                     type="button"
                     class="toggle-action"
-                    (click)="toggleActivation.emit(item)"
+                    (click)="toggleActivationSubject.next(item)"
                   >
                     {{
                       item.activationStatus === "ACTIVE"

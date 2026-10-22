@@ -49,7 +49,7 @@
                     >Edit<span class="sr-only">
                       {{ item.name }} {{ item.lastName }}</span
                     ></a
-                  ><button type="button" (click)="delete.emit(item)">
+                  ><button type="button" (click)="deleteSubject.next(item)">
                     Delete<span class="sr-only">
                       {{ item.name }} {{ item.lastName }}</span
                     >

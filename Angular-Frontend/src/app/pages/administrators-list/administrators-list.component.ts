@@ -1,27 +1,30 @@
-import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { ListControlsComponent } from '../../components/list-controls/list-controls.component';
-import {
-  RecordCardsComponent,
-  RecordCard,
-} from '../../components/record-cards/record-cards.component';
-import {
-  initialListState,
-  matchesSearch,
-  compareRecords,
-  ListFilter,
-} from '../../utils/list-state';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { catchError, EMPTY, exhaustMap, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { AdministratorTableComponent } from './components/administrator-table/administrator-table.component';
-import { AdministratorService } from '../../services/administrator.service';
+import { ListControlsComponent } from '../../components/list-controls/list-controls.component';
+import {
+  RecordCard,
+  RecordCardsComponent,
+} from '../../components/record-cards/record-cards.component';
+import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { AdministratorListDTO } from '../../models/dto/administrator-list-dto';
-import { basePath } from '../../utils/base-path';
+import { AdministratorService } from '../../services/administrator.service';
 import { apiErrorMessage } from '../../utils/api-error';
+import { basePath } from '../../utils/base-path';
 import { errorPageCode, showErrorPage } from '../../utils/error-page';
+import {
+  compareRecords,
+  initialListState,
+  ListFilter,
+  matchesSearch,
+} from '../../utils/list-state';
+import { AdministratorTableComponent } from './components/administrator-table/administrator-table.component';
 
+/** Coordina la lista de administradores, sus filtros y acciones. Los componentes hijos presentan los registros. */
 @Component({
   selector: 'app-administrators-list',
   imports: [
@@ -37,6 +40,9 @@ import { errorPageCode, showErrorPage } from '../../utils/error-page';
   styleUrl: './administrators-list.component.scss',
 })
 export class AdministratorsListComponent implements OnInit {
+
+  private readonly actionSubject = new Subject<AdministratorListDTO>();
+  private readonly loadSubject = new Subject<void>();
   listState = initialListState();
   readonly filters: ListFilter[] = [];
   get filteredItems() {
@@ -87,6 +93,19 @@ export class AdministratorsListComponent implements OnInit {
   message = '';
   errorMessage = '';
 
+  constructor() {
+    // exhaustMap evita ejecutar otra acción mientras termina la petición actual.
+    this.actionSubject.pipe(
+      exhaustMap((item) => this.performAction(item)),
+      takeUntilDestroyed(),
+    ).subscribe();
+    // Una recarga sustituye la lectura anterior. Las escrituras usan un flujo independiente.
+    this.loadSubject.pipe(
+      switchMap(() => this.loadRecords()),
+      takeUntilDestroyed(),
+    ).subscribe();
+  }
+
   ngOnInit(): void {
     if (this.route.snapshot.queryParamMap.get('created') === 'true') {
       this.message = 'Administrator created successfully.';
@@ -97,34 +116,44 @@ export class AdministratorsListComponent implements OnInit {
   // Cada fila ya trae cuántos operadores tiene el administrador (COUNT en la consulta),
   // así que no se descarga la lista de operadores.
   loadAdministrators(): void {
-    this.administratorService.getAll().subscribe({
-      next: (administrators) => {
+    this.loadSubject.next();
+  }
+
+  private loadRecords(): Observable<unknown> {
+    return this.administratorService.getAll().pipe(
+      tap((administrators) => {
         this.administrators = administrators;
         this.isLoading = false;
-      },
-      // Sin la lista la página no tiene qué mostrar: se muestra la pantalla de error.
-      error: (error: unknown) =>
-        showErrorPage(this.router, this.route, errorPageCode(error)),
-    });
+      }),
+      catchError((error: unknown) => {
+        showErrorPage(this.router, this.route, errorPageCode(error));
+        return EMPTY;
+      }),
+    );
   }
 
   deleteAdministrator(item: AdministratorListDTO): void {
+    this.actionSubject.next(item);
+  }
+
+  private performAction(item: AdministratorListDTO): Observable<unknown> {
     this.message = '';
     this.errorMessage = '';
     if (!confirm(`Delete administrator "${item.name}"? This cannot be undone.`))
-      return;
-    this.administratorService.delete(item.adminId).subscribe({
-      next: () => {
+      return EMPTY;
+    return this.administratorService.delete(item.adminId).pipe(
+      tap(() => {
         this.message = `Administrator "${item.name}" deleted successfully.`;
         this.loadAdministrators();
-      },
-      // La regla está en el backend: con operadores a cargo responde 409 con el motivo.
-      error: (error: HttpErrorResponse) => {
+      }),
+      catchError((error: HttpErrorResponse) => {
         this.errorMessage = apiErrorMessage(
           error,
           `Administrator "${item.name}" could not be deleted. Please try again.`,
         );
-      },
-    });
+
+        return EMPTY;
+      }),
+    );
   }
 }

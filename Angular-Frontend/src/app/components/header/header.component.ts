@@ -1,11 +1,12 @@
-import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
-import { Component, HostListener, Input, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import { HeaderMenuComponent } from './components/header-menu/header-menu.component';
-import { switchMap, of, catchError } from 'rxjs';
+import { Component, Input, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { catchError, fromEvent, of, switchMap } from 'rxjs';
+import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { ClientService } from '../../services/client.service';
 import { clientQuery } from '../../utils/client-query';
+import { HeaderMenuComponent } from './components/header-menu/header-menu.component';
 
 @Component({
   selector: 'app-header',
@@ -20,9 +21,11 @@ import { clientQuery } from '../../utils/client-query';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
+
   private readonly route = inject(ActivatedRoute);
   private readonly clients = inject(ClientService);
   readonly client$ = this.route.queryParamMap.pipe(
+    // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
     switchMap(() => {
       const id = clientQuery(this.route).auth;
       return id === undefined
@@ -41,6 +44,12 @@ export class HeaderComponent {
   compactHeader = window.innerWidth < 1100;
   isScrolled = false;
 
+  constructor() {
+    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
+    fromEvent(window, 'scroll').pipe(takeUntilDestroyed()).subscribe(() => this.updateScroll());
+    fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => this.updateHeaderLayout());
+  }
+
   get isSolidHeader(): boolean {
     return this.solid || this.isScrolled;
   }
@@ -52,13 +61,10 @@ export class HeaderComponent {
       queryParamsHandling: 'merge',
     });
   }
-
-  @HostListener('window:scroll')
+  // Dos umbrales evitan alternar el estado continuamente cerca del punto de cambio.
   updateScroll(): void {
     this.isScrolled = window.scrollY > (this.isScrolled ? 24 : 80);
   }
-
-  @HostListener('window:resize')
   updateHeaderLayout(): void {
     this.compactHeader = window.innerWidth < 1100;
   }

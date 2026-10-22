@@ -33,7 +33,7 @@
             class="toggle-action"
             [class.activate]="card.activationStatus === 'INACTIVE'"
             type="button"
-            (click)="toggleActivation.emit(card.id)"
+            (click)="toggleActivationSubject.next(card.id)"
           >
             {{ card.activationStatus === "ACTIVE" ? "Deactivate" : "Activate"
             }}<span class="sr-only"> {{ card.title }}</span>
@@ -43,7 +43,7 @@
           <button
             class="danger"
             type="button"
-            (click)="deleteRecord.emit(card.id)"
+            (click)="deleteRecordSubject.next(card.id)"
           >
             Delete<span class="sr-only"> {{ card.title }}</span>
           </button>

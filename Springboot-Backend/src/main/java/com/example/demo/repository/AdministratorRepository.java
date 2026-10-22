@@ -27,21 +27,31 @@ public interface AdministratorRepository extends JpaRepository<Administrator, In
     Optional<Administrator> findByEmailIgnoreCase(String email);
 
     /*
-     * Tabla de administradores: COUNT cuenta los operarios de cada uno en la misma
-     * consulta (LEFT JOIN para incluir a los que no tienen ninguno).
+     * 1. Incluye cada administrador, aunque no tenga operarios.
+     * 2. Agrupa sus filas y cuenta los operarios, o cero si no hay.
+     * 3. Devuelve un DTO por administrador, ordenado por id.
      */
     @Query("""
-            SELECT new com.example.demo.dto.AdministratorListDTO(admin.adminId, admin.name, admin.email,
-                    COUNT(operator))
-            FROM Administrator admin LEFT JOIN admin.operators operator
+            SELECT new com.example.demo.dto.AdministratorListDTO(
+                admin.adminId,
+                admin.name,
+                admin.email,
+                COUNT(operator)
+            )
+            FROM Administrator admin
+            LEFT JOIN admin.operators operator
             GROUP BY admin.adminId, admin.name, admin.email
             ORDER BY admin.adminId
             """)
     List<AdministratorListDTO> findAllForList();
 
-    /* Selector del formulario de operarios: id, nombre y correo. */
+    // Datos para elegir un administrador.
     @Query("""
-            SELECT new com.example.demo.dto.AdministratorDTO(admin.adminId, admin.name, admin.email)
+            SELECT new com.example.demo.dto.AdministratorDTO(
+                admin.adminId,
+                admin.name,
+                admin.email
+            )
             FROM Administrator admin
             ORDER BY admin.name
             """)

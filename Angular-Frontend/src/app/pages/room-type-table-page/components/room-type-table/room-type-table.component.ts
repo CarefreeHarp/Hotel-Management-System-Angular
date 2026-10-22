@@ -1,19 +1,20 @@
-import { ButtonComponent } from '../../../../components/button/button.component';
-import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
-import { ListControlsComponent } from '../../../../components/list-controls/list-controls.component';
-import {
-  initialListState,
-  ListFilter,
-  defaultSortOptions,
-  priceMatches,
-  compareRecords,
-} from '../../../../utils/list-state';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
+import { ButtonComponent } from '../../../../components/button/button.component';
+import { ListControlsComponent } from '../../../../components/list-controls/list-controls.component';
+import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 import { RoomTypeListDTO } from '../../../../models/dto/room-type-list-dto';
 import { basePath, isAdminArea } from '../../../../utils/base-path';
+import {
+  ListFilter,
+  compareRecords,
+  defaultSortOptions,
+  initialListState,
+  priceMatches,
+} from '../../../../utils/list-state';
 
 @Component({
   selector: 'app-room-type-table',
@@ -36,7 +37,9 @@ export class RoomTypeTableComponent {
   readonly adminArea = isAdminArea(this.route);
 
   @Input() roomTypes: RoomTypeListDTO[] = [];
-  @Output() delete = new EventEmitter<number>();
+  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
+  protected readonly deleteSubject = new Subject<number>();
+  @Output('delete') readonly delete$ = this.deleteSubject.asObservable();
 
   listState = initialListState();
   readonly filters: ListFilter[] = [

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
  * Los dos métodos declarados abajo son "derived queries": Spring Data lee el
  * nombre del método y genera él mismo la consulta, así que tampoco hay que
  * escribir SQL. Antes estas búsquedas se hacían recorriendo la lista completa
- * de clientes en la capa de servicio; ahora las resuelve la base de datos.
+ * de clientes en la capa de servicio. Ahora las resuelve la base de datos.
  *
  * Devuelven Optional porque puede que no exista ningún cliente con ese dato.
  */
@@ -31,10 +31,16 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
     /* Busca un cliente por su número de identificación nacional. */
     Optional<Client> findByNationalId(String nationalId);
 
-    /* Tabla de clientes del panel: sin foto ni contraseña. */
+    // Clientes del panel, sin foto ni contraseña.
     @Query("""
-            SELECT new com.example.demo.dto.ClientListDTO(client.clientId, client.name, client.lastName,
-                    client.nationalId, client.email, client.phone)
+            SELECT new com.example.demo.dto.ClientListDTO(
+                client.clientId,
+                client.name,
+                client.lastName,
+                client.nationalId,
+                client.email,
+                client.phone
+            )
             FROM Client client
             ORDER BY client.clientId
             """)

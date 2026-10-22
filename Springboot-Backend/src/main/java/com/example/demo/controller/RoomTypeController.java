@@ -9,7 +9,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import java.util.List;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/room-types")
@@ -36,7 +44,8 @@ public class RoomTypeController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Consultar un tipo de habitación", description = "Devuelve todos los atributos del tipo, incluida su galería.")
-    public RoomTypeDetailDTO readRoomType(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+    public RoomTypeDetailDTO readRoomType(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         return service.findDetail(id);
     }
 
@@ -48,14 +57,16 @@ public class RoomTypeController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un tipo de habitación", description = "Reemplaza los campos editables. El identificador de la ruta se mantiene.")
-    public void updateRoomType(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
-                           @Valid @RequestBody RoomType roomType) {
+    public void updateRoomType(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id,
+            @Valid @RequestBody RoomType roomType) {
         service.update(id, roomType);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un tipo de habitación", description = "Elimina el registro. La respuesta exitosa no tiene cuerpo.")
-    public void deleteRoomType(@Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+    public void deleteRoomType(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         service.delete(id);
     }
 }

@@ -1,5 +1,5 @@
-import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 import { Component } from '@angular/core';
+import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 
 @Component({
   selector: 'app-hero',

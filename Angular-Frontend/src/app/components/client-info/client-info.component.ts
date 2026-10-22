@@ -1,5 +1,5 @@
-import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { Component, Input } from '@angular/core';
+import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 
 @Component({

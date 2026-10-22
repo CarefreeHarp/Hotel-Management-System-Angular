@@ -44,7 +44,7 @@
       variant="secondary"
       type="button"
       [disabled]="photos.length >= maxPhotos"
-      (click)="addPhoto.emit()"
+      (click)="addPhotoSubject.next()"
     >
       ＋ Add another photo
     </button>
