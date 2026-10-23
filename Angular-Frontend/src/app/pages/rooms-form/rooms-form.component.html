@@ -1,9 +1,6 @@
 <app-admin-header />
 <main class="catalog-page">
   <div class="catalog-page__container">
-    @if (error) {
-      <p class="form-alert" role="alert">{{ error }}</p>
-    }
     @if (loading) {
       <app-skeleton variant="form" label="Loading room information..." />
     } @else {
@@ -15,19 +12,6 @@
         <a appButton variant="secondary" [routerLink]="[base, 'rooms']">Back to list</a>
       </app-page-heading>
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-        @if (submitted && form.invalid) {
-          <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
-          </p>
-        }
-        @if (!roomTypes.length) {
-          <p class="form-alert" role="alert">
-            A room type must exist before a room can be saved.
-          </p>
-          <a appButton variant="secondary" [routerLink]="[base, 'room-types', 'new']"
-            >Create room type</a
-          >
-        }
         <app-room-fields
           class="form-section"
           [form]="form"
@@ -51,6 +35,22 @@
             >Cancel</a
           >
         </div>
+        @if (error) {
+          <p class="form-alert" role="alert">{{ error }}</p>
+        }
+        @if (submitted && form.invalid) {
+          <p class="form-alert" role="alert">
+            Please check the highlighted fields before saving.
+          </p>
+        }
+        @if (!roomTypes.length) {
+          <p class="form-alert" role="alert">
+            A room type must exist before a room can be saved.
+          </p>
+          <a appButton variant="secondary" [routerLink]="[base, 'room-types', 'new']"
+            >Create room type</a
+          >
+        }
       </form>
     }
   </div>

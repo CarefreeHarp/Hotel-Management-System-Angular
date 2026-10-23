@@ -1,6 +1,6 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { ReservationDetails } from '../../../../models/booking';
+import { ReservationDetails } from '../../models/booking';
 @Component({
   selector: 'app-reservation-finance',
   imports: [CurrencyPipe, DatePipe],

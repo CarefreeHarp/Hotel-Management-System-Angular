@@ -125,6 +125,7 @@
       <button class="booking-submit" type="submit" [disabled]="!valid()">
         Check availability <span aria-hidden="true">→</span>
       </button>
+      <ng-content select="[bookingError]" />
     </aside>
   </form>
 }

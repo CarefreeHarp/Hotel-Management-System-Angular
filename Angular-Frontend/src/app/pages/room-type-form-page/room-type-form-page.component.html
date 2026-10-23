@@ -16,14 +16,6 @@
         "
       />
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-        @if (submitted && form.invalid) {
-          <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
-          </p>
-        }
-        @if (error) {
-          <p class="form-alert" role="alert">{{ error }}</p>
-        }
         <app-room-type-commercial-fields
           class="form-section"
           [form]="form"
@@ -59,6 +51,14 @@
             >Cancel</a
           >
         </div>
+        @if (submitted && form.invalid) {
+          <p class="form-alert" role="alert">
+            Please check the highlighted fields before saving.
+          </p>
+        }
+        @if (error) {
+          <p class="form-alert" role="alert">{{ error }}</p>
+        }
       </form>
     }
   </div>

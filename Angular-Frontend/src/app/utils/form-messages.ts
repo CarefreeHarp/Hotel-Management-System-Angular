@@ -173,6 +173,7 @@ export const RESERVATION_MESSAGES = {
   roomTypeId: { min: 'Select a room type.' },
   status: {
     required: 'Choose a reservation status.',
+    pending: 'Check-in is not allowed while the reservation is pending. Confirm the reservation first.',
     unpaid:
       'Check-out is not allowed while the reservation has an outstanding balance. Settle the balance first.',
   },

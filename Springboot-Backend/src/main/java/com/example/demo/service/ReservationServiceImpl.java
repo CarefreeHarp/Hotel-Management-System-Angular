@@ -93,6 +93,9 @@ public class ReservationServiceImpl implements ReservationService {
             throw invalid("guestCount", "Enter at least one guest.");
         if (input.getStatus() == null)
             throw invalid("status", "Choose a reservation status.");
+        // El estado persistido determina la transición. Se revisa bajo el bloqueo y antes de cambiar habitación o folio.
+        if (current.getStatus() == ReservationStatus.PENDING && input.getStatus() == ReservationStatus.CHECKED_IN)
+            throw invalid("status", "Check-in is not allowed while the reservation is pending. Confirm the reservation first.");
         Integer typeId = reservationRules.roomTypeId(input);
         RoomType type = roomTypeRepository.lockForBooking(typeId)
                 .orElseThrow(() -> invalid("roomType", "The selected room type does not exist."));

@@ -23,6 +23,7 @@ import {
   ListState,
   matchesSearch,
 } from '../../utils/list-state';
+import { ReservationDeleteDialogComponent } from './components/reservation-delete-dialog/reservation-delete-dialog.component';
 import { ReservationTableComponent } from './components/reservation-table/reservation-table.component';
 
 @Component({
@@ -34,6 +35,7 @@ import { ReservationTableComponent } from './components/reservation-table/reserv
     ListControlsComponent,
     RecordCardsComponent,
     ReservationTableComponent,
+    ReservationDeleteDialogComponent,
   ],
   templateUrl: './reservations-list.component.html',
   styleUrl: './reservations-list.component.scss',
@@ -52,6 +54,7 @@ export class ReservationsListComponent {
   message = '';
   actionError = '';
   deleting = false;
+  pendingDeletionId: number | undefined;
   get base(): string {
     return basePath(this.route);
   }
@@ -97,18 +100,25 @@ export class ReservationsListComponent {
   changeControls(state: ListState): void {
     this.listSubject.next(state);
   }
+  /** Abre la confirmación compartida por las vistas de tabla y tarjetas sin iniciar el borrado. */
   remove(id: number): void {
+    if (this.deleting || this.pendingDeletionId !== undefined) return;
+    this.pendingDeletionId = id;
+  }
+
+  cancelDeletion(): void {
+    this.pendingDeletionId = undefined;
+  }
+
+  confirmDeletion(): void {
+    const id = this.pendingDeletionId;
+    if (id === undefined || this.deleting) return;
+    this.pendingDeletionId = undefined;
     this.actionSubject.next(id);
   }
 
   private performAction(id: number): Observable<unknown> {
-    if (
-      this.deleting ||
-      !window.confirm(
-        'Permanent deletion is only for special cases. In normal cases, changing the status to CANCELLED may be sufficient. This will delete the reservation, its folio, charges and payments. This action is irreversible. Continue?',
-      )
-    )
-      return EMPTY;
+    if (this.deleting) return EMPTY;
     this.deleting = true;
     this.actionError = '';
     this.message = '';

@@ -1,14 +1,12 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { catchError, combineLatest, EMPTY, map, of, switchMap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { ClientInfoComponent } from '../../components/client-info/client-info.component';
 import { HeaderComponent } from '../../components/header/header.component';
+import { ReservationContentComponent } from '../../components/reservation-content/reservation-content.component';
 import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { ReservationDetails } from '../../models/booking';
 import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 import { ClientService } from '../../services/client.service';
@@ -16,22 +14,17 @@ import { ReservationService } from '../../services/reservation.service';
 import { basePath } from '../../utils/base-path';
 import { clientQuery } from '../../utils/client-query';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
-import { ReservationFinanceComponent } from './components/reservation-finance/reservation-finance.component';
 
 /** Carga reserva y huésped. El componente de finanzas presenta los cargos y pagos recibidos. */
 @Component({
   selector: 'app-reservation-detail',
   imports: [
     SkeletonComponent,
-    CurrencyPipe,
-    DatePipe,
     RouterLink,
     HeaderComponent,
     AdminHeaderComponent,
     ButtonComponent,
-    ClientInfoComponent,
-    OptimizedImageDirective,
-    ReservationFinanceComponent,
+    ReservationContentComponent,
   ],
   templateUrl: './reservation-detail.component.html',
   styleUrl: './reservation-detail.component.scss',
@@ -53,6 +46,11 @@ export class ReservationDetailComponent implements OnInit {
       this.route.snapshot.paramMap.has('adminId') ||
       this.route.snapshot.paramMap.has('operatorId')
     );
+  }
+  get staffViewTitle(): string {
+    if (this.route.snapshot.paramMap.has('adminId')) return 'Admin view';
+    if (this.route.snapshot.paramMap.has('operatorId')) return 'Operator view';
+    return '';
   }
   get clientHistoryId(): number | undefined {
     const id = Number(this.route.snapshot.queryParamMap.get('clientId'));

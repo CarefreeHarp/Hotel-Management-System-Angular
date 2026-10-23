@@ -1,84 +1,43 @@
 <app-admin-header />
-<main class="catalog-page">
-  <div class="catalog-page__container">
-    <app-page-heading
-      eyebrow="Reservation management"
-      title="Edit reservation"
-      description="Update the stay, services and status while preserving the guest and recorded payments."
-    >
-      <a appButton variant="secondary" [routerLink]="[base, 'reservations']"
-        >Back to reservations</a
-      >
-    </app-page-heading>
+<main class="reservation-page">
+  <div class="reservation-container">
+    <a appButton variant="secondary" [routerLink]="[base, 'reservations']">Back to reservations</a>
     @if (loading) {
-      <app-skeleton variant="form" label="Loading reservation…" />
-    }
-    @if (error) {
-      <p class="form-alert" role="alert">{{ error }}</p>
+      <app-skeleton variant="detail" label="Loading reservation…" />
     }
     @if (detail; as item) {
-      <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-        @if (submitted && form.invalid) {
-          <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
-          </p>
-        }
-        <fieldset [disabled]="saving">
-          <section
-            class="booking-summary"
-            aria-label="Current booking information"
-          >
-            <p>
-              <strong>{{ item.reservation.reservationCode }}</strong> ·
-              {{ item.reservation.clientName?.trim() || "Deleted guest" }}
-            </p>
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <app-reservation-content [detail]="item" [client]="client" [staffViewTitle]="staffViewTitle" [editing]="true">
+          <fieldset reservationEditor class="editor-panel" [disabled]="saving">
+            <legend class="eyebrow">Edit stay, services and status</legend>
+            <app-reservation-fields
+              [form]="form"
+              [roomTypes]="roomTypes"
+              [services]="services"
+              [originalServiceIds]="originalServiceIds"
+              [submitted]="submitted"
+            />
+            <div class="form-actions">
+              <button appButton type="submit" [disabled]="saving">{{ saving ? "Saving…" : "Save reservation" }}</button>
+              <a appButton variant="secondary" [routerLink]="[base, 'reservations', item.reservation.reservationId]">Cancel</a>
+            </div>
+            @if (submitted && form.invalid) {
+              <p class="form-alert" role="alert">Please check the highlighted fields before saving.</p>
+            }
+            @if (error) {
+              <p class="form-alert" role="alert">{{ error }}</p>
+            }
+          </fieldset>
+          <section reservationPreview class="preview-panel" aria-labelledby="preview-title">
+            <h2 id="preview-title">Price preview</h2>
             <dl>
-              <div>
-                <dt>Current total</dt>
-                <dd>{{ item.total | currency: "COP" : "symbol" : "1.0-2" }}</dd>
-              </div>
-              <div>
-                <dt>Already paid</dt>
-                <dd>
-                  {{ item.paidTotal | currency: "COP" : "symbol" : "1.0-2" }}
-                </dd>
-              </div>
-              <div>
-                <dt>Recalculated total</dt>
-                <dd>
-                  {{ previewTotal | currency: "COP" : "symbol" : "1.0-2" }}
-                </dd>
-              </div>
+              <dt>Recalculated total</dt>
+              <dd>{{ previewTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
             </dl>
-            <p>
-              When changing the price of a reservation with payments, the new
-              total must exceed the amount already paid. A fully paid
-              reservation with an increased total becomes pending.
-            </p>
+            <p>When changing the price of a reservation with payments, the new total must exceed the amount already paid. A fully paid reservation with an increased total becomes pending.</p>
+            <p>The price details below show the saved reservation until changes are saved.</p>
           </section>
-          <app-reservation-fields
-            [form]="form"
-            [roomTypes]="roomTypes"
-            [services]="services"
-            [originalServiceIds]="originalServiceIds"
-            [submitted]="submitted"
-          />
-        </fieldset>
-        <div class="form-actions">
-          <button appButton type="submit" [disabled]="saving">
-            {{ saving ? "Saving…" : "Save reservation" }}
-          </button>
-          <a
-            appButton
-            variant="secondary"
-            [routerLink]="[
-              base,
-              'reservations',
-              item.reservation.reservationId,
-            ]"
-            >Cancel</a
-          >
-        </div>
+        </app-reservation-content>
       </form>
     }
   </div>

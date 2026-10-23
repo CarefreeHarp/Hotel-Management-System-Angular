@@ -32,9 +32,12 @@
         <li><span>4</span> Payment</li>
       </ol>
     }
-    @if (error) {
-      <p role="alert" class="error">{{ error }}</p>
-    }
+    <!-- Cada paso proyecta este aviso bajo su acción. Si no carga, queda junto a la navegación disponible. -->
+    <ng-template #bookingError>
+      @if (error) {
+        <p role="alert" class="error">{{ error }}</p>
+      }
+    </ng-template>
     @if (loading) {
       <app-skeleton [variant]="step === 'room-types' || step === 'services' ? 'cards' : step === 'checkout' ? 'detail' : 'form'" label="Loading your stay…" />
     } @else {
@@ -43,7 +46,9 @@
           <app-booking-dates
             [stay]="stay"
             (continueBooking)="chooseDates($event)"
-          />
+          >
+            <ng-container bookingError [ngTemplateOutlet]="bookingError" />
+          </app-booking-dates>
         }
         @case ("room-types") {
           @if (types.length || !error) {
@@ -62,7 +67,9 @@
               [initialIds]="draft.serviceIds"
               [quote]="quote"
               (selected)="chooseServices($event)"
-            />
+            >
+              <ng-container bookingError [ngTemplateOutlet]="bookingError" />
+            </app-booking-services>
           }
         }
         @case ("checkout") {
@@ -72,7 +79,9 @@
               [busy]="busy"
               (payLater)="confirm()"
               (payNow)="go('payment')"
-            />
+            >
+              <ng-container bookingError [ngTemplateOutlet]="bookingError" />
+            </app-booking-checkout>
           }
         }
         @case ("payment") {
@@ -83,7 +92,9 @@
               [serverErrors]="paymentErrors"
               (pay)="confirm($event)"
               (payLater)="confirm()"
-            />
+            >
+              <ng-container bookingError [ngTemplateOutlet]="bookingError" />
+            </app-booking-payment>
           }
         }
       }
@@ -96,6 +107,9 @@
           Change dates
         </button>
       </nav>
+    }
+    @if (error && (loading || step === 'room-types' || (!quote && step !== 'dates'))) {
+      <ng-container [ngTemplateOutlet]="bookingError" />
     }
   </div>
 </main>

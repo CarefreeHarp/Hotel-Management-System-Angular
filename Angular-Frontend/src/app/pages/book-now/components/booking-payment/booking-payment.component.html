@@ -125,15 +125,16 @@
           </label>
         </div>
       </section>
+      <button class="payment-submit" type="submit" [disabled]="busy">
+        {{ busy ? "Processing…" : "Confirm and pay" }}
+        <span>{{ amount | currency: "COP" : "symbol" : "1.0-2" }}</span>
+      </button>
       @if ((submitted && !valid()) || hasFieldErrors) {
         <p class="payment-error" role="alert">
           Please check the highlighted payment details.
         </p>
       }
-      <button class="payment-submit" type="submit" [disabled]="busy">
-        {{ busy ? "Processing…" : "Confirm and pay" }}
-        <span>{{ amount | currency: "COP" : "symbol" : "1.0-2" }}</span>
-      </button>
+      <ng-content select="[bookingError]" />
     </form>
     <app-booking-reservation-summary [quote]="quote" />
   </div>

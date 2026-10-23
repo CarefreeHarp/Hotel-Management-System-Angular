@@ -77,30 +77,34 @@
         </button>
       </nav>
 
-      <!-- Mensajes de Alerta -->
-      @if (errorMessage) {
-        <div class="auth-alert error" role="alert">
-          <svg
-            class="alert-icon"
-            viewBox="0 0 24 24"
-            width="18"
-            height="18"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path
-              d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-            ></path>
-            <line x1="12" y1="9" x2="12" y2="13"></line>
-            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-          </svg>
-          <span>{{ errorMessage }}</span>
-        </div>
-      }
+      <!-- La plantilla comparte el aviso general y lo coloca después del envío de cada formulario. -->
+      <ng-template #formError let-invalid="invalid">
+        @if (errorMessage) {
+          <div class="auth-alert error" role="alert">
+            <svg
+              class="alert-icon"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+              ></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>{{ errorMessage }}</span>
+          </div>
+        } @else if (invalid) {
+          <p class="auth-alert error" role="alert">Please check the highlighted fields before continuing.</p>
+        }
+      </ng-template>
       @if (successMessage) {
         <div class="auth-alert success" role="status">
           <span class="alert-icon">✓</span>
@@ -174,6 +178,10 @@
                   {{ isLoading ? "Signing in..." : "Sign In" }}
                 </button>
               </div>
+              <ng-container
+                [ngTemplateOutlet]="formError"
+                [ngTemplateOutletContext]="{ invalid: clientLoginSubmitted && clientLoginForm.invalid }"
+              />
 
               <div class="auth-switch-prompt">
                 <span>Don't have an account yet?</span>
@@ -303,6 +311,10 @@
                   {{ isLoading ? "Registering..." : "Complete Registration" }}
                 </button>
               </div>
+              <ng-container
+                [ngTemplateOutlet]="formError"
+                [ngTemplateOutletContext]="{ invalid: clientRegisterSubmitted && clientRegisterForm.invalid }"
+              />
 
               <div class="auth-switch-prompt">
                 <span>Already have a guest account?</span>
@@ -383,6 +395,10 @@
                 }}
               </button>
             </div>
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{ invalid: staffLoginSubmitted && staffLoginForm.invalid }"
+            />
 
             <!-- Quick demo helpers -->
             <div class="demo-helpers">

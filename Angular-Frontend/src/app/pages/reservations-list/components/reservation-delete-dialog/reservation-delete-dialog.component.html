@@ -1,0 +1,23 @@
+<dialog
+  #dialog
+  aria-labelledby="delete-reservation-title"
+  aria-describedby="delete-reservation-description delete-reservation-warning"
+  (cancel)="cancelDeletion($event)"
+>
+  <header>
+    <p class="eyebrow">Reservation management</p>
+    <h2 id="delete-reservation-title">Delete reservation #{{ reservationId() }}?</h2>
+  </header>
+  <p id="delete-reservation-description">
+    Permanent deletion is only for special cases. In normal cases, changing the
+    status to CANCELLED may be sufficient.
+  </p>
+  <p id="delete-reservation-warning" class="warning">
+    This will delete the reservation, its folio, charges and payments.
+    <strong>This action is irreversible.</strong>
+  </p>
+  <footer>
+    <button appButton type="button" variant="secondary" autofocus (click)="cancelDeletion()">Cancel</button>
+    <button appButton type="button" class="delete-button" (click)="confirmDeletion()">Delete permanently</button>
+  </footer>
+</dialog>

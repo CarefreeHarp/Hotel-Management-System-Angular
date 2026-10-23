@@ -1,34 +1,62 @@
-@use "../../../styles/staff-form";
-fieldset {
-  border: 0;
-  padding: 0;
-  margin: 0;
+@use "../../../styles/reservation-page";
+
+.editor-panel,
+.preview-panel {
   min-width: 0;
+  margin: 0;
+  padding: 1.6rem;
+  border: 1px solid rgba(184, 140, 90, 0.25);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #1e2c38, #141e28);
 }
-.booking-summary {
-  padding-bottom: 1.5rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #53616b;
-  color: #cad5dd;
+.editor-panel legend {
+  // La leyenda se mantiene dentro del panel sin interrumpir su borde superior.
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin: 0 0 0.65rem;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  opacity: 1;
 }
-.booking-summary strong {
-  color: #d3ae7b;
+.editor-panel app-reservation-fields {
+  clear: both;
 }
-dl {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.preview-panel {
+  margin-bottom: 1.25rem;
+}
+.preview-panel h2 {
+  margin-top: 0;
+  font: 500 1.6rem var(--font-display);
+}
+.preview-panel p,
+.preview-panel dt {
+  color: var(--color-text-muted);
+}
+.preview-panel dd {
+  margin: 0.5rem 0 0;
+  color: var(--color-gold);
+  font-size: 1.4rem;
+}
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
+  margin-top: 1.5rem;
 }
-dt {
-  font-size: 0.85rem;
+.form-actions button:disabled {
+  opacity: 0.6;
+  cursor: progress;
 }
-dd {
-  margin: 0.4rem 0;
-  font-size: 1.1rem;
-  color: #f3e6d3;
+.form-alert {
+  padding: 1rem;
+  color: #ffd6d2;
+  border: 1px solid #da7e76;
+  border-radius: 0.8rem;
 }
-@media (max-width: 600px) {
-  dl {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 500px) {
+  .editor-panel,
+  .preview-panel { padding: 1.1rem; }
 }

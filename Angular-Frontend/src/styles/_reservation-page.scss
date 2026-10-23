@@ -1,0 +1,32 @@
+:host {
+  display: block;
+  color: var(--color-text-light);
+  font-variant-numeric: lining-nums;
+}
+.reservation-page {
+  min-height: 100vh;
+  padding: 9rem clamp(1rem, 4vw, 2rem) 5rem;
+  background:
+    radial-gradient(
+      circle at 92% 0%,
+      rgba(95, 125, 149, 0.18),
+      transparent 26rem
+    ),
+    radial-gradient(
+      circle at 0% 78%,
+      rgba(184, 140, 90, 0.1),
+      transparent 30rem
+    ),
+    #0c1218;
+  color: var(--color-text-light);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.reservation-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+}
+@media (max-width: 500px) {
+  .reservation-page { padding-top: 7rem; }
+}

@@ -1,7 +1,6 @@
 <app-admin-header />
 <main class="catalog-page">
   <div class="catalog-page__container">
-    @if (error) { <p class="form-alert" role="alert">{{ error }}</p> }
     @if (loading) { <app-skeleton variant="form" label="Loading service..." /> } @else {
       <app-page-heading
         eyebrow="Service catalog"
@@ -12,11 +11,6 @@
         ></app-page-heading
       >
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-        @if (submitted && form.invalid) {
-          <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
-          </p>
-        }
         <app-service-fields
           class="form-section"
           [form]="form"
@@ -42,6 +36,12 @@
             >Cancel</a
           >
         </div>
+        @if (error) { <p class="form-alert" role="alert">{{ error }}</p> }
+        @if (submitted && form.invalid) {
+          <p class="form-alert" role="alert">
+            Please check the highlighted fields before saving.
+          </p>
+        }
       </form>
     }
   </div>

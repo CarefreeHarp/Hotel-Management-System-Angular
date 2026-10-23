@@ -4,14 +4,28 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { catchError, EMPTY, exhaustMap, finalize, forkJoin, Observable, Subject, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  EMPTY,
+  exhaustMap,
+  finalize,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  Subject,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
+import { ReservationContentComponent } from '../../components/reservation-content/reservation-content.component';
 import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { ReservationDetails } from '../../models/booking';
+import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 import { RoomTypeListDTO } from '../../models/dto/room-type-list-dto';
 import { ServiceListDTO } from '../../models/dto/service-list-dto';
+import { ClientService } from '../../services/client.service';
 import { ReservationService } from '../../services/reservation.service';
 import { RoomTypeService } from '../../services/room-type.service';
 import { ServiceService } from '../../services/service.service';
@@ -33,7 +47,7 @@ import {
     RouterLink,
     AdminHeaderComponent,
     ButtonComponent,
-    PageHeadingComponent,
+    ReservationContentComponent,
     ReservationFieldsComponent,
   ],
   templateUrl: './reservation-form.component.html',
@@ -42,12 +56,14 @@ import {
 export class ReservationFormComponent {
   private readonly saveSubject = new Subject<void>();
   private readonly reservations = inject(ReservationService);
+  private readonly clients = inject(ClientService);
   private readonly types = inject(RoomTypeService);
   private readonly hotelServices = inject(ServiceService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   detail: ReservationDetails | undefined;
+  client: ClientDetailDTO | undefined;
   roomTypes: RoomTypeListDTO[] = [];
   services: ServiceListDTO[] = [];
   originalServiceIds: number[] = [];
@@ -55,6 +71,7 @@ export class ReservationFormComponent {
   // Va después de roomTypes: los validadores se ejecutan al crear el formulario.
   readonly form = createReservationForm({
     originalCheckIn: () => this.detail?.reservation.checkInDate,
+    originalStatus: () => this.detail?.reservation.status,
     balance: () => this.previewTotal - (this.detail?.paidTotal ?? 0),
     capacity: (roomTypeId) =>
       this.roomTypes.find((type) => type.roomTypeId === roomTypeId)
@@ -66,6 +83,9 @@ export class ReservationFormComponent {
   error = '';
   get base(): string {
     return basePath(this.route);
+  }
+  get staffViewTitle(): string {
+    return this.route.snapshot.paramMap.has('adminId') ? 'Admin view' : 'Operator view';
   }
   // La vista previa conserva cargos contratados y solo toma el precio actual de los servicios nuevos.
   get previewTotal(): number {
@@ -109,6 +129,7 @@ export class ReservationFormComponent {
           this.loading = true;
           this.error = '';
           this.detail = undefined;
+          this.client = undefined;
           this.submitted = false;
           const id = Number(params.get('id'));
           // Una id inválida muestra la pantalla 400. Si la reserva no carga, la que corresponda.
@@ -121,13 +142,25 @@ export class ReservationFormComponent {
             detail: this.reservations.details(id),
             roomTypes: this.types.getAll(),
             services: this.hotelServices.getAll(),
-          }).pipe(catchErrorPage(this.router, this.route));
+          }).pipe(
+            switchMap((data) => {
+              const clientId = data.detail.clientId;
+              if (clientId === undefined) return of({ ...data, client: undefined });
+              // La ficha es secundaria. Su ausencia no bloquea la edición de la reserva.
+              return this.clients.getById(clientId).pipe(
+                map((client) => ({ ...data, client })),
+                catchError(() => of({ ...data, client: undefined })),
+              );
+            }),
+            catchErrorPage(this.router, this.route),
+          );
         }),
         takeUntilDestroyed(),
       )
       .subscribe((data) => {
         this.loading = false;
         this.detail = data.detail;
+        this.client = data.client;
         this.roomTypes = data.roomTypes;
         this.services = data.services;
         this.originalServiceIds = [];

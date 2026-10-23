@@ -44,3 +44,10 @@
     }
   </div>
 </main>
+@if (pendingDeletionId !== undefined) {
+  <app-reservation-delete-dialog
+    [reservationId]="pendingDeletionId"
+    (confirmed)="confirmDeletion()"
+    (cancelled)="cancelDeletion()"
+  />
+}

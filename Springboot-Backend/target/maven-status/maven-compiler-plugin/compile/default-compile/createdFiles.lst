@@ -28,6 +28,7 @@ com/example/demo/repository/ReservationRepository.class
 com/example/demo/dto/OperatorDTO.class
 com/example/demo/entities/Folio.class
 com/example/demo/entities/Folio$FolioBuilder.class
+com/example/demo/service/BookingPaymentValidator.class
 com/example/demo/repository/OperatorRepository.class
 com/example/demo/entities/Administrator$AdministratorBuilder.class
 com/example/demo/service/interfaces/PanelService.class
@@ -45,6 +46,7 @@ com/example/demo/repository/RoomTypeRepository.class
 com/example/demo/dto/ReservationDetailDTO$PaymentView.class
 com/example/demo/entities/enums/FolioStatus.class
 com/example/demo/dto/RoomTypeDetailDTO.class
+com/example/demo/service/ReservationRules.class
 com/example/demo/entities/Payment$PaymentBuilder.class
 com/example/demo/DemoApplication.class
 com/example/demo/dto/RoomDetailDTO.class
@@ -82,3 +84,4 @@ com/example/demo/controller/PanelController.class
 com/example/demo/dto/RoomTypeOptionDTO.class
 com/example/demo/service/interfaces/RoomTypeService.class
 com/example/demo/dto/ReservationDetailDTO.class
+com/example/demo/service/ReservationBillingService.class

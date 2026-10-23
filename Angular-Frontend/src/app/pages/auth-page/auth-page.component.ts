@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -31,6 +32,7 @@ import {
 @Component({
   selector: 'app-auth-page',
   imports: [
+    NgTemplateOutlet,
     ReactiveFormsModule,
     RouterLink,
     HeaderComponent,

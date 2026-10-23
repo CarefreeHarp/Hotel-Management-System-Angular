@@ -28,14 +28,6 @@
         >
       </app-page-heading>
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-        @if (submitted && form.invalid) {
-          <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
-          </p>
-        }
-        @if (saveError) {
-          <p class="form-alert" role="alert">{{ saveError }}</p>
-        }
         <app-client-fields
           [form]="form"
           [submitted]="submitted"
@@ -67,6 +59,14 @@
             >Cancel</a
           >
         </div>
+        @if (submitted && form.invalid) {
+          <p class="form-alert" role="alert">
+            Please check the highlighted fields before saving.
+          </p>
+        }
+        @if (saveError) {
+          <p class="form-alert" role="alert">{{ saveError }}</p>
+        }
       </form>
     }
   </div>

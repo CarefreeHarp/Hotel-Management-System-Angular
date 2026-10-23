@@ -17,6 +17,7 @@
           {{ busy ? "Booking…" : "Book and pay later" }}
           <span aria-hidden="true">→</span>
         </button>
+        <ng-content select="[bookingError]" />
       </article>
       <article class="checkout-option checkout-option--dark">
         <p class="eyebrow">Pay today</p>

@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -38,6 +39,7 @@ import { BookingServicesComponent } from './components/booking-services/booking-
 @Component({
   selector: 'app-book-now',
   imports: [
+    NgTemplateOutlet,
     SkeletonComponent,
     HeaderComponent,
     RouterLink,
