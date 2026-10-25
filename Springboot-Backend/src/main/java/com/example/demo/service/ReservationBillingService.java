@@ -70,7 +70,7 @@ public class ReservationBillingService {
         }
     }
 
-    /** Conserva cargos contratados, aplica los servicios cambiados y comprueba el saldo antes de guardar. */
+    /** Conserva cargos contratados, comprueba el saldo y reembolsa si la edición cancela la reserva. */
     public ReservationStatus updateFolio(Reservation current, Reservation input,
             BigDecimal nightlyPrice, List<Service> selectedServices, boolean financialChange) {
         ReservationDetailDTO previous = detail(current);
@@ -117,7 +117,12 @@ public class ReservationBillingService {
         }
         folioItemRepository.deleteAll(removed);
         folioItemRepository.saveAll(charges);
-        folio.setStatus(folioStatus(status, total, paid));
+        if (status == ReservationStatus.CANCELLED) {
+            // La edición del personal comparte la devolución idempotente bajo el bloqueo de la reserva.
+            cancelFolio(current.getReservationId());
+        } else {
+            folio.setStatus(folioStatus(status, total, paid));
+        }
         return status;
     }
 
