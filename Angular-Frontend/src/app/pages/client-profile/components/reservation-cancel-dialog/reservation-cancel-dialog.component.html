@@ -13,7 +13,7 @@
     Your reservation will be marked as cancelled. All payments for your stay and associated services will be fully refunded to your card, excluding amounts already refunded. Your reservation and financial history will be kept.
   </p>
   <form (ngSubmit)="confirmCancellation()">
-    <label for="cancellation-confirmation">Type <strong>{{ confirmationPhrase }}</strong> to confirm.</label>
+    <label for="cancellation-confirmation">Type <strong class="confirmation-phrase">&quot;{{ confirmationPhrase }}&quot;</strong> to confirm.</label>
     <input
       id="cancellation-confirmation"
       name="confirmation"
