@@ -35,9 +35,15 @@
         <dd>{{ detail.total | currency: "COP" : "symbol" : "1.0-2" }}</dd>
       </div>
       <div>
-        <dt>Paid</dt>
+        <dt>Net paid</dt>
         <dd>{{ detail.paidTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
       </div>
+      @if (detail.refundedTotal > 0) {
+        <div>
+          <dt>Refunded</dt>
+          <dd>{{ detail.refundedTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+        </div>
+      }
       <div class="balance">
         <dt>Balance</dt>
         <dd>{{ detail.balance | currency: "COP" : "symbol" : "1.0-2" }}</dd>
@@ -101,4 +107,27 @@
       <p class="muted">No payments registered.</p>
     }
   </section>
+  @if (detail.refunds.length > 0) {
+    <section class="panel" aria-labelledby="refunds-title">
+      <h2 id="refunds-title">Refund history</h2>
+      @for (refund of detail.refunds; track refund.refundId) {
+        <article class="record">
+          <header>
+            <h3>Refund #{{ refund.refundId }}</h3>
+            <span>{{ refund.status }}</span>
+          </header>
+          <strong>{{ refund.amount | currency: "COP" : "symbol" : "1.0-2" }}</strong>
+          <dl class="payment-facts">
+            <div><dt>Date</dt><dd>{{ refund.refundedAt | date: "medium" }}</dd></div>
+            <div><dt>Method</dt><dd>{{ refund.refundMethod }}</dd></div>
+            <div><dt>Reason</dt><dd>{{ refund.reason }}</dd></div>
+            <div><dt>Processed by</dt><dd>{{ refund.operatorName }}</dd></div>
+            @if (refund.notes) {
+              <div><dt>Notes</dt><dd>{{ refund.notes }}</dd></div>
+            }
+          </dl>
+        </article>
+      }
+    </section>
+  }
 }

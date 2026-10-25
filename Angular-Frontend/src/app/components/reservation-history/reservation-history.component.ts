@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
+import { Subject } from 'rxjs';
 import { ReservationDetails } from '../../models/booking';
 import { ReservationStatus } from '../../models/enums/reservation-status';
 import { ButtonComponent } from '../button/button.component';
@@ -15,6 +16,13 @@ export class ReservationHistoryComponent {
   @Input({ required: true }) reservations: ReservationDetails[] = [];
   @Input() staff = false;
   @Input() guestName = '';
+  private readonly cancellationRequestedSubject = new Subject<number>();
+  @Output() readonly cancellationRequested = this.cancellationRequestedSubject.asObservable();
+
+  requestCancellation(id: number): void {
+    if (!this.staff) this.cancellationRequestedSubject.next(id);
+  }
+
   selectedFilter: 'all' | ReservationStatus = 'all';
   private readonly clientFilters: {
     label: string;

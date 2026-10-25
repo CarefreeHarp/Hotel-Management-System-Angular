@@ -15,10 +15,11 @@ export interface AdminSection {
   path: string;
 }
 
-// Secciones de la barra, en el mismo orden que el admin-shell de la aplicación de Thymeleaf.
+// Secciones administrativas. El contexto de operador conserva solo clientes y reservas.
 export const ADMIN_SECTIONS: AdminSection[] = [
   { label: 'Clients', path: 'clients' },
   { label: 'Reservations', path: 'reservations' },
+  { label: 'Accounting', path: 'accounting' },
   { label: 'Room types', path: 'room-types' },
   { label: 'Rooms', path: 'rooms' },
   { label: 'Services', path: 'services' },
@@ -76,6 +77,6 @@ export class AdminHeaderComponent {
     void this.router.navigate(['/']);
   }
   closeDesktopMenu(): void {
-    if (window.innerWidth > 1180) this.closeMenu();
+    if (window.innerWidth > 1440) this.closeMenu();
   }
 }

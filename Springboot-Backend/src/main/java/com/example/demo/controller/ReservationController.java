@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.BookingQuote;
 import com.example.demo.dto.ReservationDTO;
 import com.example.demo.dto.ReservationDetailDTO;
-import com.example.demo.dto.RoomTypeListDTO;
+import com.example.demo.dto.RoomTypeAvailability;
 import com.example.demo.entities.Reservation;
 import com.example.demo.service.BookingService;
 import com.example.demo.service.interfaces.ReservationService;
@@ -51,7 +51,7 @@ public class ReservationController {
     }
 
     @GetMapping("/available-room-types")
-    public List<RoomTypeListDTO> listAvailableRoomTypes(@RequestParam LocalDate checkIn,
+    public List<RoomTypeAvailability> listAvailableRoomTypes(@RequestParam LocalDate checkIn,
             @RequestParam LocalDate checkOut, @RequestParam Integer guests) {
         return bookingService.listAvailableRoomTypes(checkIn, checkOut, guests);
     }
@@ -71,6 +71,12 @@ public class ReservationController {
     @PutMapping("/{id}")
     public void updateReservation(@PathVariable Integer id, @Valid @RequestBody Reservation reservation) {
         reservationService.updateReservation(id, reservation);
+    }
+
+    /** Cancela y reembolsa los pagos pendientes de devolución sin borrar el historial financiero. */
+    @PutMapping("/{id}/cancel")
+    public void cancelReservation(@PathVariable Integer id) {
+        reservationService.cancelReservation(id);
     }
 
     @DeleteMapping("/{id}")

@@ -25,6 +25,9 @@ public interface ReservationService {
     /** Actualiza estancia, servicios y estado junto con el folio en una sola transacción. */
     void updateReservation(Integer reservationId, Reservation reservation);
 
+    /** Cancela reserva y folio, reembolsa el pagado neto y conserva estancia, cargos y pagos. */
+    void cancelReservation(Integer reservationId);
+
     /** Elimina una reserva después de retirar pagos, cargos y folio. */
     void deleteReservation(Integer reservationId);
 

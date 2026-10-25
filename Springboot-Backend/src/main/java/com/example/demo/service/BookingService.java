@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.BookingQuote;
 import com.example.demo.dto.ReservationDetailDTO;
 import com.example.demo.dto.RoomTypeListDTO;
+import com.example.demo.dto.RoomTypeAvailability;
 import com.example.demo.dto.ServiceCatalogDTO;
 import com.example.demo.entities.Client;
 import com.example.demo.entities.Payment;
@@ -59,16 +60,22 @@ public class BookingService {
     }
 
     /**
-     * Valida la estancia, agrupa habitaciones disponibles por tipo y explica si no
-     * hay opciones.
+     * Valida la estancia y cuenta las habitaciones disponibles por tipo para todas
+     * las noches y huéspedes de la búsqueda. Explica si no hay opciones.
      */
-    public List<RoomTypeListDTO> listAvailableRoomTypes(LocalDate checkIn, LocalDate checkOut, Integer guests) {
+    public List<RoomTypeAvailability> listAvailableRoomTypes(LocalDate checkIn, LocalDate checkOut, Integer guests) {
         reservationRules.checkNewStay(checkIn, checkOut, guests);
-        Map<Integer, RoomTypeListDTO> result = new LinkedHashMap<>();
+        Map<Integer, RoomTypeAvailability> result = new LinkedHashMap<>();
         for (Room room : roomRepository.findAvailableForBooking(checkIn, checkOut, guests, null)) {
             RoomType type = room.getRoomType();
-            // Varias habitaciones pueden compartir tipo. La pantalla ofrece cada tipo una sola vez.
-            result.putIfAbsent(type.getRoomTypeId(), typeView(type));
+            RoomTypeAvailability current = result.get(type.getRoomTypeId());
+            // La misma consulta determina las opciones y su conteo. No cuenta habitaciones ocupadas en parte de la estancia.
+            if (current == null) {
+                result.put(type.getRoomTypeId(), new RoomTypeAvailability(typeView(type), 1));
+            } else {
+                result.put(type.getRoomTypeId(),
+                        new RoomTypeAvailability(current.roomType(), current.availableRooms() + 1));
+            }
         }
         if (result.isEmpty()) {
             Integer maximum = roomRepository.findMaximumBookableCapacity();

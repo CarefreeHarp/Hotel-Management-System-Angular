@@ -21,6 +21,7 @@
       }
       <app-reservation-history
         [reservations]="reservations"
+        (cancellationRequested)="requestCancellation($event)"
         [guestName]="client.name + ' ' + client.lastName"
       />
       <footer class="detail-actions">
@@ -37,3 +38,13 @@
     }
   </div>
 </main>
+
+@if (pendingCancellation; as cancellation) {
+  <app-reservation-cancel-dialog
+    [reservationCode]="cancellation.reservation.reservationCode"
+    [busy]="isCancelling"
+    [errorMessage]="cancellationError"
+    (confirmed)="confirmCancellation()"
+    (dismissed)="dismissCancellation()"
+  />
+}

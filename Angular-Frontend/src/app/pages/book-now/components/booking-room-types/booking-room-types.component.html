@@ -20,7 +20,8 @@
 <section class="rooms-section" aria-labelledby="available-rooms-title">
   <h2 id="available-rooms-title">Available room types</h2>
   <div class="rooms-grid">
-    @for (type of types; track type.roomTypeId) {
+    @for (availability of types; track availability.roomType.roomTypeId) {
+      @let type = availability.roomType;
       <article class="room-card">
         <figure class="room-gallery">
           <img
@@ -44,7 +45,10 @@
             </div>
             <div>
               <dt>Stay</dt>
-              <dd>Available for your dates</dd>
+              <dd class="availability-notice">
+                {{ availability.availableRooms }}
+                {{ availability.availableRooms === 1 ? "room" : "rooms" }} left for your dates
+              </dd>
             </div>
           </dl>
         </section>

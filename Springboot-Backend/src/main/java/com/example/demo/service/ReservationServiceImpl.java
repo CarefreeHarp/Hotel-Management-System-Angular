@@ -124,6 +124,18 @@ public class ReservationServiceImpl implements ReservationService {
         current.setStatus(status);
     }
 
+    /**
+     * Bloquea la reserva, reembolsa el pagado neto y cancela su folio en la misma transacción. No reasigna
+     * habitación ni recalcula cargos, incluso si la estancia ya pasó.
+     */
+    @Override
+    public void cancelReservation(Integer id) {
+        Reservation reservation = reservationRepository.lockForEditing(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found."));
+        billingService.cancelFolio(id);
+        reservation.setStatus(ReservationStatus.CANCELLED);
+    }
+
     /** Bloquea la reserva y elimina primero sus dependencias financieras. */
     @Override
     public void deleteReservation(Integer id) {

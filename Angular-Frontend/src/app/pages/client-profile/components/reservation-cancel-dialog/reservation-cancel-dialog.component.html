@@ -1,0 +1,34 @@
+<dialog
+  #dialog
+  aria-labelledby="cancel-reservation-title"
+  aria-describedby="cancel-reservation-description"
+  [attr.aria-busy]="busy"
+  (cancel)="dismiss($event)"
+>
+  <header>
+    <p class="eyebrow">My reservations</p>
+    <h2 id="cancel-reservation-title">Cancel reservation {{ reservationCode }}?</h2>
+  </header>
+  <p id="cancel-reservation-description">
+    Your reservation will be marked as cancelled. All payments for your stay and associated services will be fully refunded to your card, excluding amounts already refunded. Your reservation and financial history will be kept.
+  </p>
+  <form (ngSubmit)="confirmCancellation()">
+    <label for="cancellation-confirmation">Type <strong>{{ confirmationPhrase }}</strong> to confirm.</label>
+    <input
+      id="cancellation-confirmation"
+      name="confirmation"
+      type="text"
+      autocomplete="off"
+      spellcheck="false"
+      [(ngModel)]="confirmationText"
+      [disabled]="busy"
+    />
+    @if (errorMessage) {
+      <p class="warning" role="alert">{{ errorMessage }}</p>
+    }
+    <footer>
+      <button appButton type="button" variant="secondary" autofocus [disabled]="busy" (click)="dismiss()">Keep reservation</button>
+      <button appButton type="submit" variant="danger" [disabled]="busy || confirmationText !== confirmationPhrase">{{ busy ? 'Cancelling…' : 'Cancel' }}</button>
+    </footer>
+  </form>
+</dialog>

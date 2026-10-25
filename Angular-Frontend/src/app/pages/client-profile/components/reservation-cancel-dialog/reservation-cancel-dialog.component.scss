@@ -1,0 +1,62 @@
+dialog {
+  box-sizing: border-box;
+  width: min(34rem, calc(100% - 2rem));
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid #b88c5a66;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #1e2c38, #141e28);
+  color: #e5e9ee;
+  box-shadow: 0 1.5rem 5rem #0008;
+  font-family: var(--font-body);
+  line-height: 1.6;
+}
+dialog::backdrop {
+  background: #050a10bd;
+  backdrop-filter: blur(4px);
+}
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #d3ae7b;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+}
+h2 {
+  margin: 0 0 1rem;
+  font: 500 clamp(1.6rem, 5vw, 2rem) var(--font-display);
+  line-height: 1.2;
+}
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #b88c5a66;
+  border-radius: 0.5rem;
+  background: #141e28;
+  color: inherit;
+  font: inherit;
+}
+.warning {
+  padding: 1rem;
+  border: 1px solid #da7e7666;
+  border-radius: 0.75rem;
+  background: #da7e7612;
+  color: #ffd6d2;
+}
+footer {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+:is(button, input):focus-visible {
+  outline: 2px solid #d3ae7b;
+  outline-offset: 4px;
+}

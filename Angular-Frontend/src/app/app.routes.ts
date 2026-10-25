@@ -58,6 +58,7 @@ export const routes: Routes = [
     path: 'admin/:adminId',
     children: [
       { path: '', component: AdminPanelComponent },
+      { path: 'accounting', loadComponent: () => import('./pages/accounting/accounting.component').then(module => module.AccountingComponent) },
       { path: 'room-types', component: RoomTypeTablePageComponent },
       { path: 'room-types/new', component: RoomTypeFormPageComponent },
       { path: 'room-types/:id/edit', component: RoomTypeFormPageComponent },

@@ -7,6 +7,11 @@ export type BookingStep =
   | 'services'
   | 'checkout'
   | 'payment';
+// El conteo corresponde a fechas y huéspedes concretos. No es el inventario total del tipo.
+export interface RoomTypeAvailability {
+  roomType: RoomTypeListDTO;
+  availableRooms: number;
+}
 export interface BookingStay {
   checkIn: string;
   checkOut: string;
@@ -53,6 +58,16 @@ export interface ReservationPayment {
   paidAt: string;
   operatorName: string;
 }
+export interface ReservationRefund {
+  refundId: number;
+  amount: number;
+  refundMethod: string;
+  reason: string;
+  status: string;
+  notes: string;
+  refundedAt: string;
+  operatorName: string;
+}
 export interface ReservationDetails {
   reservation: ReservationDTO;
   clientId?: number;
@@ -67,10 +82,13 @@ export interface ReservationDetails {
   issuedAt?: string;
   subtotal: number;
   total: number;
+  // Pagado neto: pagos aprobados menos reembolsos aprobados.
   paidTotal: number;
+  refundedTotal: number;
   balance: number;
   charges: ReservationCharge[];
   payments: ReservationPayment[];
+  refunds: ReservationRefund[];
 }
 // Límites de una reserva y del pago simulado: los mismos que BookingService en el backend.
 export const MAX_NIGHTS = 90;

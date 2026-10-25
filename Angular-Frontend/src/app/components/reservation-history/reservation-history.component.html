@@ -22,6 +22,7 @@
     ) {
       <app-reservation-card
         [detail]="detail"
+        (cancellationRequested)="requestCancellation($event)"
         [staff]="staff"
         [guestName]="guestName || detail.reservation.clientName || 'Guest'"
       />

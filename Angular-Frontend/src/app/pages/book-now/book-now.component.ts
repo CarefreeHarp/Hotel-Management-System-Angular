@@ -21,9 +21,9 @@ import {
   BookingStay,
   BookingStep,
   CardPayment,
+  RoomTypeAvailability,
   validStay,
 } from '../../models/booking';
-import { RoomTypeListDTO } from '../../models/dto/room-type-list-dto';
 import { ServiceCatalogDTO } from '../../models/dto/service-catalog-dto';
 import { ReservationService } from '../../services/reservation.service';
 import { ServiceService } from '../../services/service.service';
@@ -70,7 +70,7 @@ export class BookNowComponent {
   step: BookingStep = 'dates';
   stay: BookingStay = { checkIn: '', checkOut: '', guests: 1 };
   draft: BookingDraft | undefined;
-  types: RoomTypeListDTO[] = [];
+  types: RoomTypeAvailability[] = [];
   catalog: ServiceCatalogDTO[] = [];
   quote: BookingQuote | undefined;
   loading = false;

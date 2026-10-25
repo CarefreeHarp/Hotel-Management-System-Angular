@@ -90,6 +90,12 @@
                 {{ detail.paidTotal | currency: "COP" : "symbol" : "1.0-2" }}
               </dd>
             </div>
+            @if (detail.refundedTotal > 0) {
+              <div class="paid-amount">
+                <dt>Refunded:</dt>
+                <dd>{{ detail.refundedTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+              </div>
+            }
           </dl>
         </div>
         <dl class="stay-details">
@@ -166,8 +172,9 @@
         </div>
       }
       <button appButton type="button" (click)="openDetails()">Details</button>
-      @if (!staff) {
-        <button appButton type="button">Book again</button>
+      @if (!staff && detail.reservation.status !== "CANCELLED") {
+        <button appButton type="button">Modify</button>
+        <button appButton variant="danger" type="button" (click)="requestCancellation()">Cancel</button>
       }
     </footer>
   </article>

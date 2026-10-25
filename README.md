@@ -2,36 +2,51 @@
 
 ![Atlan Suites logo](readme-assets/atlan-suites-logo.jpeg)
 
-Hotel management application built with **Angular 19** and **Spring Boot**. Guests can explore room types and services, book a stay and consult their reservations. Staff manage clients, rooms, services and reservation histories. Payments are simulated and stored in H2. The booking total is the nightly rate × nights plus selected services. An initial payment must be at least COP 100,000 and cannot exceed the booking total.
+Hotel management application built with Angular and Spring Boot. It supports public accommodation and service catalogs, reservations with optional services, simulated card payments and refunds, client reservation history, staff management and administrator reporting.
 
-## Color palette
+## Technology stack
 
-![Atlan Suites color palette](readme-assets/atlan-suites-color-palette.jpeg)
+| Area | Technologies and purpose |
+| --- | --- |
+| Frontend | Angular 19 standalone components, Angular Router, TypeScript 5.7 and SCSS. Client-side rendering, with SSR disabled. |
+| Reactive state | RxJS 7.8 for HTTP composition, route-driven reads and local component events. |
+| Charts | Apache ECharts 6.1.0, imported directly without an Angular wrapper. |
+| Backend | Spring Boot 4.1.0, Java 17+, Spring MVC and constructor-based dependency injection. |
+| Persistence | Spring Data JPA, Hibernate and H2. Lombok generates entity accessors. |
+| Validation | Bean Validation and service-level business rules, with structured API errors. |
+| API documentation | Springdoc OpenAPI 3.1.1 generates the API specification and Swagger UI. |
+| Build tools | Project-local Angular CLI and npm, Maven Wrapper and Make. |
 
 ## Project structure
 
 ```text
-Angular-Frontend/                    Angular frontend
+Angular-Frontend/
   src/app/
-    pages/                          Routed screens and their own components
-    components/                     Shared UI components
-    services/                       Stateless HTTP communication
+    pages/                          Routed pages and their local components
+    components/                     Components shared across pages
+    services/                       HTTP communication
     models/                         TypeScript interfaces and enums
-    app.routes.ts                   Application routes
-  public/                           Runtime images and video
-Springboot-Backend/                 Spring Boot backend
+    utils/                          Shared form and navigation helpers
+    app.routes.ts                   Route definitions and lazy loading
+  public/                           Static runtime assets
+    icons/                          Dashboard metric icons
+    images/                         Application images
+Springboot-Backend/
   src/main/java/com/example/demo/
     controller/                     REST endpoints
-    service/                        Application logic
-    repository/                     Database access with Spring Data JPA
+    service/                        Application logic and transactions
+    repository/                     Spring Data JPA queries
     entities/                       Persistent domain model
-readme-assets/                      Logo, palette, database diagram and its PlantUML source
-README.md
+    dto/                            API read models and reporting aggregates
+    exception/                      Structured API error handling
+  src/main/resources/
+    application.properties          Server, persistence and API configuration
+readme-assets/                      README images and PlantUML diagram source
 ```
 
-## REST architecture
+## Architecture and API contracts
 
-Angular renders the interface and sends HTTP requests. Spring Boot processes them, reads or writes H2, and returns JSON.
+Angular owns rendering and navigation. Its services use `HttpClient` to exchange JSON with Spring Boot. Backend controllers delegate application operations to services, which use repositories for persistence. Transaction boundaries belong to the service layer.
 
 ```mermaid
 flowchart LR
@@ -46,88 +61,96 @@ flowchart LR
     Repositories <--> Database[(H2)]
 ```
 
-## Booking implementation
+Read DTOs and repository projections select the fields needed by each screen instead of returning complete persistence graphs. Java dates use ISO strings in Angular, with date-only values kept as `YYYY-MM-DD`. TypeScript models use explicit enum values matching Java and optional properties for absent data. Strict null checking, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` and Angular strict template checking are enabled.
 
-`BookingService` prepares and creates new bookings (availability, quotes and room allocation). `ReservationService` and its implementation, `ReservationServiceImpl`, query and manage existing reservations (editing, deletion, detailed reads and client history). Both use `ReservationRules` for the existing date, capacity and service-selection rules, without depending on each other. `ReservationBillingService` handles folios, contracted service prices, simulated payment records and financial details. `BookingPaymentValidator` checks the transient card input and reports all rejected fields together. Dependencies are supplied through constructors; these classes use the existing repositories and error responses.
+API resources use paths such as `/clients`, `/rooms` and `/reservations`, without an `/api` prefix. Controllers allow the fixed development origin `http://localhost:4200`. API errors carry `status`, `error`, `message`, `path` and optional `fieldErrors`; shared frontend helpers map field errors and page-loading failures into the interface.
 
-| Service | Operation | Stages |
-| --- | --- | --- |
-| `BookingService` | `listAvailableRoomTypes` | Validate the stay → query available rooms → group by room type. |
-| `BookingService` | `quoteReservation` | Validate dates and capacity → resolve active services → calculate nights and totals. |
-| `BookingService` | `createReservation` | Resolve the client → lock the room type → quote and recheck availability → validate optional payment → save reservation, folio and charges → return details. |
-| `ReservationServiceImpl` | `updateReservation` | Lock the reservation → validate the changes and lock the room type → keep or reassign a room → resolve services → reconcile charges and balance → apply the reservation and folio statuses. |
-| `ReservationServiceImpl` | `deleteReservation` | Lock the reservation → delete payments, charges and folio → delete the reservation. |
-| `ReservationServiceImpl` | `listClientHistory` | Read the client's reservation list → compose each reservation's details. |
-| `ReservationServiceImpl` | `readReservationDetails` | Find the reservation → read its folio, charges and payments → calculate totals and balance. |
+The application currently uses route identifiers as user context rather than authenticated sessions or role guards. Administrator and operator routes organize the interface but do not constitute an authorization boundary. Payments and refunds are simulated, with no external payment gateway.
 
-The room-type lock remains held until the transaction completes, so availability is checked after acquiring it. Editing preserves existing nightly rates when the room type is unchanged and preserves retained service charge snapshots. New charges use current catalog prices. Financial changes and reservation changes commit or roll back together.
+## Angular composition and reactive state
 
-On Angular, `BookNowComponent` reconstructs the draft from query parameters, verifies the prerequisites for the requested step and loads that step's data. Saving is a separate request from those cancellable reads. Card data is sent only in the POST body.
-
-## Angular components
-
-The router chooses the page displayed inside `RouterOutlet`. Each page combines shared components with components used only by that page.
+`AppComponent` contains `RouterOutlet`. Routed pages coordinate data loading and navigation, shared components live under `components/`, and components used by only one page live under that page. Templates and SCSS remain in external files. Only the landing page composes the public header and footer.
 
 ```mermaid
 flowchart TD
     App[AppComponent] --> Outlet[RouterOutlet]
     Outlet --> Pages[Routed pages]
-    Pages --> Shared["Shared components: header, buttons, gallery, history"]
-    Pages --> Local["Page components: booking steps, fields, tables"]
-    Pages --> Services[Angular services]
+    Pages --> Shared[Shared components]
+    Pages --> Local[Page-specific components]
+    Pages --> Services[Angular HTTP services]
     Services --> API[Spring Boot REST API]
 ```
 
-Frontend reactive state uses RxJS Observables and Subjects, consumed through `async`. Component inputs use `@Input`. Outputs expose read-only Observables backed by local Subjects, with `@Output` aliases preserving template event names. The application does not use Angular signals or EventEmitter. Route-dependent detail queries cancel superseded reads with `switchMap`.
+Inputs use `@Input`. Component outputs expose read-only Observables backed by local Subjects through `@Output` aliases. State uses RxJS rather than signals or `EventEmitter`.
 
-## Reading the code
-
-Prefer explicit steps and ordinary loops for selection and totals. Keep framework mechanisms when they solve a concrete problem, and explain their role near the relevant flow. Pages coordinate HTTP calls and navigation, child components present fields or emit user actions, and services handle backend communication. Comments explain decisions and unfamiliar mechanisms rather than narrating each line.
-
-| Construct | Role in this project |
+| Mechanism | Technical decision |
 | --- | --- |
-| Java `Optional`, `orElse` and `orElseThrow` | Represent a query that may find nothing, then choose a fallback or the existing error. |
-| Java `record` and DTO constructors | Group the fields returned to Angular without exposing the full persistence entity. |
-| `@Transactional` and pessimistic locks | Keep reservation and folio changes together and serialize conflicting assignments. |
-| JPQL `SELECT new`, `JOIN` and `LEFT JOIN` | Build a DTO directly from entity fields. `JOIN` follows a relationship, while `LEFT JOIN` also keeps rows whose related record is absent. Long projections list fields in constructor order. |
-| JPQL `NOT EXISTS` and stay dates | Keep a room only when no conflicting reservation exists. Strict `<` and `>` comparisons allow one stay to start on the day another ends. |
-| Angular `@Input`, `@Output` and RxJS `Subject` | Pass data into a child and publish its actions. The child emits through a protected Subject and exposes `asObservable()` for its parent to listen. |
-| RxJS `Observable` and names ending in `$` | Represent values or HTTP results that arrive asynchronously. `pipe` connects the processing steps, and `map` transforms each emitted value. |
-| `switchMap` and `forkJoin` | Cancel superseded reads or wait for several HTTP queries to finish together. |
-| `concatMap` and `exhaustMap` | Keep dependent operations in order or ignore repeated submissions while the current request finishes. Recoverable errors stay inside each action so a later submission still works. |
-| `fromEvent` and `timer` | Listen to browser events and manage delayed actions. Component destruction releases listeners and cancels pending waits. |
-| `BehaviorSubject` and `combineLatest` | Store local selections and recalculate a view when its data or filters change. |
-| `AsyncPipe` and `takeUntilDestroyed` | Subscribe for rendering or component logic and release the subscription with the component. |
+| `switchMap` | Replace stale route-dependent reads and cancel superseded HTTP requests. |
+| `forkJoin` | Combine independent finite HTTP requests. |
+| `concatMap` / `exhaustMap` | Preserve operation order or ignore repeated submissions while an operation is running. |
+| `BehaviorSubject` / `combineLatest` | Combine local selections and loaded data without a global event bus. |
+| `AsyncPipe` / `takeUntilDestroyed` | Release subscriptions with their owning component. |
+| Inner `catchError` | Recover individual requests without terminating a reusable action stream. |
 
-## Navigation
+Booking navigation uses an explicit `step` query parameter. The draft persists across steps, and date changes invalidate dependent selections. Card data is sent in the request body and never placed in the URL, stored or returned. Static files under `public/` are served from the frontend root, for example `/icons/wallet.png`.
 
-Public pages: `/`, `/login`, `/services-catalog`, `/services-catalog/:id` and `/room-types/:id`. Client pages use `/profile?auth=1`, `/profile/edit?auth=1` and `/book-now?auth=1&step=dates`; the URL is the only user context. Staff use `/admin/:adminId` and `/operator/:operatorId`, with no session or role guards. The operator landing route opens their profile with access to clients and reservations.
+## Reservation consistency and billing
 
-Staff reservation management is available at `/admin/:adminId/reservations` and `/operator/:operatorId/reservations`. Both include search, filters, sorting, table/grid views, detail (`/:id`) and editing (`/:id/edit`). Detail and editing share the same layout, dark guest information card and read-only financial history. Staff pages identify their context with “Admin view” or “Operator view”, while client details omit that title. Editing covers dates, guests, room type, services and status; contracted prices and recorded payments are preserved. A pending reservation cannot be changed directly to checked-in. Both the edit form and the backend reject that transition with an error on the status field. Price-changing edits with existing payments require a new total greater than the amount paid; an increased fully paid booking becomes pending. Client views under both staff panels reuse the client reservation cards with enum-status filters and read-only detail navigation, without ratings or Book again. Permanent deletion removes the reservation, folio, charges and payments after confirmation in an in-app dialog warning that the action is irreversible. Cancelling normally preserves that history.
+| Collaborator | Responsibility |
+| --- | --- |
+| `BookingService` | Availability, quotes and creation with physical room allocation. |
+| `ReservationServiceImpl` | Existing reservation reads, edits, cancellation, deletion and client history. |
+| `ReservationRules` | Shared date, capacity and service-selection rules. |
+| `ReservationBillingService` | Folios, historical charge snapshots, simulated payments and refunds. |
+| `BookingPaymentValidator` | Validation of transient card inputs. |
 
-Rooms and services have an independent `activationStatus` (`ACTIVE` / `INACTIVE`). Room physical status and service schedules remain separate. Inactive records cannot be selected for new bookings; management uses Activate/Deactivate instead of deleting them.
+Creation locks the selected room type inside the transaction and rechecks overlapping non-cancelled reservations before assigning a physical room. Availability uses strict overlap boundaries, allowing one stay to begin on another's checkout date. The room count returned by `GET /reservations/available-room-types` is a search snapshot, not an allocation guarantee.
 
-Client 1 (Emma Thompson) has nine demonstration bookings covering every reservation status, unpaid and partial balances, full payments and payments split into three installments. Every demonstration reservation has a folio; confirmed and completed stays include full simulated payments, while pending bookings retain unpaid or partial balances. Room occupancy matches checked-in stays. Demonstration dates are consistent with October 18, 2026; future stays are dated in 2027. Her checked-out stays ATL-2026-0001 and ATL-2026-0013 have ratings, while ATL-2026-0002 is left unrated. Her cancelled booking ATL-2026-0012 had a COP 300,000 card deposit that was refunded in full. The reservation cards still show static stars and Book again, and the cancelled booking still lists that deposit as paid, because refunds and ratings are not yet shown in the interface. Clicking a reservation card or Details opens `/reservation/:id?auth=1`, with stay and guest information, service charges, folio, totals and payment history.
+Edits lock the reservation and the relevant room type. Retained nightly rates and service charges preserve their contracted price snapshots; newly added charges use current catalog prices. Reservation, folio and financial changes commit or roll back together. Rooms and services use `activationStatus` independently of physical room status or service schedules, preserving historical references while excluding inactive options from new bookings.
 
-Every API error returns the same JSON body: `status`, `error`, `message`, `path` and, when specific fields are rejected, `fieldErrors` with one message per field. Bean Validation on the entities and the services' business rules (unique values, existing related records, booking and payment checks) report the rejected fields, and each form shows the message under its field; other errors appear in the form alert, adapted to the HTTP status. General submission and validation alerts appear below the form’s save or submit actions, while field errors remain beside their inputs. Unexpected server errors return 500 without technical details. Booking errors distinguish invalid dates or guests, excessive capacity, unavailable rooms, inactive services and invalid card details. A stay lasts at most 90 nights and can start up to two years ahead; card payments require 13–19 digits, an unexpired MM/YY date and a 3–4 digit security code.
+Cancellation preserves the reservation, folio, prices, charges and payments. In the same locked transaction, approved payments minus existing approved refunds determine the amount to refund. Client cancellation records an approved `CANCELLATION` refund with no operator, method `CARD` and empty notes. Repeated cancellation does not create duplicate refunds. Permanent staff deletion is a separate operation that removes the associated financial records.
 
-The Angular forms apply the same rules and messages before sending (`utils/form-validators.ts` and `utils/form-messages.ts`), so every restriction exists on both sides. Inputs stop at the column length, phone fields accept only digits and a leading +, card fields accept only digits up to their maximum, the booking calendar only offers valid dates and the guest counter stops at 10.
+Net paid is approved payments minus approved refunds. Active reservation balances use contracted totals minus net paid; cancelled reservations retain their historical totals but have no outstanding balance. Billing calculations use Java decimal values, while frontend numeric values are for presentation.
 
-When the main content of a page cannot load, an error screen replaces it inside the same area (public site, `/admin/:adminId` or `/operator/:operatorId`) without changing the URL (`utils/error-page.ts`, `pages/error-page`): 400 for an invalid value in the address, such as `/admin/1/rooms/abc`; 404 for a missing record or an unknown route; 500 when the server fails; and 503 when it cannot be reached. Try again reloads the original address. Form submissions, list actions (delete, activate), login, booking rule errors (4xx) and the landing sections keep their messages on the page.
+## Reporting and Apache ECharts
 
-## Entity–relationship diagram
+Accounting uses **[Apache ECharts 6.1.0](https://echarts.apache.org/handbook/en/basics/import/)** directly. The accounting route is lazy-loaded, keeping its chart code outside the initial application bundle. Only the required pie, line and bar charts, SVG renderer, grid, graphic, tooltip, legend, zoom, toolbox and accessibility modules are registered.
 
-Database model for users, accommodation, reservations, hotel services, folios, payments, refunds and ratings. It matches the JPA entities, and Hibernate creates these tables when the backend starts.
+`accounting-chart-options.ts` converts aggregate DTOs into chart options. `AnalyticsChartComponent` owns the ECharts instance and its lifecycle. It initializes rendering outside Angular's zone, resizes through `ResizeObserver`, honors reduced-motion preferences and disposes the instance and observer on destruction. Tooltips use `richText` rather than HTML. Legends, segment selection and timeline zoom provide interaction; the toolbox restores the view and exports SVG images. Semantic tables expose the same aggregate values without relying on charts.
+
+`GET /accounting?from=2026-01-01&to=2027-12-31` follows `AccountingController → AccountingServiceImpl → AccountingRepository`. `AccountingDashboard` contains only financial totals, status counts, monthly trend points, rankings and stay averages. Database-side aggregation avoids transferring individual reservations or financial movements to Angular.
+
+The service uses a read-only repeatable-read transaction. Timestamp predicates use an inclusive start and exclusive next-day end. H2 `DATE_TRUNC` groups the trend by calendar month, and the service fills missing months with zero. Partial-month counts remain restricted to the requested dates. H2 `DATEDIFF` computes contracted nights.
+
+Financial sums use payment and refund movement dates. Reservation cohorts use creation dates. Status distribution includes pending, confirmed and checked-in reservations, with percentages computed over those three states. Rankings and stay averages exclude cancelled reservations. Service values come from historical folio charge snapshots, and separate correlated sums prevent payment/refund joins from multiplying amounts.
+
+These aggregates are current snapshots over retained records. Net collections are not profit, scheduled nights are not measured occupancy, and deleting records affects later reports.
+
+## Database model
+
+Hibernate maps users, accommodation, reservations, services, folios, payments, refunds and ratings to H2. Payments and refunds belong to a reservation's folio, preserving the original payment records when money is returned. Ratings belong to reservations.
 
 ![Atlan Suites entity–relationship diagram](readme-assets/entity-relationship.png)
 
-`REFUND` records money returned to a client, either because a reservation was cancelled (`CANCELLATION`) or because its total fell below the amount paid (`MODIFICATION`). It belongs to the reservation's folio, like `PAYMENT`, and never changes the payments: the net amount paid is the sum of approved payments minus the sum of approved refunds, and the outstanding balance is the total minus that net amount. An empty `operator_id` means the client requested the refund. `RATING` stores one score from 1 to 5, with an optional comment, per reservation; the client and room type come from the reservation.
+The diagram source is [`entity-relationship.puml`](readme-assets/entity-relationship.puml). It uses PlantUML's built-in layout engine, without Graphviz:
 
-The diagram is generated from [`entity-relationship.puml`](readme-assets/entity-relationship.puml) with PlantUML's built-in layout engine, so Graphviz is not required: `java -jar plantuml.jar -tpng readme-assets/entity-relationship.puml`.
+```bash
+java -jar plantuml.jar -tpng readme-assets/entity-relationship.puml
+```
 
-## Run locally
+The development datasource is `jdbc:h2:file:./data/atlan-suites`, relative to `Springboot-Backend/`, with username `sa` and an empty password. The current `hibernate.ddl-auto=create-drop` configuration recreates the schema for the application lifecycle; the file datasource does not imply durable data across restarts. `DataLoader` supplies demonstration data. The H2 console is exposed at `/h2`.
 
-Requires an Angular 19-compatible Node.js version, npm, a complete JDK 17 or later, and Make. Run each application in a separate terminal:
+## Visual assets
+
+Application assets remain under `Angular-Frontend/public/`. README illustrations and the database diagram source remain under `readme-assets/`.
+
+![Atlan Suites color palette](readme-assets/atlan-suites-color-palette.jpeg)
+
+## Local development and verification
+
+Requirements: an Angular 19-compatible Node.js version, npm, a complete JDK 17 or later and Make. The frontend uses its local CLI, and the backend uses Maven Wrapper.
+
+Run each application in a separate terminal from the repository root:
 
 ```bash
 make -C Springboot-Backend serve
@@ -137,8 +160,16 @@ make -C Springboot-Backend serve
 make -C Angular-Frontend serve
 ```
 
-Use `make check` in each application directory to verify the frontend types/build or backend compilation/packaging. Automated tests are not configured.
+The frontend Makefile installs locked dependencies with `npm ci` when needed. The backend Makefile resolves `JAVA_HOME` from `javac` unless overridden. When `lsof` is available, it detects an existing process using the project's H2 file before starting a second backend instance.
 
-When `lsof` is available, the backend's `make serve` detects an existing process using the project's H2 database and reports it instead of starting a second instance.
+| Command | Verification |
+| --- | --- |
+| `make -C Angular-Frontend check` | TypeScript checking and production build. |
+| `make -C Springboot-Backend check` | Maven clean verification lifecycle, including compilation and packaging. |
 
-[Application](http://localhost:4200) · [Swagger API](http://localhost:8080/swagger-ui/index.html) · [Figma](https://www.figma.com/design/AzKmb3UaMsc4t8JZCZXiL4/AtlanSuites?node-id=0-1)
+Automated tests are not configured. The frontend defaults to port `4200` and the backend to `8080`; `SERVER_PORT` overrides the backend port, while frontend HTTP service URLs currently target `http://localhost:8080`.
+
+- [Application](http://localhost:4200)
+- [Swagger UI](http://localhost:8080/swagger-ui/index.html)
+- [OpenAPI JSON](http://localhost:8080/v3/api-docs)
+- [Figma design](https://www.figma.com/design/AzKmb3UaMsc4t8JZCZXiL4/AtlanSuites?node-id=0-1)

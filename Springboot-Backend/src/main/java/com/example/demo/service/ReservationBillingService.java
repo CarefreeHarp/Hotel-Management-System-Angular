@@ -7,15 +7,18 @@ import com.example.demo.entities.Folio;
 import com.example.demo.entities.FolioItem;
 import com.example.demo.entities.Payment;
 import com.example.demo.entities.Reservation;
+import com.example.demo.entities.Refund;
 import com.example.demo.entities.Room;
 import com.example.demo.entities.Service;
 import com.example.demo.entities.enums.FolioStatus;
 import com.example.demo.entities.enums.PaymentStatus;
 import com.example.demo.entities.enums.ReservationStatus;
+import com.example.demo.entities.enums.RefundReason;
 import com.example.demo.exception.FieldException;
 import com.example.demo.repository.FolioItemRepository;
 import com.example.demo.repository.FolioRepository;
 import com.example.demo.repository.PaymentRepository;
+import com.example.demo.repository.RefundRepository;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -27,19 +30,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-/** Folios, cargos históricos y pagos. Participa en la transacción de la reserva. */
+/** Folios, cargos históricos, pagos y reembolsos. Participa en la transacción de la reserva. */
 @org.springframework.stereotype.Service
 @Transactional
 public class ReservationBillingService {
     private final FolioRepository folioRepository;
     private final FolioItemRepository folioItemRepository;
     private final PaymentRepository paymentRepository;
+    private final RefundRepository refundRepository;
 
     public ReservationBillingService(FolioRepository folioRepository,
-            FolioItemRepository folioItemRepository, PaymentRepository paymentRepository) {
+            FolioItemRepository folioItemRepository, PaymentRepository paymentRepository,
+            RefundRepository refundRepository) {
         this.folioRepository = folioRepository;
         this.folioItemRepository = folioItemRepository;
         this.paymentRepository = paymentRepository;
+        this.refundRepository = refundRepository;
     }
 
     /** Crea los cargos con su precio contratado y registra el pago inicial si existe. */
@@ -115,6 +121,29 @@ public class ReservationBillingService {
         return status;
     }
 
+    /**
+     * Devuelve el pagado neto y cancela el folio bajo el bloqueo de la reserva que
+     * mantiene el servicio coordinador. Repetir o concurrir la cancelación no
+     * duplica importes ya devueltos. No crea folios ni reembolsos de importe cero.
+     */
+    public void cancelFolio(Integer reservationId) {
+        Folio folio = folioRepository.findByReservation_ReservationId(reservationId).orElse(null);
+        if (folio == null) {
+            return;
+        }
+        BigDecimal paid = approvedPaymentsTotal(payments(folio));
+        BigDecimal refunded = approvedRefundsTotal(refunds(folio));
+        BigDecimal remainingRefund = paid.subtract(refunded);
+        if (remainingRefund.signum() > 0) {
+            // La devolución es simulada. Conserva PAYMENT y no requiere datos de tarjeta.
+            refundRepository.save(Refund.builder()
+                    .folio(folio).operator(null).amount(remainingRefund).refundMethod("CARD")
+                    .reason(RefundReason.CANCELLATION).status(PaymentStatus.APPROVED)
+                    .notes("").refundedAt(LocalDateTime.now()).build());
+        }
+        folio.setStatus(FolioStatus.CANCELLED);
+    }
+
     public void deleteFolio(Integer reservationId) {
         Folio folio = folioRepository.findByReservation_ReservationId(reservationId).orElse(null);
         if (folio == null) {
@@ -127,11 +156,12 @@ public class ReservationBillingService {
         folioRepository.flush();
     }
 
-    /** Compone el DTO con los cargos históricos y calcula lo pagado y lo pendiente. */
+    /** Compone el detalle con cargos, pagos y reembolsos. Devuelve pagado neto y saldo cero para reservas canceladas. */
     public ReservationDetailDTO detail(Reservation reservation) {
         Folio folio = folioRepository.findByReservation_ReservationId(reservation.getReservationId()).orElse(null);
         List<FolioItem> charges = charges(folio);
         List<Payment> payments = payments(folio);
+        List<Refund> refunds = refunds(folio);
         long nights = ChronoUnit.DAYS.between(reservation.getCheckInDate(), reservation.getCheckOutDate());
         // Las reservas de demostración sin folio aún toman sus cargos de los servicios asociados.
         BigDecimal servicesTotal = BigDecimal.ZERO;
@@ -148,14 +178,19 @@ public class ReservationBillingService {
             }
         }
         BigDecimal total = stayTotal(reservation, reservation.getNightlyPrice()).add(servicesTotal);
-        BigDecimal paid = BigDecimal.ZERO;
+        BigDecimal refunded = approvedRefundsTotal(refunds);
+        BigDecimal paid = approvedPaymentsTotal(payments).subtract(refunded);
         List<ReservationDetailDTO.PaymentView> paymentViews = new ArrayList<>();
         for (Payment payment : payments) {
-            if (payment.getStatus() == PaymentStatus.APPROVED) {
-                paid = paid.add(payment.getAmount());
-            }
             paymentViews.add(paymentView(payment));
         }
+        List<ReservationDetailDTO.RefundView> refundViews = new ArrayList<>();
+        for (Refund refund : refunds) {
+            refundViews.add(refundView(refund));
+        }
+        // Cancelar conserva el total contratado como historial, pero ya no exige pagar la estancia.
+        BigDecimal balance = reservation.getStatus() == ReservationStatus.CANCELLED
+                ? BigDecimal.ZERO : total.subtract(paid);
         Room room = reservation.getRoom();
         return new ReservationDetailDTO(ReservationDTO.from(reservation),
                 reservation.getClient() == null ? null : reservation.getClient().getClientId(),
@@ -163,8 +198,8 @@ public class ReservationBillingService {
                 room == null ? null : room.getRoomType().getMaxCapacity(),
                 reservation.getCreatedAt(), reservation.getNightlyPrice(), nights,
                 folio == null ? null : folio.getFolioId(), folio == null ? null : folio.getStatus().name(),
-                folio == null ? null : folio.getIssuedAt(), total, total, paid, total.subtract(paid),
-                chargeViews, paymentViews,
+                folio == null ? null : folio.getIssuedAt(), total, total, paid, refunded, balance,
+                chargeViews, paymentViews, refundViews,
                 room == null ? null : room.getRoomType().getMainPhoto());
     }
 
@@ -197,6 +232,40 @@ public class ReservationBillingService {
     private List<Payment> payments(Folio folio) {
         return folio == null ? List.of()
                 : paymentRepository.findByFolio_FolioIdOrderByPaidAtAsc(folio.getFolioId());
+    }
+
+    private List<Refund> refunds(Folio folio) {
+        return folio == null ? List.of()
+                : refundRepository.findByFolio_FolioIdOrderByRefundedAtAsc(folio.getFolioId());
+    }
+
+    /** Solo las operaciones aprobadas afectan el dinero recibido o devuelto. */
+    private BigDecimal approvedPaymentsTotal(List<Payment> payments) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (Payment payment : payments) {
+            if (payment.getStatus() == PaymentStatus.APPROVED) {
+                total = total.add(payment.getAmount());
+            }
+        }
+        return total;
+    }
+
+    private BigDecimal approvedRefundsTotal(List<Refund> refunds) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (Refund refund : refunds) {
+            if (refund.getStatus() == PaymentStatus.APPROVED) {
+                total = total.add(refund.getAmount());
+            }
+        }
+        return total;
+    }
+
+    private ReservationDetailDTO.RefundView refundView(Refund refund) {
+        String operatorName = refund.getOperator() == null ? "Client self-service"
+                : refund.getOperator().getName() + " " + refund.getOperator().getLastName();
+        return new ReservationDetailDTO.RefundView(refund.getRefundId(), refund.getAmount(),
+                refund.getRefundMethod(), refund.getReason().name(), refund.getStatus().name(),
+                refund.getNotes() == null ? "" : refund.getNotes(), refund.getRefundedAt(), operatorName);
     }
 
     private BigDecimal stayTotal(Reservation reservation, BigDecimal nightlyPrice) {

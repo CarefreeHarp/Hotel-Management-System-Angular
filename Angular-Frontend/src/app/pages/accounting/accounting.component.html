@@ -1,0 +1,253 @@
+<app-admin-header />
+<main class="accounting-page">
+  <header class="page-heading">
+    <div>
+      <h1>Accounting &amp; insights</h1>
+    </div>
+  </header>
+  <form
+    class="filters"
+    #filters="ngForm"
+    (ngSubmit)="applyFilters()"
+    aria-label="Reporting period"
+  >
+    <label
+      >From<input
+        type="date"
+        name="from"
+        [(ngModel)]="from"
+        [max]="to"
+        required
+    /></label>
+    <label
+      >To<input type="date" name="to" [(ngModel)]="to" [min]="from" required
+    /></label>
+    <button appButton type="submit" [disabled]="!filters.valid || from > to">
+      Apply period <span aria-hidden="true">↗</span>
+    </button>
+  </form>
+  @if (state$ | async; as state) {
+    @if (state.loading) {
+      <app-skeleton
+        variant="detail"
+        label="Loading accounting and reservation statistics…"
+      />
+    } @else if (state.error) {
+      <section class="error-notice" role="alert">
+        <h2>Data is unavailable</h2>
+        <p>{{ state.error }}</p>
+        <button appButton type="button" (click)="retry()">Try again</button>
+      </section>
+    } @else {
+      @if (state.data; as data) {
+        <p class="period-caption">
+          Reporting period:
+          <strong
+            >{{ data.from | date: "MMM d, y" }} –
+            {{ data.to | date: "MMM d, y" }}</strong
+          >
+        </p>
+        @if (state.reservationCount === 0) {
+          <p class="basis-note" role="status">
+            No bookings were created in this period. Financial totals use
+            payment and refund dates.
+          </p>
+        }
+        <app-accounting-overview [financial]="data.financial" />
+        <section class="stays-panel" aria-labelledby="stays-title">
+          <h2 id="stays-title" class="sr-only">Stay statistics</h2>
+          <dl class="stay-metrics">
+            <div>
+              <dt>
+                <img
+                  src="/icons/nights.png"
+                  alt=""
+                  width="28"
+                  height="28"
+                />Average stay
+              </dt>
+              <dd>
+                {{ data.stays.averageNights | number: "1.0-1" }}
+                <small>nights</small>
+              </dd>
+            </div>
+            <div>
+              <dt>
+                <img
+                  src="/icons/guests.png"
+                  alt=""
+                  width="28"
+                  height="28"
+                />Average guests per reservation
+              </dt>
+              <dd>
+                {{ data.stays.averageGuests | number: "1.0-1" }}
+              </dd>
+            </div>
+          </dl>
+        </section>
+        @if (state.charts; as charts) {
+          <div class="chart-grid">
+            <section class="panel status-panel" aria-labelledby="status-title">
+              <header>
+                <h2 id="status-title">Reservation status</h2>
+              </header>
+              <app-analytics-chart
+                [options]="charts.statuses"
+                label="Reservation counts by current status. Use the legend to show or hide a status."
+              />
+              <details>
+                <summary>View counts &amp; percentages</summary>
+                <div class="table-scroll">
+                  <table>
+                    <caption class="sr-only">
+                      Reservation status distribution
+                    </caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">Status</th>
+                        <th scope="col">Reservations</th>
+                        <th scope="col">Share</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (item of data.statuses; track item.status) {
+                        <tr>
+                          <th scope="row">{{ statusLabel(item.status) }}</th>
+                          <td>{{ item.reservations }}</td>
+                          <td>{{ item.percentage | number: "1.0-1" }}%</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            </section>
+            <section class="panel trend-panel" aria-labelledby="trend-title">
+              <header>
+                <h2 id="trend-title">Reservation trends</h2>
+              </header>
+              <app-analytics-chart
+                [options]="charts.trend"
+                label="Created reservations over time, with zoom and a range slider."
+              />
+              <details>
+                <summary>View period totals</summary>
+                <div class="table-scroll">
+                  <table>
+                    <caption class="sr-only">
+                      Created reservation totals
+                    </caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">Period starts</th>
+                        <th scope="col">Reservations</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (item of data.trend; track item.date) {
+                        <tr>
+                          <th scope="row">
+                            {{ item.date | date: "MMM d, y" }}
+                          </th>
+                          <td>{{ item.reservations }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            </section>
+            <section class="panel" aria-labelledby="rooms-title">
+              <header>
+                <h2 id="rooms-title">Most booked room types</h2>
+              </header>
+              @if (data.roomTypes.length > 0) {
+                <app-analytics-chart
+                  [options]="charts.roomTypes"
+                  label="Room types ranked by reservations and contracted nights. Toggle either series using the legend."
+                />
+                <details>
+                  <summary>View room type ranking</summary>
+                  <div class="table-scroll">
+                    <table>
+                      <caption class="sr-only">
+                        Room type ranking
+                      </caption>
+                      <thead>
+                        <tr>
+                          <th scope="col">Room type</th>
+                          <th scope="col">Bookings</th>
+                          <th scope="col">Nights</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (item of data.roomTypes; track item.name) {
+                          <tr>
+                            <th scope="row">{{ item.name }}</th>
+                            <td>{{ item.reservations }}</td>
+                            <td>{{ item.nights }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              } @else {
+                <p class="empty">
+                  No non-cancelled reservations in this period.
+                </p>
+              }
+            </section>
+            <section class="panel" aria-labelledby="services-title">
+              <header>
+                <h2 id="services-title">Most contracted services</h2>
+              </header>
+              @if (data.services.length > 0) {
+                <app-analytics-chart
+                  [options]="charts.services"
+                  label="Services ranked by units contracted."
+                />
+                <details>
+                  <summary>View units &amp; contracted value</summary>
+                  <div class="table-scroll">
+                    <table>
+                      <caption class="sr-only">
+                        Service quantities and historical charge value
+                      </caption>
+                      <thead>
+                        <tr>
+                          <th scope="col">Service concept</th>
+                          <th scope="col">Units</th>
+                          <th scope="col">Charge value</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (item of data.services; track item.name) {
+                          <tr>
+                            <th scope="row">{{ item.name }}</th>
+                            <td>{{ item.quantity }}</td>
+                            <td>
+                              {{
+                                item.value
+                                  | currency: "COP" : "symbol" : "1.0-2"
+                              }}
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              } @else {
+                <p class="empty">
+                  No contracted service charges in this period.
+                </p>
+              }
+            </section>
+          </div>
+        }
+      }
+    }
+  }
+</main>

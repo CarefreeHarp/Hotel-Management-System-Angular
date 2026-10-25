@@ -1,0 +1,48 @@
+@if (financial; as summary) {
+  <section class="metrics" aria-label="Financial summary in Colombian pesos">
+    <article>
+      <p>
+        <img
+          src="/icons/credit_card_check.png"
+          alt=""
+          width="28"
+          height="28"
+        />Approved payments
+      </p>
+      <strong>{{
+        summary.payments | currency: "COP" : "symbol" : "1.0-2"
+      }}</strong>
+    </article>
+    <article>
+      <p>
+        <img src="/icons/refund.png" alt="" width="28" height="28" />Approved
+        refunds
+      </p>
+      <strong>{{
+        summary.refunds | currency: "COP" : "symbol" : "1.0-2"
+      }}</strong>
+    </article>
+    <article class="net">
+      <p>
+        <img src="/icons/wallet.png" alt="" width="28" height="28" />Net
+        collected
+      </p>
+      <strong>{{
+        summary.netCollected | currency: "COP" : "symbol" : "1.0-2"
+      }}</strong>
+    </article>
+    <article>
+      <p>
+        <img
+          src="/icons/pending_money.png"
+          alt=""
+          width="28"
+          height="28"
+        />Outstanding balance
+      </p>
+      <strong>{{
+        summary.outstanding | currency: "COP" : "symbol" : "1.0-2"
+      }}</strong>
+    </article>
+  </section>
+}

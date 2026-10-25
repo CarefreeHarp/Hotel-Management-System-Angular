@@ -1,6 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { ReservationDetails } from '../../models/booking';
 import { basePath } from '../../utils/base-path';
@@ -22,6 +23,17 @@ export class ReservationCardComponent {
   @Input({ required: true }) detail: ReservationDetails | undefined;
   @Input({ required: true }) guestName: string = '';
   @Input() staff = false;
+  private readonly cancellationRequestedSubject = new Subject<number>();
+  @Output() readonly cancellationRequested = this.cancellationRequestedSubject.asObservable();
+
+  /** Solicita confirmación al perfil. La tarjeta no modifica ni elimina la reserva. */
+  requestCancellation(): void {
+    if (this.staff || !this.detail || this.detail.reservation.status === 'CANCELLED') {
+      return;
+    }
+    this.cancellationRequestedSubject.next(this.detail.reservation.reservationId);
+  }
+
   readonly stars = [1, 2, 3, 4, 5];
   selectedRating = 0;
   openDetails(event?: MouseEvent): void {

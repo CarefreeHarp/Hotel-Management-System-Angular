@@ -1,0 +1,54 @@
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+article {
+  padding: 1.15rem 1.25rem;
+  border: 1px solid #d9dedc;
+  border-radius: 0.6rem;
+  background: #fff;
+  color: #263d43;
+}
+.net {
+  background: #152e30;
+  border-color: #152e30;
+  color: #fff;
+}
+.net p {
+  color: #cedbd5;
+}
+p {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;  margin: 0 0 0.75rem;
+  color: #58656b;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+strong {
+  display: block;
+  font-size: clamp(1.3rem, 2vw, 2rem);
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1100px) {
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+img {
+  flex-shrink: 0;
+  object-fit: contain;
+}
+// El icono negro necesita contraste sobre la tarjeta oscura de cobro neto.
+.net img {
+  filter: brightness(0) invert(1);
+}
