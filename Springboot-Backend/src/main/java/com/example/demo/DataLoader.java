@@ -6,6 +6,8 @@ import com.example.demo.entities.Folio;
 import com.example.demo.entities.FolioItem;
 import com.example.demo.entities.Operator;
 import com.example.demo.entities.Payment;
+import com.example.demo.entities.Rating;
+import com.example.demo.entities.Refund;
 import com.example.demo.entities.Reservation;
 import com.example.demo.entities.Room;
 import com.example.demo.entities.RoomType;
@@ -13,9 +15,11 @@ import com.example.demo.entities.Service;
 import com.example.demo.entities.enums.ActivationStatus;
 import com.example.demo.entities.enums.FolioStatus;
 import com.example.demo.entities.enums.PaymentStatus;
+import com.example.demo.entities.enums.RefundReason;
 import com.example.demo.entities.enums.ReservationStatus;
 import com.example.demo.entities.enums.RoomStatus;
 import com.example.demo.repository.ClientRepository;
+import com.example.demo.repository.FolioRepository;
 import com.example.demo.repository.ReservationRepository;
 import com.example.demo.repository.RoomRepository;
 import com.example.demo.repository.RoomTypeRepository;
@@ -24,6 +28,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +54,9 @@ public class DataLoader implements CommandLineRunner {
 
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @Autowired
+    private FolioRepository folioRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -362,7 +370,7 @@ public class DataLoader implements CommandLineRunner {
 
         // Casos de demostración coherentes con el 18 de octubre de 2026.
         // Cada reserva tiene folio. Las confirmadas y estancias realizadas tienen pagos completos.
-        saveReservation("ATL-2026-0001", "emma.thompson@example.com", 101,
+        Reservation emmaJuneStay = saveReservation("ATL-2026-0001", "emma.thompson@example.com", 101,
                 LocalDate.of(2026, 6, 2), LocalDate.of(2026, 6, 5), 2, ReservationStatus.CHECKED_OUT,
                 List.of("breakfast-buffet", "laundry-service"), new BigDecimal("825000"));
         saveReservation("ATL-2026-0002", "emma.thompson@example.com", 103,
@@ -397,13 +405,20 @@ public class DataLoader implements CommandLineRunner {
         saveReservation("ATL-2026-0011", "emma.thompson@example.com", 108,
                 LocalDate.of(2027, 6, 5), LocalDate.of(2027, 6, 9), 2, ReservationStatus.PENDING,
                 List.of("signature-spa", "private-jacuzzi"), new BigDecimal("300000"));
-        saveReservation("ATL-2026-0012", "emma.thompson@example.com", 109,
+        // Emma pagó un anticipo con tarjeta antes de cancelar; el reembolso se lo devuelve completo.
+        Reservation emmaCancelled = saveReservation("ATL-2026-0012", "emma.thompson@example.com", 109,
                 LocalDate.of(2027, 8, 10), LocalDate.of(2027, 8, 12), 4, ReservationStatus.CANCELLED,
-                List.of());
-        saveReservation("ATL-2026-0013", "emma.thompson@example.com", 101,
+                List.of(), new BigDecimal("300000"));
+        Reservation emmaAugustStay = saveReservation("ATL-2026-0013", "emma.thompson@example.com", 101,
                 LocalDate.of(2026, 8, 3), LocalDate.of(2026, 8, 6), 2, ReservationStatus.CHECKED_OUT,
                 List.of("breakfast-buffet", "laundry-service"),
                 new BigDecimal("200000"), new BigDecimal("300000"), new BigDecimal("325000"));
+
+        // Dos estadías terminadas de Emma tienen calificación; ATL-2026-0002 queda sin calificar.
+        saveRating(emmaJuneStay, 5, "Quiet room, spotless bathroom and a generous breakfast buffet.");
+        saveRating(emmaAugustStay, 4, "Comfortable stay. The laundry service took longer than expected.");
+        saveRefund(emmaCancelled, new BigDecimal("300000"), "CARD", RefundReason.CANCELLATION,
+                LocalDateTime.of(2026, 10, 10, 15, 30), "Reservation cancelled by the guest. Deposit refunded in full.");
     }
 
     /** Guarda un tipo de habitación creado mediante su builder. */
@@ -445,7 +460,7 @@ public class DataLoader implements CommandLineRunner {
     }
 
     /** Guarda una reserva con la tarifa vigente del tipo de habitación y sus servicios. */
-    private void saveReservation(String code, String clientEmail, Integer roomNumber, LocalDate checkIn,
+    private Reservation saveReservation(String code, String clientEmail, Integer roomNumber, LocalDate checkIn,
             LocalDate checkOut, Integer guestCount, ReservationStatus status, List<String> serviceUrlNames,
             BigDecimal... paymentAmounts) {
         Room room = roomRepository.findByNumber(roomNumber).get();
@@ -467,6 +482,31 @@ public class DataLoader implements CommandLineRunner {
                 .services(services)
                 .build());
         saveReservationFolio(reservation, paymentAmounts);
+        return reservation;
+    }
+
+    /** Guarda la calificación de una estadía terminada, hecha el día siguiente a la salida. */
+    private void saveRating(Reservation reservation, Integer score, String comment) {
+        entityManager.persist(Rating.builder()
+                .reservation(reservation)
+                .score(score)
+                .comment(comment)
+                .createdAt(reservation.getCheckOutDate().plusDays(1).atTime(9, 0))
+                .build());
+    }
+
+    /** Guarda un reembolso aprobado sobre el folio de la reserva, pedido por el cliente (sin operador). */
+    private void saveRefund(Reservation reservation, BigDecimal amount, String refundMethod, RefundReason reason,
+            LocalDateTime refundedAt, String notes) {
+        entityManager.persist(Refund.builder()
+                .folio(folioRepository.findByReservation_ReservationId(reservation.getReservationId()).get())
+                .amount(amount)
+                .refundMethod(refundMethod)
+                .reason(reason)
+                .status(PaymentStatus.APPROVED)
+                .notes(notes)
+                .refundedAt(refundedAt)
+                .build());
     }
 
     /** Crea folios y pagos de demostración conservando las cuotas explícitas y los precios contratados. */

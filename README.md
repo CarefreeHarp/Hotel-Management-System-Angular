@@ -25,7 +25,7 @@ Springboot-Backend/                 Spring Boot backend
     service/                        Application logic
     repository/                     Database access with Spring Data JPA
     entities/                       Persistent domain model
-readme-assets/                      Logo, palette and database diagram
+readme-assets/                      Logo, palette, database diagram and its PlantUML source
 README.md
 ```
 
@@ -107,7 +107,7 @@ Staff reservation management is available at `/admin/:adminId/reservations` and 
 
 Rooms and services have an independent `activationStatus` (`ACTIVE` / `INACTIVE`). Room physical status and service schedules remain separate. Inactive records cannot be selected for new bookings; management uses Activate/Deactivate instead of deleting them.
 
-Client 1 (Emma Thompson) has nine demonstration bookings covering every reservation status, unpaid and partial balances, full payments and payments split into three installments. Every demonstration reservation has a folio; confirmed and completed stays include full simulated payments, while pending bookings retain unpaid or partial balances. Room occupancy matches checked-in stays. Demonstration dates are consistent with October 18, 2026; future stays are dated in 2027. Ratings and Book again are visual only. Clicking a reservation card or Details opens `/reservation/:id?auth=1`, with stay and guest information, service charges, folio, totals and payment history.
+Client 1 (Emma Thompson) has nine demonstration bookings covering every reservation status, unpaid and partial balances, full payments and payments split into three installments. Every demonstration reservation has a folio; confirmed and completed stays include full simulated payments, while pending bookings retain unpaid or partial balances. Room occupancy matches checked-in stays. Demonstration dates are consistent with October 18, 2026; future stays are dated in 2027. Her checked-out stays ATL-2026-0001 and ATL-2026-0013 have ratings, while ATL-2026-0002 is left unrated. Her cancelled booking ATL-2026-0012 had a COP 300,000 card deposit that was refunded in full. The reservation cards still show static stars and Book again, and the cancelled booking still lists that deposit as paid, because refunds and ratings are not yet shown in the interface. Clicking a reservation card or Details opens `/reservation/:id?auth=1`, with stay and guest information, service charges, folio, totals and payment history.
 
 Every API error returns the same JSON body: `status`, `error`, `message`, `path` and, when specific fields are rejected, `fieldErrors` with one message per field. Bean Validation on the entities and the services' business rules (unique values, existing related records, booking and payment checks) report the rejected fields, and each form shows the message under its field; other errors appear in the form alert, adapted to the HTTP status. General submission and validation alerts appear below the form’s save or submit actions, while field errors remain beside their inputs. Unexpected server errors return 500 without technical details. Booking errors distinguish invalid dates or guests, excessive capacity, unavailable rooms, inactive services and invalid card details. A stay lasts at most 90 nights and can start up to two years ahead; card payments require 13–19 digits, an unexpired MM/YY date and a 3–4 digit security code.
 
@@ -117,9 +117,13 @@ When the main content of a page cannot load, an error screen replaces it inside 
 
 ## Entity–relationship diagram
 
-Reference model for users, accommodation, reservations, hotel services, folios and payments.
+Database model for users, accommodation, reservations, hotel services, folios, payments, refunds and ratings. It matches the JPA entities, and Hibernate creates these tables when the backend starts.
 
 ![Atlan Suites entity–relationship diagram](readme-assets/entity-relationship.png)
+
+`REFUND` records money returned to a client, either because a reservation was cancelled (`CANCELLATION`) or because its total fell below the amount paid (`MODIFICATION`). It belongs to the reservation's folio, like `PAYMENT`, and never changes the payments: the net amount paid is the sum of approved payments minus the sum of approved refunds, and the outstanding balance is the total minus that net amount. An empty `operator_id` means the client requested the refund. `RATING` stores one score from 1 to 5, with an optional comment, per reservation; the client and room type come from the reservation.
+
+The diagram is generated from [`entity-relationship.puml`](readme-assets/entity-relationship.puml) with PlantUML's built-in layout engine, so Graphviz is not required: `java -jar plantuml.jar -tpng readme-assets/entity-relationship.puml`.
 
 ## Run locally
 
