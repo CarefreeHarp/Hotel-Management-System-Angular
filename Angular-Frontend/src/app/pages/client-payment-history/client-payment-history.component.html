@@ -1,0 +1,80 @@
+<app-header [solid]="true" />
+<main class="catalog-page">
+  <div class="catalog-page__container">
+    @if (isLoading) {
+      <app-skeleton variant="detail" label="Loading payments and refunds…" />
+    } @else if (client) {
+      <app-page-heading
+        eyebrow="My account"
+        title="Payments & refunds"
+        [description]="'Financial activity for ' + client.name + ' ' + client.lastName + '. Most recent first.'"
+      >
+        <a appButton variant="secondary" routerLink="/profile" [queryParams]="authParams">
+          Back to my reservations
+        </a>
+      </app-page-heading>
+
+      <section class="summary" aria-label="Approved transaction totals">
+        <div class="summary-card">
+          <p>Total paid</p>
+          <strong>{{ totalPaid | currency: "COP" : "symbol" : "1.0-2" }}</strong>
+        </div>
+        <div class="summary-card">
+          <p>Total refunded</p>
+          <strong>{{ totalRefunded | currency: "COP" : "symbol" : "1.0-2" }}</strong>
+        </div>
+        <div class="summary-card summary-card--net">
+          <p>Net paid</p>
+          <strong>{{ netPaid | currency: "COP" : "symbol" : "1.0-2" }}</strong>
+        </div>
+      </section>
+      <p class="summary-note">Totals include approved transactions from all your reservations.</p>
+
+      <section class="history" aria-labelledby="movements-title">
+        <div class="history-heading">
+          <h2 id="movements-title">Transaction history</h2>
+          <span>{{ filteredMovements.length }} {{ filteredMovements.length === 1 ? 'record' : 'records' }}</span>
+        </div>
+        <nav class="filters" aria-label="Transaction filters">
+          <button appButton variant="secondary" type="button" [attr.aria-pressed]="selectedFilter === 'all'"
+            (click)="selectedFilter = 'all'">All</button>
+          <button appButton variant="secondary" type="button" [attr.aria-pressed]="selectedFilter === 'payment'"
+            (click)="selectedFilter = 'payment'">Payments</button>
+          <button appButton variant="secondary" type="button" [attr.aria-pressed]="selectedFilter === 'refund'"
+            (click)="selectedFilter = 'refund'">Refunds</button>
+        </nav>
+
+        <div class="movement-list">
+          @for (movement of filteredMovements; track movement.key) {
+            <article class="movement" [class.movement--refund]="movement.kind === 'refund'">
+              <div class="movement-main">
+                <span class="movement-kind">{{ movement.kind === 'payment' ? 'Payment' : 'Refund' }}</span>
+                <h3>{{ movement.amount | currency: "COP" : "symbol" : "1.0-2" }}</h3>
+                <p>
+                  <time [attr.datetime]="movement.date">{{ movement.date | date: "medium" }}</time>
+                  <span aria-hidden="true"> · </span>{{ movement.method }}
+                  <span aria-hidden="true"> · </span>{{ movement.status }}
+                </p>
+              </div>
+              <div class="movement-detail">
+                <a [routerLink]="['/reservation', movement.reservationId]" [queryParams]="authParams">
+                  {{ movement.reservationCode }}
+                </a>
+                @if (movement.reason; as reason) {
+                  <span>{{ reasonLabel(reason) }}</span>
+                }
+                @if (movement.operatorName) {
+                  <span>Processed by {{ movement.operatorName }}</span>
+                }
+              </div>
+            </article>
+          } @empty {
+            <p class="empty-state">
+              {{ selectedFilter === 'all' ? 'No payments or refunds yet.' : selectedFilter === 'payment' ? 'No payments found.' : 'No refunds found.' }}
+            </p>
+          }
+        </div>
+      </section>
+    }
+  </div>
+</main>
