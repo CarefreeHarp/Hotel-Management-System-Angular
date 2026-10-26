@@ -7,7 +7,7 @@
       <app-page-heading
         eyebrow="My account"
         title="Payments & refunds"
-        [description]="'Financial activity for ' + client.name + ' ' + client.lastName + '. Most recent first.'"
+        description="Your payments and refunds."
       >
         <a appButton variant="secondary" routerLink="/profile" [queryParams]="authParams">
           Back to my reservations
@@ -16,19 +16,18 @@
 
       <section class="summary" aria-label="Approved transaction totals">
         <div class="summary-card">
-          <p>Total paid</p>
+          <p><img src="/icons/credit_card_check.png" alt="" width="24" height="24" />Total paid</p>
           <strong>{{ totalPaid | currency: "COP" : "symbol" : "1.0-2" }}</strong>
         </div>
         <div class="summary-card">
-          <p>Total refunded</p>
+          <p><img src="/icons/refund.png" alt="" width="24" height="24" />Total refunded</p>
           <strong>{{ totalRefunded | currency: "COP" : "symbol" : "1.0-2" }}</strong>
         </div>
         <div class="summary-card summary-card--net">
-          <p>Net paid</p>
+          <p><img src="/icons/wallet.png" alt="" width="24" height="24" />Net paid</p>
           <strong>{{ netPaid | currency: "COP" : "symbol" : "1.0-2" }}</strong>
         </div>
       </section>
-      <p class="summary-note">Totals include approved transactions from all your reservations.</p>
 
       <section class="history" aria-labelledby="movements-title">
         <div class="history-heading">
@@ -39,16 +38,16 @@
           <button appButton variant="secondary" type="button" [attr.aria-pressed]="selectedFilter === 'all'"
             (click)="selectedFilter = 'all'">All</button>
           <button appButton variant="secondary" type="button" [attr.aria-pressed]="selectedFilter === 'payment'"
-            (click)="selectedFilter = 'payment'">Payments</button>
+            (click)="selectedFilter = 'payment'"><img src="/icons/credit_card_check.png" alt="" width="20" height="20" />Payments</button>
           <button appButton variant="secondary" type="button" [attr.aria-pressed]="selectedFilter === 'refund'"
-            (click)="selectedFilter = 'refund'">Refunds</button>
+            (click)="selectedFilter = 'refund'"><img src="/icons/refund.png" alt="" width="20" height="20" />Refunds</button>
         </nav>
 
         <div class="movement-list">
           @for (movement of filteredMovements; track movement.key) {
             <article class="movement" [class.movement--refund]="movement.kind === 'refund'">
               <div class="movement-main">
-                <span class="movement-kind">{{ movement.kind === 'payment' ? 'Payment' : 'Refund' }}</span>
+                <span class="movement-kind"><img [src]="movement.kind === 'payment' ? '/icons/credit_card_check.png' : '/icons/refund.png'" alt="" width="20" height="20" />{{ movement.kind === 'payment' ? 'Payment' : 'Refund' }}</span>
                 <h3>{{ movement.amount | currency: "COP" : "symbol" : "1.0-2" }}</h3>
                 <p>
                   <time [attr.datetime]="movement.date">{{ movement.date | date: "medium" }}</time>

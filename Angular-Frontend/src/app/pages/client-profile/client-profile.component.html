@@ -9,9 +9,6 @@
         [title]="client.name + ' ' + client.lastName"
         description="Your account details and reservations at Atlan Suites."
         ><div class="profile-actions">
-          <a appButton variant="secondary" routerLink="/profile/payments" [queryParams]="authParams"
-            >Payments &amp; refunds</a
-          >
           <a appButton routerLink="/profile/edit" [queryParams]="authParams"
             >Edit profile</a
           >
@@ -21,6 +18,9 @@
         <p class="saved-alert" role="status">Profile saved successfully.</p>
       }
       <app-client-info [client]="client" />
+      <a class="payments-link" routerLink="/profile/payments" [queryParams]="authParams">
+        Payments &amp; refunds <span aria-hidden="true">→</span>
+      </a>
       @if (errorMessage) {
         <p class="form-alert" role="alert">{{ errorMessage }}</p>
       }

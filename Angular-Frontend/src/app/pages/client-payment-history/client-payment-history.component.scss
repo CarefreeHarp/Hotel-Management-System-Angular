@@ -1,9 +1,18 @@
 @use "../../../styles/staff-detail";
 
+.summary-card img,
+.filters img,
+.movement-kind img {
+  flex-shrink: 0;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(77%) sepia(25%) saturate(632%) hue-rotate(354deg) brightness(90%) contrast(88%);
+}
+
 .summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 .summary-card,
@@ -17,6 +26,9 @@
   padding: 1.3rem 1.5rem;
 
   p {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
     margin: 0 0 0.45rem;
     color: #aab8c3;
     font-size: 0.78rem;
@@ -33,12 +45,6 @@
   background: rgba(184, 140, 90, 0.12);
 
   strong { color: #e0bd8c; }
-}
-
-.summary-note {
-  margin: 0.8rem 0 2rem;
-  color: #9faeb9;
-  font-size: 0.8rem;
 }
 
 .history { padding: 1.5rem; }
@@ -81,6 +87,9 @@
 }
 
 .movement-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   color: #a8c7dc;
   font-size: 0.7rem;
   font-weight: 700;
