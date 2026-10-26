@@ -15,7 +15,7 @@ export interface AdminSection {
   path: string;
 }
 
-// Secciones administrativas. El contexto de operador conserva solo clientes y reservas.
+// Secciones administrativas. El operador tiene su tablero como inicio y conserva solo clientes y reservas.
 export const ADMIN_SECTIONS: AdminSection[] = [
   { label: 'Clients', path: 'clients' },
   { label: 'Reservations', path: 'reservations' },

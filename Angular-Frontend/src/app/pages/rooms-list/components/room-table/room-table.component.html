@@ -44,14 +44,9 @@
                 <span
                   class="status"
                   [class.occupied]="item.status === 'OCCUPIED'"
+                  [class.cleaning]="item.status === 'CLEANING'"
                   [class.maintenance]="item.status === 'MAINTENANCE'"
-                  >{{
-                    item.status === "AVAILABLE"
-                      ? "Available"
-                      : item.status === "OCCUPIED"
-                        ? "Occupied"
-                        : "Maintenance"
-                  }}</span
+                  >{{ statusLabels[item.status] }}</span
                 >
               </td>
               <td data-label="Activation">

@@ -106,10 +106,20 @@ export class ReservationDetailComponent implements OnInit {
     const id = Number(this.route.snapshot.queryParamMap.get('clientId'));
     return this.staff && Number.isSafeInteger(id) && id > 0 ? id : undefined;
   }
+  // El tablero del operario abre el detalle con ?from=front-desk para cobrar y volver.
+  get fromFrontDesk(): boolean {
+    return this.staff && this.route.snapshot.queryParamMap.get('from') === 'front-desk';
+  }
   get backUrl(): string {
     if (this.clientHistoryId !== undefined)
       return `${basePath(this.route)}/clients/${this.clientHistoryId}`;
+    if (this.fromFrontDesk) return basePath(this.route);
     return this.staff ? `${basePath(this.route)}/reservations` : '/profile';
+  }
+  get backLabel(): string {
+    if (this.clientHistoryId !== undefined) return 'Back to client';
+    if (this.fromFrontDesk) return 'Back to front desk';
+    return this.staff ? 'Back to reservations' : 'Back to my reservations';
   }
   get editUrl(): string {
     if (!this.staff) return `/reservation/${this.detail?.reservation.reservationId}/edit`;

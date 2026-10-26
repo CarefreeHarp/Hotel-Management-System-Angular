@@ -2,7 +2,7 @@
 
 ![Atlan Suites logo](readme-assets/atlan-suites-logo.jpeg)
 
-Hotel management application built with Angular and Spring Boot. It supports public accommodation and service catalogs, reservations with optional services, simulated card payments and refunds, client reservation history, staff management and administrator reporting.
+Hotel management application built with Angular and Spring Boot. It supports public accommodation and service catalogs, reservations with optional services, simulated card payments and refunds, client reservation history, staff management, an operator front desk board and administrator reporting.
 
 ## Technology stack
 
@@ -114,7 +114,7 @@ The client profile links to **Payments & refunds**, a chronological view of paym
 
 When an edit reduces the total below net paid, the difference is recorded as an approved `MODIFICATION` refund. Existing `PAYMENT` rows remain unchanged. Previous approved refunds are deducted before calculating a new refund, including a later cancellation. Equal totals do not generate refunds. Fully covered pending reservations become confirmed; a price increase on a fully paid reservation creates an outstanding balance and returns it to pending.
 
-**Add card payment** in the client reservation detail reuses the booking card form. `POST /reservations/{id}/payments?clientId=...` accepts an amount and transient card details, validates the owner and the current balance under the reservation lock, and inserts a new approved `CARD` payment. Cancelled, checked-out and ended reservations cannot receive payments. The usual minimum is COP 100,000; if the remaining balance is smaller, it must be paid in full. Overpayments are rejected. Paying the full balance marks the folio paid and confirms a pending reservation. Card data is neither persisted nor returned. These are simulated operations under the existing URL-based user context, not a payment gateway or authenticated session.
+**Add card payment** in the client reservation detail reuses the booking card form. `POST /reservations/{id}/payments?clientId=...` accepts an amount and transient card details, validates the owner and the current balance under the reservation lock, and inserts a new approved `CARD` payment. Cancelled and checked-out reservations cannot receive payments, nor can pending or confirmed stays whose departure date has arrived. Checked-in guests can pay until check-out, including on the departure day or after an overdue departure. The usual minimum is COP 100,000; if the remaining balance is smaller, it must be paid in full. Overpayments are rejected. Paying the full balance marks the folio paid and confirms a pending reservation. Card data is neither persisted nor returned. These are simulated operations under the existing URL-based user context, not a payment gateway or authenticated session.
 
 An operator can choose **Receive cash payment** on a reservation's detail page. `POST /reservations/{id}/cash-payments?operatorId=...` validates the operator and the current balance under the same reservation lock, then records an approved `CASH` payment with that operator. It applies the same amount limits and accepts the exact remaining balance when below COP 100,000. The API sets the method, status and operator from server-side data; values supplied for those fields in the request body are ignored. Card and cash payments share the folio and reduce one balance. If a later edit or cancellation requires a refund, cash paid is returned as `CASH` first and any remainder as `CARD`, with both methods recorded in `REFUND`.
 
@@ -123,6 +123,29 @@ Backend regression tests run with `./mvnw test` (Windows: `mvnw.cmd test`) again
 Cancellation preserves the reservation, folio, prices, charges and payments. In the same locked transaction, approved payments minus existing approved refunds determine the amount to refund. Client cancellation and staff edits that set the status to `CANCELLED` share the same refund operation. It records an approved `CANCELLATION` refund with no operator, method `CARD` and empty notes. Staff edits retain their existing charge reconciliation before refunding. Repeated cancellation does not create duplicate refunds. Permanent staff deletion is a separate operation that removes the associated financial records.
 
 Net paid is approved payments minus approved refunds. Active reservation balances use contracted totals minus net paid; cancelled reservations retain their historical totals but have no outstanding balance. Billing calculations use Java decimal values, while frontend numeric values are for presentation.
+
+## Operator front desk
+
+After signing in, operators land on the front desk at `/operator/:operatorId`; their profile is at `/operator/:operatorId/profile`. `GET /front-desk` follows `FrontDeskController → FrontDeskServiceImpl → repositories` and returns four lists for the server date in one read-only, repeatable-read transaction:
+
+| List | Contents |
+| --- | --- |
+| Arrivals | Pending and confirmed reservations whose check-in is today or earlier and whose check-out has not arrived. Late arrivals are flagged. |
+| In-house guests | Checked-in reservations, nearest departure first. |
+| Pending departures | Checked-in reservations whose check-out date is today or has passed. |
+| Rooms to prepare | Active rooms in `CLEANING` or `MAINTENANCE`. Rooms assigned to a pending arrival come first. |
+
+Each stay includes its balance, computed like the reservation detail: contracted total minus net paid. The board shows an action only when it should succeed, and the server validates it again:
+
+| Action | Rule | Effect |
+| --- | --- | --- |
+| `PUT /reservations/{id}/check-in` | Confirmed reservation whose stay includes today, with its room `AVAILABLE`. | Reservation `CHECKED_IN`, room `OCCUPIED`. |
+| `PUT /reservations/{id}/check-out` | Checked-in reservation with a zero balance. | Reservation `CHECKED_OUT`, room `CLEANING`. A room in `MAINTENANCE` keeps that status. |
+| `PUT /rooms/{id}/ready` | Room in `CLEANING` or `MAINTENANCE`. | `AVAILABLE`, or `OCCUPIED` while a guest is still checked in. |
+
+Check-in and check-out lock the reservation like the other reservation changes. Rooms being cleaned remain bookable; only `MAINTENANCE` excludes a room from availability. Pending arrivals and departures with a balance link to the reservation detail with `?from=front-desk`, where the operator can receive a cash payment and return to the board. The board reloads after every action, so changes made by other operators appear and stale actions show the server's reason.
+
+The staff reservation form still changes the status manually without touching the room status; administrators adjust rooms from **Rooms** when needed. `DataLoader` adds reservations ATL-2026-0014 to ATL-2026-0019 with dates relative to the startup day, so the board always shows arrivals, in-house guests, departures with and without a balance and a room being cleaned before an arrival. `FrontDeskTest` covers the lists and the three actions.
 
 ## Reporting and Apache ECharts
 

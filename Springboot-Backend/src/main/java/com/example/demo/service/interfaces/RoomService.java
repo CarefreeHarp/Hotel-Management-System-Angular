@@ -25,4 +25,7 @@ public interface RoomService {
     void activate(int roomId);
 
     void deactivate(int roomId);
+
+    /** Termina la limpieza o el mantenimiento. Vuelve a OCCUPIED si tiene un huésped alojado. */
+    void markReady(int roomId);
 }

@@ -91,6 +91,34 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
             """)
     List<ReservationDTO> findAllForList();
 
+    /*
+     * Llegadas del tablero del operario:
+     * 1. Reservas pendientes o confirmadas cuya llegada es hoy o ya pasó.
+     * 2. La salida sigue en el futuro: las atrasadas aparecen hasta que termina su estancia.
+     * 3. Ordena primero las atrasadas y después por número de habitación.
+     */
+    @Query("""
+            SELECT reservation
+            FROM Reservation reservation
+            LEFT JOIN reservation.room room
+            WHERE reservation.status IN (com.example.demo.entities.enums.ReservationStatus.PENDING,
+                                         com.example.demo.entities.enums.ReservationStatus.CONFIRMED)
+              AND reservation.checkInDate <= :today
+              AND reservation.checkOutDate > :today
+            ORDER BY reservation.checkInDate, room.number
+            """)
+    List<Reservation> findArrivals(@Param("today") LocalDate today);
+
+    /* Huéspedes alojados: primero las salidas más próximas y después por número de habitación. */
+    @Query("""
+            SELECT reservation
+            FROM Reservation reservation
+            LEFT JOIN reservation.room room
+            WHERE reservation.status = com.example.demo.entities.enums.ReservationStatus.CHECKED_IN
+            ORDER BY reservation.checkOutDate, room.number
+            """)
+    List<Reservation> findInHouse();
+
     @Modifying
     // Desvincula al cliente y conserva sus reservas.
     @Query("""
@@ -112,4 +140,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
 
     boolean existsByServices_ServiceIdAndStatusNotAndCheckOutDateAfter(
             Integer serviceId, ReservationStatus status, LocalDate date);
+
+    // Indica si la habitación tiene un huésped alojado al terminar su limpieza o mantenimiento.
+    boolean existsByRoom_RoomIdAndStatus(Integer roomId, ReservationStatus status);
 }

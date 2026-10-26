@@ -30,15 +30,7 @@
         </div>
         <div>
           <dt>Physical status</dt>
-          <dd>
-            {{
-              room.status === "AVAILABLE"
-                ? "Available"
-                : room.status === "OCCUPIED"
-                  ? "Occupied"
-                  : "Maintenance"
-            }}
-          </dd>
+          <dd>{{ statusLabels[room.status] }}</dd>
         </div>
         <div>
           <dt>Room type</dt>

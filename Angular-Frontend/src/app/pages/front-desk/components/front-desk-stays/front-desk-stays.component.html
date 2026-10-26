@@ -1,0 +1,135 @@
+<section class="catalog-table" [attr.aria-label]="caption">
+  <div class="table-scroll">
+    <table>
+      <caption class="sr-only">
+        {{ caption }}
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Booking</th>
+          <th scope="col">Room</th>
+          <th scope="col">Stay</th>
+          <th scope="col">Guests</th>
+          <th scope="col">Balance</th>
+          @if (kind !== "in-house") {
+            <th scope="col">Action</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (stay of stays; track stay.reservationId) {
+          <tr>
+            <th scope="row" class="staff-person">
+              <a
+                class="booking-code"
+                [routerLink]="[base, 'reservations', stay.reservationId]"
+                [queryParams]="detailParams"
+                >{{ stay.reservationCode }}</a
+              ><small>{{ stay.guestName ?? "Deleted guest" }}</small>
+            </th>
+            <td data-label="Room">
+              <div>
+                {{
+                  stay.roomNumber !== undefined
+                    ? "Room " + stay.roomNumber
+                    : "Unassigned"
+                }}<small>{{ stay.roomTypeName ?? "—" }}</small>
+                @if (kind === "arrival") {
+                  @let room = roomTag(stay);
+                  <span class="chips"
+                    ><span class="chip {{ room.css }}">{{ room.label }}</span></span
+                  >
+                }
+              </div>
+            </td>
+            <td data-label="Stay">
+              <div>
+                <time [attr.datetime]="stay.checkInDate">{{
+                  stay.checkInDate | date: "MMM d"
+                }}</time>
+                –
+                <time [attr.datetime]="stay.checkOutDate">{{
+                  stay.checkOutDate | date: "MMM d, y"
+                }}</time
+                ><small
+                  >{{ nights(stay) }}
+                  {{ nights(stay) === 1 ? "night" : "nights" }}</small
+                >
+                @if (dateTag(stay); as tag) {
+                  <span class="chips"
+                    ><span class="chip {{ tag.css }}">{{ tag.label }}</span></span
+                  >
+                }
+              </div>
+            </td>
+            <td data-label="Guests">{{ stay.guestCount }}</td>
+            <td data-label="Balance">
+              <div>
+                <span class="balance">{{
+                  stay.balance > 0
+                    ? (stay.balance | currency: "COP" : "symbol" : "1.0-2")
+                    : "Paid"
+                }}</span>
+                @if (kind === "arrival") {
+                  <small>{{
+                    stay.status === "PENDING" ? "Pending confirmation" : "Confirmed"
+                  }}</small>
+                }
+              </div>
+            </td>
+            @if (kind !== "in-house") {
+              <td class="actions-cell">
+                <div class="actions">
+                  @if (kind === "arrival") {
+                    @if (stay.status === "PENDING") {
+                      <a
+                        [routerLink]="[base, 'reservations', stay.reservationId]"
+                        [queryParams]="detailParams"
+                        >{{ stay.balance > 0 ? "Collect payment" : "Review booking"
+                        }}<span class="sr-only"> for {{ stay.reservationCode }}</span></a
+                      >
+                    } @else if (stay.roomStatus === "AVAILABLE") {
+                      <button
+                        type="button"
+                        class="desk-action"
+                        [disabled]="busy"
+                        (click)="checkInSubject.next(stay)"
+                      >
+                        Check in<span class="sr-only"> {{ stay.reservationCode }}</span>
+                      </button>
+                    } @else {
+                      <span class="waiting">Waiting for the room</span>
+                    }
+                  } @else if (stay.balance > 0) {
+                    <a
+                      [routerLink]="[base, 'reservations', stay.reservationId]"
+                      [queryParams]="detailParams"
+                      >Collect balance<span class="sr-only">
+                        for {{ stay.reservationCode }}</span
+                      ></a
+                    >
+                  } @else {
+                    <button
+                      type="button"
+                      class="desk-action"
+                      [disabled]="busy"
+                      (click)="checkOutSubject.next(stay)"
+                    >
+                      Check out<span class="sr-only"> {{ stay.reservationCode }}</span>
+                    </button>
+                  }
+                </div>
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td class="empty" [attr.colspan]="kind === 'in-house' ? 5 : 6">
+              {{ emptyMessage }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -5,6 +5,7 @@ import com.example.demo.dto.RoomListDTO;
 import com.example.demo.entities.Room;
 import com.example.demo.entities.enums.ActivationStatus;
 import com.example.demo.entities.enums.ReservationStatus;
+import com.example.demo.entities.enums.RoomStatus;
 import com.example.demo.exception.FieldException;
 import com.example.demo.repository.ReservationRepository;
 import com.example.demo.repository.RoomRepository;
@@ -97,6 +98,19 @@ public class RoomServiceImpl implements RoomService {
         Room registeredRoom = findById(roomId);
         checkCanDeactivate(roomId);
         registeredRoom.setActivationStatus(ActivationStatus.INACTIVE);
+        roomRepository.save(registeredRoom);
+    }
+
+    @Override
+    public void markReady(int roomId) {
+        Room registeredRoom = findById(roomId);
+        if (registeredRoom.getStatus() != RoomStatus.CLEANING && registeredRoom.getStatus() != RoomStatus.MAINTENANCE) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Room " + registeredRoom.getNumber() + " is not in cleaning or maintenance.");
+        }
+        // Un mantenimiento durante la estancia devuelve la habitación a su huésped.
+        boolean guestInside = reservationRepository.existsByRoom_RoomIdAndStatus(roomId, ReservationStatus.CHECKED_IN);
+        registeredRoom.setStatus(guestInside ? RoomStatus.OCCUPIED : RoomStatus.AVAILABLE);
         roomRepository.save(registeredRoom);
     }
 

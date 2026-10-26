@@ -3,7 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
 import { RoomTypeOptionDTO } from '../../../../models/dto/room-type-option-dto';
 import { ActivationStatus } from '../../../../models/enums/activation-status';
-import { RoomStatus } from '../../../../models/enums/room-status';
+import { ROOM_STATUS_LABELS, RoomStatus } from '../../../../models/enums/room-status';
 import { ROOM_MESSAGES } from '../../../../utils/form-messages';
 
 @Component({
@@ -23,11 +23,8 @@ export class RoomFieldsComponent {
   }>;
   @Input({ required: true }) roomTypes: RoomTypeOptionDTO[] = [];
   @Input() submitted = false;
-  readonly statuses = [
-    RoomStatus.AVAILABLE,
-    RoomStatus.OCCUPIED,
-    RoomStatus.MAINTENANCE,
-  ];
+  readonly statuses = Object.values(RoomStatus);
+  readonly statusLabels = ROOM_STATUS_LABELS;
   protected readonly messages = ROOM_MESSAGES;
   invalid(control: FormControl): boolean {
     return control.invalid && (control.touched || this.submitted);

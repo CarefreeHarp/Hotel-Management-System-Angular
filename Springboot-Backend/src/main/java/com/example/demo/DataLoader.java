@@ -154,13 +154,14 @@ public class DataLoader implements CommandLineRunner {
         saveRoom(109, 1, RoomStatus.AVAILABLE, familySuite);
         saveRoom(110, 1, RoomStatus.AVAILABLE, presidentialSuite);
 
+        // 202 y 204 tienen huéspedes alojados y la 207 se limpia tras una salida de hoy (tablero del operario).
         saveRoom(201, 2, RoomStatus.AVAILABLE, standardRoom);
-        saveRoom(202, 2, RoomStatus.AVAILABLE, deluxeRoom);
+        saveRoom(202, 2, RoomStatus.OCCUPIED, deluxeRoom);
         saveRoom(203, 2, RoomStatus.AVAILABLE, executiveRoom);
-        saveRoom(204, 2, RoomStatus.AVAILABLE, familySuite);
+        saveRoom(204, 2, RoomStatus.OCCUPIED, familySuite);
         saveRoom(205, 2, RoomStatus.MAINTENANCE, presidentialSuite);
         saveRoom(206, 2, RoomStatus.AVAILABLE, standardRoom);
-        saveRoom(207, 2, RoomStatus.AVAILABLE, deluxeRoom);
+        saveRoom(207, 2, RoomStatus.CLEANING, deluxeRoom);
         saveRoom(208, 2, RoomStatus.AVAILABLE, executiveRoom);
         saveRoom(209, 2, RoomStatus.AVAILABLE, familySuite);
         saveRoom(210, 2, RoomStatus.AVAILABLE, presidentialSuite);
@@ -419,6 +420,26 @@ public class DataLoader implements CommandLineRunner {
         saveRating(emmaAugustStay, 4, "Comfortable stay. The laundry service took longer than expected.");
         saveRefund(emmaCancelled, new BigDecimal("300000"), "CARD", RefundReason.CANCELLATION,
                 LocalDateTime.of(2026, 10, 10, 15, 30), "Reservation cancelled by the guest. Deposit refunded in full.");
+
+        // Tablero del operario: fechas relativas al día en que arranca la aplicación, para que
+        // siempre haya llegadas, huéspedes alojados, salidas pendientes y una habitación en limpieza.
+        LocalDate today = LocalDate.now();
+        saveReservation("ATL-2026-0014", "liam.anderson@example.com", 203,
+                today, today.plusDays(3), 2, ReservationStatus.CONFIRMED, List.of("breakfast-buffet"));
+        saveReservation("ATL-2026-0015", "sophia.harris@example.com", 206,
+                today, today.plusDays(2), 2, ReservationStatus.PENDING, List.of(), new BigDecimal("200000"));
+        // Ethan dejó la 207 esta mañana. Lucas llega hoy y espera a que termine la limpieza.
+        saveReservation("ATL-2026-0016", "ethan.walker@example.com", 207,
+                today.minusDays(2), today, 1, ReservationStatus.CHECKED_OUT, List.of());
+        saveReservation("ATL-2026-0017", "lucas.clark@example.com", 207,
+                today, today.plusDays(1), 1, ReservationStatus.CONFIRMED, List.of());
+        saveReservation("ATL-2026-0018", "mia.lewis@example.com", 202,
+                today.minusDays(3), today, 2, ReservationStatus.CHECKED_IN, List.of("room-service"));
+        // Se guarda pendiente para que no se completen sus pagos: los consumos dejan COP 50.000 por cobrar al salir.
+        Reservation jamesStay = saveReservation("ATL-2026-0019", "james.young@example.com", 204,
+                today.minusDays(2), today, 3, ReservationStatus.PENDING,
+                List.of("laundry-service", "in-room-minibar"), new BigDecimal("1180000"));
+        jamesStay.setStatus(ReservationStatus.CHECKED_IN);
     }
 
     /** Guarda un tipo de habitación creado mediante su builder. */

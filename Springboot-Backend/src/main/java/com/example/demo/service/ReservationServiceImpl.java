@@ -9,6 +9,7 @@ import com.example.demo.entities.Room;
 import com.example.demo.entities.RoomType;
 import com.example.demo.entities.Service;
 import com.example.demo.entities.enums.ReservationStatus;
+import com.example.demo.entities.enums.RoomStatus;
 import com.example.demo.exception.FieldException;
 import com.example.demo.repository.ReservationRepository;
 import com.example.demo.repository.OperatorRepository;
@@ -133,8 +134,12 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private void checkPaymentAllowed(Reservation current) {
-        if (current.getStatus() == ReservationStatus.CANCELLED || current.getStatus() == ReservationStatus.CHECKED_OUT
-                || !current.getCheckOutDate().isAfter(LocalDate.now())) {
+        // El huésped alojado salda su cuenta antes del check-out, también el día de salida o con la salida vencida.
+        boolean inHouse = current.getStatus() == ReservationStatus.CHECKED_IN;
+        boolean upcoming = (current.getStatus() == ReservationStatus.PENDING
+                || current.getStatus() == ReservationStatus.CONFIRMED)
+                && current.getCheckOutDate().isAfter(LocalDate.now());
+        if (!inHouse && !upcoming) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Payments are only allowed for upcoming or ongoing reservations.");
         }
     }
@@ -199,6 +204,70 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found."));
         billingService.cancelFolio(id);
         reservation.setStatus(ReservationStatus.CANCELLED);
+    }
+
+    /**
+     * Check-in del tablero del operario. Exige una reserva confirmada cuya estancia
+     * incluya hoy y una habitación lista. El formulario de edición conserva su cambio
+     * manual de estado sin tocar la habitación.
+     */
+    @Override
+    public void checkIn(Integer id) {
+        Reservation reservation = reservationRepository.lockForEditing(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found."));
+        if (reservation.getStatus() == ReservationStatus.PENDING) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Check-in is not allowed while the reservation is pending. Confirm the reservation first.");
+        }
+        if (reservation.getStatus() != ReservationStatus.CONFIRMED) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Only confirmed reservations can be checked in.");
+        }
+        LocalDate today = LocalDate.now();
+        if (reservation.getCheckInDate().isAfter(today) || !reservation.getCheckOutDate().isAfter(today)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Check-in is only allowed between the arrival date and the day before departure.");
+        }
+        Room room = reservation.getRoom();
+        if (room == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "This reservation has no assigned room.");
+        }
+        if (room.getStatus() == RoomStatus.CLEANING) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Room " + room.getNumber() + " is being cleaned. Mark it as ready before checking in.");
+        }
+        if (room.getStatus() == RoomStatus.MAINTENANCE) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Room " + room.getNumber() + " is under maintenance. End the maintenance or move the reservation to another room first.");
+        }
+        if (room.getStatus() == RoomStatus.OCCUPIED) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Room " + room.getNumber() + " is still occupied. Check out the previous guest first.");
+        }
+        room.setStatus(RoomStatus.OCCUPIED);
+        reservation.setStatus(ReservationStatus.CHECKED_IN);
+    }
+
+    /**
+     * Check-out del tablero. Mantiene la regla del formulario: no se registra la
+     * salida con saldo pendiente. La habitación queda en limpieza salvo que esté en
+     * mantenimiento, que tiene prioridad.
+     */
+    @Override
+    public void checkOut(Integer id) {
+        Reservation reservation = reservationRepository.lockForEditing(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found."));
+        if (reservation.getStatus() != ReservationStatus.CHECKED_IN) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Only checked-in reservations can be checked out.");
+        }
+        if (billingService.detail(reservation).balance().signum() > 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Check-out is not allowed while the reservation has an outstanding balance. Settle the balance first.");
+        }
+        reservation.setStatus(ReservationStatus.CHECKED_OUT);
+        Room room = reservation.getRoom();
+        if (room != null && room.getStatus() != RoomStatus.MAINTENANCE) {
+            room.setStatus(RoomStatus.CLEANING);
+        }
     }
 
     /** Bloquea la reserva y elimina primero sus dependencias financieras. */

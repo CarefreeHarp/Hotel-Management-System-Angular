@@ -101,6 +101,18 @@ public class ReservationController {
         reservationService.cancelReservation(id);
     }
 
+    /** Check-in del tablero del operario: también marca la habitación como ocupada. */
+    @PutMapping("/{id}/check-in")
+    public void checkIn(@PathVariable Integer id) {
+        reservationService.checkIn(id);
+    }
+
+    /** Check-out con saldo cero: la habitación pasa a limpieza. */
+    @PutMapping("/{id}/check-out")
+    public void checkOut(@PathVariable Integer id) {
+        reservationService.checkOut(id);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteReservation(@PathVariable Integer id) {
         reservationService.deleteReservation(id);

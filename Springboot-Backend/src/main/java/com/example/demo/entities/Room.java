@@ -54,7 +54,7 @@ public class Room {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @NotNull(message = "Select the room status.")
-    // Estado actual del registro. Restricciones: Obligatorio. Enum AVAILABLE, OCCUPIED o MAINTENANCE.
+    // Estado actual del registro. Restricciones: Obligatorio. Enum AVAILABLE, OCCUPIED, CLEANING o MAINTENANCE.
     private RoomStatus status;
     @ManyToOne(optional = false)
     @JoinColumn(name = "room_type_id", nullable = false)

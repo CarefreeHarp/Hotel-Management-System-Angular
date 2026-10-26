@@ -57,15 +57,7 @@
           aria-describedby="status-error"
         >
           @for (status of statuses; track status) {
-            <option [ngValue]="status">
-              {{
-                status === "AVAILABLE"
-                  ? "Available"
-                  : status === "OCCUPIED"
-                    ? "Occupied"
-                    : "Maintenance"
-              }}
-            </option>
+            <option [ngValue]="status">{{ statusLabels[status] }}</option>
           }
         </select>
         @if (invalid(form.controls.status)) {

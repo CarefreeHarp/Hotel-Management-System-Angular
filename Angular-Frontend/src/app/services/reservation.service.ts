@@ -105,6 +105,14 @@ export class ReservationService {
   cancel(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/cancel`, null);
   }
+  /** El backend también marca la habitación como ocupada. */
+  checkIn(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/check-in`, null);
+  }
+  /** Exige saldo cero y deja la habitación en limpieza. */
+  checkOut(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/check-out`, null);
+  }
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }

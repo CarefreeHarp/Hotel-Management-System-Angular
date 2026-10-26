@@ -1,86 +1,90 @@
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/DataLoader.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/DemoApplication.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/AccountingController.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/AdministratorController.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/ClientController.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/OperatorController.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/PanelController.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/ReservationController.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/RoomController.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/RoomTypeController.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/ServiceController.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/AccountingDashboard.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/AdministratorDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/AdministratorListDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/BookingQuote.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ClientDetailDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ClientListDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/OperatorDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ReservationDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ReservationDetailDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomDetailDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomListDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomTypeAvailability.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomTypeDetailDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomTypeListDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomTypeOptionDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ServiceCatalogDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ServiceDetailDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ServiceListDTO.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Administrator.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Client.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Folio.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/FolioItem.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Operator.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Payment.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Rating.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Refund.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Reservation.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Room.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/RoomType.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Service.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/ActivationStatus.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/FolioStatus.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/PaymentStatus.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/RefundReason.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/ReservationStatus.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/RoomStatus.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/exception/ApiError.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/exception/ApiExceptionHandler.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/exception/FieldException.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/AccountingRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/AdministratorRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/ClientRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/FolioItemRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/FolioRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/OperatorRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/PaymentRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/RatingRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/RefundRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/ReservationRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/RoomRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/RoomTypeRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/ServiceRepository.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/AccountingServiceImpl.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/AdministratorServiceImpl.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/BookingPaymentValidator.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/BookingService.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/ClientServiceImpl.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/OperatorServiceImpl.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/PanelServiceImpl.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/ReservationBillingService.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/ReservationRules.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/ReservationServiceImpl.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/RoomServiceImpl.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/RoomTypeServiceImpl.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/ServiceServiceImpl.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/AccountingService.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/AdministratorService.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/ClientService.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/OperatorService.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/PanelService.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/ReservationService.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/RoomService.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/RoomTypeService.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/ServiceService.java
-/home/legion-5080-monster/Documents/JAVERIANA/2026/Semestre6/Web/Proyecto/Angular-Version/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/validation/OnCreate.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/DataLoader.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/DemoApplication.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/AccountingController.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/AdministratorController.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/ClientController.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/FrontDeskController.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/OperatorController.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/PanelController.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/ReservationController.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/RoomController.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/RoomTypeController.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/controller/ServiceController.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/AccountingDashboard.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/AdministratorDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/AdministratorListDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/BookingQuote.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ClientDetailDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ClientListDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/FrontDeskBoard.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/OperatorDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ReservationDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ReservationDetailDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomDetailDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomListDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomTypeAvailability.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomTypeDetailDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomTypeListDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/RoomTypeOptionDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ServiceCatalogDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ServiceDetailDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/dto/ServiceListDTO.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Administrator.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Client.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Folio.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/FolioItem.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Operator.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Payment.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Rating.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Refund.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Reservation.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Room.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/RoomType.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/Service.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/ActivationStatus.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/FolioStatus.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/PaymentStatus.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/RefundReason.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/ReservationStatus.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/entities/enums/RoomStatus.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/exception/ApiError.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/exception/ApiExceptionHandler.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/exception/FieldException.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/AccountingRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/AdministratorRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/ClientRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/FolioItemRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/FolioRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/OperatorRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/PaymentRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/RatingRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/RefundRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/ReservationRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/RoomRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/RoomTypeRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/repository/ServiceRepository.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/AccountingServiceImpl.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/AdministratorServiceImpl.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/BookingPaymentValidator.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/BookingService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/ClientServiceImpl.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/FrontDeskServiceImpl.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/OperatorServiceImpl.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/PanelServiceImpl.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/ReservationBillingService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/ReservationRules.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/ReservationServiceImpl.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/RoomServiceImpl.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/RoomTypeServiceImpl.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/ServiceServiceImpl.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/AccountingService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/AdministratorService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/ClientService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/FrontDeskService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/OperatorService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/PanelService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/ReservationService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/RoomService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/RoomTypeService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/service/interfaces/ServiceService.java
+/home/guillermo/Documentos/Universidad/SextoSemestre/Web/proyecto web/Hotel-Management-System-Angular/Springboot-Backend/src/main/java/com/example/demo/validation/OnCreate.java

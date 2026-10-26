@@ -10,13 +10,7 @@
       variant="secondary"
       [routerLink]="backUrl"
       [queryParams]="authParams"
-      >{{
-        clientHistoryId !== undefined
-          ? "Back to client"
-          : staff
-            ? "Back to reservations"
-            : "Back to my reservations"
-      }}</a
+      >{{ backLabel }}</a
     >
     @if (isLoading) {
       <app-skeleton variant="detail" label="Loading reservation…" />

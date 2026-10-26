@@ -42,4 +42,8 @@ export class RoomService {
   deactivate(id: number): Observable<void> {
     return this.http.put<void>(this.apiUrl + '/' + id + '/deactivate', null);
   }
+  // Termina la limpieza o el mantenimiento. El backend decide si queda disponible u ocupada.
+  markReady(id: number): Observable<void> {
+    return this.http.put<void>(this.apiUrl + '/' + id + '/ready', null);
+  }
 }

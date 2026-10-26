@@ -103,10 +103,12 @@ export function canModifyReservation(detail: ReservationDetails): boolean {
   return (reservation.status === 'PENDING' || reservation.status === 'CONFIRMED') &&
     reservation.checkInDate >= localDate() && reservation.roomTypeId !== undefined;
 }
+// Un huésped alojado puede saldar su cuenta hasta el check-out, también el día de salida.
 export function canPayReservation(detail: ReservationDetails): boolean {
   const reservation = detail.reservation;
-  return detail.balance > 0 && reservation.status !== 'CANCELLED' &&
-    reservation.status !== 'CHECKED_OUT' && reservation.checkOutDate > localDate();
+  const upcoming = (reservation.status === 'PENDING' || reservation.status === 'CONFIRMED') &&
+    reservation.checkOutDate > localDate();
+  return detail.balance > 0 && (reservation.status === 'CHECKED_IN' || upcoming);
 }
 // El calendario usa la fecha local. Convertirla a UTC podría desplazar el día.
 export function localDate(date = new Date()): string {

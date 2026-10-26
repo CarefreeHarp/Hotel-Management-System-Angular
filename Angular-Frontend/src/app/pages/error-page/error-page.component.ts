@@ -67,7 +67,7 @@ export class ErrorPageComponent {
   readonly home = basePath(this.route);
   readonly staffArea = this.home !== '/';
   readonly homeLabel = this.route.snapshot.paramMap.has('operatorId')
-    ? 'Go to my profile'
+    ? 'Go to the front desk'
     : this.staffArea
       ? 'Go to the admin panel'
       : 'Go to the home page';

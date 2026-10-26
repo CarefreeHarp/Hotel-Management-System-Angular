@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subject } from 'rxjs';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 import { RoomListDTO } from '../../../../models/dto/room-list-dto';
+import { ROOM_STATUS_LABELS } from '../../../../models/enums/room-status';
 import { basePath } from '../../../../utils/base-path';
 
 @Component({
@@ -13,6 +14,7 @@ import { basePath } from '../../../../utils/base-path';
 })
 export class RoomTableComponent {
   @Input({ required: true }) rooms: RoomListDTO[] = [];
+  readonly statusLabels = ROOM_STATUS_LABELS;
   // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly toggleActivationSubject = new Subject<RoomListDTO>();
   @Output('toggleActivation') readonly toggleActivation$ = this.toggleActivationSubject.asObservable();

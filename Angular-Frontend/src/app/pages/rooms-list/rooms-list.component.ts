@@ -12,6 +12,7 @@ import {
 } from '../../components/record-cards/record-cards.component';
 import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { RoomListDTO } from '../../models/dto/room-list-dto';
+import { ROOM_STATUS_LABELS, RoomStatus } from '../../models/enums/room-status';
 import { RoomService } from '../../services/room.service';
 import { apiErrorMessage } from '../../utils/api-error';
 import { basePath } from '../../utils/base-path';
@@ -95,11 +96,10 @@ export class RoomsListComponent {
       {
         key: 'status',
         label: 'Physical status',
-        options: [
-          { value: 'AVAILABLE', label: 'Available' },
-          { value: 'OCCUPIED', label: 'Occupied' },
-          { value: 'MAINTENANCE', label: 'Maintenance' },
-        ],
+        options: Object.values(RoomStatus).map((value) => ({
+          value,
+          label: ROOM_STATUS_LABELS[value],
+        })),
       },
     ];
   }
@@ -152,7 +152,7 @@ export class RoomsListComponent {
       details: [
         { label: 'Type', value: item.roomTypeName },
         { label: 'Floor', value: String(item.floor) },
-        { label: 'Physical status', value: item.status },
+        { label: 'Physical status', value: ROOM_STATUS_LABELS[item.status] },
         { label: 'Activation', value: item.activationStatus },
       ],
       activationStatus: item.activationStatus,

@@ -1,0 +1,60 @@
+<section class="catalog-table" aria-label="Rooms in cleaning or maintenance">
+  <div class="table-scroll">
+    <table>
+      <caption class="sr-only">
+        Rooms in cleaning or maintenance
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Room</th>
+          <th scope="col">Room type</th>
+          <th scope="col">Status</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (room of rooms; track room.roomId) {
+          <tr>
+            <th scope="row" class="staff-person">
+              <span class="room-number">Room {{ room.number }}</span
+              ><small>Floor {{ room.floor }}</small>
+            </th>
+            <td data-label="Room type">{{ room.roomTypeName }}</td>
+            <td data-label="Status">
+              <span class="chips">
+                <span
+                  class="chip"
+                  [class.chip--cleaning]="room.status === 'CLEANING'"
+                  [class.chip--maintenance]="room.status === 'MAINTENANCE'"
+                  >{{ statusLabels[room.status] }}</span
+                >
+                @if (room.arrivalExpected) {
+                  <span class="chip chip--alert">Guest arriving</span>
+                }
+              </span>
+            </td>
+            <td class="actions-cell">
+              <div class="actions">
+                <button
+                  type="button"
+                  class="desk-action"
+                  [disabled]="busy"
+                  (click)="markReadySubject.next(room)"
+                >
+                  {{ room.status === "CLEANING" ? "Mark as clean" : "End maintenance"
+                  }}<span class="sr-only"> for room {{ room.number }}</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="empty" colspan="4">
+              Every room is ready. Nothing is waiting for cleaning or maintenance.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

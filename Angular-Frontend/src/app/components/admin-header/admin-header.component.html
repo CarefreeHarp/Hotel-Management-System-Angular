@@ -2,7 +2,7 @@
   <a
     class="admin-brand"
     [routerLink]="base"
-    [attr.aria-label]="isOperator ? 'Operator profile' : 'Admin panel'"
+    [attr.aria-label]="isOperator ? 'Front desk' : 'Admin panel'"
   >
     <img
       loading="eager"
@@ -33,7 +33,7 @@
           routerLinkActive="is-active"
           [routerLinkActiveOptions]="{ exact: true }"
           (click)="closeMenu()"
-          >My profile</a
+          >Front desk</a
         >
       } @else {
         <a
@@ -54,25 +54,23 @@
       }
     </nav>
 
-    @if (!isOperator) {
-      <a
-        class="admin-link"
-        [routerLink]="isOperator ? [base] : [base, 'administrators', adminId]"
-        (click)="closeMenu()"
-        ><svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          width="17"
-          height="17"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.7"
-        >
-          <circle cx="12" cy="8" r="4" />
-          <path d="M4 22v-3a8 8 0 0 1 16 0v3" /></svg
-        >My profile</a
+    <a
+      class="admin-link"
+      [routerLink]="isOperator ? [base, 'profile'] : [base, 'administrators', adminId]"
+      (click)="closeMenu()"
+      ><svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        width="17"
+        height="17"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.7"
       >
-    }
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 22v-3a8 8 0 0 1 16 0v3" /></svg
+      >My profile</a
+    >
     <button class="admin-link admin-logout" type="button" (click)="logout()">
       <svg
         aria-hidden="true"
