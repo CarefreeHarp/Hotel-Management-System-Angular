@@ -8,9 +8,14 @@
         eyebrow="My profile"
         [title]="client.name + ' ' + client.lastName"
         description="Your account details and reservations at Atlan Suites."
-        ><a appButton routerLink="/profile/edit" [queryParams]="authParams"
-          >Edit profile</a
-        ></app-page-heading
+        ><div class="profile-actions">
+          <a appButton variant="secondary" routerLink="/profile/payments" [queryParams]="authParams"
+            >Payments &amp; refunds</a
+          >
+          <a appButton routerLink="/profile/edit" [queryParams]="authParams"
+            >Edit profile</a
+          >
+        </div></app-page-heading
       >
       @if (saved) {
         <p class="saved-alert" role="status">Profile saved successfully.</p>

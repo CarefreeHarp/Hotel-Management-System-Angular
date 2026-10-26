@@ -108,6 +108,18 @@ Creation locks the selected room type inside the transaction and rechecks overla
 
 Edits lock the reservation and the relevant room type. Retained nightly rates and service charges preserve their contracted price snapshots; newly added charges use current catalog prices. Reservation, folio and financial changes commit or roll back together. Rooms and services use `activationStatus` independently of physical room status or service schedules, preserving historical references while excluding inactive options from new bookings.
 
+Clients can open **Modify** from their reservation history or **Edit reservation** from its detail. `PUT /reservations/{id}/client?clientId=...` changes dates, guest count and selected services for pending or confirmed reservations whose arrival has not passed. The server checks the reservation owner and preserves the booked room type, owner and status; payment coverage can update the status automatically. Availability and capacity are checked again when saving. The form previews the new total and any refund.
+
+The client profile links to **Payments & refunds**, a chronological view of payments and refunds across all of that client's reservations. It uses the existing `GET /reservations/history?clientId=...` response, shows approved paid, refunded and net totals, and lets the client filter the records or open the related reservation. The current URL-based client context applies to this page as well.
+
+When an edit reduces the total below net paid, the difference is recorded as an approved `MODIFICATION` refund. Existing `PAYMENT` rows remain unchanged. Previous approved refunds are deducted before calculating a new refund, including a later cancellation. Equal totals do not generate refunds. Fully covered pending reservations become confirmed; a price increase on a fully paid reservation creates an outstanding balance and returns it to pending.
+
+**Add card payment** in the client reservation detail reuses the booking card form. `POST /reservations/{id}/payments?clientId=...` accepts an amount and transient card details, validates the owner and the current balance under the reservation lock, and inserts a new approved `CARD` payment. Cancelled, checked-out and ended reservations cannot receive payments. The usual minimum is COP 100,000; if the remaining balance is smaller, it must be paid in full. Overpayments are rejected. Paying the full balance marks the folio paid and confirms a pending reservation. Card data is neither persisted nor returned. These are simulated operations under the existing URL-based user context, not a payment gateway or authenticated session.
+
+An operator can choose **Receive cash payment** on a reservation's detail page. `POST /reservations/{id}/cash-payments?operatorId=...` validates the operator and the current balance under the same reservation lock, then records an approved `CASH` payment with that operator. It applies the same amount limits and accepts the exact remaining balance when below COP 100,000. The API sets the method, status and operator from server-side data; values supplied for those fields in the request body are ignored. Card and cash payments share the folio and reduce one balance. If a later edit or cancellation requires a refund, cash paid is returned as `CASH` first and any remainder as `CARD`, with both methods recorded in `REFUND`.
+
+Backend regression tests run with `./mvnw test` (Windows: `mvnw.cmd test`) against H2 in memory, independently of the local database file.
+
 Cancellation preserves the reservation, folio, prices, charges and payments. In the same locked transaction, approved payments minus existing approved refunds determine the amount to refund. Client cancellation and staff edits that set the status to `CANCELLED` share the same refund operation. It records an approved `CANCELLATION` refund with no operator, method `CARD` and empty notes. Staff edits retain their existing charge reconciliation before refunding. Repeated cancellation does not create duplicate refunds. Permanent staff deletion is a separate operation that removes the associated financial records.
 
 Net paid is approved payments minus approved refunds. Active reservation balances use contracted totals minus net paid; cancelled reservations retain their historical totals but have no outstanding balance. Billing calculations use Java decimal values, while frontend numeric values are for presentation.
@@ -167,7 +179,7 @@ The frontend Makefile installs locked dependencies with `npm ci` when needed. Th
 | `make -C Angular-Frontend check` | TypeScript checking and production build. |
 | `make -C Springboot-Backend check` | Maven clean verification lifecycle, including compilation and packaging. |
 
-Automated tests are not configured. The frontend defaults to port `4200` and the backend to `8080`; `SERVER_PORT` overrides the backend port, while frontend HTTP service URLs currently target `http://localhost:8080`.
+The backend has JUnit/H2 regression tests; the frontend has no automated test script yet. The frontend defaults to port `4200` and the backend to `8080`; `SERVER_PORT` overrides the backend port, while frontend HTTP service URLs currently target `http://localhost:8080`.
 
 - [Application](http://localhost:4200)
 - [Swagger UI](http://localhost:8080/swagger-ui/index.html)

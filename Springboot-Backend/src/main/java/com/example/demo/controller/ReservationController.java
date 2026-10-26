@@ -5,6 +5,7 @@ import com.example.demo.dto.ReservationDTO;
 import com.example.demo.dto.ReservationDetailDTO;
 import com.example.demo.dto.RoomTypeAvailability;
 import com.example.demo.entities.Reservation;
+import com.example.demo.entities.Payment;
 import com.example.demo.service.BookingService;
 import com.example.demo.service.interfaces.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,6 +72,27 @@ public class ReservationController {
     @PutMapping("/{id}")
     public void updateReservation(@PathVariable Integer id, @Valid @RequestBody Reservation reservation) {
         reservationService.updateReservation(id, reservation);
+    }
+
+    /** El cuerpo solo aporta fechas, huéspedes y servicios. La pertenencia se comprueba en el servicio. */
+    @PutMapping("/{id}/client")
+    public void updateClientReservation(@PathVariable Integer id, @RequestParam Integer clientId,
+            @Valid @RequestBody Reservation reservation) {
+        reservationService.updateClientReservation(id, clientId, reservation);
+    }
+
+    /** Reutiliza la validación de tarjeta de la reserva inicial y fuerza CARD en el servidor. */
+    @PostMapping("/{id}/payments")
+    public ReservationDetailDTO addClientPayment(@PathVariable Integer id, @RequestParam Integer clientId,
+            @RequestBody Payment payment) {
+        return reservationService.addClientPayment(id, clientId, payment);
+    }
+
+    /** El servidor fija CASH y relaciona el pago con el operario de la URL. */
+    @PostMapping("/{id}/cash-payments")
+    public ReservationDetailDTO addOperatorCashPayment(@PathVariable Integer id, @RequestParam Integer operatorId,
+            @RequestBody Payment payment) {
+        return reservationService.addOperatorCashPayment(id, operatorId, payment);
     }
 
     /** Cancela y reembolsa los pagos pendientes de devolución sin borrar el historial financiero. */

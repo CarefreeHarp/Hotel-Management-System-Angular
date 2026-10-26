@@ -81,6 +81,26 @@ export class ReservationService {
       status: draft.status,
     });
   }
+  /** La edición del cliente no envía estado, precios ni tipo de habitación. */
+  updateForClient(id: number, clientId: number, draft: BookingDraft): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/client`, {
+      checkInDate: draft.checkIn,
+      checkOutDate: draft.checkOut,
+      guestCount: draft.guests,
+      services: draft.serviceIds.map((serviceId) => ({ serviceId })),
+    }, { params: { clientId } });
+  }
+  addPayment(id: number, clientId: number, payment: CardPayment): Observable<ReservationDetails> {
+    return this.http.post<ReservationDetails>(`${this.apiUrl}/${id}/payments`, payment, {
+      params: { clientId },
+    });
+  }
+  /** El operador envía solo el importe; el backend registra CASH y su identificador. */
+  addCashPayment(id: number, operatorId: number, amount: number): Observable<ReservationDetails> {
+    return this.http.post<ReservationDetails>(`${this.apiUrl}/${id}/cash-payments`, { amount }, {
+      params: { operatorId },
+    });
+  }
   /** Cancela sin reenviar la estancia ni recalcular sus precios históricos. */
   cancel(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/cancel`, null);

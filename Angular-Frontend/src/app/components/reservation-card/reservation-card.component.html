@@ -172,8 +172,10 @@
         </div>
       }
       <button appButton type="button" (click)="openDetails()">Details</button>
+      @if (canModify) {
+        <button appButton type="button" (click)="modify()">Modify</button>
+      }
       @if (!staff && detail.reservation.status !== "CANCELLED") {
-        <button appButton type="button">Modify</button>
         <button appButton variant="danger" type="button" (click)="requestCancellation()">Cancel</button>
       }
     </footer>

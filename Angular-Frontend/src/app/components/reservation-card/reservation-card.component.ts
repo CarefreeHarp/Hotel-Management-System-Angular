@@ -3,7 +3,7 @@ import { Component, inject, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
-import { ReservationDetails } from '../../models/booking';
+import { canModifyReservation, ReservationDetails } from '../../models/booking';
 import { basePath } from '../../utils/base-path';
 import { clientQuery } from '../../utils/client-query';
 import { ButtonComponent } from '../button/button.component';
@@ -36,6 +36,15 @@ export class ReservationCardComponent {
 
   readonly stars = [1, 2, 3, 4, 5];
   selectedRating = 0;
+  get canModify(): boolean {
+    return !this.staff && !!this.detail && canModifyReservation(this.detail);
+  }
+  modify(): void {
+    if (!this.detail || !this.canModify) return;
+    void this.router.navigate(['/reservation', this.detail.reservation.reservationId, 'edit'], {
+      queryParams: this.authParams,
+    });
+  }
   openDetails(event?: MouseEvent): void {
     if (!this.detail) return;
     if (event?.target instanceof Element && event.target.closest('button, a'))
