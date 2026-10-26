@@ -56,15 +56,9 @@ export class ClientPaymentHistoryComponent implements OnInit {
   movements: MoneyMovement[] = [];
   selectedFilter: MovementFilter = 'all';
   isLoading = true;
-  totalPaid = 0;
-  totalRefunded = 0;
 
   get authParams(): { auth?: number } {
     return clientQuery(this.route);
-  }
-
-  get netPaid(): number {
-    return this.totalPaid - this.totalRefunded;
   }
 
   get filteredMovements(): MoneyMovement[] {
@@ -106,8 +100,6 @@ export class ClientPaymentHistoryComponent implements OnInit {
 
   private buildHistory(history: ReservationDetails[]): void {
     const movements: MoneyMovement[] = [];
-    let paidCents = 0;
-    let refundedCents = 0;
 
     for (const detail of history) {
       const reservationId = detail.reservation.reservationId;
@@ -125,7 +117,6 @@ export class ClientPaymentHistoryComponent implements OnInit {
           status: payment.status,
           operatorName: payment.operatorName,
         });
-        if (payment.status === 'APPROVED') paidCents += Math.round(payment.amount * 100);
       }
       for (const refund of detail.refunds) {
         movements.push({
@@ -141,7 +132,6 @@ export class ClientPaymentHistoryComponent implements OnInit {
           operatorName: refund.operatorName,
           reason: refund.reason,
         });
-        if (refund.status === 'APPROVED') refundedCents += Math.round(refund.amount * 100);
       }
     }
 
@@ -149,8 +139,5 @@ export class ClientPaymentHistoryComponent implements OnInit {
     this.movements = movements.sort((first, second) =>
       second.date.localeCompare(first.date) || second.id - first.id,
     );
-    // Se suman centavos para evitar pequeñas diferencias al sumar decimales de JavaScript.
-    this.totalPaid = paidCents / 100;
-    this.totalRefunded = refundedCents / 100;
   }
 }

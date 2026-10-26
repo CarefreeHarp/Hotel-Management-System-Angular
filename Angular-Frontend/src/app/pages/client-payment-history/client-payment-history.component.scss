@@ -1,6 +1,5 @@
 @use "../../../styles/staff-detail";
 
-.summary-card img,
 .filters img,
 .movement-kind img {
   flex-shrink: 0;
@@ -8,46 +7,12 @@
   filter: brightness(0) saturate(100%) invert(77%) sepia(25%) saturate(632%) hue-rotate(354deg) brightness(90%) contrast(88%);
 }
 
-.summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.summary-card,
 .history {
+  padding: 1.5rem;
   border: 1px solid rgba(221, 232, 239, 0.14);
   border-radius: 0.9rem;
   background: rgba(255, 255, 255, 0.035);
 }
-
-.summary-card {
-  padding: 1.3rem 1.5rem;
-
-  p {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin: 0 0 0.45rem;
-    color: #aab8c3;
-    font-size: 0.78rem;
-  }
-
-  strong {
-    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-    font-variant-numeric: tabular-nums;
-  }
-}
-
-.summary-card--net {
-  border-color: rgba(211, 174, 123, 0.48);
-  background: rgba(184, 140, 90, 0.12);
-
-  strong { color: #e0bd8c; }
-}
-
-.history { padding: 1.5rem; }
 
 .history-heading {
   display: flex;
@@ -131,7 +96,6 @@
 }
 
 @media (max-width: 700px) {
-  .summary { grid-template-columns: 1fr; }
   .movement { flex-direction: column; gap: 0.5rem; }
   .movement-detail { text-align: left; }
 }

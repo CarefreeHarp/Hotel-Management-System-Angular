@@ -14,21 +14,6 @@
         </a>
       </app-page-heading>
 
-      <section class="summary" aria-label="Approved transaction totals">
-        <div class="summary-card">
-          <p><img src="/icons/credit_card_check.png" alt="" width="24" height="24" />Total paid</p>
-          <strong>{{ totalPaid | currency: "COP" : "symbol" : "1.0-2" }}</strong>
-        </div>
-        <div class="summary-card">
-          <p><img src="/icons/refund.png" alt="" width="24" height="24" />Total refunded</p>
-          <strong>{{ totalRefunded | currency: "COP" : "symbol" : "1.0-2" }}</strong>
-        </div>
-        <div class="summary-card summary-card--net">
-          <p><img src="/icons/wallet.png" alt="" width="24" height="24" />Net paid</p>
-          <strong>{{ netPaid | currency: "COP" : "symbol" : "1.0-2" }}</strong>
-        </div>
-      </section>
-
       <section class="history" aria-labelledby="movements-title">
         <div class="history-heading">
           <h2 id="movements-title">Transaction history</h2>
