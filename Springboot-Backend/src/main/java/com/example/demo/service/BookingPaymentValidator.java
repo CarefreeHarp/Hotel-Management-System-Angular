@@ -19,9 +19,35 @@ public class BookingPaymentValidator {
 
     /** Pago simulado: importe permitido y datos de tarjeta con formato válido. Informa todos los campos a la vez. */
     public void validate(Payment payment, BigDecimal total) {
+        validate(payment, total, MIN_PAYMENT);
+    }
+
+    /** El último abono puede ser menor al mínimo habitual para permitir saldar el resto exacto. */
+    public void validateAdditional(Payment payment, BigDecimal balance) {
+        if (balance.signum() <= 0) {
+            throw new FieldException(HttpStatus.CONFLICT, "initialPayment.amount", "This reservation has no outstanding balance.");
+        }
+        // BigDecimal.min devuelve el menor importe sin convertir el dinero a double.
+        validate(payment, balance, MIN_PAYMENT.min(balance));
+    }
+
+    /** Para efectivo solo se valida el importe; no se reciben datos de tarjeta. */
+    public void validateCash(BigDecimal amount, BigDecimal balance) {
+        if (balance.signum() <= 0) {
+            throw new FieldException(HttpStatus.CONFLICT, "amount", "This reservation has no outstanding balance.");
+        }
+        Map<String, String> errors = new LinkedHashMap<>();
+        // El último abono puede cubrir un saldo menor a COP 100.000.
+        validateAmount(amount, balance, MIN_PAYMENT.min(balance), "amount", errors);
+        if (!errors.isEmpty()) {
+            throw new FieldException(HttpStatus.BAD_REQUEST, errors);
+        }
+    }
+
+    private void validate(Payment payment, BigDecimal total, BigDecimal minimum) {
         Map<String, String> errors = new LinkedHashMap<>();
         // Se acumulan los errores para que el usuario pueda corregir toda la tarjeta en un intento.
-        validateAmount(payment, total, errors);
+        validateAmount(payment.getAmount(), total, minimum, "initialPayment.amount", errors);
         validateCardholder(payment, errors);
         validateCardNumber(payment, errors);
         validateExpiry(payment, errors);
@@ -30,18 +56,18 @@ public class BookingPaymentValidator {
             throw new FieldException(HttpStatus.BAD_REQUEST, errors);
     }
 
-    private void validateAmount(Payment payment, BigDecimal total, Map<String, String> errors) {
-        BigDecimal amount = payment.getAmount();
+    private void validateAmount(BigDecimal amount, BigDecimal total, BigDecimal minimum,
+            String field, Map<String, String> errors) {
         if (amount == null)
-            errors.put("initialPayment.amount", "Enter the amount to pay.");
+            errors.put(field, "Enter the amount to pay.");
         // Se ignoran los ceros finales antes de contar los decimales del importe.
         else if (amount.stripTrailingZeros().scale() > 2)
-            errors.put("initialPayment.amount", "The amount can have at most two decimals.");
-        else if (amount.compareTo(MIN_PAYMENT) < 0 || amount.compareTo(total) > 0)
-            errors.put("initialPayment.amount", "Payment must be at least " + cop(MIN_PAYMENT)
+            errors.put(field, "The amount can have at most two decimals.");
+        else if (amount.compareTo(minimum) < 0 || amount.compareTo(total) > 0)
+            errors.put(field, "Payment must be at least " + cop(minimum)
                     + " and cannot exceed the total of " + cop(total) + ".");
         else if (amount.compareTo(MAX_PAYMENT) > 0)
-            errors.put("initialPayment.amount", "A single payment cannot exceed " + cop(MAX_PAYMENT) + ".");
+            errors.put(field, "A single payment cannot exceed " + cop(MAX_PAYMENT) + ".");
     }
 
     private void validateCardholder(Payment payment, Map<String, String> errors) {

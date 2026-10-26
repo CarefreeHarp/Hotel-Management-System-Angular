@@ -3,16 +3,20 @@ package com.example.demo.service;
 import com.example.demo.dto.ReservationDTO;
 import com.example.demo.dto.ReservationDetailDTO;
 import com.example.demo.entities.Reservation;
+import com.example.demo.entities.Payment;
+import com.example.demo.entities.Operator;
 import com.example.demo.entities.Room;
 import com.example.demo.entities.RoomType;
 import com.example.demo.entities.Service;
 import com.example.demo.entities.enums.ReservationStatus;
 import com.example.demo.exception.FieldException;
 import com.example.demo.repository.ReservationRepository;
+import com.example.demo.repository.OperatorRepository;
 import com.example.demo.repository.RoomRepository;
 import com.example.demo.repository.RoomTypeRepository;
 import com.example.demo.service.interfaces.ReservationService;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,15 +39,18 @@ public class ReservationServiceImpl implements ReservationService {
     private final RoomTypeRepository roomTypeRepository;
     private final ReservationRules reservationRules;
     private final ReservationBillingService billingService;
+    private final OperatorRepository operatorRepository;
 
     public ReservationServiceImpl(ReservationRepository reservationRepository,
             RoomRepository roomRepository, RoomTypeRepository roomTypeRepository,
-            ReservationRules reservationRules, ReservationBillingService billingService) {
+            ReservationRules reservationRules, ReservationBillingService billingService,
+            OperatorRepository operatorRepository) {
         this.reservationRepository = reservationRepository;
         this.roomRepository = roomRepository;
         this.roomTypeRepository = roomTypeRepository;
         this.reservationRules = reservationRules;
         this.billingService = billingService;
+        this.operatorRepository = operatorRepository;
     }
 
     @Override
@@ -85,6 +92,64 @@ public class ReservationServiceImpl implements ReservationService {
     public void updateReservation(Integer id, Reservation input) {
         Reservation current = reservationRepository.lockForEditing(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found."));
+        applyUpdate(current, input);
+    }
+
+    /** El cliente modifica solo su estancia y servicios; el tipo y el estado se toman de la reserva guardada. */
+    @Override
+    public void updateClientReservation(Integer id, Integer clientId, Reservation input) {
+        Reservation current = clientReservation(id, clientId);
+        if ((current.getStatus() != ReservationStatus.PENDING && current.getStatus() != ReservationStatus.CONFIRMED)
+                || current.getCheckInDate().isBefore(LocalDate.now())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Only upcoming pending or confirmed reservations can be modified.");
+        }
+        if (current.getRoom() == null) {
+            throw invalid("roomType", "This reservation has no assigned room. Please contact the hotel.");
+        }
+        input.setRoom(current.getRoom());
+        input.setStatus(current.getStatus());
+        applyUpdate(current, input);
+    }
+
+    /** Abono y cambios financieros comparten el bloqueo para no cobrar o devolver sobre un saldo desactualizado. */
+    @Override
+    public ReservationDetailDTO addClientPayment(Integer id, Integer clientId, Payment payment) {
+        Reservation current = clientReservation(id, clientId);
+        checkPaymentAllowed(current);
+        billingService.addCardPayment(current, payment);
+        return billingService.detail(current);
+    }
+
+    /** El operario registra efectivo sobre el mismo saldo que usa el pago del cliente. */
+    @Override
+    public ReservationDetailDTO addOperatorCashPayment(Integer id, Integer operatorId, Payment payment) {
+        Reservation current = reservationRepository.lockForEditing(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found."));
+        Operator operator = operatorRepository.findById(operatorId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Operator not found."));
+        checkPaymentAllowed(current);
+        billingService.addCashPayment(current, operator, payment == null ? null : payment.getAmount());
+        return billingService.detail(current);
+    }
+
+    private void checkPaymentAllowed(Reservation current) {
+        if (current.getStatus() == ReservationStatus.CANCELLED || current.getStatus() == ReservationStatus.CHECKED_OUT
+                || !current.getCheckOutDate().isAfter(LocalDate.now())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payments are only allowed for upcoming or ongoing reservations.");
+        }
+    }
+
+    /** El proyecto identifica al cliente por la URL. Se verifica que coincida con el dueño persistido. */
+    private Reservation clientReservation(Integer id, Integer clientId) {
+        Reservation current = reservationRepository.lockForEditing(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found."));
+        if (current.getClient() == null || !current.getClient().getClientId().equals(clientId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found for this client.");
+        }
+        return current;
+    }
+
+    private void applyUpdate(Reservation current, Reservation input) {
         // Las estancias ya iniciadas o pasadas conservan su llegada. Una llegada nueva
         // no puede ser pasada.
         reservationRules.checkDates(input.getCheckInDate(), input.getCheckOutDate(),

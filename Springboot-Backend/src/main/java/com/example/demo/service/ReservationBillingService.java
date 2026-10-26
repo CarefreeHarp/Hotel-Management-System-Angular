@@ -6,6 +6,7 @@ import com.example.demo.dto.ReservationDetailDTO;
 import com.example.demo.entities.Folio;
 import com.example.demo.entities.FolioItem;
 import com.example.demo.entities.Payment;
+import com.example.demo.entities.Operator;
 import com.example.demo.entities.Reservation;
 import com.example.demo.entities.Refund;
 import com.example.demo.entities.Room;
@@ -20,15 +21,12 @@ import com.example.demo.repository.FolioRepository;
 import com.example.demo.repository.PaymentRepository;
 import com.example.demo.repository.RefundRepository;
 import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 /** Folios, cargos históricos, pagos y reembolsos. Participa en la transacción de la reserva. */
 @org.springframework.stereotype.Service
@@ -38,14 +36,16 @@ public class ReservationBillingService {
     private final FolioItemRepository folioItemRepository;
     private final PaymentRepository paymentRepository;
     private final RefundRepository refundRepository;
+    private final BookingPaymentValidator paymentValidator;
 
     public ReservationBillingService(FolioRepository folioRepository,
             FolioItemRepository folioItemRepository, PaymentRepository paymentRepository,
-            RefundRepository refundRepository) {
+            RefundRepository refundRepository, BookingPaymentValidator paymentValidator) {
         this.folioRepository = folioRepository;
         this.folioItemRepository = folioItemRepository;
         this.paymentRepository = paymentRepository;
         this.refundRepository = refundRepository;
+        this.paymentValidator = paymentValidator;
     }
 
     /** Crea los cargos con su precio contratado y registra el pago inicial si existe. */
@@ -70,7 +70,7 @@ public class ReservationBillingService {
         }
     }
 
-    /** Conserva cargos contratados, comprueba el saldo y reembolsa si la edición cancela la reserva. */
+    /** Conserva precios contratados y devuelve el exceso pagado si el nuevo total disminuye. */
     public ReservationStatus updateFolio(Reservation current, Reservation input,
             BigDecimal nightlyPrice, List<Service> selectedServices, boolean financialChange) {
         ReservationDetailDTO previous = detail(current);
@@ -108,7 +108,7 @@ public class ReservationBillingService {
 
         BigDecimal total = stayTotal(input, nightlyPrice).add(chargesTotal(charges));
         BigDecimal paid = previous.paidTotal();
-        checkBalance(input.getStatus(), total, paid, financialChange);
+        checkBalance(input.getStatus(), total, paid);
         ReservationStatus status = input.getStatus();
         // Si una reserva pagada aumenta de precio, vuelve a quedar pendiente de pago.
         if (financialChange && paid.signum() > 0 && previous.total().compareTo(paid) == 0
@@ -121,6 +121,15 @@ public class ReservationBillingService {
             // La edición del personal comparte la devolución idempotente bajo el bloqueo de la reserva.
             cancelFolio(current.getReservationId());
         } else {
+            // paidTotal ya descuenta devoluciones anteriores: nunca se reembolsa dos veces el mismo dinero.
+            if (total.compareTo(paid) < 0) {
+                saveRefund(folio, paid.subtract(total), RefundReason.MODIFICATION);
+                paid = total;
+            }
+            // Una reducción puede terminar de cubrir una reserva que antes estaba pendiente.
+            if (status == ReservationStatus.PENDING && total.compareTo(paid) == 0) {
+                status = ReservationStatus.CONFIRMED;
+            }
             folio.setStatus(folioStatus(status, total, paid));
         }
         return status;
@@ -140,13 +149,72 @@ public class ReservationBillingService {
         BigDecimal refunded = approvedRefundsTotal(refunds(folio));
         BigDecimal remainingRefund = paid.subtract(refunded);
         if (remainingRefund.signum() > 0) {
-            // La devolución es simulada. Conserva PAYMENT y no requiere datos de tarjeta.
-            refundRepository.save(Refund.builder()
-                    .folio(folio).operator(null).amount(remainingRefund).refundMethod("CARD")
-                    .reason(RefundReason.CANCELLATION).status(PaymentStatus.APPROVED)
-                    .notes("").refundedAt(LocalDateTime.now()).build());
+            saveRefund(folio, remainingRefund, RefundReason.CANCELLATION);
         }
         folio.setStatus(FolioStatus.CANCELLED);
+    }
+
+    /** Registra un abono nuevo; el coordinador mantiene bloqueada la reserva durante toda la operación. */
+    public void addCardPayment(Reservation reservation, Payment input) {
+        ReservationDetailDTO previous = detail(reservation);
+        paymentValidator.validateAdditional(input, previous.balance());
+        // El servidor decide el método y el operario: los campos enviados por el cliente no alteran el registro.
+        savePayment(reservation, previous, input.getAmount(), "CARD", null);
+    }
+
+    /** Un pago presencial usa el mismo saldo y folio; el operario queda en el historial. */
+    public void addCashPayment(Reservation reservation, Operator operator, BigDecimal amount) {
+        ReservationDetailDTO previous = detail(reservation);
+        paymentValidator.validateCash(amount, previous.balance());
+        savePayment(reservation, previous, amount, "CASH", operator);
+    }
+
+    private void savePayment(Reservation reservation, ReservationDetailDTO previous,
+            BigDecimal amount, String method, Operator operator) {
+        Folio folio = folioRepository.findByReservation_ReservationId(reservation.getReservationId()).orElse(null);
+        if (folio == null) {
+            // Las reservas de demostración pueden no tener folio. Se conservan sus servicios al crearlo.
+            createFolio(reservation, null, previous.total());
+            folio = folioRepository.findByReservation_ReservationId(reservation.getReservationId()).orElseThrow();
+        }
+        // Cada abono crea una fila; los pagos y reembolsos anteriores se conservan.
+        paymentRepository.save(Payment.builder().folio(folio).operator(operator).amount(amount)
+                .paymentMethod(method).status(PaymentStatus.APPROVED).paidAt(LocalDateTime.now()).build());
+        BigDecimal paid = previous.paidTotal().add(amount);
+        folio.setStatus(folioStatus(reservation.getStatus(), previous.total(), paid));
+        if (reservation.getStatus() == ReservationStatus.PENDING && previous.total().compareTo(paid) == 0) {
+            reservation.setStatus(ReservationStatus.CONFIRMED);
+        }
+    }
+
+    /** Devuelve primero el efectivo disponible y después lo pagado con tarjeta. */
+    private void saveRefund(Folio folio, BigDecimal amount, RefundReason reason) {
+        BigDecimal cashAvailable = BigDecimal.ZERO;
+        for (Payment payment : payments(folio)) {
+            if (payment.getStatus() == PaymentStatus.APPROVED && "CASH".equals(payment.getPaymentMethod())) {
+                cashAvailable = cashAvailable.add(payment.getAmount());
+            }
+        }
+        for (Refund refund : refunds(folio)) {
+            if (refund.getStatus() == PaymentStatus.APPROVED && "CASH".equals(refund.getRefundMethod())) {
+                cashAvailable = cashAvailable.subtract(refund.getAmount());
+            }
+        }
+        if (cashAvailable.signum() > 0) {
+            // min elige el menor importe para no devolver más efectivo del que recibió el hotel.
+            BigDecimal cashPart = amount.min(cashAvailable);
+            saveRefundRow(folio, cashPart, "CASH", reason);
+            amount = amount.subtract(cashPart);
+        }
+        if (amount.signum() > 0) {
+            saveRefundRow(folio, amount, "CARD", reason);
+        }
+    }
+
+    /** PAYMENT queda intacto; cada método de devolución se registra en REFUND. */
+    private void saveRefundRow(Folio folio, BigDecimal amount, String method, RefundReason reason) {
+        refundRepository.save(Refund.builder().folio(folio).operator(null).amount(amount).refundMethod(method)
+                .reason(reason).status(PaymentStatus.APPROVED).notes("").refundedAt(LocalDateTime.now()).build());
     }
 
     public void deleteFolio(Integer reservationId) {
@@ -208,17 +276,10 @@ public class ReservationBillingService {
                 room == null ? null : room.getRoomType().getMainPhoto());
     }
 
-    private void checkBalance(ReservationStatus status, BigDecimal total, BigDecimal paid, boolean financialChange) {
+    private void checkBalance(ReservationStatus status, BigDecimal total, BigDecimal paid) {
         if (status == ReservationStatus.CHECKED_OUT && total.compareTo(paid) > 0) {
             throw new FieldException(HttpStatus.BAD_REQUEST, "status",
                     "Check-out is not allowed while the reservation has an outstanding balance. Settle the balance first.");
-        }
-        if (financialChange && paid.signum() > 0 && total.compareTo(paid) <= 0) {
-            NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
-            format.setMaximumFractionDigits(2);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The recalculated total must be greater than the amount already paid (COP "
-                            + format.format(paid) + "). Payments cannot be changed here.");
         }
     }
 

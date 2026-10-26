@@ -1,18 +1,24 @@
-@if (quote; as quote) {
-  <button
-    class="go-back"
-    type="button"
-    [disabled]="busy"
-    (click)="payLaterSubject.next()"
-  >
-    <span aria-hidden="true">←</span> Or book and pay later
-  </button>
+@if (quote || additionalPayment) {
+  @if (!additionalPayment) {
+    <button
+      class="go-back"
+      type="button"
+      [disabled]="busy"
+      (click)="payLaterSubject.next()"
+    >
+      <span aria-hidden="true">←</span> Or book and pay later
+    </button>
+  }
   <header class="booking-intro">
-    <p class="eyebrow">Step 4 of 4</p>
-    <h1>Payment</h1>
-    <p>Review your stay and enter your payment details.</p>
+    <p class="eyebrow">{{ additionalPayment ? 'Your reservation' : 'Step 4 of 4' }}</p>
+    @if (additionalPayment) {
+      <h2>Add card payment</h2>
+    } @else {
+      <h1>Payment</h1>
+    }
+    <p>{{ additionalPayment ? 'Pay all or part of your outstanding balance by card.' : 'Review your stay and enter your payment details.' }}</p>
   </header>
-  <div class="payment-layout">
+  <div class="payment-layout" [class.payment-layout--additional]="additionalPayment">
     <form
       class="payment-form"
       (ngSubmit)="submit()"
@@ -32,8 +38,8 @@
               [(ngModel)]="amount"
               (ngModelChange)="clearError('amount')"
               (blur)="touch('amount')"
-              min="100000"
-              [max]="quote.total"
+              [min]="minimumPayment"
+              [max]="payableTotal"
               step="0.01"
               required
               [attr.aria-invalid]="!!errorFor('amount')"
@@ -44,7 +50,8 @@
           </label>
         </div>
         <p class="payment-security">
-          You can pay all or part of your stay total today, from COP 100,000.
+          You can pay all or part of {{ additionalPayment ? 'your outstanding balance' : 'your stay total' }} today,
+          from {{ minimumPayment | currency: "COP" : "symbol" : "1.0-2" }}.
         </p>
       </section>
       <section>
@@ -136,6 +143,8 @@
       }
       <ng-content select="[bookingError]" />
     </form>
-    <app-booking-reservation-summary [quote]="quote" />
+    @if (quote) {
+      <app-booking-reservation-summary [quote]="quote" />
+    }
   </div>
 }

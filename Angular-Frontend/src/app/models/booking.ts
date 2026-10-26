@@ -97,6 +97,17 @@ export const MAX_YEARS_AHEAD = 2;
 export const MAX_GUESTS = 10;
 export const MIN_PAYMENT = 100000;
 export const MAX_PAYMENT = 99999999.99;
+// Las mismas reglas se comprueban en el servidor antes de modificar o cobrar.
+export function canModifyReservation(detail: ReservationDetails): boolean {
+  const reservation = detail.reservation;
+  return (reservation.status === 'PENDING' || reservation.status === 'CONFIRMED') &&
+    reservation.checkInDate >= localDate() && reservation.roomTypeId !== undefined;
+}
+export function canPayReservation(detail: ReservationDetails): boolean {
+  const reservation = detail.reservation;
+  return detail.balance > 0 && reservation.status !== 'CANCELLED' &&
+    reservation.status !== 'CHECKED_OUT' && reservation.checkOutDate > localDate();
+}
 // El calendario usa la fecha local. Convertirla a UTC podría desplazar el día.
 export function localDate(date = new Date()): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;

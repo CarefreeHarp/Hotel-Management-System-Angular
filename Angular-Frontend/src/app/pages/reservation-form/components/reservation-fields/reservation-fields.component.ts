@@ -149,6 +149,7 @@ export class ReservationFieldsComponent {
   @Input() services: ServiceListDTO[] = [];
   @Input() originalServiceIds: number[] = [];
   @Input() submitted = false;
+  @Input() clientMode = false;
   readonly statuses = Object.values(ReservationStatus);
   readonly active = ActivationStatus.ACTIVE;
   protected readonly messages = RESERVATION_MESSAGES;

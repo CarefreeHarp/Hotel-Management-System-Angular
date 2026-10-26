@@ -22,11 +22,54 @@
       <app-skeleton variant="detail" label="Loading reservation…" />
     } @else if (detail) {
       @let item = detail;
-      @if (staff && saved) {
+      @if (saved) {
         <p role="status">Reservation updated successfully.</p>
       }
-      @if (staff && clientHistoryId === undefined) {
-        <a appButton [routerLink]="editUrl">Edit reservation</a>
+      @if ((staff && clientHistoryId === undefined) || canModify) {
+        <a appButton [routerLink]="editUrl" [queryParams]="authParams">Edit reservation</a>
+      }
+      @if (paymentSaved) {
+        <p role="status">Payment approved. Your balance has been updated.</p>
+      }
+      @if (canPay) {
+        <button appButton type="button" [disabled]="paying" (click)="togglePayment()">
+          {{ showPayment ? 'Close payment form' : 'Add card payment' }}
+        </button>
+        @if (showPayment) {
+          <app-booking-payment [additionalPayment]="true" [balance]="item.balance" [busy]="paying"
+            [serverErrors]="paymentErrors" (pay)="pay($event)">
+            @if (paymentError) {
+              <p bookingError role="alert">{{ paymentError }}</p>
+            }
+          </app-booking-payment>
+        }
+      }
+      @if (canTakeCash) {
+        <button appButton type="button" [disabled]="paying" (click)="toggleCashPayment()">
+          {{ showCashPayment ? 'Close cash payment' : 'Receive cash payment' }}
+        </button>
+        @if (showCashPayment) {
+          <form class="cash-payment-panel" (ngSubmit)="payCash()" novalidate>
+            <h2>Receive cash payment</h2>
+            <p>Outstanding balance: {{ item.balance | currency: "COP" : "symbol" : "1.0-2" }}</p>
+            <label for="cash-amount">Amount received</label>
+            <input id="cash-amount" type="number" name="amount" [(ngModel)]="cashAmount"
+              (ngModelChange)="cashAmountError = ''" [min]="minimumCashPayment"
+              [max]="item.balance" step="0.01" required
+              [attr.aria-invalid]="!!cashErrorForAmount" aria-describedby="cash-hint cash-error" />
+            <small id="cash-hint">Minimum {{ minimumCashPayment | currency: "COP" : "symbol" : "1.0-2" }}.
+              You can pay the full balance when it is lower than COP 100,000.</small>
+            @if (cashErrorForAmount) {
+              <p id="cash-error" class="cash-error" role="alert">{{ cashErrorForAmount }}</p>
+            }
+            @if (paymentError) {
+              <p class="cash-error" role="alert">{{ paymentError }}</p>
+            }
+            <button appButton type="submit" [disabled]="paying">
+              {{ paying ? 'Recording…' : 'Record cash payment' }}
+            </button>
+          </form>
+        }
       }
       <app-reservation-content [detail]="item" [client]="client" [staffViewTitle]="staffViewTitle" />
     }

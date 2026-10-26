@@ -1,7 +1,11 @@
-<app-admin-header />
+@if (staff) {
+  <app-admin-header />
+} @else {
+  <app-header [solid]="true" />
+}
 <main class="reservation-page">
   <div class="reservation-container">
-    <a appButton variant="secondary" [routerLink]="[base, 'reservations']">Back to reservations</a>
+    <a appButton variant="secondary" [routerLink]="backUrl" [queryParams]="authParams">{{ staff ? 'Back to reservations' : 'Back to my reservations' }}</a>
     @if (loading) {
       <app-skeleton variant="detail" label="Loading reservation…" />
     }
@@ -9,17 +13,18 @@
       <form [formGroup]="form" (ngSubmit)="save()" novalidate>
         <app-reservation-content [detail]="item" [client]="client" [staffViewTitle]="staffViewTitle" [editing]="true">
           <fieldset reservationEditor class="editor-panel" [disabled]="saving">
-            <legend class="eyebrow">Edit stay, services and status</legend>
+            <legend class="eyebrow">{{ staff ? 'Edit stay, services and status' : 'Edit stay and services' }}</legend>
             <app-reservation-fields
               [form]="form"
               [roomTypes]="roomTypes"
               [services]="services"
               [originalServiceIds]="originalServiceIds"
               [submitted]="submitted"
+              [clientMode]="!staff"
             />
             <div class="form-actions">
               <button appButton type="submit" [disabled]="saving">{{ saving ? "Saving…" : "Save reservation" }}</button>
-              <a appButton variant="secondary" [routerLink]="[base, 'reservations', item.reservation.reservationId]">Cancel</a>
+              <a appButton variant="secondary" [routerLink]="detailUrl" [queryParams]="authParams">Cancel</a>
             </div>
             @if (submitted && form.invalid) {
               <p class="form-alert" role="alert">Please check the highlighted fields before saving.</p>
@@ -34,7 +39,13 @@
               <dt>Recalculated total</dt>
               <dd>{{ previewTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
             </dl>
-            <p>When changing the price of a reservation with payments, the new total must exceed the amount already paid. A fully paid reservation with an increased total becomes pending.</p>
+            <dl>
+              <dt>Already paid (after refunds)</dt>
+              <dd>{{ item.paidTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+              <dt>Refund after saving</dt>
+              <dd>{{ refundPreview | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+            </dl>
+            <p>If the new total is lower than the amount already paid, the difference is refunded automatically. An increase may leave a new outstanding balance.</p>
             <p>The price details below show the saved reservation until changes are saved.</p>
           </section>
         </app-reservation-content>

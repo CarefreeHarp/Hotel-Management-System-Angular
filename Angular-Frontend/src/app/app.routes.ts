@@ -49,6 +49,7 @@ export const routes: Routes = [
     data: { profile: true },
   },
   { path: 'book-now', component: BookNowComponent },
+  { path: 'reservation/:id/edit', component: ReservationFormComponent },
   { path: 'reservation/:id', component: ReservationDetailComponent },
   // Pantallas de error (400, 404, 500 y 503). Las páginas llegan a ellas sin cambiar la URL.
   { path: 'error/:code', component: ErrorPageComponent },

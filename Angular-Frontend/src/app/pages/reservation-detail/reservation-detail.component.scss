@@ -1,1 +1,32 @@
 @use "../../../styles/reservation-page";
+
+.cash-payment-panel {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 32rem;
+  margin: 1rem 0;
+  padding: 1.5rem;
+  border: 1px solid rgba(184, 140, 90, 0.4);
+  border-radius: 1rem;
+  background: #1e2c38;
+}
+.cash-payment-panel h2,
+.cash-payment-panel p {
+  margin: 0;
+}
+.cash-payment-panel h2 {
+  font: 500 1.5rem var(--font-display);
+}
+.cash-payment-panel input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #697b8c;
+  border-radius: 0.5rem;
+  font: inherit;
+}
+.cash-payment-panel small {
+  color: var(--color-text-muted);
+}
+.cash-payment-panel .cash-error {
+  color: #ffd6d2;
+}

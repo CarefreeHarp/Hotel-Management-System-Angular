@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   catchError,
+  combineLatest,
   EMPTY,
   exhaustMap,
   finalize,
@@ -19,9 +20,10 @@ import {
 } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
+import { HeaderComponent } from '../../components/header/header.component';
 import { ReservationContentComponent } from '../../components/reservation-content/reservation-content.component';
 import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { ReservationDetails } from '../../models/booking';
+import { canModifyReservation, ReservationDetails } from '../../models/booking';
 import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 import { RoomTypeListDTO } from '../../models/dto/room-type-list-dto';
 import { ServiceListDTO } from '../../models/dto/service-list-dto';
@@ -31,6 +33,7 @@ import { RoomTypeService } from '../../services/room-type.service';
 import { ServiceService } from '../../services/service.service';
 import { clearApiErrors, showApiErrors } from '../../utils/api-error';
 import { basePath } from '../../utils/base-path';
+import { clientQuery } from '../../utils/client-query';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 import {
   createReservationForm,
@@ -46,6 +49,7 @@ import {
     ReactiveFormsModule,
     RouterLink,
     AdminHeaderComponent,
+    HeaderComponent,
     ButtonComponent,
     ReservationContentComponent,
     ReservationFieldsComponent,
@@ -85,7 +89,25 @@ export class ReservationFormComponent {
     return basePath(this.route);
   }
   get staffViewTitle(): string {
+    if (!this.staff) return '';
     return this.route.snapshot.paramMap.has('adminId') ? 'Admin view' : 'Operator view';
+  }
+  get staff(): boolean {
+    return this.route.snapshot.paramMap.has('adminId') || this.route.snapshot.paramMap.has('operatorId');
+  }
+  get authParams(): { auth?: number } {
+    return clientQuery(this.route);
+  }
+  get detailUrl(): string {
+    const id = this.detail?.reservation.reservationId;
+    return this.staff ? `${this.base}/reservations/${id}` : `/reservation/${id}`;
+  }
+  get backUrl(): string {
+    return this.staff ? `${this.base}/reservations` : '/profile';
+  }
+  get refundPreview(): number {
+    // Redondear a centavos evita mostrar residuos de las operaciones decimales de JavaScript.
+    return Math.max(0, Math.round(((this.detail?.paidTotal ?? 0) - this.previewTotal) * 100) / 100);
   }
   // La vista previa conserva cargos contratados y solo toma el precio actual de los servicios nuevos.
   get previewTotal(): number {
@@ -122,15 +144,19 @@ export class ReservationFormComponent {
       takeUntilDestroyed(),
     ).subscribe();
 
-    this.route.paramMap
+    combineLatest([this.route.paramMap, this.route.queryParamMap])
       .pipe(
         // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
-        switchMap((params) => {
+        switchMap(([params]) => {
           this.loading = true;
           this.error = '';
           this.detail = undefined;
           this.client = undefined;
           this.submitted = false;
+          if (!this.staff && this.authParams.auth === undefined) {
+            void this.router.navigate(['/login']);
+            return EMPTY;
+          }
           const id = Number(params.get('id'));
           // Una id inválida muestra la pantalla 400. Si la reserva no carga, la que corresponda.
           if (!Number.isSafeInteger(id) || id < 1) {
@@ -158,6 +184,16 @@ export class ReservationFormComponent {
         takeUntilDestroyed(),
       )
       .subscribe((data) => {
+        if (!this.staff && data.detail.clientId !== this.authParams.auth) {
+          showErrorPage(this.router, this.route, 404);
+          return;
+        }
+        if (!this.staff && !canModifyReservation(data.detail)) {
+          void this.router.navigate(['/reservation', data.detail.reservation.reservationId], {
+            queryParams: this.authParams,
+          });
+          return;
+        }
         this.loading = false;
         this.detail = data.detail;
         this.client = data.client;
@@ -184,6 +220,8 @@ export class ReservationFormComponent {
 
   private saveChanges(): Observable<unknown> {
     if (this.saving || this.loading || !this.detail) return EMPTY;
+    const clientId = this.authParams.auth;
+    if (!this.staff && clientId === undefined) return EMPTY;
     this.submitted = true;
     this.error = '';
     clearApiErrors(this.form);
@@ -192,9 +230,13 @@ export class ReservationFormComponent {
     if (this.form.invalid) return EMPTY;
     const draft = this.form.getRawValue();
     const id = this.detail.reservation.reservationId;
+    const destination = this.detailUrl;
+    const queryParams = { ...this.authParams, saved: true };
     this.saving = true;
-    return this.reservations
-      .update(id, draft)
+    const request = !this.staff && clientId !== undefined
+      ? this.reservations.updateForClient(id, clientId, draft)
+      : this.reservations.update(id, draft);
+    return request
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         // finalize restablece el estado de guardado tanto si la petición termina bien como si falla.
@@ -203,9 +245,8 @@ export class ReservationFormComponent {
         }),
       ).pipe(
         tap(() => {
-          void this.router.navigate([this.base, 'reservations', id], {
-            queryParams: { saved: true },
-          });
+          if (this.detail?.reservation.reservationId !== id || this.authParams.auth !== clientId) return;
+          void this.router.navigate([destination], { queryParams });
         }),
         catchError((error: HttpErrorResponse) => {
           this.error = showApiErrors(this.form, error, {
@@ -219,6 +260,5 @@ export class ReservationFormComponent {
           return EMPTY;
         }),
       );
-    return EMPTY;
   }
 }

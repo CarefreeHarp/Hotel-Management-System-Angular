@@ -27,8 +27,17 @@ function cop(value: number): string {
   styleUrl: './booking-payment.component.scss',
 })
 export class BookingPaymentComponent {
-  @Input({ required: true }) quote: BookingQuote | undefined;
+  @Input() quote: BookingQuote | undefined;
+  // El mismo formulario cobra el saldo de una reserva sin volver a crearla ni cotizarla.
+  @Input() additionalPayment = false;
+  @Input() balance = 0;
   @Input() busy = false;
+  get payableTotal(): number {
+    return this.additionalPayment ? this.balance : this.quote?.total ?? 0;
+  }
+  get minimumPayment(): number {
+    return this.additionalPayment ? Math.min(MIN_PAYMENT, this.payableTotal) : MIN_PAYMENT;
+  }
   // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly paySubject = new Subject<CardPayment>();
   @Output('pay') readonly pay$ = this.paySubject.asObservable();
@@ -54,23 +63,23 @@ export class BookingPaymentComponent {
   // Campos que el usuario ya dejó: sus errores se muestran sin esperar al envío.
   private readonly touched = new Set<keyof CardPayment>();
   ngOnInit(): void {
-    this.amount = this.quote?.total ?? 0;
+    this.amount = Math.min(this.payableTotal, MAX_PAYMENT);
   }
   touch(field: keyof CardPayment): void {
     this.touched.add(field);
   }
-  // Mismas reglas y mensajes que BookingService.checkPayment() en el backend.
+  // Mismas reglas y mensajes que BookingPaymentValidator en el backend.
   get clientErrors(): PaymentErrors {
     const messages = PAYMENT_MESSAGES;
     const errors: PaymentErrors = {};
-    const total = this.quote?.total ?? 0;
+    const total = this.payableTotal;
     const amount = this.amount;
     if (amount === null || !Number.isFinite(amount))
       errors.amount = messages.amount.required;
     else if (!hasMaxDecimals(amount, 2))
       errors.amount = messages.amount.decimals;
-    else if (amount < MIN_PAYMENT || amount > total)
-      errors.amount = `Payment must be at least ${cop(MIN_PAYMENT)} and cannot exceed the total of ${cop(total)}.`;
+    else if (amount <= 0 || amount < this.minimumPayment || amount > total)
+      errors.amount = `Payment must be at least ${cop(this.minimumPayment)} and cannot exceed the total of ${cop(total)}.`;
     else if (amount > MAX_PAYMENT) errors.amount = messages.amount.max;
     const name = this.cardholderName.trim();
     if (!name) errors.cardholderName = messages.cardholderName.required;
@@ -189,7 +198,7 @@ export class BookingPaymentComponent {
   }
   submit(): void {
     this.submitted = true;
-    if (this.quote && this.amount !== null && this.valid() && !this.busy)
+    if ((this.quote || this.additionalPayment) && this.amount !== null && this.valid() && !this.busy)
       this.paySubject.next({
         amount: this.amount,
         cardholderName: this.cardholderName.trim(),
