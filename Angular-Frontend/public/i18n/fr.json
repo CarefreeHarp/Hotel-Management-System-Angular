@@ -769,6 +769,7 @@
       "roomAssigned": "Une chambre physique est attribuée automatiquement pour le type de chambre et les dates choisis.",
       "maxNightsHint": "Un séjour peut durer jusqu'à {{ nights }} nuits.",
       "upToGuests": "jusqu'à {{ count }} personnes",
+      "servicesOnlyHint": "Pendant votre séjour, vous pouvez uniquement ajouter des services. Les services existants, les dates et le nombre de voyageurs ne peuvent pas être modifiés.",
       "servicesDescription": "Les services déjà réservés conservent leur prix d'origine. Les services inactifs ne peuvent être conservés que s'ils étaient déjà inclus.",
       "inactiveContracted": "Inactif · déjà réservé",
       "contractedPrice": "Prix réservé",

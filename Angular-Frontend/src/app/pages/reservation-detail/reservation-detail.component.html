@@ -5,13 +5,30 @@
 }
 <main class="reservation-page">
   <div class="reservation-container">
-    <a
-      appButton
-      variant="secondary"
-      [routerLink]="backUrl"
-      [queryParams]="authParams"
-      >{{ backLabelKey | transloco }}</a
-    >
+    <div class="reservation-actions">
+      <a
+        appButton
+        variant="secondary"
+        [routerLink]="backUrl"
+        [queryParams]="authParams"
+        >{{ backLabelKey | transloco }}</a
+      >
+      @if ((detail && staff && clientHistoryId === undefined) || canModify) {
+        <a appButton [routerLink]="editUrl" [queryParams]="authParams">{{
+          'reservationContent.editEyebrow' | transloco
+        }}</a>
+      }
+      @if (canPay) {
+        <button appButton type="button" [disabled]="paying" (click)="togglePayment()">
+          {{ (showPayment ? 'reservations.detail.closePayment' : 'reservations.detail.addCardPayment') | transloco }}
+        </button>
+      }
+      @if (canTakeCash) {
+        <button appButton type="button" [disabled]="paying" (click)="toggleCashPayment()">
+          {{ (showCashPayment ? 'reservations.cash.close' : 'reservations.cash.title') | transloco }}
+        </button>
+      }
+    </div>
     @if (isLoading) {
       <app-skeleton variant="detail" [label]="'reservations.detail.loading' | transloco" />
     } @else if (detail) {
@@ -19,18 +36,10 @@
       @if (saved) {
         <p role="status">{{ 'reservations.detail.saved' | transloco }}</p>
       }
-      @if ((staff && clientHistoryId === undefined) || canModify) {
-        <a appButton [routerLink]="editUrl" [queryParams]="authParams">{{
-          'reservationContent.editEyebrow' | transloco
-        }}</a>
-      }
       @if (paymentSaved) {
         <p role="status">{{ 'reservations.detail.paymentSaved' | transloco }}</p>
       }
       @if (canPay) {
-        <button appButton type="button" [disabled]="paying" (click)="togglePayment()">
-          {{ (showPayment ? 'reservations.detail.closePayment' : 'reservations.detail.addCardPayment') | transloco }}
-        </button>
         @if (showPayment) {
           <app-booking-payment [additionalPayment]="true" [balance]="item.balance" [busy]="paying"
             [serverErrors]="paymentErrors" (pay)="pay($event)">
@@ -41,9 +50,6 @@
         }
       }
       @if (canTakeCash) {
-        <button appButton type="button" [disabled]="paying" (click)="toggleCashPayment()">
-          {{ (showCashPayment ? 'reservations.cash.close' : 'reservations.cash.title') | transloco }}
-        </button>
         @if (showCashPayment) {
           <form class="cash-payment-panel" (ngSubmit)="payCash()" novalidate>
             <h2>{{ 'reservations.cash.title' | transloco }}</h2>

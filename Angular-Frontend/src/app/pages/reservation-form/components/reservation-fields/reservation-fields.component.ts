@@ -149,6 +149,7 @@ export class ReservationFieldsComponent {
   @Input() originalServiceIds: number[] = [];
   @Input() submitted = false;
   @Input() clientMode = false;
+  @Input() servicesOnly = false;
   readonly statuses = Object.values(ReservationStatus);
   readonly active = ActivationStatus.ACTIVE;
   protected readonly messages = RESERVATION_MESSAGES;
@@ -185,6 +186,7 @@ export class ReservationFieldsComponent {
     return control.invalid && (control.touched || this.submitted);
   }
   toggleService(id: number, checked: boolean): void {
+    if (this.servicesOnly && this.originalServiceIds.includes(id)) return;
     const current = this.form.controls.serviceIds.value;
     this.form.controls.serviceIds.setValue(
       checked

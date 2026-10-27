@@ -769,6 +769,7 @@
       "roomAssigned": "A physical room is assigned automatically for the selected room type and dates.",
       "maxNightsHint": "A stay can last up to {{ nights }} nights.",
       "upToGuests": "up to {{ count }} guests",
+      "servicesOnlyHint": "During your stay, you can only add services. Existing services, dates and guest count cannot be changed.",
       "servicesDescription": "Previously contracted services keep their original prices. Inactive services can only be retained if already included.",
       "inactiveContracted": "Inactive · previously contracted",
       "contractedPrice": "Contracted price",

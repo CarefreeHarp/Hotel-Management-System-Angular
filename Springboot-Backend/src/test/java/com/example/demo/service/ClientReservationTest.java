@@ -221,6 +221,95 @@ class ClientReservationTest {
     }
 
     @Test
+    void inHouseClientAddsServicesAndPaysBalanceOnDepartureDayWithoutLosingCheckedInStatus() {
+        Integer id = ongoingReservation(List.of());
+        reservations.updateClientReservation(id, client.getClientId(), ongoingDraft(List.of(breakfast)));
+        entityManager.flush();
+        entityManager.clear();
+        ReservationDetailDTO changed = reservations.readReservationDetails(id);
+        assertEquals(ReservationStatus.CHECKED_IN, changed.reservation().getStatus());
+        assertEquals(LocalDate.now().minusDays(1), changed.reservation().getCheckInDate());
+        assertEquals(LocalDate.now(), changed.reservation().getCheckOutDate());
+        assertEquals(2, changed.reservation().getGuestCount());
+        assertEquals(room.getNumber(), changed.reservation().getRoomNumber());
+        assertMoney("350000", changed.total());
+        assertMoney("50000", changed.balance());
+        assertTrue(changed.refunds().isEmpty());
+        assertThrows(ResponseStatusException.class, () -> reservations.checkOut(id));
+        changed = reservations.addClientPayment(id, client.getClientId(), card("50000"));
+        assertMoney("0", changed.balance());
+        assertEquals(ReservationStatus.CHECKED_IN, changed.reservation().getStatus());
+        reservations.checkOut(id);
+        assertEquals(ReservationStatus.CHECKED_OUT, reservations.readReservationDetails(id).reservation().getStatus());
+    }
+
+    @Test
+    void inHouseClientCannotRemoveContractedService() {
+        assertInHouseEditRejected(input -> input.setServices(List.of()));
+    }
+
+    @Test
+    void inHouseClientCannotChangeArrival() {
+        assertInHouseEditRejected(input -> input.setCheckInDate(LocalDate.now()));
+    }
+
+    @Test
+    void inHouseClientCannotChangeDeparture() {
+        assertInHouseEditRejected(input -> input.setCheckOutDate(LocalDate.now().plusDays(1)));
+    }
+
+    @Test
+    void inHouseClientCannotChangeGuestCount() {
+        assertInHouseEditRejected(input -> input.setGuestCount(3));
+    }
+
+    @Test
+    void checkedOutClientCannotAddServices() {
+        Integer id = ongoingReservation(List.of());
+        reservations.checkOut(id);
+        assertThrows(ResponseStatusException.class, () -> reservations.updateClientReservation(
+                id, client.getClientId(), ongoingDraft(List.of(breakfast))));
+    }
+
+    private void assertInHouseEditRejected(java.util.function.Consumer<Reservation> change) {
+        Integer id = ongoingReservation(List.of(breakfast));
+        Reservation input = ongoingDraft(List.of(breakfast));
+        change.accept(input);
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> reservations.updateClientReservation(id, client.getClientId(), input));
+        assertEquals(400, error.getStatusCode().value());
+        entityManager.flush();
+        entityManager.clear();
+        ReservationDetailDTO unchanged = reservations.readReservationDetails(id);
+        assertEquals(ReservationStatus.CHECKED_IN, unchanged.reservation().getStatus());
+        assertEquals(LocalDate.now().minusDays(1), unchanged.reservation().getCheckInDate());
+        assertEquals(LocalDate.now(), unchanged.reservation().getCheckOutDate());
+        assertEquals(2, unchanged.reservation().getGuestCount());
+        assertEquals(1, unchanged.charges().size());
+        assertMoney("350000", unchanged.total());
+        assertMoney("0", unchanged.balance());
+        assertTrue(unchanged.refunds().isEmpty());
+    }
+
+    private Integer ongoingReservation(List<Service> selected) {
+        Integer id = create(2, selected.isEmpty() ? "300000" : "350000", selected)
+                .reservation().getReservationId();
+        Reservation current = entityManager.find(Reservation.class, id);
+        current.setCheckInDate(LocalDate.now().minusDays(1));
+        current.setCheckOutDate(LocalDate.now());
+        // Keep the paid accommodation total while testing departure-day edits.
+        current.setNightlyPrice(money("300000"));
+        current.setStatus(ReservationStatus.CHECKED_IN);
+        current.getRoom().setStatus(RoomStatus.OCCUPIED);
+        return id;
+    }
+
+    private Reservation ongoingDraft(List<Service> selected) {
+        return Reservation.builder().checkInDate(LocalDate.now().minusDays(1))
+                .checkOutDate(LocalDate.now()).guestCount(2).services(selected).build();
+    }
+
+    @Test
     void cancelledReservationCannotBeEditedOrPaid() {
         Integer id = create(2, "100000", List.of()).reservation().getReservationId();
         reservations.cancelReservation(id);

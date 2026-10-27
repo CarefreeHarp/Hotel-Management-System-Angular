@@ -86,7 +86,7 @@
 <section aria-labelledby="services-title">
   <h2 id="services-title">{{ 'adminHeader.sections.services' | transloco }}</h2>
   <p class="section-description">
-    {{ 'reservations.form.servicesDescription' | transloco }}
+    {{ (servicesOnly ? 'reservations.form.servicesOnlyHint' : 'reservations.form.servicesDescription') | transloco }}
   </p>
   @if (form.controls.serviceIds.getError("server"); as serviceError) {
     <p class="services-error" role="alert">{{ serviceError }}</p>
@@ -101,6 +101,7 @@
           <input
             #selection
             type="checkbox"
+            [disabled]="servicesOnly && originalServiceIds.includes(service.serviceId)"
             [checked]="
               form.controls.serviceIds.value.includes(service.serviceId)
             "

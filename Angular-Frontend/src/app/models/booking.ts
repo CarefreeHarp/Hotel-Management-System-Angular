@@ -102,8 +102,10 @@ export const MAX_PAYMENT = 99999999.99;
 // Las mismas reglas se comprueban en el servidor antes de modificar o cobrar.
 export function canModifyReservation(detail: ReservationDetails): boolean {
   const reservation = detail.reservation;
-  return (reservation.status === 'PENDING' || reservation.status === 'CONFIRMED') &&
-    reservation.checkInDate >= localDate() && reservation.roomTypeId !== undefined;
+  return reservation.roomTypeId !== undefined &&
+    (reservation.status === 'CHECKED_IN' ||
+      ((reservation.status === 'PENDING' || reservation.status === 'CONFIRMED') &&
+        reservation.checkInDate >= localDate()));
 }
 // Un huésped alojado puede saldar su cuenta hasta el check-out, también el día de salida.
 export function canPayReservation(detail: ReservationDetails): boolean {

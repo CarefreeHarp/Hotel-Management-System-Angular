@@ -769,6 +769,7 @@
       "roomAssigned": "系统会根据所选房型和日期自动分配实际客房。",
       "maxNightsHint": "一次住宿最长 {{ nights }} 晚。",
       "upToGuests": "最多 {{ count }} 位住客",
+      "servicesOnlyHint": "入住期间，您只能添加服务，不能移除已有服务，也不能更改日期或入住人数。",
       "servicesDescription": "已预订的服务保留原价。停用的服务只有在已包含时才能保留。",
       "inactiveContracted": "已停用 · 之前已预订",
       "contractedPrice": "预订时价格",

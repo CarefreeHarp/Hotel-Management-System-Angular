@@ -102,6 +102,9 @@ export class ReservationFormComponent {
   get authParams(): { auth?: number } {
     return clientQuery(this.route);
   }
+  get servicesOnly(): boolean {
+    return !this.staff && this.detail?.reservation.status === 'CHECKED_IN';
+  }
   get detailUrl(): string {
     const id = this.detail?.reservation.reservationId;
     return this.staff ? `${this.base}/reservations/${id}` : `/reservation/${id}`;
@@ -208,6 +211,7 @@ export class ReservationFormComponent {
           if (charge.serviceId !== undefined) this.originalServiceIds.push(charge.serviceId);
         }
         const item = data.detail.reservation;
+        this.form.enable({ emitEvent: false });
         this.form.reset({
           checkIn: item.checkInDate,
           checkOut: item.checkOutDate,
@@ -216,6 +220,11 @@ export class ReservationFormComponent {
           status: item.status,
           serviceIds: this.originalServiceIds,
         });
+        if (this.servicesOnly) {
+          for (const name of ['checkIn', 'checkOut', 'guests', 'roomTypeId', 'status'] as const) {
+            this.form.controls[name].disable({ emitEvent: false });
+          }
+        }
       });
   }
   save(): void {

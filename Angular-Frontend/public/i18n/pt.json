@@ -769,6 +769,7 @@
       "roomAssigned": "Um quarto físico é atribuído automaticamente para o tipo de quarto e as datas escolhidos.",
       "maxNightsHint": "Uma estadia pode durar até {{ nights }} noites.",
       "upToGuests": "até {{ count }} hóspedes",
+      "servicesOnlyHint": "Durante a estadia, você só pode adicionar serviços. Não pode remover os existentes nem alterar as datas ou o número de hóspedes.",
       "servicesDescription": "Os serviços já contratados mantêm o preço original. Serviços inativos só podem ser mantidos se já estavam incluídos.",
       "inactiveContracted": "Inativo · contratado antes",
       "contractedPrice": "Preço contratado",

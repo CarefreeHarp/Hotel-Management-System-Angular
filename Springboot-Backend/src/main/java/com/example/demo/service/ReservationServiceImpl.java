@@ -96,11 +96,23 @@ public class ReservationServiceImpl implements ReservationService {
         applyUpdate(current, input);
     }
 
-    /** El cliente modifica solo su estancia y servicios; el tipo y el estado se toman de la reserva guardada. */
+    /** El cliente edita estancias futuras; durante la estancia solo añade servicios. Conserva tipo y estado. */
     @Override
     public void updateClientReservation(Integer id, Integer clientId, Reservation input) {
         Reservation current = clientReservation(id, clientId);
-        if ((current.getStatus() != ReservationStatus.PENDING && current.getStatus() != ReservationStatus.CONFIRMED)
+        if (current.getStatus() == ReservationStatus.CHECKED_IN) {
+            if (!current.getCheckInDate().equals(input.getCheckInDate()))
+                throw invalid("checkInDate", "The arrival date cannot be changed during the stay.");
+            if (!current.getCheckOutDate().equals(input.getCheckOutDate()))
+                throw invalid("checkOutDate", "The departure date cannot be changed during the stay.");
+            if (!current.getGuestCount().equals(input.getGuestCount()))
+                throw invalid("guestCount", "The guest count cannot be changed during the stay.");
+            Set<Integer> selected = new HashSet<>(reservationRules.serviceIds(input));
+            for (Service service : current.getServices()) {
+                if (!selected.contains(service.getServiceId()))
+                    throw invalid("services", "Existing services cannot be removed during the stay. You can only add services.");
+            }
+        } else if ((current.getStatus() != ReservationStatus.PENDING && current.getStatus() != ReservationStatus.CONFIRMED)
                 || current.getCheckInDate().isBefore(LocalDate.now())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Only upcoming pending or confirmed reservations can be modified.");
         }
