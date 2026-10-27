@@ -8,9 +8,10 @@ import { Component, Input } from '@angular/core';
   host: {
     '[class.is-create]': 'create',
     '[class.is-secondary]': "variant === 'secondary'",
+    '[class.is-danger]': "variant === 'danger'",
   },
 })
 export class ButtonComponent {
   @Input() create = false;
-  @Input() variant: 'primary' | 'secondary' = 'primary';
+  @Input() variant: 'primary' | 'secondary' | 'danger' = 'primary';
 }

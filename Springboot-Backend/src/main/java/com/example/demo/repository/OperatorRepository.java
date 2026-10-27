@@ -9,15 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-/**
- * CAPA DE REPOSITORIO: acceso a la tabla OPERATOR con Spring Data JPA.
- *
- * La llave primaria es operator_id, de tipo Integer, y la genera la base de
- * datos con IDENTITY.
- *
- * Las consultas derivadas permiten contar operarios por administrador o buscar
- * por correo. Las de @Query arman los DTO de la tabla en la misma consulta.
- */
+/** Consultas y proyecciones de lectura de Operator. */
 @Repository
 public interface OperatorRepository extends JpaRepository<Operator, Integer> {
 

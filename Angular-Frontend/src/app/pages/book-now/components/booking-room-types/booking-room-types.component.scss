@@ -31,14 +31,26 @@
   font-weight: 600;
 }
 .change-dates {
-  color: var(--color-sky);
-  font-size: 0.68rem;
+  min-height: 44px;
+  padding: 0.8rem 1.1rem;
+  border: 1px solid #d3ae7b;
+  border-radius: 0.5rem;
+  background: #d3ae7b;
+  color: var(--color-ink);
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
 }
 .change-dates:hover {
-  color: var(--color-gold);
+  background: #e0bd8c;
+  border-color: #e0bd8c;
+}
+.change-dates:focus-visible {
+  outline: 2px solid var(--color-sky);
+  outline-offset: 4px;
 }
 .rooms-section h2 {
   margin-bottom: 1.25rem;
@@ -114,7 +126,8 @@
 .room-description {
   max-width: 36rem;
   color: var(--color-slate);
-  font-size: 0.78rem;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 .room-features {
   display: grid;
@@ -128,15 +141,19 @@
 }
 .room-features dt {
   color: var(--color-slate);
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 .room-features dd {
   margin: 0;
-  font-size: 0.73rem;
+  font-size: 1rem;
   font-weight: 700;
+  line-height: 1.5;
+}
+.availability-notice {
+  color: #235346;
 }
 .room-card__rate {
   display: flex;
@@ -148,7 +165,7 @@
 }
 .room-card__rate > p:first-child {
   color: var(--color-slate);
-  font-size: 0.72rem;
+  font-size: 1rem;
 }
 .rate-value {
   margin: 0.4rem 0 1rem;
@@ -164,7 +181,8 @@
 }
 .rate-note {
   color: var(--color-slate);
-  font-size: 0.7rem;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 .choose-room {
   display: inline-flex;
@@ -257,12 +275,6 @@
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 600;
-}
-.change-dates {
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  text-align: left;
 }
 .choose-room {
   border: 0;

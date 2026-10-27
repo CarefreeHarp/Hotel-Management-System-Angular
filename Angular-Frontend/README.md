@@ -11,7 +11,7 @@ make serve
 make check
 ```
 
-`make serve` installs the locked dependencies when necessary and starts Angular at `http://localhost:4200`. `make check` runs strict TypeScript checking and the production build. Run `make help` for installation, build and watch shortcuts. Without Make, use `npm ci`, `npm start` and `npm run build`.
+`make serve` installs the locked dependencies when necessary and starts Angular at `http://localhost:4200`. `make check` runs strict TypeScript checking, the translation check (`make i18n`) and the production build. Run `make help` for installation, build and watch shortcuts. Without Make, use `npm ci`, `npm start` and `npm run build`.
 
 ## Structure and navigation
 

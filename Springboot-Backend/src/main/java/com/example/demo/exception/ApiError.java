@@ -1,7 +1,6 @@
 package com.example.demo.exception;
 
 import java.time.LocalDateTime;
-import java.time.LocalDate;
 import java.util.Map;
 
 /**

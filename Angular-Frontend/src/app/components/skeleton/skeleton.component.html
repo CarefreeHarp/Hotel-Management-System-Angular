@@ -4,7 +4,7 @@
   aria-live="polite"
   aria-busy="true"
 >
-  <span class="sr-only">{{ label }}</span>
+  <span class="sr-only">{{ label || ('common.loading' | transloco) }}</span>
   <span class="layout" aria-hidden="true">
     @switch (variant) {
       @case ('stat') {

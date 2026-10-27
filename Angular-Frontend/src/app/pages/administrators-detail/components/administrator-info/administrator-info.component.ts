@@ -1,5 +1,6 @@
 import { Component, Input, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { ButtonComponent } from '../../../../components/button/button.component';
 import { StaffAvatarComponent } from '../../../../components/staff-avatar/staff-avatar.component';
 import { AdministratorDTO } from '../../../../models/dto/administrator-dto';
@@ -7,7 +8,7 @@ import { basePath } from '../../../../utils/base-path';
 
 @Component({
   selector: 'app-administrator-info',
-  imports: [RouterLink, ButtonComponent, StaffAvatarComponent],
+  imports: [RouterLink, ButtonComponent, StaffAvatarComponent, TranslocoPipe],
   templateUrl: './administrator-info.component.html',
   styleUrl: './administrator-info.component.scss',
 })

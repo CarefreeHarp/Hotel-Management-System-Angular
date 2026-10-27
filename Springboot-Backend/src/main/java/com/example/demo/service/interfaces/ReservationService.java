@@ -2,6 +2,7 @@ package com.example.demo.service.interfaces;
 
 import com.example.demo.dto.ReservationDTO;
 import com.example.demo.dto.ReservationDetailDTO;
+import com.example.demo.entities.Payment;
 import com.example.demo.entities.Reservation;
 import java.util.List;
 
@@ -24,6 +25,24 @@ public interface ReservationService {
 
     /** Actualiza estancia, servicios y estado junto con el folio en una sola transacción. */
     void updateReservation(Integer reservationId, Reservation reservation);
+
+    /** Edición del cliente sin permitir cambios de dueño, tipo de habitación o estado enviados en el cuerpo. */
+    void updateClientReservation(Integer reservationId, Integer clientId, Reservation reservation);
+
+    /** Añade un pago CARD validado y devuelve el saldo actualizado. */
+    ReservationDetailDTO addClientPayment(Integer reservationId, Integer clientId, Payment payment);
+
+    /** Registra efectivo recibido por un operario existente y devuelve el saldo actualizado. */
+    ReservationDetailDTO addOperatorCashPayment(Integer reservationId, Integer operatorId, Payment payment);
+
+    /** Cancela reserva y folio, reembolsa el pagado neto y conserva estancia, cargos y pagos. */
+    void cancelReservation(Integer reservationId);
+
+    /** Check-in del tablero: la reserva confirmada queda CHECKED_IN y su habitación OCCUPIED. */
+    void checkIn(Integer reservationId);
+
+    /** Check-out del tablero con saldo cero: la reserva queda CHECKED_OUT y su habitación en limpieza. */
+    void checkOut(Integer reservationId);
 
     /** Elimina una reserva después de retirar pagos, cargos y folio. */
     void deleteReservation(Integer reservationId);

@@ -1,26 +1,28 @@
-<section class="catalog-table" aria-label="Hotel services">
+<section class="catalog-table" [attr.aria-label]="'services.table.label' | transloco">
   @if (services.length) {
     <div
       class="table-scroll"
       role="region"
-      aria-label="Services table"
+      [attr.aria-label]="'services.table.tableLabel' | transloco"
       tabindex="0"
     >
       <table>
         <thead>
           <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Service</th>
-            <th scope="col">Category</th>
-            <th scope="col">Status</th>
-            <th scope="col">Price</th>
-            <th scope="col">Actions</th>
+            <th scope="col">{{ 'common.fields.id' | transloco }}</th>
+            <th scope="col">{{ 'services.fields.service' | transloco }}</th>
+            <th scope="col">{{ 'services.fields.category' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.status' | transloco }}</th>
+            <th scope="col">{{ 'services.fields.price' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.actions' | transloco }}</th>
           </tr>
         </thead>
         <tbody>
           @for (item of services; track item.serviceId) {
             <tr>
-              <td class="service-id" data-label="ID">#{{ item.serviceId }}</td>
+              <td class="service-id" [attr.data-label]="'common.fields.id' | transloco">
+                #{{ item.serviceId }}
+              </td>
               <th scope="row" class="item-heading">
                 <div class="service-cell">
                   <a
@@ -43,37 +45,41 @@
                   </div>
                 </div>
               </th>
-              <td data-label="Category">{{ item.category }}</td>
-              <td data-label="Status">
+              <td [attr.data-label]="'services.fields.category' | transloco">
+                {{ item.category }}
+              </td>
+              <td [attr.data-label]="'common.fields.status' | transloco">
                 <span
                   class="status"
                   [class.inactive]="item.activationStatus === 'INACTIVE'"
-                  >{{
-                    item.activationStatus === "ACTIVE" ? "Active" : "Inactive"
-                  }}</span
+                  >{{ 'enums.activationStatus.' + item.activationStatus | transloco }}</span
                 >
               </td>
-              <td class="price" data-label="Price">
+              <td class="price" [attr.data-label]="'services.fields.price' | transloco">
                 {{
                   item.price === 0
-                    ? "Included"
-                    : "COP " + (item.price | number: "1.0-2")
+                    ? ('services.included' | transloco)
+                    : (item.price | currency: 'COP' : 'symbol' : '1.0-2')
                 }}
               </td>
-              <td data-label="Actions">
+              <td [attr.data-label]="'common.fields.actions' | transloco">
                 <div class="actions">
-                  <a [routerLink]="[base, 'services', item.serviceId]">View</a
-                  ><a [routerLink]="[base, 'services', item.serviceId, 'edit']"
-                    >Edit</a
+                  <a [routerLink]="[base, 'services', item.serviceId]">{{
+                    'common.actions.view' | transloco
+                  }}</a
+                  ><a [routerLink]="[base, 'services', item.serviceId, 'edit']">{{
+                    'common.actions.edit' | transloco
+                  }}</a
                   ><button
                     type="button"
                     class="toggle-action"
                     (click)="toggleActivationSubject.next(item)"
                   >
                     {{
-                      item.activationStatus === "ACTIVE"
-                        ? "Deactivate"
-                        : "Activate"
+                      (item.activationStatus === 'ACTIVE'
+                        ? 'common.actions.deactivate'
+                        : 'common.actions.activate'
+                      ) | transloco
                     }}
                   </button>
                 </div>
@@ -85,8 +91,8 @@
     </div>
   } @else {
     <div class="empty">
-      <h2>No services yet</h2>
-      <p>Create a service to get started.</p>
+      <h2>{{ 'services.table.emptyTitle' | transloco }}</h2>
+      <p>{{ 'services.table.emptyText' | transloco }}</p>
     </div>
   }
 </section>

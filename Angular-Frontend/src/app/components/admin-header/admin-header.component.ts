@@ -6,24 +6,27 @@ import {
   RouterLink,
   RouterLinkActive,
 } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { fromEvent } from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { basePath } from '../../utils/base-path';
 
 export interface AdminSection {
-  label: string;
+  // Clave de traducción del enlace.
+  labelKey: string;
   path: string;
 }
 
-// Secciones de la barra, en el mismo orden que el admin-shell de la aplicación de Thymeleaf.
+// Secciones administrativas. El operador tiene su tablero como inicio y conserva solo clientes y reservas.
 export const ADMIN_SECTIONS: AdminSection[] = [
-  { label: 'Clients', path: 'clients' },
-  { label: 'Reservations', path: 'reservations' },
-  { label: 'Room types', path: 'room-types' },
-  { label: 'Rooms', path: 'rooms' },
-  { label: 'Services', path: 'services' },
-  { label: 'Administrators', path: 'administrators' },
-  { label: 'Operators', path: 'operators' },
+  { labelKey: 'adminHeader.sections.clients', path: 'clients' },
+  { labelKey: 'adminHeader.sections.reservations', path: 'reservations' },
+  { labelKey: 'adminHeader.sections.accounting', path: 'accounting' },
+  { labelKey: 'adminHeader.sections.roomTypes', path: 'room-types' },
+  { labelKey: 'adminHeader.sections.rooms', path: 'rooms' },
+  { labelKey: 'adminHeader.sections.services', path: 'services' },
+  { labelKey: 'adminHeader.sections.administrators', path: 'administrators' },
+  { labelKey: 'adminHeader.sections.operators', path: 'operators' },
 ];
 
 /**
@@ -32,7 +35,7 @@ export const ADMIN_SECTIONS: AdminSection[] = [
  */
 @Component({
   selector: 'app-admin-header',
-  imports: [OptimizedImageDirective, RouterLink, RouterLinkActive],
+  imports: [OptimizedImageDirective, RouterLink, RouterLinkActive, TranslocoPipe],
   templateUrl: './admin-header.component.html',
   styleUrl: './admin-header.component.scss',
 })
@@ -60,7 +63,6 @@ export class AdminHeaderComponent {
   menuOpen = false;
 
   constructor() {
-    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
     fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => this.closeDesktopMenu());
   }
 
@@ -76,6 +78,8 @@ export class AdminHeaderComponent {
     void this.router.navigate(['/']);
   }
   closeDesktopMenu(): void {
-    if (window.innerWidth > 1180) this.closeMenu();
+    if (window.innerWidth > 1440) {
+      this.closeMenu();
+    }
   }
 }

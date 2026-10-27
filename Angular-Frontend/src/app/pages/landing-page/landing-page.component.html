@@ -1,7 +1,7 @@
 <div
   class="scroll-progress"
   role="progressbar"
-  aria-label="Page scroll progress"
+  [attr.aria-label]="'landing.scrollProgress' | transloco"
   aria-valuemin="0"
   aria-valuemax="100"
   [attr.aria-valuenow]="scrollProgress.toFixed(0)"

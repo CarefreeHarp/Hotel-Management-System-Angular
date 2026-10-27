@@ -2,7 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EMPTY, Observable, Subject, catchError, exhaustMap, forkJoin, of, switchMap, tap } from 'rxjs';
+import { TranslocoPipe, translate } from '@jsverse/transloco';
+import {
+  EMPTY, Observable, Subject, catchError, concatMap, exhaustMap, finalize,
+  forkJoin, of, switchMap, tap,
+} from 'rxjs';
 import { ButtonComponent } from '../../components/button/button.component';
 import { ClientInfoComponent } from '../../components/client-info/client-info.component';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -16,6 +20,7 @@ import { ReservationService } from '../../services/reservation.service';
 import { apiErrorMessage } from '../../utils/api-error';
 import { clientQuery } from '../../utils/client-query';
 import { catchErrorPage } from '../../utils/error-page';
+import { ReservationCancelDialogComponent } from './components/reservation-cancel-dialog/reservation-cancel-dialog.component';
 
 /** Carga el cliente indicado por auth y reutiliza el historial compartido para presentar sus reservas. */
 @Component({
@@ -28,11 +33,18 @@ import { catchErrorPage } from '../../utils/error-page';
     ButtonComponent,
     ClientInfoComponent,
     ReservationHistoryComponent,
+    ReservationCancelDialogComponent,
+    TranslocoPipe,
   ],
   templateUrl: './client-profile.component.html',
   styleUrl: './client-profile.component.scss',
 })
 export class ClientProfileComponent implements OnInit {
+
+  private readonly cancellationSubject = new Subject<number>();
+  pendingCancellationId: number | undefined;
+  isCancelling = false;
+  cancellationError = '';
 
   private readonly actionSubject = new Subject<void>();
   private readonly clients = inject(ClientService);
@@ -48,6 +60,11 @@ export class ClientProfileComponent implements OnInit {
   errorMessage = '';
 
   constructor() {
+    // Una confirmación en curso no debe iniciar otra escritura ni cancelarse por un segundo clic.
+    this.cancellationSubject.pipe(
+      exhaustMap((id) => this.performCancellation(id)),
+      takeUntilDestroyed(),
+    ).subscribe();
     // exhaustMap evita ejecutar otra acción mientras termina la petición actual.
     this.actionSubject.pipe(
       exhaustMap(() => this.performAction()),
@@ -63,6 +80,8 @@ export class ClientProfileComponent implements OnInit {
         // switchMap descarta la lectura anterior si cambia la ruta para mostrar solo la más reciente.
         switchMap((params) => {
           const id = this.authParams.auth;
+          this.pendingCancellationId = undefined;
+          this.cancellationError = '';
           this.client = undefined;
           this.reservations = [];
           this.isLoading = true;
@@ -86,6 +105,67 @@ export class ClientProfileComponent implements OnInit {
         this.isLoading = false;
       });
   }
+  get pendingCancellation(): ReservationDetails | undefined {
+    return this.reservations.find((detail) =>
+      detail.reservation.reservationId === this.pendingCancellationId,
+    );
+  }
+
+  requestCancellation(id: number): void {
+    if (this.isCancelling || this.pendingCancellationId !== undefined) {
+      return;
+    }
+    this.cancellationError = '';
+    this.pendingCancellationId = id;
+  }
+
+  dismissCancellation(): void {
+    if (this.isCancelling) {
+      return;
+    }
+    this.pendingCancellationId = undefined;
+    this.cancellationError = '';
+  }
+
+  confirmCancellation(): void {
+    if (this.pendingCancellationId !== undefined && !this.isCancelling) {
+      this.cancellationSubject.next(this.pendingCancellationId);
+    }
+  }
+
+  /** Cancela y vuelve a leer el detalle para actualizar tarjeta y filtros con el estado persistido. */
+  private performCancellation(id: number): Observable<unknown> {
+    const clientId = this.authParams.auth;
+    if (clientId === undefined) {
+      return EMPTY;
+    }
+    this.isCancelling = true;
+    this.cancellationError = '';
+    return this.reservationsService.cancel(id).pipe(
+      // La lectura espera la escritura. Un cambio de filtro no interrumpe la cancelación.
+      concatMap(() => this.reservationsService.details(id)),
+      tap((detail) => {
+        // Una respuesta tardía no debe modificar el perfil de otro cliente tras cambiar auth.
+        if (this.authParams.auth !== clientId) {
+          return;
+        }
+        this.reservations = this.reservations.map((current) =>
+          current.reservation.reservationId === id ? detail : current,
+        );
+        this.pendingCancellationId = undefined;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (this.authParams.auth === clientId) {
+          this.cancellationError = apiErrorMessage(error, 'profile.cancel.error');
+        }
+        return EMPTY;
+      }),
+      finalize(() => {
+        this.isCancelling = false;
+      }),
+    );
+  }
+
   deleteAccount(): void {
     this.actionSubject.next();
   }
@@ -94,9 +174,10 @@ export class ClientProfileComponent implements OnInit {
     if (
       !this.client ||
       this.isDeleting ||
-      !confirm('Delete your Atlan Suites account? This cannot be undone.')
-    )
+      !confirm(translate('profile.confirmDelete'))
+    ) {
       return EMPTY;
+    }
     this.isDeleting = true;
     this.errorMessage = '';
     return this.clients
@@ -106,10 +187,7 @@ export class ClientProfileComponent implements OnInit {
           void this.router.navigate(['/']);
         }),
         catchError((error: HttpErrorResponse) => {
-          this.errorMessage = apiErrorMessage(
-            error,
-            'Your account could not be deleted.',
-          );
+          this.errorMessage = apiErrorMessage(error, 'profile.deleteError');
           this.isDeleting = false;
 
           return EMPTY;

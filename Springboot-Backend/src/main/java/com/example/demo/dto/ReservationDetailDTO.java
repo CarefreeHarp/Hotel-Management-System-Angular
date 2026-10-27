@@ -1,18 +1,22 @@
 package com.example.demo.dto;
 
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /** Un record transporta estos datos sin setters. Spring lo convierte a JSON para Angular. */
 public record ReservationDetailDTO(ReservationDTO reservation, Integer clientId, Integer roomFloor,
         Integer maxCapacity, LocalDateTime createdAt, BigDecimal nightlyPrice, long nights,
         Integer folioId, String folioStatus, LocalDateTime issuedAt, BigDecimal subtotal,
-        BigDecimal total, BigDecimal paidTotal, BigDecimal balance, List<Charge> charges, List<PaymentView> payments,
+        BigDecimal total, BigDecimal paidTotal, BigDecimal refundedTotal, BigDecimal balance,
+        List<Charge> charges, List<PaymentView> payments, List<RefundView> refunds,
         String roomTypeMainPhoto) {
     public record Charge(Integer itemId, Integer serviceId, String concept, Integer quantity, BigDecimal unitPrice,
             BigDecimal subtotal, LocalDateTime chargedAt) {
+    }
+
+    public record RefundView(Integer refundId, BigDecimal amount, String refundMethod,
+            String reason, String status, String notes, LocalDateTime refundedAt, String operatorName) {
     }
 
     public record PaymentView(Integer paymentId, BigDecimal amount, String paymentMethod,

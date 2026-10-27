@@ -1,0 +1,81 @@
+<app-header [solid]="true" />
+<main class="catalog-page">
+  <div class="catalog-page__container">
+    @if (isLoading) {
+      <app-skeleton variant="detail" [label]="'paymentHistory.loading' | transloco" />
+    } @else if (client) {
+      <app-page-heading
+        [eyebrow]="'paymentHistory.eyebrow' | transloco"
+        [title]="'profile.paymentsLink' | transloco"
+        [description]="'paymentHistory.description' | transloco"
+      >
+        <a appButton variant="secondary" routerLink="/profile" [queryParams]="authParams">
+          {{ 'reservations.detail.backToMyReservations' | transloco }}
+        </a>
+      </app-page-heading>
+
+      <section class="history" aria-labelledby="movements-title">
+        <div class="history-heading">
+          <h2 id="movements-title">{{ 'paymentHistory.title' | transloco }}</h2>
+          <span>{{
+            (filteredMovements.length === 1 ? 'paymentHistory.recordsOne' : 'paymentHistory.recordsMany')
+              | transloco: { count: filteredMovements.length }
+          }}</span>
+        </div>
+        <nav class="filters" [attr.aria-label]="'paymentHistory.filtersLabel' | transloco">
+          <button appButton variant="secondary" type="button" [attr.aria-pressed]="selectedFilter === 'all'"
+            (click)="selectedFilter = 'all'">{{ 'list.all' | transloco }}</button>
+          <button appButton variant="secondary" type="button" [attr.aria-pressed]="selectedFilter === 'payment'"
+            (click)="selectedFilter = 'payment'"><img src="/icons/credit_card_check.png" alt="" width="20" height="20" />{{ 'paymentHistory.payments' | transloco }}</button>
+          <button appButton variant="secondary" type="button" [attr.aria-pressed]="selectedFilter === 'refund'"
+            (click)="selectedFilter = 'refund'"><img src="/icons/refund.png" alt="" width="20" height="20" />{{ 'paymentHistory.refunds' | transloco }}</button>
+        </nav>
+
+        <div class="movement-list">
+          @for (movement of filteredMovements; track movement.key) {
+            <article class="movement" [class.movement--refund]="movement.kind === 'refund'">
+              <div class="movement-main">
+                <span class="movement-kind"><img [src]="movement.kind === 'payment' ? '/icons/credit_card_check.png' : '/icons/refund.png'" alt="" width="20" height="20" />{{ (movement.kind === 'payment' ? 'paymentHistory.payment' : 'paymentHistory.refund') | transloco }}</span>
+                <h3>{{ movement.amount | currency: "COP" : "symbol" : "1.0-2" }}</h3>
+                <p>
+                  <time [attr.datetime]="movement.date">{{ movement.date | date: "medium" }}</time>
+                  <span aria-hidden="true"> · </span>{{ 'enums.paymentMethod.' + movement.method | transloco }}
+                  <span aria-hidden="true"> · </span>{{ 'enums.paymentStatus.' + movement.status | transloco }}
+                </p>
+              </div>
+              <div class="movement-detail">
+                <a [routerLink]="['/reservation', movement.reservationId]" [queryParams]="authParams">
+                  {{ movement.reservationCode }}
+                </a>
+                @if (movement.reason; as reason) {
+                  <span>{{ 'enums.refundReason.' + reason | transloco }}</span>
+                }
+                @if (movement.operatorName) {
+                  <span>{{
+                    'paymentHistory.processedBy'
+                      | transloco: {
+                          name: movement.operatorName === selfService
+                            ? ('reservationFinance.selfService' | transloco)
+                            : movement.operatorName
+                        }
+                  }}</span>
+                }
+              </div>
+            </article>
+          } @empty {
+            <p class="empty-state">
+              {{
+                (selectedFilter === 'all'
+                  ? 'paymentHistory.empty'
+                  : selectedFilter === 'payment'
+                    ? 'paymentHistory.noPayments'
+                    : 'paymentHistory.noRefunds'
+                ) | transloco
+              }}
+            </p>
+          }
+        </div>
+      </section>
+    }
+  </div>
+</main>

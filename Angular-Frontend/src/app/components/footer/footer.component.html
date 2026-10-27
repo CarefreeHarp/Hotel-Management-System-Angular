@@ -2,26 +2,29 @@
   <div class="footer-container">
     <section class="footer-cta" aria-labelledby="booking-title">
       <div class="layout-group">
-        <p class="eyebrow">Reserve</p>
-        <h2 id="booking-title">Book your<br />stay</h2>
+        <p class="eyebrow">{{ 'footer.reserve' | transloco }}</p>
+        <h2 id="booking-title">
+          {{ 'footer.bookTitleStart' | transloco }}<br />{{ 'footer.bookTitleEnd' | transloco }}
+        </h2>
         <a
           routerLink="/book-now"
           [queryParams]="{ auth: authParams.auth, step: 'dates' }"
           class="footer-book-button"
         >
-          Book now
+          {{ 'footer.bookNow' | transloco }}
         </a>
       </div>
       <address class="footer-contact-card">
-        <p class="eyebrow">Contact</p>
+        <p class="eyebrow">{{ 'footer.contact' | transloco }}</p>
         <p>
-          <a href="mailto:reservations&#64;atlansuites.com"
-            >reservations&#64;atlansuites.com</a
-          ><br /><a href="tel:+6565550142">+65 6555 0142</a>
+          <a [href]="'mailto:' + contactEmail">{{ contactEmail }}</a><br /><a
+            href="tel:+6565550142"
+            >{{ contactPhone }}</a
+          >
         </p>
         <hr />
-        <p class="eyebrow">Hotel location</p>
-        <p>Singapore</p>
+        <p class="eyebrow">{{ 'footer.location' | transloco }}</p>
+        <p>{{ 'app.city' | transloco }}</p>
       </address>
     </section>
 
@@ -33,51 +36,58 @@
         alt="Atlan Suites"
         class="footer-logo"
       />
-      <figcaption>Singapore</figcaption>
+      <figcaption>{{ 'app.city' | transloco }}</figcaption>
     </figure>
 
     <div class="footer-content">
       <section aria-labelledby="discover-title">
-        <h2 class="footer-heading" id="discover-title">Discover Atlan</h2>
+        <h2 class="footer-heading" id="discover-title">
+          {{ 'footer.discover.title' | transloco }}
+        </h2>
         <ul class="footer-links">
-          <li><span>About us</span></li>
+          <li><span>{{ 'footer.discover.about' | transloco }}</span></li>
           <li>
             <a
               routerLink="/"
               [queryParams]="authParams"
               fragment="rooms-section"
-              >Room Types &amp; Suites</a
+              >{{ 'footer.discover.rooms' | transloco }}</a
             >
           </li>
           <li>
-            <a routerLink="/services-catalog" [queryParams]="authParams"
-              >Services</a
-            >
+            <a routerLink="/services-catalog" [queryParams]="authParams">{{
+              'footer.discover.services' | transloco
+            }}</a>
           </li>
-          <li><span>Contact us</span></li>
+          <li><span>{{ 'footer.discover.contact' | transloco }}</span></li>
         </ul>
       </section>
 
       <section aria-labelledby="information-title">
         <h2 class="footer-heading" id="information-title">
-          Useful information
+          {{ 'footer.information.title' | transloco }}
         </h2>
         <ul class="footer-links">
-          <li><span>Reservations</span></li>
-          <li><span>Travel guide</span></li>
-          <li><span>Amenities</span></li>
-          <li><span>Frequently asked questions</span></li>
+          <li><span>{{ 'footer.information.reservations' | transloco }}</span></li>
+          <li><span>{{ 'footer.information.travelGuide' | transloco }}</span></li>
+          <li><span>{{ 'footer.information.amenities' | transloco }}</span></li>
+          <li><span>{{ 'footer.information.faq' | transloco }}</span></li>
         </ul>
       </section>
 
       <section aria-labelledby="social-title">
-        <h2 class="footer-heading" id="social-title">Connect with us</h2>
-        <nav class="social-links" aria-label="Social media">
+        <h2 class="footer-heading" id="social-title">
+          {{ 'footer.social.title' | transloco }}
+        </h2>
+        <nav
+          class="social-links"
+          [attr.aria-label]="'footer.social.label' | transloco"
+        >
           <a
             href="https://www.instagram.com/"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Instagram"
+            [attr.aria-label]="'footer.social.instagram' | transloco"
             ><img
               appImage
               imageWidth="48"
@@ -88,7 +98,7 @@
             href="https://www.facebook.com/"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Facebook"
+            [attr.aria-label]="'footer.social.facebook' | transloco"
             ><img
               appImage
               imageWidth="48"
@@ -99,7 +109,7 @@
             href="https://www.youtube.com/"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="YouTube"
+            [attr.aria-label]="'footer.social.youtube' | transloco"
             ><img
               appImage
               imageWidth="48"
@@ -110,7 +120,7 @@
             href="https://x.com/"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="X"
+            [attr.aria-label]="'footer.social.x' | transloco"
             ><img
               appImage
               imageWidth="48"
@@ -121,20 +131,22 @@
       </section>
 
       <section aria-labelledby="newsletter-title">
-        <h2 class="footer-heading" id="newsletter-title">Get inspired</h2>
+        <h2 class="footer-heading" id="newsletter-title">
+          {{ 'footer.newsletter.title' | transloco }}
+        </h2>
         <p class="footer-newsletter-text">
-          Subscribe to our newsletter for the latest stories and offers.
+          {{ 'footer.newsletter.text' | transloco }}
         </p>
       </section>
     </div>
 
     <div class="footer-bottom">
       <div class="footer-legal">
-        <span>Privacy notice</span>
-        <span>Terms of use</span>
-        <span>Accessibility</span>
+        <span>{{ 'footer.legal.privacy' | transloco }}</span>
+        <span>{{ 'footer.legal.terms' | transloco }}</span>
+        <span>{{ 'footer.legal.accessibility' | transloco }}</span>
       </div>
-      <span>© 2026 Atlan Suites. All rights reserved.</span>
+      <span>{{ 'footer.copyright' | transloco }}</span>
     </div>
   </div>
 </footer>

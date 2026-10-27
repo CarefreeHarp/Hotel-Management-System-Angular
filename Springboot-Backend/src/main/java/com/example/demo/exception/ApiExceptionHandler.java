@@ -1,10 +1,9 @@
 package com.example.demo.exception;
 
-import java.time.LocalDateTime;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.lang.reflect.Field;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,11 +150,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleUnexpected(Exception ex, WebRequest request) {
         // Al confirmar la transacción, Spring envuelve los errores de validación y de integridad.
         ConstraintViolationException violation = findCause(ex, ConstraintViolationException.class);
-        if (violation != null)
+        if (violation != null) {
             return handleConstraintViolation(violation, request);
+        }
         DataIntegrityViolationException integrity = findCause(ex, DataIntegrityViolationException.class);
-        if (integrity != null)
+        if (integrity != null) {
             return handleDataIntegrity(integrity, request);
+        }
         logger.error("Unexpected error on " + path(request), ex);
         return respond(ex, HttpStatus.INTERNAL_SERVER_ERROR, UNEXPECTED, Map.of(), new HttpHeaders(), request);
     }
@@ -190,8 +191,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private static void addFieldError(Map<String, String> fields, String field, String message, String rule) {
-        if (!fields.containsKey(field) || REQUIRED_RULES.contains(rule))
+        if (!fields.containsKey(field) || REQUIRED_RULES.contains(rule)) {
             fields.put(field, message);
+        }
     }
 
     /** Posición del campo en la clase. secondaryPhotos[2] usa la de secondaryPhotos. */
@@ -208,8 +210,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     /** Campo del JSON que Jackson no pudo leer, por ejemplo status o room.roomType.roomTypeId. */
     private static String jsonField(HttpMessageNotReadableException ex) {
         JacksonException jackson = findCause(ex, JacksonException.class);
-        if (jackson == null)
+        if (jackson == null) {
             return null;
+        }
         StringBuilder field = new StringBuilder();
         for (JacksonException.Reference reference : jackson.getPath()) {
             if (reference.getPropertyName() != null) {
@@ -223,8 +226,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static <T extends Throwable> T findCause(Throwable ex, Class<T> type) {
         for (Throwable cause = ex; cause != null; cause = cause.getCause() == cause ? null : cause.getCause()) {
-            if (type.isInstance(cause))
+            if (type.isInstance(cause)) {
                 return type.cast(cause);
+            }
         }
         return null;
     }

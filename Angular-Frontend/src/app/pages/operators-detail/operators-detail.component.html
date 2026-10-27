@@ -2,24 +2,24 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <app-skeleton variant="detail" label="Loading operator…" />
+      <app-skeleton variant="detail" [label]="'operators.detail.loading' | transloco" />
     } @else {
       @if (item; as operator) {
         <app-page-heading
-          eyebrow="Operator profile"
+          [eyebrow]="'operators.detail.eyebrow' | transloco"
           [title]="operator.name + ' ' + operator.lastName"
-          description="Account details and reporting line registered in the portal."
+          [description]="'operators.detail.description' | transloco"
         >
           @if (!isOperatorProfile) {
             <a
               appButton
               [routerLink]="[base, 'operators', operator.operatorId, 'edit']"
-              >Edit operator</a
+              >{{ 'operators.detail.edit' | transloco }}</a
             >
           }
         </app-page-heading>
         @if (saved) {
-          <p class="saved-alert" role="status">Operator saved successfully.</p>
+          <p class="saved-alert" role="status">{{ 'operators.detail.saved' | transloco }}</p>
         }
         <app-operator-info [operator]="operator" />
       }

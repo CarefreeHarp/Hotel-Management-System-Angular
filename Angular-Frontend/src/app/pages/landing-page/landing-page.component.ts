@@ -6,6 +6,7 @@ import {
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { fromEvent } from 'rxjs';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -23,6 +24,7 @@ import { SuitesComponent } from './components/suites/suites.component';
     HotelVideoComponent,
     SuitesComponent,
     LandingServicesComponent,
+    TranslocoPipe,
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
@@ -36,7 +38,6 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
   private fadeObserver?: IntersectionObserver;
 
   constructor() {
-    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
     fromEvent(window, 'scroll').pipe(takeUntilDestroyed()).subscribe(() => this.updateScrollProgress());
   }
 

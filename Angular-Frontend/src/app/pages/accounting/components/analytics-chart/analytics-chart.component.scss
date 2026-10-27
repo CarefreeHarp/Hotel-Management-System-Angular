@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.chart {
+  width: 100%;
+  height: 290px;
+}
+@media (max-width: 600px) {
+  .chart {
+    height: 300px;
+  }
+}

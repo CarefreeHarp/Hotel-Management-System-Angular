@@ -14,7 +14,7 @@
     <span class="menu-bars" aria-hidden="true"
       ><span></span><span></span><span></span
     ></span>
-    <span>Menú</span>
+    <span>{{ 'header.menu' | transloco }}</span>
   </button>
   <a
     routerLink="/"
@@ -49,9 +49,9 @@
           routerLink="/profile"
           [queryParams]="authParams"
           (click)="publicMenu.close()"
-          aria-label="My profile"
+          [attr.aria-label]="'header.myProfile' | transloco"
         >
-          <span class="user-role-badge">Guest</span
+          <span class="user-role-badge">{{ 'header.guestBadge' | transloco }}</span
           ><span class="user-name-text"
             >{{ client.name }} {{ client.lastName }}</span
           >
@@ -59,7 +59,7 @@
       }
     } @else {
       <a routerLink="/login" class="glass-button" (click)="publicMenu.close()"
-        >Login
+        >{{ 'header.login' | transloco }}
       </a>
     }
     <a
@@ -67,7 +67,7 @@
       routerLink="/book-now"
       [queryParams]="{ auth: authParams.auth, step: 'dates' }"
       (click)="publicMenu.close()"
-      >Book now
+      >{{ 'header.bookNow' | transloco }}
     </a>
     @if (authParams.auth) {
       <button
@@ -75,7 +75,7 @@
         type="button"
         (click)="publicMenu.close(); logout()"
       >
-        Log out
+        {{ 'header.logout' | transloco }}
       </button>
     }
   </ng-template>

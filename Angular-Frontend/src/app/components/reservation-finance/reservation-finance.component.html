@@ -1,0 +1,175 @@
+@if (detail; as detail) {
+  <section class="panel" aria-labelledby="price-title">
+    <h2 id="price-title">{{ 'reservationFinance.priceDetails' | transloco }}</h2>
+    <dl class="price-list">
+      <div>
+        <dt>
+          {{
+            (detail.nights === 1
+              ? 'reservationFinance.roomNightsOne'
+              : 'reservationFinance.roomNightsMany'
+            ) | transloco: { count: detail.nights }
+          }}
+        </dt>
+        <dd>
+          {{
+            detail.nightlyPrice * detail.nights
+              | currency: "COP" : "symbol" : "1.0-2"
+          }}
+        </dd>
+      </div>
+      @for (charge of detail.charges; track $index) {
+        <div>
+          <dt>
+            {{ charge.concept }} × {{ charge.quantity
+            }}<small>{{
+              'reservationFinance.each'
+                | transloco
+                  : {
+                      price:
+                        (charge.unitPrice | currency: 'COP' : 'symbol' : '1.0-2'),
+                    }
+            }}</small>
+          </dt>
+          <dd>{{ charge.subtotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+        </div>
+      } @empty {
+        <div>
+          <dt>{{ 'reservationFinance.additionalServices' | transloco }}</dt>
+          <dd>{{ 'reservationFinance.none' | transloco }}</dd>
+        </div>
+      }
+      <div class="total">
+        <dt>{{ 'reservationFinance.total' | transloco }}</dt>
+        <dd>{{ detail.total | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'reservationFinance.netPaid' | transloco }}</dt>
+        <dd>{{ detail.paidTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+      </div>
+      @if (detail.refundedTotal > 0) {
+        <div>
+          <dt>{{ 'reservationFinance.refunded' | transloco }}</dt>
+          <dd>{{ detail.refundedTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+        </div>
+      }
+      <div class="balance">
+        <dt>{{ 'reservationFinance.balance' | transloco }}</dt>
+        <dd>{{ detail.balance | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+      </div>
+    </dl>
+  </section>
+  <section class="panel" aria-labelledby="folio-title">
+    <h2 id="folio-title">{{ 'reservationFinance.folioTitle' | transloco }}</h2>
+    @if (detail.folioId; as folioId) {
+      <p class="folio">
+        {{ 'reservationFinance.folio' | transloco: { id: folioId } }}
+        <span>{{ 'enums.folioStatus.' + detail.folioStatus | transloco }}</span>
+      </p>
+      <p class="muted">
+        {{
+          'reservationFinance.issued'
+            | transloco: { date: (detail.issuedAt | date: 'medium') }
+        }}
+      </p>
+    } @else {
+      <p class="muted">{{ 'reservationFinance.noFolio' | transloco }}</p>
+    }
+    @for (charge of detail.charges; track $index) {
+      <article class="record">
+        <h3>{{ charge.concept }}</h3>
+        <p class="muted">
+          {{ 'reservationFinance.quantity' | transloco: { quantity: charge.quantity } }}
+          @if (charge.itemId) {
+            · {{ 'reservationFinance.charge' | transloco: { id: charge.itemId } }}
+          }
+        </p>
+        @if (charge.chargedAt) {
+          <p class="muted">{{ charge.chargedAt | date: "medium" }}</p>
+        }
+      </article>
+    } @empty {
+      <p class="muted">{{ 'reservationFinance.noServices' | transloco }}</p>
+    }
+  </section>
+  <section class="panel" aria-labelledby="payments-title">
+    <h2 id="payments-title">{{ 'reservationFinance.paymentsTitle' | transloco }}</h2>
+    @for (payment of detail.payments; track payment.paymentId) {
+      <article class="record">
+        <header>
+          <h3>{{ 'reservationFinance.payment' | transloco: { id: payment.paymentId } }}</h3>
+          <span>{{ 'enums.paymentStatus.' + payment.status | transloco }}</span>
+        </header>
+        <strong>{{
+          payment.amount | currency: "COP" : "symbol" : "1.0-2"
+        }}</strong>
+        <dl class="payment-facts">
+          <div>
+            <dt>{{ 'reservationFinance.date' | transloco }}</dt>
+            <dd>{{ payment.paidAt | date: "medium" }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'reservationFinance.method' | transloco }}</dt>
+            <dd>{{ 'enums.paymentMethod.' + payment.paymentMethod | transloco }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'reservationFinance.processedBy' | transloco }}</dt>
+            <dd>
+              {{
+                payment.operatorName === selfService
+                  ? ('reservationFinance.selfService' | transloco)
+                  : payment.operatorName
+              }}
+            </dd>
+          </div>
+        </dl>
+      </article>
+    } @empty {
+      <p class="muted">{{ 'reservationFinance.noPayments' | transloco }}</p>
+    }
+  </section>
+  @if (detail.refunds.length > 0) {
+    <section class="panel" aria-labelledby="refunds-title">
+      <h2 id="refunds-title">{{ 'reservationFinance.refundsTitle' | transloco }}</h2>
+      @for (refund of detail.refunds; track refund.refundId) {
+        <article class="record">
+          <header>
+            <h3>{{ 'reservationFinance.refund' | transloco: { id: refund.refundId } }}</h3>
+            <span>{{ 'enums.paymentStatus.' + refund.status | transloco }}</span>
+          </header>
+          <strong>{{ refund.amount | currency: "COP" : "symbol" : "1.0-2" }}</strong>
+          <dl class="payment-facts">
+            <div>
+              <dt>{{ 'reservationFinance.date' | transloco }}</dt>
+              <dd>{{ refund.refundedAt | date: "medium" }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'reservationFinance.method' | transloco }}</dt>
+              <dd>{{ 'enums.paymentMethod.' + refund.refundMethod | transloco }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'reservationFinance.reason' | transloco }}</dt>
+              <dd>{{ 'enums.refundReason.' + refund.reason | transloco }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'reservationFinance.processedBy' | transloco }}</dt>
+              <dd>
+                {{
+                  refund.operatorName === selfService
+                    ? ('reservationFinance.selfService' | transloco)
+                    : refund.operatorName
+                }}
+              </dd>
+            </div>
+            @if (refund.notes) {
+              <div>
+                <dt>{{ 'reservationFinance.notes' | transloco }}</dt>
+                <dd>{{ refund.notes }}</dd>
+              </div>
+            }
+          </dl>
+        </article>
+      }
+    </section>
+  }
+}

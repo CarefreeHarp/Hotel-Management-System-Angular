@@ -1,0 +1,252 @@
+<app-admin-header />
+<main class="accounting-page">
+  <header class="page-heading">
+    <div>
+      <h1>{{ 'accounting.title' | transloco }}</h1>
+    </div>
+  </header>
+  <form
+    class="filters"
+    #filters="ngForm"
+    (ngSubmit)="applyFilters()"
+    [attr.aria-label]="'accounting.period' | transloco"
+  >
+    <label
+      >{{ 'accounting.from' | transloco }}<input
+        type="date"
+        name="from"
+        [(ngModel)]="from"
+        [max]="to"
+        required
+    /></label>
+    <label
+      >{{ 'accounting.to' | transloco }}<input type="date" name="to" [(ngModel)]="to" [min]="from" required
+    /></label>
+    <button appButton type="submit" [disabled]="!filters.valid || from > to">
+      {{ 'accounting.apply' | transloco }} <span aria-hidden="true">↗</span>
+    </button>
+  </form>
+  @if (state$ | async; as state) {
+    @if (state.loading) {
+      <app-skeleton
+        variant="detail"
+        [label]="'accounting.loading' | transloco"
+      />
+    } @else if (state.error) {
+      <section class="error-notice" role="alert">
+        <h2>{{ 'accounting.unavailable' | transloco }}</h2>
+        <p>{{ state.error }}</p>
+        <button appButton type="button" (click)="retry()">{{ 'common.actions.tryAgain' | transloco }}</button>
+      </section>
+    } @else {
+      @if (state.data; as data) {
+        <p class="period-caption">
+          {{ 'accounting.periodCaption' | transloco }}
+          <strong
+            >{{ data.from | date: "mediumDate" }} –
+            {{ data.to | date: "mediumDate" }}</strong
+          >
+        </p>
+        @if (state.reservationCount === 0) {
+          <p class="basis-note" role="status">
+            {{ 'accounting.noBookings' | transloco }}
+          </p>
+        }
+        <app-accounting-overview [financial]="data.financial" />
+        <section class="stays-panel" aria-labelledby="stays-title">
+          <h2 id="stays-title" class="sr-only">{{ 'accounting.stays.title' | transloco }}</h2>
+          <dl class="stay-metrics">
+            <div>
+              <dt>
+                <img
+                  src="/icons/nights.png"
+                  alt=""
+                  width="28"
+                  height="28"
+                />{{ 'accounting.stays.averageStay' | transloco }}
+              </dt>
+              <dd>
+                {{ data.stays.averageNights | number: "1.0-1" }}
+                <small>{{ 'accounting.stays.nights' | transloco }}</small>
+              </dd>
+            </div>
+            <div>
+              <dt>
+                <img
+                  src="/icons/guests.png"
+                  alt=""
+                  width="28"
+                  height="28"
+                />{{ 'accounting.stays.averageGuests' | transloco }}
+              </dt>
+              <dd>
+                {{ data.stays.averageGuests | number: "1.0-1" }}
+              </dd>
+            </div>
+          </dl>
+        </section>
+        @if (state.charts; as charts) {
+          <div class="chart-grid">
+            <section class="panel status-panel" aria-labelledby="status-title">
+              <header>
+                <h2 id="status-title">{{ 'accounting.status.title' | transloco }}</h2>
+              </header>
+              <app-analytics-chart
+                [options]="charts.statuses"
+                [label]="'accounting.status.chartLabel' | transloco"
+              />
+              <details>
+                <summary>{{ 'accounting.status.details' | transloco }}</summary>
+                <div class="table-scroll">
+                  <table>
+                    <caption class="sr-only">
+                      {{ 'accounting.status.caption' | transloco }}
+                    </caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">{{ 'common.fields.status' | transloco }}</th>
+                        <th scope="col">{{ 'adminHeader.sections.reservations' | transloco }}</th>
+                        <th scope="col">{{ 'accounting.status.share' | transloco }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (item of data.statuses; track item.status) {
+                        <tr>
+                          <th scope="row">{{ statusLabel(item.status) }}</th>
+                          <td>{{ item.reservations }}</td>
+                          <td>{{ item.percentage | number: "1.0-1" }}%</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            </section>
+            <section class="panel trend-panel" aria-labelledby="trend-title">
+              <header>
+                <h2 id="trend-title">{{ 'accounting.trend.title' | transloco }}</h2>
+              </header>
+              <app-analytics-chart
+                [options]="charts.trend"
+                [label]="'accounting.trend.chartLabel' | transloco"
+              />
+              <details>
+                <summary>{{ 'accounting.trend.details' | transloco }}</summary>
+                <div class="table-scroll">
+                  <table>
+                    <caption class="sr-only">
+                      {{ 'accounting.trend.caption' | transloco }}
+                    </caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">{{ 'accounting.trend.periodStarts' | transloco }}</th>
+                        <th scope="col">{{ 'adminHeader.sections.reservations' | transloco }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (item of data.trend; track item.date) {
+                        <tr>
+                          <th scope="row">
+                            {{ item.date | date: "mediumDate" }}
+                          </th>
+                          <td>{{ item.reservations }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            </section>
+            <section class="panel" aria-labelledby="rooms-title">
+              <header>
+                <h2 id="rooms-title">{{ 'accounting.roomTypes.title' | transloco }}</h2>
+              </header>
+              @if (data.roomTypes.length > 0) {
+                <app-analytics-chart
+                  [options]="charts.roomTypes"
+                  [label]="'accounting.roomTypes.chartLabel' | transloco"
+                />
+                <details>
+                  <summary>{{ 'accounting.roomTypes.details' | transloco }}</summary>
+                  <div class="table-scroll">
+                    <table>
+                      <caption class="sr-only">
+                        {{ 'accounting.roomTypes.caption' | transloco }}
+                      </caption>
+                      <thead>
+                        <tr>
+                          <th scope="col">{{ 'rooms.fields.roomType' | transloco }}</th>
+                          <th scope="col">{{ 'accounting.roomTypes.bookings' | transloco }}</th>
+                          <th scope="col">{{ 'booking.summary.nights' | transloco }}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (item of data.roomTypes; track item.name) {
+                          <tr>
+                            <th scope="row">{{ item.name }}</th>
+                            <td>{{ item.reservations }}</td>
+                            <td>{{ item.nights }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              } @else {
+                <p class="empty">
+                  {{ 'accounting.roomTypes.empty' | transloco }}
+                </p>
+              }
+            </section>
+            <section class="panel" aria-labelledby="services-title">
+              <header>
+                <h2 id="services-title">{{ 'accounting.services.title' | transloco }}</h2>
+              </header>
+              @if (data.services.length > 0) {
+                <app-analytics-chart
+                  [options]="charts.services"
+                  [label]="'accounting.services.chartLabel' | transloco"
+                />
+                <details>
+                  <summary>{{ 'accounting.services.details' | transloco }}</summary>
+                  <div class="table-scroll">
+                    <table>
+                      <caption class="sr-only">
+                        {{ 'accounting.services.caption' | transloco }}
+                      </caption>
+                      <thead>
+                        <tr>
+                          <th scope="col">{{ 'accounting.services.concept' | transloco }}</th>
+                          <th scope="col">{{ 'accounting.services.units' | transloco }}</th>
+                          <th scope="col">{{ 'accounting.services.value' | transloco }}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (item of data.services; track item.name) {
+                          <tr>
+                            <th scope="row">{{ item.name }}</th>
+                            <td>{{ item.quantity }}</td>
+                            <td>
+                              {{
+                                item.value
+                                  | currency: "COP" : "symbol" : "1.0-2"
+                              }}
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              } @else {
+                <p class="empty">
+                  {{ 'accounting.services.empty' | transloco }}
+                </p>
+              }
+            </section>
+          </div>
+        }
+      }
+    }
+  }
+</main>

@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { catchError, EMPTY, exhaustMap, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -12,6 +13,7 @@ import {
 } from '../../components/record-cards/record-cards.component';
 import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
 import { RoomListDTO } from '../../models/dto/room-list-dto';
+import { RoomStatus } from '../../models/enums/room-status';
 import { RoomService } from '../../services/room.service';
 import { apiErrorMessage } from '../../utils/api-error';
 import { basePath } from '../../utils/base-path';
@@ -35,6 +37,7 @@ import { RoomTableComponent } from './components/room-table/room-table.component
     ListControlsComponent,
     RecordCardsComponent,
     RoomTableComponent,
+    TranslocoPipe,
   ],
   templateUrl: './rooms-list.component.html',
   styleUrl: './rooms-list.component.scss',
@@ -53,10 +56,10 @@ export class RoomsListComponent {
   readonly sortOptions = [
     ...defaultSortOptions,
     ...[
-      { value: 'number-asc', label: 'Room: low to high' },
-      { value: 'number-desc', label: 'Room: high to low' },
-      { value: 'floor-asc', label: 'Floor: low to high' },
-      { value: 'floor-desc', label: 'Floor: high to low' },
+      { value: 'number-asc', labelKey: 'rooms.sort.numberAsc' },
+      { value: 'number-desc', labelKey: 'rooms.sort.numberDesc' },
+      { value: 'floor-asc', labelKey: 'rooms.sort.floorAsc' },
+      { value: 'floor-desc', labelKey: 'rooms.sort.floorDesc' },
     ],
   ];
   loading = true;
@@ -80,26 +83,25 @@ export class RoomsListComponent {
     return [
       {
         key: 'roomTypeName',
-        label: 'Room type',
+        labelKey: 'rooms.fields.roomType',
         options: [...new Set(this.items.map((item) => item.roomTypeName))]
           .sort()
           .map((value) => ({ value, label: value })),
       },
       {
         key: 'floor',
-        label: 'Floor',
+        labelKey: 'rooms.fields.floor',
         options: [...new Set(this.items.map((item) => item.floor))]
           .sort((a, b) => a - b)
           .map((value) => ({ value: String(value), label: String(value) })),
       },
       {
         key: 'status',
-        label: 'Physical status',
-        options: [
-          { value: 'AVAILABLE', label: 'Available' },
-          { value: 'OCCUPIED', label: 'Occupied' },
-          { value: 'MAINTENANCE', label: 'Maintenance' },
-        ],
+        labelKey: 'rooms.fields.physicalStatus',
+        options: Object.values(RoomStatus).map((value) => ({
+          value,
+          label: translate(`enums.roomStatus.${value}`),
+        })),
       },
     ];
   }
@@ -116,9 +118,12 @@ export class RoomsListComponent {
       .sort((a, b) => {
         const sort = this.listState.sort;
         const direction = sort.endsWith('-desc') ? -1 : 1;
-        if (sort.startsWith('floor-')) return direction * (a.floor - b.floor);
-        if (sort.startsWith('number-'))
+        if (sort.startsWith('floor-')) {
+          return direction * (a.floor - b.floor);
+        }
+        if (sort.startsWith('number-')) {
           return direction * (a.number - b.number);
+        }
         return compareRecords(
           sort,
           a.roomId,
@@ -147,13 +152,13 @@ export class RoomsListComponent {
   private toCards(items: RoomListDTO[]): RecordCard[] {
     return items.map((item) => ({
       id: item.roomId,
-      title: 'Room ' + item.number,
+      title: translate('rooms.roomNumber', { number: item.number }),
       image: item.mainPhoto,
       details: [
-        { label: 'Type', value: item.roomTypeName },
-        { label: 'Floor', value: String(item.floor) },
-        { label: 'Physical status', value: item.status },
-        { label: 'Activation', value: item.activationStatus },
+        { labelKey: 'rooms.fields.type', value: item.roomTypeName },
+        { labelKey: 'rooms.fields.floor', value: String(item.floor) },
+        { labelKey: 'rooms.fields.physicalStatus', value: translate(`enums.roomStatus.${item.status}`) },
+        { labelKey: 'common.fields.activation', value: translate(`enums.activationStatus.${item.activationStatus}`) },
       ],
       activationStatus: item.activationStatus,
       detailUrl: `${this.base}/rooms/${item.roomId}`,
@@ -179,7 +184,9 @@ export class RoomsListComponent {
   }
   toggleById(id: number): void {
     const item = this.items.find((item) => item.roomId === id);
-    if (item) this.toggle(item);
+    if (item) {
+      this.toggle(item);
+    }
   }
   toggle(item: RoomListDTO): void {
     this.actionSubject.next(item);
@@ -194,14 +201,11 @@ export class RoomsListComponent {
         : this.service.activate(item.roomId);
     return request.pipe(
       tap(() => {
-        this.message = 'Activation status updated.';
+        this.message = translate('common.activation.updated');
         this.load();
       }),
       catchError((error: HttpErrorResponse) => {
-        (this.error = apiErrorMessage(
-          error,
-          'The activation status could not be changed.',
-        )); return EMPTY;
+        (this.error = apiErrorMessage(error, 'common.activation.error')); return EMPTY;
       }),
     );
   }

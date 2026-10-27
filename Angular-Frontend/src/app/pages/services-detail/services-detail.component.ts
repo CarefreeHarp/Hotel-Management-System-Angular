@@ -1,6 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, map, Observable, startWith, switchMap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -24,6 +25,7 @@ import { ServiceInfoComponent } from './components/service-info/service-info.com
     PageHeadingComponent,
     ButtonComponent,
     GalleryComponent,
+    TranslocoPipe,
   ],
   templateUrl: './services-detail.component.html',
   styleUrl: './services-detail.component.scss',

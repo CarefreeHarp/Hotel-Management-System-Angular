@@ -1,15 +1,15 @@
 <app-admin-header />
 <main class="room-types-page-main">
-  <span class="page-watermark" aria-hidden="true">Operators</span>
+  <span class="page-watermark" aria-hidden="true">{{ 'operators.list.title' | transloco }}</span>
   <div class="page-container">
     <header class="catalog-heading">
       <div>
-        <p class="eyebrow">Atlan Suites · Staff management</p>
-        <h1>Operators</h1>
-        <p>View the registered operators and their administrator in charge.</p>
+        <p class="eyebrow">{{ 'common.staffEyebrow' | transloco }}</p>
+        <h1>{{ 'operators.list.title' | transloco }}</h1>
+        <p>{{ 'operators.list.description' | transloco }}</p>
       </div>
       <a appButton [create]="true" [routerLink]="[base, 'operators', 'new']"
-        >Create operator</a
+        >{{ 'operators.list.create' | transloco }}</a
       >
     </header>
     @if (message) {
@@ -19,7 +19,7 @@
       <p class="notice is-error" role="alert">{{ errorMessage }}</p>
     }
     @if (isLoading) {
-      <app-skeleton [variant]="listState.view === 'table' ? 'table' : 'cards'" label="Loading operators…" />
+      <app-skeleton [variant]="listState.view === 'table' ? 'table' : 'cards'" [label]="'operators.list.loading' | transloco" />
     } @else {
       <app-list-controls
         [state]="listState"
@@ -38,9 +38,13 @@
       }
       @if (operators.length) {
         <p class="staff-count">
-          {{ operators.length }} registered
-          {{ operators.length === 1 ? "operator" : "operators" }}
-          · <a [routerLink]="[base, 'administrators']">View administrators</a>
+          {{
+            (operators.length === 1
+              ? 'operators.list.countOne'
+              : 'operators.list.countMany'
+            ) | transloco: { count: operators.length }
+          }}
+          · <a [routerLink]="[base, 'administrators']">{{ 'operators.list.viewAdministrators' | transloco }}</a>
         </p>
       }
     }

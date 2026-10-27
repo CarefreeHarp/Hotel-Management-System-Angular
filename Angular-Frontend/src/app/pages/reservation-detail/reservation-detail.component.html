@@ -5,144 +5,85 @@
 }
 <main class="reservation-page">
   <div class="reservation-container">
-    <a
-      appButton
-      variant="secondary"
-      [routerLink]="backUrl"
-      [queryParams]="authParams"
-      >{{
-        clientHistoryId !== undefined
-          ? "Back to client"
-          : staff
-            ? "Back to reservations"
-            : "Back to my reservations"
-      }}</a
-    >
+    <div class="reservation-actions">
+      <a
+        appButton
+        variant="secondary"
+        [routerLink]="backUrl"
+        [queryParams]="authParams"
+        >{{ backLabelKey | transloco }}</a
+      >
+      @if ((detail && staff && clientHistoryId === undefined) || canModify) {
+        <a appButton [routerLink]="editUrl" [queryParams]="authParams">{{
+          'reservationContent.editEyebrow' | transloco
+        }}</a>
+      }
+      @if (canPay) {
+        <button appButton type="button" [disabled]="paying" (click)="togglePayment()">
+          {{ (showPayment ? 'reservations.detail.closePayment' : 'reservations.detail.addCardPayment') | transloco }}
+        </button>
+      }
+      @if (canTakeCash) {
+        <button appButton type="button" [disabled]="paying" (click)="toggleCashPayment()">
+          {{ (showCashPayment ? 'reservations.cash.close' : 'reservations.cash.title') | transloco }}
+        </button>
+      }
+    </div>
     @if (isLoading) {
-      <app-skeleton variant="detail" label="Loading reservation…" />
+      <app-skeleton variant="detail" [label]="'reservations.detail.loading' | transloco" />
     } @else if (detail) {
       @let item = detail;
-      @if (staff && saved) {
-        <p role="status">Reservation updated successfully.</p>
+      @if (saved) {
+        <p role="status">{{ 'reservations.detail.saved' | transloco }}</p>
       }
-      @if (staff && clientHistoryId === undefined) {
-        <a appButton [routerLink]="editUrl">Edit reservation</a>
+      @if (paymentSaved) {
+        <p role="status">{{ 'reservations.detail.paymentSaved' | transloco }}</p>
       }
-      <div class="reservation-layout">
-        <div class="reservation-main">
-          <section
-            class="panel status-panel"
-            aria-labelledby="reservation-title"
-          >
-            <p class="eyebrow">Your reservation</p>
-            <h1 id="reservation-title">
-              {{ item.reservation.status.replace("_", " ").toLowerCase() }}
-            </h1>
-            <dl class="facts">
-              <div>
-                <dt>Booking number</dt>
-                <dd>{{ item.reservation.reservationCode }}</dd>
-              </div>
-              <div>
-                <dt>Reservation ID</dt>
-                <dd>#{{ item.reservation.reservationId }}</dd>
-              </div>
-              <div>
-                <dt>Booking date</dt>
-                <dd>{{ item.createdAt | date: "medium" }}</dd>
-              </div>
-            </dl>
-          </section>
-          <section class="panel hotel-panel" aria-labelledby="hotel-title">
-            @if (item.roomTypeMainPhoto; as photo) {
-              <img
-                appImage
-                imageWidth="640"
-                [src]="photo"
-                [alt]="
-                  item.reservation.roomTypeName ?? 'Reserved accommodation'
-                "
-              />
+      @if (canPay) {
+        @if (showPayment) {
+          <app-booking-payment [additionalPayment]="true" [balance]="item.balance" [busy]="paying"
+            [serverErrors]="paymentErrors" (pay)="pay($event)">
+            @if (paymentError) {
+              <p bookingError role="alert">{{ paymentError }}</p>
             }
-            <div>
-              <p class="eyebrow">Your accommodation</p>
-              <h2 id="hotel-title">Singapore's Atlan Suites branch</h2>
-              <p>{{ item.reservation.roomTypeName }}</p>
-            </div>
-          </section>
-          <section class="panel" aria-labelledby="stay-title">
-            <h2 id="stay-title">Your stay</h2>
-            <dl class="stay-dates">
-              <div>
-                <dt>Check-in</dt>
-                <dd>
-                  <time [attr.datetime]="item.reservation.checkInDate">{{
-                    item.reservation.checkInDate | date: "EEE, MMM d, y"
-                  }}</time>
-                </dd>
-              </div>
-              <div class="nights">
-                <dt>Duration</dt>
-                <dd>
-                  {{ item.nights }} {{ item.nights === 1 ? "night" : "nights" }}
-                </dd>
-              </div>
-              <div>
-                <dt>Check-out</dt>
-                <dd>
-                  <time [attr.datetime]="item.reservation.checkOutDate">{{
-                    item.reservation.checkOutDate | date: "EEE, MMM d, y"
-                  }}</time>
-                </dd>
-              </div>
-            </dl>
-          </section>
-          <section class="panel" aria-labelledby="room-title">
-            <h2 id="room-title">
-              {{ item.reservation.roomTypeName ?? "Room details" }}
-            </h2>
-            <dl class="facts">
-              <div>
-                <dt>Room number</dt>
-                <dd>{{ item.reservation.roomNumber ?? "Not assigned" }}</dd>
-              </div>
-              @if (item.roomFloor !== undefined) {
-                <div>
-                  <dt>Floor</dt>
-                  <dd>{{ item.roomFloor }}</dd>
-                </div>
-              }
-              <div>
-                <dt>Guests</dt>
-                <dd>{{ item.reservation.guestCount }}</dd>
-              </div>
-              @if (item.maxCapacity !== undefined) {
-                <div>
-                  <dt>Maximum capacity</dt>
-                  <dd>{{ item.maxCapacity }}</dd>
-                </div>
-              }
-              <div>
-                <dt>Nightly rate</dt>
-                <dd>
-                  {{ item.nightlyPrice | currency: "COP" : "symbol" : "1.0-2" }}
-                </dd>
-              </div>
-            </dl>
-          </section>
-          <section aria-labelledby="guest-title">
-            <h2 id="guest-title">Guest information</h2>
-            @if (client; as guest) {
-              <app-client-info [client]="guest" [staff]="staff" />
-            } @else {
-              <p>Guest contact information is unavailable.</p>
+          </app-booking-payment>
+        }
+      }
+      @if (canTakeCash) {
+        @if (showCashPayment) {
+          <form class="cash-payment-panel" (ngSubmit)="payCash()" novalidate>
+            <h2>{{ 'reservations.cash.title' | transloco }}</h2>
+            <p>
+              {{
+                'reservations.cash.balance'
+                  | transloco: { balance: (item.balance | currency: 'COP' : 'symbol' : '1.0-2') }
+              }}
+            </p>
+            <label for="cash-amount">{{ 'reservations.cash.amount' | transloco }}</label>
+            <input id="cash-amount" type="number" name="amount" [(ngModel)]="cashAmount"
+              (ngModelChange)="cashAmountError = ''" [min]="minimumCashPayment"
+              [max]="item.balance" step="0.01" required
+              [attr.aria-invalid]="!!cashErrorForAmount" aria-describedby="cash-hint cash-error" />
+            <small id="cash-hint">{{
+              'reservations.cash.hint'
+                | transloco: {
+                    minimum: (minimumCashPayment | currency: 'COP' : 'symbol' : '1.0-2'),
+                    threshold: (minPayment | currency: 'COP' : 'symbol' : '1.0-0')
+                  }
+            }}</small>
+            @if (cashErrorForAmount) {
+              <p id="cash-error" class="cash-error" role="alert">{{ cashErrorForAmount }}</p>
             }
-          </section>
-        </div>
-        <aside aria-label="Reservation pricing and payment history">
-          <app-reservation-finance [detail]="item" />
-        </aside>
-      </div>
+            @if (paymentError) {
+              <p class="cash-error" role="alert">{{ paymentError }}</p>
+            }
+            <button appButton type="submit" [disabled]="paying">
+              {{ (paying ? 'reservations.cash.recording' : 'reservations.cash.record') | transloco }}
+            </button>
+          </form>
+        }
+      }
+      <app-reservation-content [detail]="item" [client]="client" [staffViewTitleKey]="staffViewTitleKey" />
     }
   </div>
 </main>

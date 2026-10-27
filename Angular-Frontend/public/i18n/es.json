@@ -1,0 +1,1420 @@
+{
+  "app": {
+    "title": "Atlan Suites — Un lujo sereno junto al agua",
+    "city": "Singapur"
+  },
+  "common": {
+    "loading": "Cargando contenido…",
+    "actions": {
+      "view": "Ver",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "activate": "Activar",
+      "deactivate": "Desactivar",
+      "cancel": "Cancelar",
+      "close": "Cerrar",
+      "tryAgain": "Intentar de nuevo",
+      "refresh": "Actualizar",
+      "backToList": "Volver a la lista"
+    },
+    "closeNotification": "Cerrar notificación",
+    "fields": {
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "nationalId": "Documento de identidad",
+      "id": "ID",
+      "actions": "Acciones",
+      "status": "Estado",
+      "activation": "Activación",
+      "name": "Nombre",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "emailAddress": "Correo electrónico",
+      "password": "Contraseña",
+      "role": "Rol"
+    },
+    "inactiveCount": "{{ count }} registros inactivos coinciden con tus filtros.",
+    "activation": {
+      "updated": "Estado de activación actualizado.",
+      "error": "No se pudo cambiar el estado de activación."
+    },
+    "deletedGuest": "Huésped eliminado",
+    "unassigned": "Sin asignar",
+    "nightsOne": "1 noche",
+    "nightsMany": "{{ count }} noches",
+    "guestsOne": "1 huésped",
+    "guestsMany": "{{ count }} huéspedes",
+    "hotelBranch": "Atlan Suites, sede Singapur",
+    "staffEyebrow": "Atlan Suites · Gestión del personal",
+    "managementEyebrow": "Atlan Suites · Gestión",
+    "idNumber": "ID #{{ id }}",
+    "saving": "Guardando…",
+    "checkFields": "Revisa los campos marcados antes de guardar.",
+    "notSpecified": "Sin especificar",
+    "loadingForm": "Cargando formulario…",
+    "staffManagement": "Gestión del personal",
+    "registeredDetails": "Datos registrados",
+    "upToChars": "Hasta {{ max }} caracteres."
+  },
+  "account": {
+    "information": "Información de la cuenta",
+    "editDescription": "Actualiza los datos de la cuenta. Se conserva la contraseña actual.",
+    "passwordTitle": "Contraseña de la cuenta",
+    "newPassword": "Contraseña de la nueva cuenta",
+    "passwordHint": "Entre 8 y 255 caracteres.",
+    "passwordKept": "Al editar se conserva la contraseña actual.",
+    "passwordSetOnCreate": "La contraseña se define al crear la cuenta y se conserva al editarla.",
+    "staffEmailUnique": "Cada cuenta del personal tiene un correo electrónico único.",
+    "staffEmailHint": "No puede estar en uso por otra cuenta del personal."
+  },
+  "enums": {
+    "reservationStatus": {
+      "PENDING": "Pendiente",
+      "CONFIRMED": "Confirmada",
+      "CHECKED_IN": "Hospedada",
+      "CHECKED_OUT": "Finalizada",
+      "CANCELLED": "Cancelada"
+    },
+    "roomStatus": {
+      "AVAILABLE": "Disponible",
+      "OCCUPIED": "Ocupada",
+      "CLEANING": "En limpieza",
+      "MAINTENANCE": "Mantenimiento"
+    },
+    "activationStatus": {
+      "ACTIVE": "Activa",
+      "INACTIVE": "Inactiva"
+    },
+    "folioStatus": {
+      "PENDING": "Pendiente",
+      "PAID": "Pagado",
+      "CANCELLED": "Cancelado"
+    },
+    "paymentStatus": {
+      "APPROVED": "Aprobado",
+      "PENDING": "Pendiente",
+      "REJECTED": "Rechazado"
+    },
+    "paymentMethod": {
+      "CARD": "Tarjeta",
+      "CASH": "Efectivo"
+    },
+    "refundReason": {
+      "CANCELLATION": "Cancelación",
+      "MODIFICATION": "Modificación"
+    }
+  },
+  "header": {
+    "menu": "Menú",
+    "closeMenu": "Cerrar menú",
+    "mainNavigation": "Navegación principal",
+    "nav": {
+      "home": "Inicio",
+      "hotel": "El hotel",
+      "suites": "Suites",
+      "services": "Servicios",
+      "catalog": "Catálogo de servicios"
+    },
+    "language": {
+      "button": "Idioma",
+      "list": "Idiomas disponibles",
+      "current": "idioma actual"
+    },
+    "myProfile": "Mi perfil",
+    "guestBadge": "Huésped",
+    "login": "Iniciar sesión",
+    "bookNow": "Reservar ahora",
+    "logout": "Cerrar sesión"
+  },
+  "footer": {
+    "reserve": "Reserva",
+    "bookTitleStart": "Reserva tu",
+    "bookTitleEnd": "estadía",
+    "bookNow": "Reservar ahora",
+    "contact": "Contacto",
+    "location": "Ubicación del hotel",
+    "discover": {
+      "title": "Descubre Atlan",
+      "about": "Sobre nosotros",
+      "rooms": "Habitaciones y suites",
+      "services": "Servicios",
+      "contact": "Contáctanos"
+    },
+    "information": {
+      "title": "Información útil",
+      "reservations": "Reservas",
+      "travelGuide": "Guía de viaje",
+      "amenities": "Comodidades",
+      "faq": "Preguntas frecuentes"
+    },
+    "social": {
+      "title": "Conéctate con nosotros",
+      "label": "Redes sociales",
+      "instagram": "Atlan Suites en Instagram",
+      "facebook": "Atlan Suites en Facebook",
+      "youtube": "Atlan Suites en YouTube",
+      "x": "Atlan Suites en X"
+    },
+    "newsletter": {
+      "title": "Inspírate",
+      "text": "Suscríbete a nuestro boletín para recibir nuestras novedades y ofertas."
+    },
+    "legal": {
+      "privacy": "Aviso de privacidad",
+      "terms": "Términos de uso",
+      "accessibility": "Accesibilidad"
+    },
+    "copyright": "© 2026 Atlan Suites. Todos los derechos reservados."
+  },
+  "landing": {
+    "scrollProgress": "Progreso de desplazamiento de la página",
+    "hero": {
+      "imageAlt": "Vestíbulo principal de {{ hotel }}",
+      "cardLabel": "Bienvenido a {{ hotel }}",
+      "eyebrow": "Bienvenida",
+      "headlineStart": "Bienvenido",
+      "headlineEnd": "a Atlan",
+      "explore": "Explorar el hotel"
+    },
+    "video": {
+      "eyebrow": "El hotel",
+      "title": "El hotel desde el aire",
+      "label": "Vista aérea de Atlan Suites en Singapur"
+    },
+    "suites": {
+      "watermarkLine1": "Habitaciones",
+      "watermarkLine2": "y",
+      "watermarkLine3": "Suites",
+      "eyebrow": "Habitaciones y suites",
+      "titleStart": "Habitaciones y",
+      "titleEnd": "suites",
+      "descriptionLabel": "Descripción de habitaciones y suites",
+      "description": "Nuestras habitaciones y suites son refugios privados y serenos que combinan amplios espacios, detalles artesanales y comodidades refinadas con la calma de la costa. Cada estadía está pensada para un descanso profundo, mañanas tranquilas y un lujo sin esfuerzo.",
+      "carousel": "Carrusel de suites",
+      "loading": "Cargando suites…",
+      "guests": "{{ count }} huéspedes",
+      "fromPrice": "Desde {{ price }} por noche",
+      "viewDetails": "Ver detalles",
+      "loadError": "No se pudieron cargar las suites.",
+      "empty": "No hay suites disponibles en este momento.",
+      "previous": "Suite anterior",
+      "next": "Suite siguiente"
+    },
+    "services": {
+      "title": "Servicios",
+      "featured": "Servicio destacado",
+      "eyebrow": "Gastronomía, bienestar y más",
+      "text": "Descubre los servicios que hacen de tu estadía en Atlan Suites una experiencia a tu medida.",
+      "viewAll": "Ver todos los servicios",
+      "carousel": "Carrusel de servicios del hotel",
+      "loading": "Cargando servicios…",
+      "loadError": "No se pudieron cargar los servicios.",
+      "empty": "No hay servicios disponibles en este momento.",
+      "controls": "Controles del carrusel de servicios",
+      "previous": "Servicio anterior",
+      "next": "Servicio siguiente"
+    }
+  },
+  "clientInfo": {
+    "label": "Información del cliente",
+    "number": "Cliente #{{ id }}"
+  },
+  "gallery": {
+    "eyebrow": "Galería",
+    "title": "Fotos adicionales",
+    "photoAlt": "{{ name }} — foto adicional {{ number }}"
+  },
+  "list": {
+    "controls": "Controles de búsqueda y visualización",
+    "search": "Buscar",
+    "searchPlaceholder": "Buscar registros…",
+    "all": "Todos",
+    "orderBy": "Ordenar por",
+    "clear": "Limpiar",
+    "results": "{{ count }} de {{ total }} resultados",
+    "displayMode": "Modo de visualización",
+    "tableView": "Vista de tabla",
+    "gridView": "Vista de cuadrícula",
+    "cardsLabel": "Cuadrícula de registros",
+    "noMatches": "Ningún registro coincide con tu búsqueda.",
+    "sort": {
+      "idAsc": "ID: de menor a mayor",
+      "idDesc": "ID: de mayor a menor",
+      "nameAsc": "Nombre: A–Z",
+      "nameDesc": "Nombre: Z–A",
+      "priceAsc": "Precio: de menor a mayor",
+      "priceDesc": "Precio: de mayor a menor",
+      "capacityAsc": "Capacidad: de menor a mayor",
+      "capacityDesc": "Capacidad: de mayor a menor"
+    }
+  },
+  "pageHeading": {
+    "eyebrow": "Catálogo de alojamiento"
+  },
+  "photos": {
+    "title": "Galería",
+    "description": "Agrega una foto principal y, si quieres, imágenes para la galería.",
+    "mainLabel": "URL de la foto principal",
+    "additionalLabel": "URL de la foto adicional {{ number }}",
+    "remove": "Quitar la foto adicional {{ number }}",
+    "add": "＋ Agregar otra foto",
+    "count": "{{ count }} de {{ max }} fotos adicionales"
+  },
+  "priceRange": {
+    "legend": "Precio (COP)",
+    "minimum": "Precio mínimo (COP)",
+    "maximum": "Precio máximo (COP)"
+  },
+  "reservationCard": {
+    "label": "Reserva {{ code }}",
+    "bookingNumber": "Reserva n.º",
+    "bookingDate": "Fecha de reserva:",
+    "roomTypeAlt": "Tipo de habitación reservado",
+    "noPhoto": "Foto de la habitación no disponible",
+    "totalPrice": "Precio total",
+    "paid": "Pagado:",
+    "refunded": "Reembolsado:",
+    "dates": "Fechas de la estadía",
+    "roomAndServices": "Tipo de habitación y servicios",
+    "unassignedRoomType": "Tipo de habitación sin asignar",
+    "noServices": "Sin servicios adicionales",
+    "guests": "Huéspedes",
+    "rateTitle": "CALIFICA TU EXPERIENCIA",
+    "rateLabel": "Califica tu experiencia",
+    "rateOne": "Calificar con 1 estrella",
+    "rateMany": "Calificar con {{ count }} estrellas",
+    "details": "Detalles",
+    "modify": "Modificar",
+    "cancel": "Cancelar",
+    "countdown": {
+      "inProgress": "En curso",
+      "awaitingPayment": "Pago pendiente",
+      "cancelled": "Cancelada",
+      "checkOutToday": "Salida hoy",
+      "checkOutAgoOne": "La salida fue hace 1 día",
+      "checkOutAgoMany": "La salida fue hace {{ days }} días",
+      "inOne": "En 1 día",
+      "inMany": "En {{ days }} días",
+      "checkInToday": "Llegada hoy",
+      "checkInAgoOne": "La llegada fue hace 1 día",
+      "checkInAgoMany": "La llegada fue hace {{ days }} días"
+    }
+  },
+  "reservationHistory": {
+    "clientTitle": "Mis reservas",
+    "staffTitle": "Historial de reservas",
+    "filtersLabel": "Filtros de reservas",
+    "filters": {
+      "all": "Todas",
+      "upcoming": "Próximas",
+      "inProgress": "En curso",
+      "awaitingReview": "Por calificar",
+      "awaitingPayment": "Pago pendiente",
+      "cancelled": "Canceladas"
+    },
+    "guest": "Huésped",
+    "empty": "No se encontraron reservas.",
+    "emptyForStatus": "No se encontraron reservas con este estado.",
+    "loading": "Cargando reservas…",
+    "loadError": "No se pudo cargar el historial de reservas."
+  },
+  "reservationContent": {
+    "editEyebrow": "Editar reserva",
+    "eyebrow": "Tu reserva",
+    "bookingNumber": "Número de reserva",
+    "reservationId": "ID de la reserva",
+    "bookingDate": "Fecha de reserva",
+    "photoAlt": "Alojamiento reservado",
+    "accommodation": "Tu alojamiento",
+    "stay": "Tu estadía",
+    "checkIn": "Llegada",
+    "duration": "Duración",
+    "checkOut": "Salida",
+    "roomDetails": "Detalles de la habitación",
+    "roomNumber": "Número de habitación",
+    "notAssigned": "Sin asignar",
+    "floor": "Piso",
+    "guests": "Huéspedes",
+    "maxCapacity": "Capacidad máxima",
+    "nightlyRate": "Tarifa por noche",
+    "guestInfo": "Información del huésped",
+    "guestUnavailable": "La información de contacto del huésped no está disponible.",
+    "pricingLabel": "Precio de la reserva e historial de pagos"
+  },
+  "reservationFinance": {
+    "priceDetails": "Detalle del precio",
+    "roomNightsOne": "1 habitación × 1 noche",
+    "roomNightsMany": "1 habitación × {{ count }} noches",
+    "each": "{{ price }} c/u",
+    "additionalServices": "Servicios adicionales",
+    "none": "Ninguno",
+    "total": "Total",
+    "netPaid": "Pagado neto",
+    "refunded": "Reembolsado",
+    "balance": "Saldo",
+    "folioTitle": "Folio y servicios",
+    "folio": "Folio #{{ id }}",
+    "issued": "Emitido el {{ date }}",
+    "noFolio": "Aún no se ha emitido un folio.",
+    "quantity": "Cantidad: {{ quantity }}",
+    "charge": "Cargo #{{ id }}",
+    "noServices": "No se contrataron servicios adicionales.",
+    "paymentsTitle": "Historial de pagos",
+    "payment": "Pago #{{ id }}",
+    "date": "Fecha",
+    "method": "Método",
+    "processedBy": "Procesado por",
+    "selfService": "El cliente en línea",
+    "noPayments": "No hay pagos registrados.",
+    "refundsTitle": "Historial de reembolsos",
+    "refund": "Reembolso #{{ id }}",
+    "reason": "Motivo",
+    "notes": "Notas"
+  },
+  "adminHeader": {
+    "frontDesk": "Recepción",
+    "adminPanel": "Panel de administración",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "navigation": "Navegación administrativa",
+    "myProfile": "Mi perfil",
+    "logout": "Cerrar sesión",
+    "goToHotel": "Ir al hotel",
+    "sections": {
+      "clients": "Clientes",
+      "reservations": "Reservas",
+      "accounting": "Contabilidad",
+      "roomTypes": "Tipos de habitación",
+      "rooms": "Habitaciones",
+      "services": "Servicios",
+      "administrators": "Administradores",
+      "operators": "Operarios"
+    }
+  },
+  "clients": {
+    "list": {
+      "title": "Clientes",
+      "eyebrow": "Atlan Suites · Gestión de clientes",
+      "description": "Consulta y administra los clientes registrados en Atlan Suites.",
+      "create": "Crear cliente",
+      "loading": "Cargando clientes…",
+      "created": "Cliente creado correctamente.",
+      "confirmDelete": "¿Eliminar al cliente \"{{ name }}\"? Esta acción no se puede deshacer.",
+      "deleted": "Cliente eliminado correctamente.",
+      "deleteError": "No se pudo eliminar el cliente. Inténtalo de nuevo."
+    },
+    "table": {
+      "label": "Tabla de clientes",
+      "client": "Cliente",
+      "emptyTitle": "Aún no hay clientes",
+      "emptyText": "Crea un cliente para empezar."
+    },
+    "detail": {
+      "loading": "Cargando cliente…",
+      "eyebrow": "Gestión de clientes",
+      "description": "Perfil e información de contacto del cliente.",
+      "edit": "Editar cliente",
+      "saved": "Cliente guardado correctamente."
+    },
+    "form": {
+      "profileEyebrow": "Mi perfil",
+      "editProfile": "Editar perfil",
+      "createTitle": "Crear cliente",
+      "editTitle": "Editar cliente",
+      "description": "Ingresa el perfil y la información de contacto del cliente.",
+      "backToProfile": "Volver al perfil",
+      "create": "Crear cliente",
+      "save": "Guardar cliente",
+      "saveProfile": "Guardar perfil",
+      "fieldsDescription": "El correo electrónico y el documento de identidad deben ser únicos. La foto de perfil es opcional.",
+      "nationalIdHint": "De 5 a 20 letras o números, sin espacios.",
+      "phoneHint": "De 7 a 15 dígitos; puede empezar con +.",
+      "profilePhoto": "URL de la foto de perfil"
+    }
+  },
+  "administrators": {
+    "list": {
+      "watermark": "Admins",
+      "title": "Administradores",
+      "description": "Consulta las cuentas que administran Atlan Suites y los operarios a su cargo.",
+      "create": "Crear administrador",
+      "loading": "Cargando administradores…",
+      "countOne": "1 administrador registrado",
+      "countMany": "{{ count }} administradores registrados",
+      "viewOperators": "Ver operarios",
+      "created": "Administrador creado correctamente.",
+      "confirmDelete": "¿Eliminar al administrador \"{{ name }}\"? Esta acción no se puede deshacer.",
+      "deleted": "Administrador \"{{ name }}\" eliminado correctamente.",
+      "deleteError": "No se pudo eliminar al administrador \"{{ name }}\". Inténtalo de nuevo."
+    },
+    "fields": {
+      "operators": "Operarios",
+      "operatorsInCharge": "Operarios a cargo"
+    },
+    "table": {
+      "label": "Tabla de administradores",
+      "administrator": "Administrador",
+      "emptyTitle": "Aún no hay administradores",
+      "emptyText": "Crea un administrador para empezar."
+    },
+    "detail": {
+      "loading": "Cargando administrador…",
+      "eyebrow": "Perfil del administrador",
+      "description": "Datos de la cuenta registrados en el portal de administración.",
+      "edit": "Editar administrador",
+      "saved": "Administrador guardado correctamente.",
+      "information": "Información del administrador",
+      "watermark": "Admin",
+      "reportingLine": "Línea de reporte",
+      "addOperator": "Agregar operario",
+      "noOperators": "Aún no hay operarios a cargo de este administrador."
+    },
+    "form": {
+      "createTitle": "Crear administrador",
+      "editTitle": "Editar administrador",
+      "createDescription": "Ingresa los datos de la nueva cuenta de administrador.",
+      "create": "Crear administrador",
+      "save": "Guardar administrador",
+      "namePlaceholder": "Nombre del administrador"
+    }
+  },
+  "operators": {
+    "list": {
+      "title": "Operarios",
+      "description": "Consulta los operarios registrados y el administrador a cargo de cada uno.",
+      "create": "Crear operario",
+      "loading": "Cargando operarios…",
+      "countOne": "1 operario registrado",
+      "countMany": "{{ count }} operarios registrados",
+      "viewAdministrators": "Ver administradores",
+      "created": "Operario creado correctamente.",
+      "confirmDelete": "¿Eliminar al operario \"{{ name }}\"? Esta acción no se puede deshacer.",
+      "deleted": "Operario \"{{ name }}\" eliminado correctamente.",
+      "deleteError": "No se pudo eliminar al operario \"{{ name }}\". Inténtalo de nuevo."
+    },
+    "fields": {
+      "administrator": "Administrador",
+      "administratorInCharge": "Administrador a cargo"
+    },
+    "table": {
+      "label": "Tabla de operarios",
+      "operator": "Operario",
+      "emptyTitle": "Aún no hay operarios",
+      "emptyText": "Crea un operario para empezar."
+    },
+    "detail": {
+      "loading": "Cargando operario…",
+      "eyebrow": "Perfil del operario",
+      "description": "Datos de la cuenta y línea de reporte registrados en el portal.",
+      "edit": "Editar operario",
+      "saved": "Operario guardado correctamente.",
+      "information": "Información del operario"
+    },
+    "form": {
+      "createTitle": "Crear operario",
+      "editTitle": "Editar operario",
+      "createDescription": "Ingresa los datos de la nueva cuenta de operario.",
+      "create": "Crear operario",
+      "save": "Guardar operario",
+      "personalTitle": "Información personal",
+      "personalDescription": "Datos necesarios para identificar al operario.",
+      "firstNamePlaceholder": "Nombre del operario",
+      "lastNamePlaceholder": "Apellido del operario",
+      "contactTitle": "Contacto y línea de reporte",
+      "selectAdministrator": "Selecciona un administrador",
+      "reportsTo": "Cada operario reporta a un administrador.",
+      "noAdministrators": "Aún no hay administradores.",
+      "createAdministratorFirst": "Crea uno primero"
+    }
+  },
+  "rooms": {
+    "roomNumber": "Habitación {{ number }}",
+    "list": {
+      "title": "Habitaciones",
+      "create": "+ Agregar habitación",
+      "loading": "Cargando habitaciones…",
+      "active": "Habitaciones activas",
+      "inactive": "Habitaciones inactivas"
+    },
+    "sort": {
+      "numberAsc": "Habitación: de menor a mayor",
+      "numberDesc": "Habitación: de mayor a menor",
+      "floorAsc": "Piso: de menor a mayor",
+      "floorDesc": "Piso: de mayor a menor"
+    },
+    "fields": {
+      "room": "Habitación",
+      "type": "Tipo",
+      "roomType": "Tipo de habitación",
+      "floor": "Piso",
+      "physicalStatus": "Estado físico",
+      "number": "Número",
+      "roomNumber": "Número de habitación",
+      "description": "Descripción",
+      "nightlyPrice": "Precio por noche",
+      "maxCapacity": "Capacidad máxima"
+    },
+    "table": {
+      "label": "Habitaciones del hotel",
+      "tableLabel": "Tabla de habitaciones",
+      "emptyTitle": "Aún no hay habitaciones",
+      "emptyText": "Crea una habitación para empezar."
+    },
+    "detail": {
+      "loading": "Cargando habitación…",
+      "eyebrow": "Catálogo de habitaciones",
+      "edit": "Editar habitación",
+      "saved": "Habitación guardada correctamente.",
+      "information": "Información de la habitación"
+    },
+    "form": {
+      "loading": "Cargando la información de la habitación…",
+      "createTitle": "Crear habitación",
+      "editTitle": "Editar habitación",
+      "description": "Define el número, el piso, el estado y el tipo de la habitación.",
+      "create": "Crear habitación",
+      "save": "Guardar habitación",
+      "needsRoomType": "Debe existir un tipo de habitación antes de guardar una habitación.",
+      "createRoomType": "Crear tipo de habitación",
+      "selectExistingType": "Selecciona un tipo de habitación existente.",
+      "fieldsDescription": "Todos los campos son obligatorios. El número de la habitación debe ser único.",
+      "numberHint": "De 1 a 9999.",
+      "floorHint": "De 0 a 200.",
+      "selectRoomType": "Selecciona un tipo de habitación"
+    }
+  },
+  "services": {
+    "included": "Incluido",
+    "list": {
+      "title": "Servicios",
+      "create": "+ Agregar servicio",
+      "loading": "Cargando servicios…",
+      "active": "Servicios activos",
+      "inactive": "Servicios inactivos"
+    },
+    "fields": {
+      "service": "Servicio",
+      "category": "Categoría",
+      "price": "Precio",
+      "priceCop": "Precio (COP)",
+      "name": "Nombre",
+      "summary": "Resumen",
+      "description": "Descripción",
+      "duration": "Duración",
+      "schedule": "Horario",
+      "location": "Ubicación"
+    },
+    "table": {
+      "label": "Servicios del hotel",
+      "tableLabel": "Tabla de servicios",
+      "emptyTitle": "Aún no hay servicios",
+      "emptyText": "Crea un servicio para empezar."
+    },
+    "detail": {
+      "loading": "Cargando servicio…",
+      "edit": "Editar servicio",
+      "saved": "Servicio guardado correctamente.",
+      "information": "Información del servicio"
+    },
+    "form": {
+      "loading": "Cargando servicio…",
+      "eyebrow": "Catálogo de servicios",
+      "createTitle": "Crear servicio",
+      "editTitle": "Editar servicio",
+      "description": "Define la información, el precio y las fotos del servicio.",
+      "photos": "Fotos del servicio",
+      "create": "Crear servicio",
+      "save": "Guardar servicio",
+      "requiredFields": "Campos obligatorios: nombre, categoría, descripción, precio e imagen principal.",
+      "priceHint": "De 0 a 99.999.999,99, con máximo dos decimales.",
+      "descriptionHint": "Máximo 5.000 caracteres."
+    }
+  },
+  "roomTypes": {
+    "list": {
+      "watermarkLine1": "Tipos de",
+      "watermarkLine2": "habitación",
+      "title": "Tipos de habitación",
+      "create": "+ Agregar tipo de habitación",
+      "loading": "Cargando tipos de habitación…",
+      "toastTitle": "Catálogo actualizado",
+      "confirmDelete": "¿Eliminar el tipo de habitación \"{{ name }}\"? Esta acción no se puede deshacer.",
+      "deleted": "El tipo de habitación \"{{ name }}\" se eliminó correctamente.",
+      "deleteError": "No se pudo eliminar el tipo de habitación \"{{ name }}\". Inténtalo de nuevo."
+    },
+    "fields": {
+      "capacity": "Capacidad",
+      "nightlyRate": "Tarifa por noche",
+      "name": "Nombre",
+      "description": "Descripción",
+      "pricePerNight": "Precio por noche",
+      "pricePerNightCop": "Precio por noche (COP)",
+      "maxCapacity": "Capacidad máxima"
+    },
+    "detail": {
+      "loading": "Cargando tipo de habitación…",
+      "description": "Galería e información comercial compartidas por las habitaciones de esta categoría.",
+      "edit": "Editar tipo de habitación",
+      "checkAvailability": "Consultar disponibilidad",
+      "saved": "Tipo de habitación guardado correctamente.",
+      "information": "Información del tipo de habitación",
+      "commercial": "Información comercial",
+      "mainPhotoAlt": "Foto principal de {{ name }}"
+    },
+    "form": {
+      "createTitle": "Crear tipo de habitación",
+      "editTitle": "Editar tipo de habitación",
+      "createDescription": "Agrega una nueva opción de alojamiento al inventario del hotel.",
+      "editDescription": "Define cómo aparecerá {{ name }} en el inventario del hotel.",
+      "photosDescription": "Estas fotos representan a todas las habitaciones asignadas a este tipo.",
+      "create": "Crear tipo de habitación",
+      "save": "Guardar tipo de habitación",
+      "commercialDescription": "Nombre visible, descripción, tarifa base y ocupación permitida.",
+      "capacityHint": "De 1 a 10 huéspedes.",
+      "descriptionHint": "Máximo 500 caracteres.",
+      "priceHint": "Mayor que cero, con máximo dos decimales."
+    },
+    "capacityFilter": {
+      "small": "1–2 huéspedes",
+      "medium": "3–4 huéspedes",
+      "large": "5+ huéspedes"
+    },
+    "table": {
+      "preview": "Vista previa",
+      "nameDetails": "Tipo de habitación y detalles",
+      "maxGuests": "Máx. huéspedes",
+      "guestsOne": "1 huésped",
+      "guestsMany": "{{ count }} huéspedes",
+      "perNight": "/ noche",
+      "emptyTitle": "No se encontraron tipos de habitación",
+      "emptyText": "Ningún tipo de habitación coincide con tu búsqueda o filtros. Prueba a limpiar los filtros.",
+      "emptyTextAdmin": "Ningún tipo de habitación coincide con tu búsqueda o filtros. Prueba a limpiar los filtros o crea un tipo de habitación nuevo.",
+      "clearFilters": "Limpiar todos los filtros",
+      "addNew": "+ Agregar tipo de habitación"
+    }
+  },
+  "reservations": {
+    "list": {
+      "title": "Reservas",
+      "description": "Estadías de los huéspedes, asignación de habitaciones e historial de reservas.",
+      "loading": "Cargando reservas…",
+      "deleted": "Reserva eliminada definitivamente.",
+      "deleteError": "No se pudo eliminar la reserva. Inténtalo de nuevo."
+    },
+    "sort": {
+      "guestAsc": "Huésped: A–Z",
+      "guestDesc": "Huésped: Z–A",
+      "checkInAsc": "Llegada: más próxima primero",
+      "checkInDesc": "Llegada: más lejana primero",
+      "createdAsc": "Fecha de reserva: más antigua primero",
+      "createdDesc": "Fecha de reserva: más reciente primero"
+    },
+    "fields": {
+      "booking": "Reserva",
+      "guest": "Huésped",
+      "stay": "Estadía",
+      "room": "Habitación",
+      "guests": "Huéspedes",
+      "checkInFrom": "Llegada desde",
+      "checkInTo": "Llegada hasta",
+      "minGuests": "Mínimo de huéspedes"
+    },
+    "table": {
+      "caption": "Todas las reservas de los huéspedes",
+      "empty": "Ninguna reserva coincide con tu búsqueda."
+    },
+    "deleteDialog": {
+      "eyebrow": "Gestión de reservas",
+      "title": "¿Eliminar la reserva #{{ id }}?",
+      "description": "La eliminación definitiva es solo para casos especiales. Normalmente basta con cambiar el estado a Cancelada.",
+      "warning": "Se eliminarán la reserva, su folio, sus cargos y sus pagos.",
+      "irreversible": "Esta acción es irreversible.",
+      "confirm": "Eliminar definitivamente"
+    },
+    "detail": {
+      "loading": "Cargando reserva…",
+      "saved": "Reserva actualizada correctamente.",
+      "paymentSaved": "Pago aprobado. Tu saldo se actualizó.",
+      "addCardPayment": "Agregar pago con tarjeta",
+      "closePayment": "Cerrar formulario de pago",
+      "adminView": "Vista de administrador",
+      "operatorView": "Vista de operario",
+      "backToClient": "Volver al cliente",
+      "backToFrontDesk": "Volver a la recepción",
+      "backToReservations": "Volver a las reservas",
+      "backToMyReservations": "Volver a mis reservas"
+    },
+    "cash": {
+      "title": "Recibir pago en efectivo",
+      "close": "Cerrar pago en efectivo",
+      "balance": "Saldo pendiente: {{ balance }}",
+      "amount": "Monto recibido",
+      "hint": "Mínimo {{ minimum }}. Puedes pagar el saldo completo cuando sea menor que {{ threshold }}.",
+      "record": "Registrar pago en efectivo",
+      "recording": "Registrando…",
+      "required": "Ingresa el monto recibido.",
+      "range": "Ingresa un monto entre el mínimo y el saldo pendiente."
+    },
+    "form": {
+      "legend": "Editar estadía y servicios",
+      "legendStaff": "Editar estadía, servicios y estado",
+      "save": "Guardar reserva",
+      "preview": "Vista previa del precio",
+      "recalculatedTotal": "Total recalculado",
+      "alreadyPaid": "Ya pagado (después de reembolsos)",
+      "refundAfterSaving": "Reembolso al guardar",
+      "refundNote": "Si el nuevo total es menor que lo ya pagado, la diferencia se reembolsa automáticamente. Un aumento puede dejar un nuevo saldo pendiente.",
+      "savedNote": "El detalle de precios de abajo muestra la reserva guardada hasta que se guarden los cambios.",
+      "stayAndStatus": "Estadía y estado",
+      "roomAssigned": "Se asigna automáticamente una habitación física para el tipo de habitación y las fechas elegidas.",
+      "maxNightsHint": "Una estadía puede durar hasta {{ nights }} noches.",
+      "upToGuests": "hasta {{ count }} huéspedes",
+      "servicesOnlyHint": "Durante tu estancia solo puedes añadir servicios. No puedes quitar los existentes ni cambiar las fechas o la cantidad de huéspedes.",
+      "servicesDescription": "Los servicios contratados antes conservan su precio original. Los servicios inactivos solo se pueden mantener si ya estaban incluidos.",
+      "inactiveContracted": "Inactivo · contratado antes",
+      "contractedPrice": "Precio contratado",
+      "noServices": "No hay servicios disponibles."
+    }
+  },
+  "auth": {
+    "backHome": "Volver al inicio",
+    "eyebrow": "Atlan Suites · Portal de acceso",
+    "titles": {
+      "guestSignIn": "Acceso de huéspedes",
+      "guestRegistration": "Registro de huéspedes",
+      "staff": "Portal del personal"
+    },
+    "subtitles": {
+      "guest": "Te damos la bienvenida a una experiencia inolvidable. Inicia sesión para gestionar tu estadía y tus servicios.",
+      "staff": "Acceso restringido para administradores y operarios del hotel."
+    },
+    "selectPortal": "Seleccionar portal",
+    "portals": {
+      "guests": "Huéspedes",
+      "staff": "Personal del hotel"
+    },
+    "signIn": "Iniciar sesión",
+    "signingIn": "Iniciando sesión…",
+    "register": "Registrarse",
+    "registering": "Registrando…",
+    "completeRegistration": "Completar registro",
+    "noAccount": "¿Aún no tienes una cuenta?",
+    "registerHere": "Regístrate aquí",
+    "haveAccount": "¿Ya tienes una cuenta de huésped?",
+    "staffNotice": "Acceso exclusivo para el personal del hotel",
+    "verifying": "Verificando credenciales…",
+    "enterStaff": "Entrar a la gestión del hotel",
+    "fields": {
+      "nationalId": "Documento de identidad (cédula/pasaporte)",
+      "profilePhoto": "URL de la foto de perfil (opcional)",
+      "staffEmail": "Correo de trabajo",
+      "staffPassword": "Contraseña del personal"
+    },
+    "placeholders": {
+      "firstName": "Juan",
+      "lastName": "Pérez",
+      "staffEmail": "admin@atlansuites.com u operator@atlansuites.com"
+    },
+    "hints": {
+      "nationalId": "De 5 a 20 letras o números",
+      "phone": "De 7 a 15 dígitos, + opcional",
+      "password": "Al menos 8 caracteres",
+      "profilePhoto": "Enlace web a una imagen (opcional)"
+    },
+    "demo": {
+      "title": "Credenciales de demostración:",
+      "quickTitle": "Credenciales rápidas de demostración:",
+      "fillClient": "Completar con Emma Thompson (huésped)",
+      "fillAdmin": "Completar con Admin 1 (Admin2026!)",
+      "fillOperator": "Completar con Operator 1 (Operator2026!)"
+    },
+    "success": {
+      "client": "¡Te damos la bienvenida, {{ name }}!",
+      "registered": "¡Cuenta creada correctamente! Te damos la bienvenida, {{ name }}.",
+      "staff": "Acceso concedido como {{ role }}: {{ name }}."
+    },
+    "errors": {
+      "checkFieldsContinue": "Revisa los campos marcados antes de continuar.",
+      "checkFields": "Revisa los campos marcados.",
+      "securePassword": "Ingresa una contraseña segura de al menos 8 caracteres.",
+      "staffPassword": "Ingresa la contraseña del personal.",
+      "signInFailed": "No se pudo iniciar sesión. Inténtalo de nuevo.",
+      "registrationFailed": "No se pudo registrar al huésped.",
+      "invalidClient": "Correo electrónico o contraseña incorrectos.",
+      "invalidStaff": "Credenciales del personal incorrectas."
+    }
+  },
+  "profile": {
+    "loading": "Cargando tu perfil…",
+    "description": "Los datos de tu cuenta y tus reservas en Atlan Suites.",
+    "saved": "Perfil guardado correctamente.",
+    "paymentsLink": "Pagos y reembolsos",
+    "deleteAccount": "Eliminar cuenta",
+    "deleting": "Eliminando…",
+    "confirmDelete": "¿Eliminar tu cuenta de Atlan Suites? Esta acción no se puede deshacer.",
+    "deleteError": "No se pudo eliminar tu cuenta.",
+    "cancel": {
+      "title": "¿Cancelar la reserva {{ code }}?",
+      "description": "Tu reserva quedará cancelada. Todos los pagos de tu estadía y de los servicios asociados se reembolsarán por completo a tu tarjeta, sin contar los montos ya reembolsados. Se conservarán tu reserva y tu historial financiero.",
+      "typeBefore": "Escribe",
+      "typeAfter": "para confirmar.",
+      "phrase": "Sí, quiero cancelar",
+      "keep": "Conservar la reserva",
+      "cancelling": "Cancelando…",
+      "error": "No se pudo cancelar la reserva. Inténtalo de nuevo."
+    }
+  },
+  "paymentHistory": {
+    "loading": "Cargando pagos y reembolsos…",
+    "eyebrow": "Mi cuenta",
+    "description": "Tus pagos y reembolsos.",
+    "title": "Historial de transacciones",
+    "recordsOne": "1 registro",
+    "recordsMany": "{{ count }} registros",
+    "filtersLabel": "Filtros de transacciones",
+    "payments": "Pagos",
+    "refunds": "Reembolsos",
+    "payment": "Pago",
+    "refund": "Reembolso",
+    "processedBy": "Procesado por {{ name }}",
+    "empty": "Aún no hay pagos ni reembolsos.",
+    "noPayments": "No se encontraron pagos.",
+    "noRefunds": "No se encontraron reembolsos."
+  },
+  "catalog": {
+    "eyebrow": "Atlan Suites · Experiencias y hospitalidad",
+    "title": "Servicios del hotel",
+    "description": "Explora nuestra selección de gastronomía de autor, bienestar integral, recreación y asistencia personalizada. Cada servicio está pensado para enriquecer cada momento de tu estadía.",
+    "searchPlaceholder": "Buscar servicios (p. ej. spa, desayuno, bicicleta…)",
+    "search": "Buscar servicios",
+    "clearSearch": "Borrar búsqueda",
+    "filterByCategory": "Filtrar por categoría",
+    "loading": "Cargando el catálogo de servicios…",
+    "viewDetails": "Ver detalles",
+    "emptyTitle": "No se encontraron servicios",
+    "emptyText": "Ningún servicio coincide con los criterios de búsqueda.",
+    "resetFilters": "Restablecer filtros",
+    "detail": {
+      "loading": "Cargando la información del servicio…",
+      "available": "Disponible para huéspedes",
+      "pricePerService": "Precio por servicio",
+      "quickFacts": "Datos rápidos del servicio",
+      "about": "Acerca de este servicio",
+      "enjoy": "Disfrútalo durante tu estadía",
+      "bookRoom": "¡Reserva una habitación con nosotros para probarlo!"
+    },
+    "gallery": {
+      "eyebrow": "Recorrido visual",
+      "title": "Galería del servicio",
+      "description": "Imágenes de {{ name }}.",
+      "enlarge": "Ampliar la imagen {{ number }} de {{ name }}",
+      "mainAlt": "{{ name }} — imagen principal",
+      "imageAlt": "{{ name }} — imagen {{ number }} de la galería",
+      "preview": "Vista previa de la imagen de {{ name }}",
+      "closePreview": "Cerrar vista previa"
+    }
+  },
+  "booking": {
+    "loading": "Cargando tu estadía…",
+    "error": "No se pudo completar la solicitud de reserva. Inténtalo de nuevo.",
+    "stepOf": "Paso {{ step }} de {{ total }}",
+    "progress": "Progreso de la reserva",
+    "navigation": "Navegación de la reserva",
+    "previousStep": "Paso anterior",
+    "changeDates": "Cambiar fechas",
+    "steps": {
+      "dates": "Fechas",
+      "room": "Elegir habitación",
+      "services": "Servicios",
+      "payment": "Pago"
+    },
+    "dates": {
+      "title": "Elige tus fechas",
+      "intro": "Selecciona cuándo quieres hospedarte y cuántos huéspedes te acompañarán.",
+      "datesOfStay": "Fechas de la estadía",
+      "chooseDate": "Elige una fecha",
+      "previousMonth": "Mostrar el mes anterior",
+      "nextMonth": "Mostrar el mes siguiente",
+      "hint": "Elige una fecha de llegada y luego una de salida. Las estadías duran hasta {{ nights }} noches y pueden empezar hasta {{ years }} años desde hoy.",
+      "detailsEyebrow": "Detalles de la reserva",
+      "guestsHint": "¿Cuántas personas se hospedarán? Hasta {{ max }}.",
+      "guestQuantity": "Cantidad de huéspedes",
+      "decreaseGuests": "Disminuir huéspedes",
+      "increaseGuests": "Aumentar huéspedes"
+    },
+    "roomTypes": {
+      "title": "Elige tu habitación",
+      "intro": "Estos tipos de habitación están disponibles para las fechas que elegiste.",
+      "selectedStay": "Estadía seleccionada",
+      "changeDetails": "Cambiar los datos de la reserva",
+      "available": "Tipos de habitación disponibles",
+      "eyebrow": "Habitaciones y suites",
+      "upToGuests": "Hasta {{ count }} huéspedes",
+      "roomsLeftOne": "Queda 1 habitación para tus fechas",
+      "roomsLeftMany": "Quedan {{ count }} habitaciones para tus fechas",
+      "rate": "Tarifa de la habitación",
+      "from": "Desde",
+      "rateNote": "Tu total incluye el alojamiento y los servicios elegidos.",
+      "select": "Elegir tipo de habitación",
+      "empty": "No hay habitaciones disponibles para estas fechas y esta cantidad de huéspedes. Cambia las fechas o el número de huéspedes."
+    },
+    "services": {
+      "title": "¿Quieres agregar algún servicio?",
+      "filters": "Filtros de servicios",
+      "available": "Servicios disponibles",
+      "selected": "Seleccionado",
+      "select": "Elegir servicio",
+      "emptyCategory": "No hay servicios disponibles en esta categoría.",
+      "pages": "Páginas de servicios",
+      "previousPage": "Página anterior de servicios",
+      "nextPage": "Página siguiente de servicios",
+      "yourSelection": "Tu selección",
+      "cart": "Carrito de servicios",
+      "cartEmpty": "Aún no has elegido servicios.",
+      "remove": "Quitar {{ name }}",
+      "clearCart": "Vaciar carrito",
+      "skip": "Omitir servicios",
+      "addSelected": "Agregar los servicios elegidos"
+    },
+    "checkout": {
+      "eyebrow": "Una última elección",
+      "title": "¿Cómo quieres continuar?",
+      "reserveNow": "Reserva ahora",
+      "payLater": "Reservar y pagar después",
+      "payLaterText": "Tu reserva quedará en tu cuenta. Puedes pagarla en varios pagos cuando quieras.",
+      "booking": "Reservando…",
+      "payToday": "Paga hoy",
+      "payNow": "Pagar ahora",
+      "payNowText": "Puedes pagar todo o una parte hoy. El saldo restante queda en tu cuenta y puedes pagarlo en varios pagos.",
+      "accommodation": "Alojamiento",
+      "totalStay": "Total de la estadía:"
+    },
+    "summary": {
+      "nights": "Noches"
+    },
+    "payment": {
+      "orPayLater": "O reserva y paga después",
+      "intro": "Revisa tu estadía e ingresa los datos de pago.",
+      "introAdditional": "Paga con tarjeta todo o una parte de tu saldo pendiente.",
+      "choose": "Elige tu pago",
+      "amountToday": "Monto a pagar hoy",
+      "amountHint": "(puedes cambiar este valor y pagar el resto después)",
+      "partialTotal": "Hoy puedes pagar todo o una parte del total de tu estadía, desde {{ minimum }}.",
+      "partialBalance": "Hoy puedes pagar todo o una parte de tu saldo pendiente, desde {{ minimum }}.",
+      "cardDetails": "Datos de la tarjeta",
+      "cardholderName": "Nombre en la tarjeta",
+      "cardNumber": "Número de la tarjeta",
+      "expiryDate": "Fecha de vencimiento",
+      "expiryPlaceholder": "MM/AA",
+      "securityCode": "Código de seguridad",
+      "securityPlaceholder": "CVV",
+      "processing": "Procesando…",
+      "confirm": "Confirmar y pagar",
+      "checkDetails": "Revisa los datos de pago marcados.",
+      "amountRange": "El pago debe ser de al menos {{ minimum }} y no puede superar el total de {{ total }}."
+    }
+  },
+  "frontDesk": {
+    "eyebrow": "Atlan Suites · Recepción",
+    "intro": "Llegadas de hoy, huéspedes alojados, salidas pendientes y habitaciones en limpieza o mantenimiento.",
+    "loading": "Cargando la recepción…",
+    "loadError": "No se pudo cargar la recepción. Inténtalo de nuevo.",
+    "summaryLabel": "Hoy en la recepción",
+    "tiles": {
+      "arrivals": "Llegadas de hoy",
+      "readyArrivals": "Listas para el check-in: {{ count }}",
+      "occupiedOne": "1 habitación ocupada",
+      "occupiedMany": "{{ count }} habitaciones ocupadas",
+      "withBalance": "{{ count }} con saldo pendiente",
+      "roomsToPrepare": "Habitaciones por preparar",
+      "cleaningMaintenance": "{{ cleaning }} en limpieza · {{ maintenance }} en mantenimiento"
+    },
+    "arrivals": {
+      "title": "Llegadas",
+      "description": "Estadías pendientes y confirmadas que empiezan hoy, además de las llegadas atrasadas cuya estadía no ha terminado."
+    },
+    "inHouse": {
+      "title": "Huéspedes alojados",
+      "description": "Estadías con check-in hecho, empezando por las salidas más próximas."
+    },
+    "departures": {
+      "title": "Salidas pendientes",
+      "description": "Huéspedes que salen hoy o con salida vencida. El check-out exige saldo cero y envía la habitación a limpieza."
+    },
+    "rooms": {
+      "title": "Habitaciones en limpieza o mantenimiento",
+      "description": "Primero aparecen las habitaciones con un huésped por llegar.",
+      "floor": "Piso {{ floor }}",
+      "guestArriving": "Huésped por llegar",
+      "markClean": "Marcar como limpia",
+      "endMaintenance": "Terminar mantenimiento",
+      "forRoom": "de la habitación {{ number }}",
+      "empty": "Todas las habitaciones están listas. Ninguna espera limpieza ni mantenimiento."
+    },
+    "stays": {
+      "arrival": {
+        "caption": "Llegadas previstas para hoy",
+        "empty": "No hay llegadas pendientes para hoy."
+      },
+      "in-house": {
+        "caption": "Huéspedes con check-in hecho",
+        "empty": "No hay huéspedes alojados."
+      },
+      "departure": {
+        "caption": "Salidas de hoy o vencidas",
+        "empty": "No hay salidas pendientes."
+      },
+      "action": "Acción",
+      "pendingConfirmation": "Pendiente de confirmación",
+      "collectPayment": "Cobrar pago",
+      "reviewBooking": "Revisar reserva",
+      "forCode": "de {{ code }}",
+      "checkIn": "Hacer check-in",
+      "checkOut": "Hacer check-out",
+      "waitingRoom": "Esperando la habitación",
+      "collectBalance": "Cobrar saldo"
+    },
+    "tags": {
+      "lateArrival": "Llegada atrasada",
+      "overdueDeparture": "Salida vencida",
+      "departsToday": "Sale hoy",
+      "roomReady": "Habitación lista",
+      "beingCleaned": "En limpieza",
+      "underMaintenance": "En mantenimiento",
+      "stillOccupied": "Aún ocupada",
+      "noRoom": "Sin habitación asignada"
+    },
+    "notice": {
+      "updated": "Recepción actualizada",
+      "failed": "Acción no completada",
+      "checkedIn": "Check-in de {{ label }} registrado. Su habitación ahora está ocupada.",
+      "checkedOut": "Check-out de {{ label }} registrado. Su habitación ahora aparece en habitaciones por preparar.",
+      "ready": "{{ label }} está lista.",
+      "error": "No se pudo completar la acción. Inténtalo de nuevo."
+    }
+  },
+  "accounting": {
+    "title": "Contabilidad y estadísticas",
+    "period": "Período del informe",
+    "from": "Desde",
+    "to": "Hasta",
+    "apply": "Aplicar período",
+    "loading": "Cargando contabilidad y estadísticas de reservas…",
+    "loadError": "No se pudieron cargar los datos contables. Inténtalo de nuevo.",
+    "unavailable": "Los datos no están disponibles",
+    "periodCaption": "Período del informe:",
+    "noBookings": "No se crearon reservas en este período. Los totales financieros usan las fechas de pagos y reembolsos.",
+    "inProgress": "En curso",
+    "overview": {
+      "label": "Resumen financiero en pesos colombianos",
+      "payments": "Pagos aprobados",
+      "refunds": "Reembolsos aprobados",
+      "net": "Recaudo neto",
+      "outstanding": "Saldo pendiente"
+    },
+    "stays": {
+      "title": "Estadísticas de estadías",
+      "averageStay": "Estadía promedio",
+      "nights": "noches",
+      "averageGuests": "Huéspedes promedio por reserva"
+    },
+    "status": {
+      "title": "Estado de las reservas",
+      "chartLabel": "Cantidad de reservas por estado actual. Usa la leyenda para mostrar u ocultar un estado.",
+      "details": "Ver cantidades y porcentajes",
+      "caption": "Distribución de reservas por estado",
+      "share": "Porcentaje"
+    },
+    "trend": {
+      "title": "Tendencia de reservas",
+      "chartLabel": "Reservas creadas en el tiempo, con zoom y un control deslizante de rango.",
+      "details": "Ver totales por período",
+      "caption": "Totales de reservas creadas",
+      "periodStarts": "Inicio del período"
+    },
+    "roomTypes": {
+      "title": "Tipos de habitación más reservados",
+      "chartLabel": "Tipos de habitación ordenados por reservas y noches contratadas. Usa la leyenda para mostrar u ocultar cada serie.",
+      "details": "Ver ranking de tipos de habitación",
+      "caption": "Ranking de tipos de habitación",
+      "bookings": "Reservas",
+      "empty": "No hay reservas no canceladas en este período."
+    },
+    "services": {
+      "title": "Servicios más contratados",
+      "chartLabel": "Servicios ordenados por unidades contratadas.",
+      "details": "Ver unidades y valor contratado",
+      "caption": "Cantidades de servicios y valor histórico de los cargos",
+      "concept": "Servicio",
+      "units": "Unidades",
+      "value": "Valor de los cargos",
+      "empty": "No hay cargos de servicios contratados en este período."
+    },
+    "charts": {
+      "resetView": "Restablecer vista",
+      "download": "Descargar gráfico",
+      "reservations": "Reservas",
+      "reservationsUnit": "reservas",
+      "created": "Reservas creadas",
+      "bookedNights": "Noches reservadas",
+      "unitsContracted": "Unidades contratadas"
+    }
+  },
+  "adminPanel": {
+    "eyebrow": "Atlan Suites · Administración",
+    "greeting": "Te damos la bienvenida,",
+    "intro": "Crea, edita y gestiona desde un solo lugar la información que se muestra en Atlan Suites.",
+    "loadError": "No se pudieron cargar los totales. Verifica que el backend de Spring Boot esté ejecutándose en localhost:8080.",
+    "sectionsLabel": "Secciones administrables",
+    "loadingTotal": "Cargando total…",
+    "manage": "Gestionar {{ section }}",
+    "cards": {
+      "reservations": "Todas las reservas de los huéspedes: fechas, habitaciones asignadas y detalles.",
+      "services": "Servicios de restaurante, bienestar y conserjería que aparecen en el catálogo para huéspedes.",
+      "roomTypes": "Categorías de suites, tarifas por noche, capacidad y galerías de fotos.",
+      "rooms": "Habitaciones físicas con su piso, estado y tipo de habitación asignado.",
+      "clients": "Cuentas de huéspedes registradas y su información de contacto.",
+      "administrators": "Cuentas del personal con acceso completo a este panel.",
+      "operators": "Personal de recepción y el administrador a cargo de cada uno."
+    },
+    "create": {
+      "service": "Nuevo servicio",
+      "roomType": "Nuevo tipo de habitación",
+      "room": "Nueva habitación",
+      "client": "Nuevo cliente",
+      "administrator": "Nuevo administrador",
+      "operator": "Nuevo operario"
+    }
+  },
+  "errorPage": {
+    "eyebrow": "Error {{ code }} · {{ label }}",
+    "address": "Dirección",
+    "goBack": "Volver",
+    "goToFrontDesk": "Ir a la recepción",
+    "goToAdminPanel": "Ir al panel de administración",
+    "goToHome": "Ir a la página de inicio",
+    "labels": {
+      "400": "Solicitud no válida",
+      "404": "No encontrada",
+      "500": "Error del servidor",
+      "503": "Servidor no disponible"
+    },
+    "titles": {
+      "400": "Esta dirección no es válida",
+      "404": "No encontramos esta página",
+      "500": "Algo salió mal de nuestro lado",
+      "503": "No podemos conectar con el servidor"
+    },
+    "messages": {
+      "400": "El enlace contiene un valor que el hotel no puede leer, como un identificador que no es un número. Revisa la dirección o vuelve atrás.",
+      "404": "La página o el registro que buscas no existe o fue eliminado.",
+      "500": "El servidor no pudo completar la solicitud. Inténtalo de nuevo en unos momentos.",
+      "503": "El servidor del hotel no responde. Revisa tu conexión e inténtalo de nuevo en un momento."
+    }
+  },
+  "validation": {
+    "password": {
+      "required": "Ingresa una contraseña.",
+      "length": "La contraseña debe tener entre 8 y 255 caracteres.",
+      "invalid": "Ingresa una contraseña de 8 a 255 caracteres."
+    },
+    "staffEmail": {
+      "required": "Ingresa el correo electrónico.",
+      "maxlength": "El correo electrónico no puede superar los 100 caracteres.",
+      "email": "Ingresa un correo electrónico válido, por ejemplo nombre@atlansuites.com."
+    },
+    "photoUrl": {
+      "maxlength": "La URL de la foto no puede superar los 500 caracteres.",
+      "format": "Ingresa una URL de foto que empiece por http:// o https://."
+    },
+    "price": {
+      "format": "Ingresa un precio de hasta 99.999.999,99 con máximo dos decimales."
+    },
+    "login": {
+      "email": {
+        "required": "Ingresa tu correo electrónico.",
+        "email": "Ingresa un correo electrónico válido.",
+        "maxlength": "El correo electrónico no puede superar los 100 caracteres."
+      },
+      "password": {
+        "required": "Ingresa tu contraseña."
+      }
+    },
+    "client": {
+      "name": {
+        "required": "Ingresa el nombre.",
+        "maxlength": "El nombre no puede superar los 60 caracteres."
+      },
+      "lastName": {
+        "required": "Ingresa el apellido.",
+        "maxlength": "El apellido no puede superar los 60 caracteres."
+      },
+      "nationalId": {
+        "required": "Ingresa el documento de identidad.",
+        "format": "El documento de identidad debe tener de 5 a 20 letras o números, sin espacios ni símbolos."
+      },
+      "phone": {
+        "required": "Ingresa el número de teléfono.",
+        "format": "Ingresa un teléfono de 7 a 15 dígitos, sin espacios; puede empezar con +."
+      },
+      "email": {
+        "required": "Ingresa el correo electrónico.",
+        "maxlength": "El correo electrónico no puede superar los 100 caracteres.",
+        "email": "Ingresa un correo electrónico válido, por ejemplo nombre@ejemplo.com."
+      }
+    },
+    "administrator": {
+      "name": {
+        "required": "Ingresa el nombre del administrador.",
+        "maxlength": "El nombre no puede superar los 60 caracteres."
+      }
+    },
+    "operator": {
+      "name": {
+        "required": "Ingresa el nombre del operario.",
+        "maxlength": "El nombre no puede superar los 60 caracteres."
+      },
+      "lastName": {
+        "required": "Ingresa el apellido del operario.",
+        "maxlength": "El apellido no puede superar los 60 caracteres."
+      },
+      "adminId": {
+        "required": "Selecciona el administrador a cargo de este operario."
+      }
+    },
+    "roomType": {
+      "name": {
+        "required": "Ingresa el nombre del tipo de habitación.",
+        "maxlength": "El nombre no puede superar los 50 caracteres."
+      },
+      "description": {
+        "required": "Ingresa una descripción.",
+        "maxlength": "La descripción no puede superar los 500 caracteres."
+      },
+      "nightlyPrice": {
+        "required": "Ingresa el precio por noche.",
+        "positive": "El precio por noche debe ser mayor que cero."
+      },
+      "maxCapacity": {
+        "required": "Ingresa la capacidad máxima.",
+        "min": "La capacidad debe ser de al menos 1 huésped.",
+        "max": "La capacidad no puede superar los 10 huéspedes.",
+        "integer": "Ingresa un número entero de huéspedes."
+      }
+    },
+    "photo": {
+      "mainRequired": "Ingresa la URL de la foto principal."
+    },
+    "room": {
+      "number": {
+        "required": "Ingresa el número de la habitación.",
+        "min": "El número de la habitación debe ser al menos 1.",
+        "max": "El número de la habitación no puede superar 9999.",
+        "integer": "Ingresa un número de habitación entero."
+      },
+      "floor": {
+        "required": "Ingresa el piso.",
+        "min": "El piso no puede ser negativo.",
+        "max": "El piso no puede superar 200.",
+        "integer": "Ingresa un número de piso entero."
+      },
+      "status": {
+        "required": "Selecciona el estado de la habitación."
+      },
+      "roomTypeId": {
+        "required": "Selecciona un tipo de habitación."
+      }
+    },
+    "service": {
+      "name": {
+        "required": "Ingresa el nombre del servicio.",
+        "maxlength": "El nombre no puede superar los 100 caracteres."
+      },
+      "category": {
+        "required": "Ingresa la categoría.",
+        "maxlength": "La categoría no puede superar los 50 caracteres."
+      },
+      "summary": {
+        "maxlength": "El resumen no puede superar los 255 caracteres."
+      },
+      "duration": {
+        "maxlength": "La duración no puede superar los 50 caracteres."
+      },
+      "availability": {
+        "maxlength": "El horario no puede superar los 100 caracteres."
+      },
+      "location": {
+        "maxlength": "La ubicación no puede superar los 100 caracteres."
+      },
+      "description": {
+        "required": "Ingresa una descripción.",
+        "maxlength": "La descripción no puede superar los 5.000 caracteres."
+      },
+      "price": {
+        "required": "Ingresa el precio.",
+        "min": "El precio no puede ser negativo."
+      }
+    },
+    "reservation": {
+      "checkIn": {
+        "required": "Elige una fecha de llegada.",
+        "past": "La fecha de llegada no puede estar en el pasado. Elige nuevas fechas.",
+        "tooFar": "Las reservas se pueden hacer con máximo {{ years }} años de anticipación."
+      },
+      "checkOut": {
+        "required": "Elige una fecha de salida.",
+        "order": "La fecha de salida debe ser posterior a la de llegada.",
+        "tooLong": "Una estadía no puede superar las {{ nights }} noches."
+      },
+      "guests": {
+        "required": "Ingresa el número de huéspedes.",
+        "min": "Ingresa al menos un huésped.",
+        "integer": "Ingresa un número entero de huéspedes.",
+        "capacity": "Este tipo de habitación admite máximo {{ capacity }} huéspedes. Reduce el número de huéspedes o elige otro tipo de habitación."
+      },
+      "roomTypeId": {
+        "min": "Selecciona un tipo de habitación."
+      },
+      "status": {
+        "required": "Elige un estado para la reserva.",
+        "pending": "No se puede hacer el check-in mientras la reserva esté pendiente. Confírmala primero.",
+        "unpaid": "No se puede hacer el check-out mientras la reserva tenga saldo pendiente. Salda el saldo primero."
+      }
+    },
+    "payment": {
+      "amount": {
+        "required": "Ingresa el monto a pagar.",
+        "decimals": "El monto puede tener máximo dos decimales.",
+        "max": "Un solo pago no puede superar COP 99.999.999,99."
+      },
+      "cardholderName": {
+        "required": "Ingresa el nombre que aparece en la tarjeta.",
+        "letters": "Ingresa el nombre tal como aparece en la tarjeta, solo con letras (hasta 100 caracteres)."
+      },
+      "cardNumber": {
+        "required": "Ingresa el número de la tarjeta.",
+        "length": "El número de la tarjeta debe tener entre 13 y 19 dígitos."
+      },
+      "expiryDate": {
+        "required": "Ingresa la fecha de vencimiento.",
+        "format": "Ingresa la fecha de vencimiento como MM/AA, con un mes de 01 a 12.",
+        "expired": "La tarjeta está vencida.",
+        "tooFar": "Ingresa una fecha de vencimiento válida."
+      },
+      "securityCode": {
+        "required": "Ingresa el código de seguridad.",
+        "length": "El código de seguridad debe tener 3 o 4 dígitos."
+      }
+    }
+  },
+  "api": {
+    "default": "No se pudo completar la solicitud. Inténtalo de nuevo.",
+    "offline": "No se pudo conectar con el servidor. Revisa tu conexión y que el backend esté en ejecución, y vuelve a intentarlo.",
+    "serverError": "El servidor no pudo procesar la solicitud. Inténtalo de nuevo en unos momentos.",
+    "badRequest": "Parte de la información no es válida. Revísala e inténtalo de nuevo.",
+    "unauthorized": "Correo o contraseña incorrectos.",
+    "notFound": "El registro solicitado no existe o fue eliminado.",
+    "conflict": "El cambio entra en conflicto con información que ya existe.",
+    "createdNotFound": "El registro se guardó, pero no se pudo volver a cargar. Actualiza la lista para verlo."
+  }
+}

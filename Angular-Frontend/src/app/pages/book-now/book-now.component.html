@@ -5,45 +5,50 @@
     [class.checkout-container]="step === 'checkout'"
   >
     <a class="profile-back" [routerLink]="profileUrl" [queryParams]="authParams"
-      >← My profile</a
+      >← {{ 'header.myProfile' | transloco }}</a
     >
     @if (step === "dates" || step === "room-types") {
       <header class="booking-intro">
         <p class="eyebrow">
-          {{ step === "dates" ? "Reservations" : "Step 2 of 4" }}
-        </p>
-        <h1>
-          {{ step === "dates" ? "Choose your dates" : "Choose your room" }}
-        </h1>
-        <p>
           {{
             step === "dates"
-              ? "Select when you would like to stay and how many guests will join you."
-              : "These room types are available for the dates you selected."
+              ? ('adminHeader.sections.reservations' | transloco)
+              : ('booking.stepOf' | transloco: { step: 2, total: 4 })
           }}
+        </p>
+        <h1>
+          {{ (step === "dates" ? 'booking.dates.title' : 'booking.roomTypes.title') | transloco }}
+        </h1>
+        <p>
+          {{ (step === "dates" ? 'booking.dates.intro' : 'booking.roomTypes.intro') | transloco }}
         </p>
       </header>
     }
     @if (step === "dates") {
-      <ol class="booking-steps" aria-label="Reservation progress">
-        <li class="is-current" aria-current="step"><span>1</span> Dates</li>
-        <li><span>2</span> Choose room</li>
-        <li><span>3</span> Services</li>
-        <li><span>4</span> Payment</li>
+      <ol class="booking-steps" [attr.aria-label]="'booking.progress' | transloco">
+        <li class="is-current" aria-current="step"><span>1</span> {{ 'booking.steps.dates' | transloco }}</li>
+        <li><span>2</span> {{ 'booking.steps.room' | transloco }}</li>
+        <li><span>3</span> {{ 'booking.steps.services' | transloco }}</li>
+        <li><span>4</span> {{ 'booking.steps.payment' | transloco }}</li>
       </ol>
     }
-    @if (error) {
-      <p role="alert" class="error">{{ error }}</p>
-    }
+    <!-- Cada paso proyecta este aviso bajo su acción. Si no carga, queda junto a la navegación disponible. -->
+    <ng-template #bookingError>
+      @if (error) {
+        <p role="alert" class="error">{{ error }}</p>
+      }
+    </ng-template>
     @if (loading) {
-      <app-skeleton [variant]="step === 'room-types' || step === 'services' ? 'cards' : step === 'checkout' ? 'detail' : 'form'" label="Loading your stay…" />
+      <app-skeleton [variant]="step === 'room-types' || step === 'services' ? 'cards' : step === 'checkout' ? 'detail' : 'form'" [label]="'booking.loading' | transloco" />
     } @else {
       @switch (step) {
         @case ("dates") {
           <app-booking-dates
             [stay]="stay"
             (continueBooking)="chooseDates($event)"
-          />
+          >
+            <ng-container bookingError [ngTemplateOutlet]="bookingError" />
+          </app-booking-dates>
         }
         @case ("room-types") {
           @if (types.length || !error) {
@@ -62,7 +67,9 @@
               [initialIds]="draft.serviceIds"
               [quote]="quote"
               (selected)="chooseServices($event)"
-            />
+            >
+              <ng-container bookingError [ngTemplateOutlet]="bookingError" />
+            </app-booking-services>
           }
         }
         @case ("checkout") {
@@ -72,7 +79,9 @@
               [busy]="busy"
               (payLater)="confirm()"
               (payNow)="go('payment')"
-            />
+            >
+              <ng-container bookingError [ngTemplateOutlet]="bookingError" />
+            </app-booking-checkout>
           }
         }
         @case ("payment") {
@@ -83,19 +92,24 @@
               [serverErrors]="paymentErrors"
               (pay)="confirm($event)"
               (payLater)="confirm()"
-            />
+            >
+              <ng-container bookingError [ngTemplateOutlet]="bookingError" />
+            </app-booking-payment>
           }
         }
       }
     }
     @if (step !== "dates") {
-      <nav class="booking-actions" aria-label="Booking navigation">
+      <nav class="booking-actions" [attr.aria-label]="'booking.navigation' | transloco">
         <button type="button" [disabled]="busy" (click)="back()">
-          ← Previous step</button
+          ← {{ 'booking.previousStep' | transloco }}</button
         ><button type="button" [disabled]="busy" (click)="go('dates')">
-          Change dates
+          {{ 'booking.changeDates' | transloco }}
         </button>
       </nav>
+    }
+    @if (error && (loading || step === 'room-types' || (!quote && step !== 'dates'))) {
+      <ng-container [ngTemplateOutlet]="bookingError" />
     }
   </div>
 </main>

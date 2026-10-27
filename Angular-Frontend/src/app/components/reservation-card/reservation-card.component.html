@@ -2,7 +2,7 @@
   <article
     class="booking-card"
     (click)="openDetails($event)"
-    [attr.aria-label]="'Reservation ' + detail.reservation.reservationCode"
+    [attr.aria-label]="'reservationCard.label' | transloco: { code: detail.reservation.reservationCode }"
   >
     <header class="booking-header">
       <svg
@@ -18,13 +18,13 @@
         />
       </svg>
       <p>
-        Booking No.
+        {{ 'reservationCard.bookingNumber' | transloco }}
         <span class="booking-code">{{
           detail.reservation.reservationCode
         }}</span>
       </p>
       <p class="booking-created">
-        Booking Date:
+        {{ 'reservationCard.bookingDate' | transloco }}
         <time [attr.datetime]="detail.createdAt">{{
           detail.createdAt | date: "MMM d, y"
         }}</time>
@@ -33,7 +33,9 @@
         class="booking-status"
         [class.is-pending]="detail.reservation.status === 'PENDING'"
         [class.is-cancelled]="detail.reservation.status === 'CANCELLED'"
-        >{{ detail.reservation.status.replace("_", " ").toLowerCase() }}</span
+        >{{
+          'enums.reservationStatus.' + detail.reservation.status | transloco
+        }}</span
       >
     </header>
     <p class="countdown">
@@ -57,13 +59,16 @@
           appImage
           imageWidth="320"
           [src]="photo"
-          [alt]="detail.reservation.roomTypeName ?? 'Reserved room type'"
+          [alt]="
+            detail.reservation.roomTypeName ??
+              ('reservationCard.roomTypeAlt' | transloco)
+          "
         />
       } @else {
         <div
           class="photo-placeholder"
           role="img"
-          aria-label="Room photo unavailable"
+          [attr.aria-label]="'reservationCard.noPhoto' | transloco"
         >
           <svg
             aria-hidden="true"
@@ -78,23 +83,29 @@
       }
       <div class="booking-content">
         <div class="hotel-heading">
-          <h3>Singapore's Atlan Suites branch</h3>
+          <h3>{{ 'common.hotelBranch' | transloco }}</h3>
           <dl class="booking-price">
             <div>
-              <dt class="sr-only">Total price</dt>
+              <dt class="sr-only">{{ 'reservationCard.totalPrice' | transloco }}</dt>
               <dd>{{ detail.total | currency: "COP" : "symbol" : "1.0-2" }}</dd>
             </div>
             <div class="paid-amount">
-              <dt>Paid:</dt>
+              <dt>{{ 'reservationCard.paid' | transloco }}</dt>
               <dd>
                 {{ detail.paidTotal | currency: "COP" : "symbol" : "1.0-2" }}
               </dd>
             </div>
+            @if (detail.refundedTotal > 0) {
+              <div class="paid-amount">
+                <dt>{{ 'reservationCard.refunded' | transloco }}</dt>
+                <dd>{{ detail.refundedTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+              </div>
+            }
           </dl>
         </div>
         <dl class="stay-details">
           <div>
-            <dt class="sr-only">Dates of stay</dt>
+            <dt class="sr-only">{{ 'reservationCard.dates' | transloco }}</dt>
             <dd>
               <strong
                 ><time [attr.datetime]="detail.reservation.checkInDate">{{
@@ -104,25 +115,26 @@
                 <time [attr.datetime]="detail.reservation.checkOutDate">{{
                   detail.reservation.checkOutDate | date: "MMM d, y"
                 }}</time></strong
-              ><span class="stay-caption"
-                >{{ detail.nights }}
-                {{ detail.nights === 1 ? "night" : "nights" }}</span
-              >
-            </dd>
-          </div>
-          <div>
-            <dt class="sr-only">Room type and services</dt>
-            <dd>
-              <strong>{{
-                detail.reservation.roomTypeName ?? "Unassigned room type"
-              }}</strong
-              ><span class="stay-caption" [title]="services">{{
-                servicesPreview || "No additional services"
+              ><span class="stay-caption">{{
+                (detail.nights === 1 ? 'common.nightsOne' : 'common.nightsMany')
+                  | transloco: { count: detail.nights }
               }}</span>
             </dd>
           </div>
           <div>
-            <dt class="sr-only">Guests</dt>
+            <dt class="sr-only">{{ 'reservationCard.roomAndServices' | transloco }}</dt>
+            <dd>
+              <strong>{{
+                detail.reservation.roomTypeName ??
+                  ('reservationCard.unassignedRoomType' | transloco)
+              }}</strong
+              ><span class="stay-caption" [title]="services">{{
+                servicesPreview || ('reservationCard.noServices' | transloco)
+              }}</span>
+            </dd>
+          </div>
+          <div>
+            <dt class="sr-only">{{ 'reservationCard.guests' | transloco }}</dt>
             <dd>
               <strong>{{ guestName }} + {{ otherGuests }}</strong>
             </dd>
@@ -133,11 +145,11 @@
     <footer class="booking-actions">
       @if (!staff && detail.reservation.status === "CHECKED_OUT") {
         <div class="review-prompt">
-          <p>RATE YOUR EXPERIENCE</p>
+          <p>{{ 'reservationCard.rateTitle' | transloco }}</p>
           <div
             class="review-stars"
             role="group"
-            aria-label="Rate your experience"
+            [attr.aria-label]="'reservationCard.rateLabel' | transloco"
           >
             @for (star of stars; track star) {
               <button
@@ -145,7 +157,8 @@
                 type="button"
                 [class.is-selected]="star <= selectedRating"
                 [attr.aria-label]="
-                  'Rate ' + star + (star === 1 ? ' star' : ' stars')
+                  (star === 1 ? 'reservationCard.rateOne' : 'reservationCard.rateMany')
+                    | transloco: { count: star }
                 "
                 [attr.aria-pressed]="star === selectedRating"
                 (click)="selectedRating = star"
@@ -165,9 +178,23 @@
           </div>
         </div>
       }
-      <button appButton type="button" (click)="openDetails()">Details</button>
-      @if (!staff) {
-        <button appButton type="button">Book again</button>
+      <button appButton type="button" (click)="openDetails()">
+        {{ 'reservationCard.details' | transloco }}
+      </button>
+      @if (canModify) {
+        <button appButton type="button" (click)="modify()">
+          {{ 'reservationCard.modify' | transloco }}
+        </button>
+      }
+      @if (!staff && detail.reservation.status !== "CANCELLED") {
+        <button
+          appButton
+          variant="danger"
+          type="button"
+          (click)="requestCancellation()"
+        >
+          {{ 'reservationCard.cancel' | transloco }}
+        </button>
       }
     </footer>
   </article>

@@ -1,6 +1,5 @@
 package com.example.demo.entities;
 
-import java.time.LocalDateTime;
 import com.example.demo.entities.enums.ReservationStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +18,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -83,7 +83,7 @@ public class Reservation {
     // Servicios contratados con la reserva. Restricciones: El flujo recibe serviceId. Las respuestas usan DTO. Un servicio con reservas no se borra, se desactiva.
     private List<Service> services = new ArrayList<>();
 
-    // Pago inicial opcional del flujo de reserva. Solo entrada, no es una columna.
     @Transient
+    // Pago inicial opcional del flujo de reserva. Solo entrada, no es una columna.
     private Payment initialPayment;
 }

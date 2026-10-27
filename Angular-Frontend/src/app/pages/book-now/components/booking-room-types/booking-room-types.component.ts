@@ -1,12 +1,12 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, Input, Output } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
-import { BookingStay } from '../../../../models/booking';
-import { RoomTypeListDTO } from '../../../../models/dto/room-type-list-dto';
+import { BookingStay, RoomTypeAvailability } from '../../../../models/booking';
 @Component({
   selector: 'app-booking-room-types',
-  imports: [OptimizedImageDirective, CurrencyPipe, DatePipe],
+  imports: [OptimizedImageDirective, CurrencyPipe, DatePipe, TranslocoPipe],
   templateUrl: './booking-room-types.component.html',
   styleUrl: './booking-room-types.component.scss',
 })
@@ -16,10 +16,9 @@ export class BookingRoomTypesComponent {
     checkOut: '',
     guests: 1,
   };
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly changeDatesSubject = new Subject<void>();
   @Output('changeDates') readonly changeDates$ = this.changeDatesSubject.asObservable();
-  @Input({ required: true }) types: RoomTypeListDTO[] = [];
+  @Input({ required: true }) types: RoomTypeAvailability[] = [];
   protected readonly selectedSubject = new Subject<number>();
   @Output('selected') readonly selected$ = this.selectedSubject.asObservable();
 }

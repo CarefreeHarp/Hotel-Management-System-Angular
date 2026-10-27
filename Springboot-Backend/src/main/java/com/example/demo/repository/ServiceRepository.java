@@ -10,12 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-/**
- * CAPA DE REPOSITORIO: acceso a la tabla SERVICE con Spring Data JPA.
- *
- * Se importa com.example.demo.entities.Service (la entidad) y no
- * org.springframework.stereotype.Service (la anotación), que se llama igual.
- */
+/** Consultas y proyecciones de lectura de Service. */
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, Integer> {
 

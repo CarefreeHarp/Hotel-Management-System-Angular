@@ -1,0 +1,28 @@
+<dialog
+  #dialog
+  aria-labelledby="delete-reservation-title"
+  aria-describedby="delete-reservation-description delete-reservation-warning"
+  (cancel)="cancelDeletion($event)"
+>
+  <header>
+    <p class="eyebrow">{{ 'reservations.deleteDialog.eyebrow' | transloco }}</p>
+    <h2 id="delete-reservation-title">
+      {{ 'reservations.deleteDialog.title' | transloco: { id: reservationId() } }}
+    </h2>
+  </header>
+  <p id="delete-reservation-description">
+    {{ 'reservations.deleteDialog.description' | transloco }}
+  </p>
+  <p id="delete-reservation-warning" class="warning">
+    {{ 'reservations.deleteDialog.warning' | transloco }}
+    <strong>{{ 'reservations.deleteDialog.irreversible' | transloco }}</strong>
+  </p>
+  <footer>
+    <button appButton type="button" variant="secondary" autofocus (click)="cancelDeletion()">
+      {{ 'common.actions.cancel' | transloco }}
+    </button>
+    <button appButton type="button" class="delete-button" (click)="confirmDeletion()">
+      {{ 'reservations.deleteDialog.confirm' | transloco }}
+    </button>
+  </footer>
+</dialog>

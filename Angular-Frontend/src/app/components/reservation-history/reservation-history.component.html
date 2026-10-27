@@ -1,8 +1,14 @@
 <section class="history" aria-labelledby="history-title">
   <h2 id="history-title">
-    {{ staff ? "Reservation history" : "My reservations" }}
+    {{
+      (staff ? 'reservationHistory.staffTitle' : 'reservationHistory.clientTitle')
+        | transloco
+    }}
   </h2>
-  <nav class="reservation-filters" aria-label="Reservation filters">
+  <nav
+    class="reservation-filters"
+    [attr.aria-label]="'reservationHistory.filtersLabel' | transloco"
+  >
     @for (filter of filters; track filter.status) {
       <button
         appButton
@@ -11,7 +17,7 @@
         [attr.aria-pressed]="selectedFilter === filter.status"
         (click)="selectedFilter = filter.status"
       >
-        {{ filter.label }}
+        {{ filter.labelKey | transloco }}
       </button>
     }
   </nav>
@@ -22,13 +28,21 @@
     ) {
       <app-reservation-card
         [detail]="detail"
+        (cancellationRequested)="requestCancellation($event)"
         [staff]="staff"
-        [guestName]="guestName || detail.reservation.clientName || 'Guest'"
+        [guestName]="
+          guestName ||
+          detail.reservation.clientName ||
+          ('reservationHistory.guest' | transloco)
+        "
       />
     } @empty {
       <p>
-        No reservations found{{
-          selectedFilter === "all" ? "." : " for this status."
+        {{
+          (selectedFilter === 'all'
+            ? 'reservationHistory.empty'
+            : 'reservationHistory.emptyForStatus'
+          ) | transloco
         }}
       </p>
     }

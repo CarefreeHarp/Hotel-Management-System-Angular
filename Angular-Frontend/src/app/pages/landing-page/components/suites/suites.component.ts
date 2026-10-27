@@ -1,6 +1,8 @@
+import { CurrencyPipe } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { fromEvent } from 'rxjs';
 import { SkeletonComponent } from '../../../../components/skeleton/skeleton.component';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
@@ -10,7 +12,7 @@ import { clientQuery } from '../../../../utils/client-query';
 
 @Component({
   selector: 'app-suites',
-  imports: [SkeletonComponent, OptimizedImageDirective, RouterLink],
+  imports: [SkeletonComponent, OptimizedImageDirective, RouterLink, CurrencyPipe, TranslocoPipe],
   templateUrl: './suites.component.html',
   styleUrl: './suites.component.scss',
 })
@@ -25,16 +27,14 @@ export class SuitesComponent implements OnInit {
 
   roomTypes: RoomTypeListDTO[] = [];
   isLoading = true;
+  // Clave de traducción del aviso de error de la sección.
   error = '';
-  description: string =
-    'Our rooms and suites are designed as serene private retreats, pairing generous spaces, handcrafted details and refined comforts with the calm of the coast. Every stay is shaped for deep rest, quiet mornings and effortless luxury.';
 
   // Posición del carrusel y cantidad de tarjetas visibles según el ancho de pantalla.
   suiteIndex: number = 0;
   visibleCount: number = this.getVisibleCount();
 
   constructor() {
-    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
     fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => this.updateVisibleCount());
   }
 
@@ -46,7 +46,7 @@ export class SuitesComponent implements OnInit {
       },
       // Es una sección del landing: el aviso se muestra en ella y el resto de la página sigue.
       error: () => {
-        this.error = 'Suites could not be loaded.';
+        this.error = 'landing.suites.loadError';
         this.isLoading = false;
       },
     });
@@ -74,8 +74,12 @@ export class SuitesComponent implements OnInit {
   }
 
   private getVisibleCount(): number {
-    if (window.matchMedia('(min-width: 1024px)').matches) return 3;
-    if (window.matchMedia('(min-width: 640px)').matches) return 2;
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+      return 3;
+    }
+    if (window.matchMedia('(min-width: 640px)').matches) {
+      return 2;
+    }
     return 1;
   }
 }

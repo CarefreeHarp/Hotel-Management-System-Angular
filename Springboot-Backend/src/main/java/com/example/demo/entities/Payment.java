@@ -1,6 +1,5 @@
 package com.example.demo.entities;
 
-import java.time.LocalDateTime;
 import com.example.demo.entities.enums.PaymentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -60,16 +59,16 @@ public class Payment {
     // Fecha del pago obligatoria, asignada al confirmar.
     private LocalDateTime paidAt;
 
+    @Transient
     // Titular recibido solo al confirmar. No se persiste ni se devuelve en el detalle.
-    @Transient
     private String cardholderName;
+    @Transient
     // Número de tarjeta del pago simulado. No se persiste.
-    @Transient
     private String cardNumber;
+    @Transient
     // Vencimiento del pago simulado. No se persiste.
-    @Transient
     private String expiryDate;
-    // Código de seguridad del pago simulado. No se persiste.
     @Transient
+    // Código de seguridad del pago simulado. No se persiste.
     private String securityCode;
 }

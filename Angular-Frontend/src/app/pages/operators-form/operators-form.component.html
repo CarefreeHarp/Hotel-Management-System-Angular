@@ -2,29 +2,22 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <app-skeleton variant="form" label="Loading form…" />
+      <app-skeleton variant="form" [label]="'common.loadingForm' | transloco" />
     } @else {
       <app-page-heading
-        eyebrow="Staff management"
-        [title]="isCreateMode ? 'Create operator' : 'Edit operator'"
+        [eyebrow]="'common.staffManagement' | transloco"
+        [title]="(isCreateMode ? 'operators.form.createTitle' : 'operators.form.editTitle') | transloco"
         [description]="
-          isCreateMode
-            ? 'Enter the details of the new operator account.'
-            : 'Update the account details. The current password is kept.'
+          (isCreateMode
+            ? 'operators.form.createDescription'
+            : 'account.editDescription'
+          ) | transloco
         "
         ><a appButton variant="secondary" [routerLink]="[base, 'operators']"
-          >Back to list</a
+          >{{ 'common.actions.backToList' | transloco }}</a
         ></app-page-heading
       >
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-        @if (submitted && form.invalid) {
-          <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
-          </p>
-        }
-        @if (saveError) {
-          <p class="form-alert" role="alert">{{ saveError }}</p>
-        }
         <app-operator-fields
           class="form-section"
           [form]="form"
@@ -35,11 +28,12 @@
         <div class="form-actions">
           <button appButton type="submit" [disabled]="isSaving">
             {{
-              isSaving
-                ? "Saving…"
+              (isSaving
+                ? 'common.saving'
                 : isCreateMode
-                  ? "Create operator"
-                  : "Save operator"
+                  ? 'operators.form.create'
+                  : 'operators.form.save'
+              ) | transloco
             }}</button
           ><a
             appButton
@@ -47,9 +41,17 @@
             [routerLink]="
               isCreateMode ? [base, 'operators'] : [base, 'operators', item?.operatorId]
             "
-            >Cancel</a
+            >{{ 'common.actions.cancel' | transloco }}</a
           >
         </div>
+        @if (submitted && form.invalid) {
+          <p class="form-alert" role="alert">
+            {{ 'common.checkFields' | transloco }}
+          </p>
+        }
+        @if (saveError) {
+          <p class="form-alert" role="alert">{{ saveError }}</p>
+        }
       </form>
     }
   </div>

@@ -1,9 +1,13 @@
 <section aria-labelledby="photos-title">
-  <h2 class="section-title" id="photos-title">{{ title }}</h2>
-  <p class="section-description">{{ description }}</p>
+  <h2 class="section-title" id="photos-title">
+    {{ title || ('photos.title' | transloco) }}
+  </h2>
+  <p class="section-description">
+    {{ description || ('photos.description' | transloco) }}
+  </p>
   <app-form-field
     fieldId="mainPhoto"
-    label="Main photo URL"
+    [label]="'photos.mainLabel' | transloco"
     type="url"
     [control]="mainPhoto"
     [maxlength]="500"
@@ -17,7 +21,7 @@
         <span class="photo-field__number" aria-hidden="true">{{ i + 1 }}</span>
         <app-form-field
           [fieldId]="'photo-' + i"
-          [label]="'Additional photo ' + (i + 1) + ' URL'"
+          [label]="'photos.additionalLabel' | transloco: { number: i + 1 }"
           [hideLabel]="true"
           type="url"
           [control]="photo"
@@ -31,7 +35,7 @@
           class="remove-photo"
           type="button"
           (click)="photos.removeAt(i)"
-          [attr.aria-label]="'Remove additional photo ' + (i + 1)"
+          [attr.aria-label]="'photos.remove' | transloco: { number: i + 1 }"
         >
           ×
         </button>
@@ -46,10 +50,10 @@
       [disabled]="photos.length >= maxPhotos"
       (click)="addPhotoSubject.next()"
     >
-      ＋ Add another photo
+      {{ 'photos.add' | transloco }}
     </button>
     <p class="photo-count" aria-live="polite">
-      {{ photos.length }} of {{ maxPhotos }} additional photos
+      {{ 'photos.count' | transloco: { count: photos.length, max: maxPhotos } }}
     </p>
   </div>
 </section>

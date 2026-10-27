@@ -1,0 +1,149 @@
+<app-admin-header />
+<main class="room-types-page-main">
+  <span class="page-watermark" aria-hidden="true">{{ 'adminHeader.frontDesk' | transloco }}</span>
+  <div class="page-container">
+    <header class="catalog-heading">
+      <div>
+        <p class="eyebrow">{{ 'frontDesk.eyebrow' | transloco }}</p>
+        <h1>{{ 'adminHeader.frontDesk' | transloco }}</h1>
+        <p>
+          @if (operator$ | async; as operator) {
+            {{ 'adminPanel.greeting' | transloco }} <strong>{{ operator.name }} {{ operator.lastName }}</strong>.
+          }
+          {{ 'frontDesk.intro' | transloco }}
+        </p>
+      </div>
+      <button appButton type="button" [disabled]="busy" (click)="refresh()">
+        {{ 'common.actions.refresh' | transloco }}
+      </button>
+    </header>
+
+    @if (state$ | async; as state) {
+      @if (state.loading) {
+        <app-skeleton variant="table" [label]="'frontDesk.loading' | transloco" />
+      } @else if (state.board && state.summary) {
+        @let board = state.board;
+        @let summary = state.summary;
+        <p class="desk-date">
+          <time [attr.datetime]="board.date">{{
+            board.date | date: "fullDate"
+          }}</time>
+        </p>
+        <nav class="desk-summary" [attr.aria-label]="'frontDesk.summaryLabel' | transloco">
+          <a class="desk-tile" [routerLink]="[]" fragment="arrivals">
+            <span class="desk-tile__label">{{ 'frontDesk.tiles.arrivals' | transloco }}</span>
+            <strong>{{ board.arrivals.length }}</strong>
+            <small>{{ 'frontDesk.tiles.readyArrivals' | transloco: { count: summary.readyArrivals } }}</small>
+          </a>
+          <a class="desk-tile" [routerLink]="[]" fragment="in-house">
+            <span class="desk-tile__label">{{ 'frontDesk.inHouse.title' | transloco }}</span>
+            <strong>{{ summary.guests }}</strong>
+            <small>{{
+              (board.inHouse.length === 1 ? 'frontDesk.tiles.occupiedOne' : 'frontDesk.tiles.occupiedMany')
+                | transloco: { count: board.inHouse.length }
+            }}</small>
+          </a>
+          <a class="desk-tile" [routerLink]="[]" fragment="departures">
+            <span class="desk-tile__label">{{ 'frontDesk.departures.title' | transloco }}</span>
+            <strong>{{ board.departures.length }}</strong>
+            <small>{{ 'frontDesk.tiles.withBalance' | transloco: { count: summary.departuresWithBalance } }}</small>
+          </a>
+          <a class="desk-tile" [routerLink]="[]" fragment="rooms">
+            <span class="desk-tile__label">{{ 'frontDesk.tiles.roomsToPrepare' | transloco }}</span>
+            <strong>{{ board.rooms.length }}</strong>
+            <small>{{
+              'frontDesk.tiles.cleaningMaintenance'
+                | transloco: { cleaning: summary.cleaning, maintenance: summary.maintenance }
+            }}</small>
+          </a>
+        </nav>
+
+        <section id="arrivals" class="desk-section" aria-labelledby="arrivals-title">
+          <header class="desk-section__heading">
+            <h2 id="arrivals-title">{{ 'frontDesk.arrivals.title' | transloco }}</h2>
+            <p>
+              {{ 'frontDesk.arrivals.description' | transloco }}
+            </p>
+          </header>
+          <app-front-desk-stays
+            kind="arrival"
+            [stays]="board.arrivals"
+            [today]="board.date"
+            [base]="base"
+            [busy]="busy"
+            (checkIn)="checkIn($event)"
+          />
+        </section>
+
+        <section id="in-house" class="desk-section" aria-labelledby="in-house-title">
+          <header class="desk-section__heading">
+            <h2 id="in-house-title">{{ 'frontDesk.inHouse.title' | transloco }}</h2>
+            <p>{{ 'frontDesk.inHouse.description' | transloco }}</p>
+          </header>
+          <app-front-desk-stays
+            kind="in-house"
+            [stays]="board.inHouse"
+            [today]="board.date"
+            [base]="base"
+          />
+        </section>
+
+        <section id="departures" class="desk-section" aria-labelledby="departures-title">
+          <header class="desk-section__heading">
+            <h2 id="departures-title">{{ 'frontDesk.departures.title' | transloco }}</h2>
+            <p>
+              {{ 'frontDesk.departures.description' | transloco }}
+            </p>
+          </header>
+          <app-front-desk-stays
+            kind="departure"
+            [stays]="board.departures"
+            [today]="board.date"
+            [base]="base"
+            [busy]="busy"
+            (checkOut)="checkOut($event)"
+          />
+        </section>
+
+        <section id="rooms" class="desk-section" aria-labelledby="rooms-title">
+          <header class="desk-section__heading">
+            <h2 id="rooms-title">{{ 'frontDesk.rooms.title' | transloco }}</h2>
+            <p>{{ 'frontDesk.rooms.description' | transloco }}</p>
+          </header>
+          <app-front-desk-rooms
+            [rooms]="board.rooms"
+            [busy]="busy"
+            (markReady)="markReady($event)"
+          />
+        </section>
+      } @else {
+        <section class="notice" role="alert">
+          <p>{{ state.error }}</p>
+          <button appButton type="button" (click)="refresh()">{{ 'common.actions.tryAgain' | transloco }}</button>
+        </section>
+      }
+    }
+  </div>
+</main>
+
+@if (notice; as current) {
+  <aside
+    class="toast-notification"
+    [class.is-error]="current.error"
+    [attr.role]="current.error ? 'alert' : 'status'"
+  >
+    <div class="toast-indicator"></div>
+    <div class="toast-text-content">
+      <span class="toast-title">{{ current.title }}</span>
+      <span class="toast-message">{{ current.message }}</span>
+    </div>
+    <button
+      type="button"
+      class="btn-dismiss-toast"
+      (click)="dismissNotice()"
+      [attr.aria-label]="'common.closeNotification' | transloco"
+    >
+      ✕
+    </button>
+  </aside>
+}

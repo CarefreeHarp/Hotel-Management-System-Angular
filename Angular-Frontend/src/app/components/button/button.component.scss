@@ -50,3 +50,14 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 24px #b88c5a59;
 }
+
+:host(.is-danger) {
+  background: rgba(220, 53, 69, 0.2);
+  border-color: rgba(220, 53, 69, 0.4);
+  color: #ffadb3;
+}
+:host(.is-danger:hover) {
+  background: rgba(220, 53, 69, 0.4);
+  border-color: #dc3545;
+  color: #fff;
+}

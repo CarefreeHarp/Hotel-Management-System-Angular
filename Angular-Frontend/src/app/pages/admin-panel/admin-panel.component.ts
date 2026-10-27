@@ -1,6 +1,7 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, catchError, forkJoin, of, switchMap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -11,18 +12,19 @@ import { PanelService } from '../../services/panel.service';
 import { basePath } from '../../utils/base-path';
 import { errorPageCode, showErrorPage } from '../../utils/error-page';
 
+// Las propiedades terminadas en Key guardan claves de traducción.
 interface PanelCard {
   key: keyof PanelCounts;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   path: string;
-  createLabel?: string;
+  createLabelKey?: string;
 }
 
 /** Carga los totales del panel. Los servicios HTTP se encargan de consultar el backend. */
 @Component({
   selector: 'app-admin-panel',
-  imports: [SkeletonComponent, RouterLink, ButtonComponent, AdminHeaderComponent],
+  imports: [SkeletonComponent, RouterLink, ButtonComponent, AdminHeaderComponent, TranslocoPipe],
   templateUrl: './admin-panel.component.html',
   styleUrl: './admin-panel.component.scss',
 })
@@ -41,56 +43,51 @@ export class AdminPanelComponent implements OnInit {
   readonly cards: PanelCard[] = [
     {
       key: 'reservations',
-      title: 'Reservations',
-      description:
-        'All guest bookings, dates, room assignments and reservation details.',
+      titleKey: 'adminHeader.sections.reservations',
+      descriptionKey: 'adminPanel.cards.reservations',
       path: 'reservations',
     },
     {
       key: 'services',
-      title: 'Services',
-      description:
-        'Dining, wellness and concierge services shown in the guest catalog.',
+      titleKey: 'adminHeader.sections.services',
+      descriptionKey: 'adminPanel.cards.services',
       path: 'services',
-      createLabel: 'New service',
+      createLabelKey: 'adminPanel.create.service',
     },
     {
       key: 'roomTypes',
-      title: 'Room Types',
-      description:
-        'Suite categories, nightly rates, capacity and photo galleries.',
+      titleKey: 'adminHeader.sections.roomTypes',
+      descriptionKey: 'adminPanel.cards.roomTypes',
       path: 'room-types',
-      createLabel: 'New room type',
+      createLabelKey: 'adminPanel.create.roomType',
     },
     {
       key: 'rooms',
-      title: 'Rooms',
-      description:
-        'Physical rooms, their floor, status and assigned room type.',
+      titleKey: 'adminHeader.sections.rooms',
+      descriptionKey: 'adminPanel.cards.rooms',
       path: 'rooms',
-      createLabel: 'New room',
+      createLabelKey: 'adminPanel.create.room',
     },
     {
       key: 'clients',
-      title: 'Clients',
-      description: 'Registered guest accounts and their contact information.',
+      titleKey: 'adminHeader.sections.clients',
+      descriptionKey: 'adminPanel.cards.clients',
       path: 'clients',
-      createLabel: 'New client',
+      createLabelKey: 'adminPanel.create.client',
     },
     {
       key: 'administrators',
-      title: 'Administrators',
-      description: 'Staff accounts with full access to this admin panel.',
+      titleKey: 'adminHeader.sections.administrators',
+      descriptionKey: 'adminPanel.cards.administrators',
       path: 'administrators',
-      createLabel: 'New administrator',
+      createLabelKey: 'adminPanel.create.administrator',
     },
     {
       key: 'operators',
-      title: 'Operators',
-      description:
-        'Front desk staff and the administrator in charge of each one.',
+      titleKey: 'adminHeader.sections.operators',
+      descriptionKey: 'adminPanel.cards.operators',
       path: 'operators',
-      createLabel: 'New operator',
+      createLabelKey: 'adminPanel.create.operator',
     },
   ];
 

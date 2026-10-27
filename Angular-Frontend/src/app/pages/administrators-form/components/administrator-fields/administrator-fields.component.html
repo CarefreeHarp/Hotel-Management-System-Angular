@@ -1,15 +1,15 @@
 @if (form; as form) {
   <section class="fields-group" aria-labelledby="account-title">
-    <h2 id="account-title">Account information</h2>
+    <h2 id="account-title">{{ 'account.information' | transloco }}</h2>
     <p class="section-description">
-      The email address is unique for each staff account.
+      {{ 'account.staffEmailUnique' | transloco }}
     </p>
     <div class="form-grid">
       <app-form-field
         fieldId="name"
-        label="Name"
-        placeholder="Administrator name"
-        hint="Up to 60 characters."
+        [label]="'common.fields.name' | transloco"
+        [placeholder]="'administrators.form.namePlaceholder' | transloco"
+        [hint]="'common.upToChars' | transloco: { max: 60 }"
         [control]="form.controls.name"
         [maxlength]="60"
         [submitted]="submitted"
@@ -17,10 +17,10 @@
       />
       <app-form-field
         fieldId="email"
-        label="Email address"
+        [label]="'common.fields.emailAddress' | transloco"
         type="email"
         placeholder="name@atlansuites.com"
-        hint="Must not be used by another staff account."
+        [hint]="'account.staffEmailHint' | transloco"
         [control]="form.controls.email"
         [maxlength]="100"
         [submitted]="submitted"
@@ -30,17 +30,17 @@
   </section>
   @if (isCreateMode) {
     <section class="fields-group" aria-labelledby="password-title">
-      <h2 id="password-title">Account password</h2>
+      <h2 id="password-title">{{ 'account.passwordTitle' | transloco }}</h2>
       <p class="section-description">
-        The password is set when the account is created. Editing keeps it.
+        {{ 'account.passwordSetOnCreate' | transloco }}
       </p>
       <div class="form-grid">
         <app-form-field
           fieldId="password"
-          label="New account password"
+          [label]="'account.newPassword' | transloco"
           type="password"
-          hint="Between 8 and 255 characters."
-          error="Enter a password with 8 to 255 characters."
+          [hint]="'account.passwordHint' | transloco"
+          [error]="'validation.password.invalid' | transloco"
           [control]="form.controls.password"
           [maxlength]="255"
           [submitted]="submitted"

@@ -9,17 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-/**
- * CAPA DE REPOSITORIO: acceso a la tabla ADMINISTRATOR con Spring Data JPA.
- *
- * Al extender JpaRepository ya se heredan findAll, findById, save, deleteById,
- * existsById y count sin escribir código. El segundo tipo genérico es el de la
- * llave primaria (admin_id, de tipo Integer).
- *
- * El método de abajo es una "derived query": Spring Data lee el nombre del
- * método y genera la consulta, así que no hay que escribir SQL. Devuelve
- * Optional porque puede que no exista ningún administrador con ese correo.
- */
+/** Consultas y proyecciones de lectura de Administrator. */
 @Repository
 public interface AdministratorRepository extends JpaRepository<Administrator, Integer> {
 

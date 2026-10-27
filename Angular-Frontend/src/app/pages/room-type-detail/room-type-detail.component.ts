@@ -1,6 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, map, startWith, switchMap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -26,6 +27,7 @@ import { RoomTypeInfoComponent } from './components/room-type-info/room-type-inf
     ButtonComponent,
     RoomTypeInfoComponent,
     GalleryComponent,
+    TranslocoPipe,
   ],
   templateUrl: './room-type-detail.component.html',
   styleUrl: './room-type-detail.component.scss',

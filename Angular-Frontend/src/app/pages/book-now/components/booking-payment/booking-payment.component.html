@@ -1,18 +1,30 @@
-@if (quote; as quote) {
-  <button
-    class="go-back"
-    type="button"
-    [disabled]="busy"
-    (click)="payLaterSubject.next()"
-  >
-    <span aria-hidden="true">←</span> Or book and pay later
-  </button>
+@if (quote || additionalPayment) {
+  @if (!additionalPayment) {
+    <button
+      class="go-back"
+      type="button"
+      [disabled]="busy"
+      (click)="payLaterSubject.next()"
+    >
+      <span aria-hidden="true">←</span> {{ 'booking.payment.orPayLater' | transloco }}
+    </button>
+  }
   <header class="booking-intro">
-    <p class="eyebrow">Step 4 of 4</p>
-    <h1>Payment</h1>
-    <p>Review your stay and enter your payment details.</p>
+    <p class="eyebrow">
+      {{
+        additionalPayment
+          ? ('reservationContent.eyebrow' | transloco)
+          : ('booking.stepOf' | transloco: { step: 4, total: 4 })
+      }}
+    </p>
+    @if (additionalPayment) {
+      <h2>{{ 'reservations.detail.addCardPayment' | transloco }}</h2>
+    } @else {
+      <h1>{{ 'booking.steps.payment' | transloco }}</h1>
+    }
+    <p>{{ (additionalPayment ? 'booking.payment.introAdditional' : 'booking.payment.intro') | transloco }}</p>
   </header>
-  <div class="payment-layout">
+  <div class="payment-layout" [class.payment-layout--additional]="additionalPayment">
     <form
       class="payment-form"
       (ngSubmit)="submit()"
@@ -20,20 +32,20 @@
       novalidate
     >
       <section>
-        <h2 id="payment-details-title">Choose your payment</h2>
+        <h2 id="payment-details-title">{{ 'booking.payment.choose' | transloco }}</h2>
         <div class="payment-fields">
           <label
-            >Amount to pay today
+            >{{ 'booking.payment.amountToday' | transloco }}
             <span class="amount-hint"
-              >(you can edit this field and pay the rest later)</span
+              >{{ 'booking.payment.amountHint' | transloco }}</span
             ><input
               type="number"
               name="amount"
               [(ngModel)]="amount"
               (ngModelChange)="clearError('amount')"
               (blur)="touch('amount')"
-              min="100000"
-              [max]="quote.total"
+              [min]="minimumPayment"
+              [max]="payableTotal"
               step="0.01"
               required
               [attr.aria-invalid]="!!errorFor('amount')"
@@ -44,14 +56,17 @@
           </label>
         </div>
         <p class="payment-security">
-          You can pay all or part of your stay total today, from COP 100,000.
+          {{
+            (additionalPayment ? 'booking.payment.partialBalance' : 'booking.payment.partialTotal')
+              | transloco: { minimum: (minimumPayment | currency: 'COP' : 'symbol' : '1.0-2') }
+          }}
         </p>
       </section>
       <section>
-        <h2>Card details</h2>
+        <h2>{{ 'booking.payment.cardDetails' | transloco }}</h2>
         <div class="payment-fields">
           <label
-            >Name on card<input
+            >{{ 'booking.payment.cardholderName' | transloco }}<input
               #nameInput
               name="cardholderName"
               [ngModel]="cardholderName"
@@ -65,7 +80,7 @@
               <small class="field-error" role="alert">{{ message }}</small>
             }</label
           ><label
-            >Card number<input
+            >{{ 'booking.payment.cardNumber' | transloco }}<input
               #cardNumberInput
               name="cardNumber"
               [ngModel]="cardNumber"
@@ -87,7 +102,7 @@
         </div>
         <div class="payment-fields payment-fields--two">
           <label
-            >Expiry date<input
+            >{{ 'booking.payment.expiryDate' | transloco }}<input
               #expiryInput
               name="expiryDate"
               [ngModel]="expiryDate"
@@ -99,14 +114,14 @@
               inputmode="numeric"
               maxlength="5"
               autocomplete="cc-exp"
-              placeholder="MM/YY"
+              [placeholder]="'booking.payment.expiryPlaceholder' | transloco"
               [attr.aria-invalid]="!!errorFor('expiryDate')"
             />
             @if (errorFor("expiryDate"); as message) {
               <small class="field-error" role="alert">{{ message }}</small>
             }</label
           ><label
-            >Security code<input
+            >{{ 'booking.payment.securityCode' | transloco }}<input
               #securityCodeInput
               name="securityCode"
               [ngModel]="securityCode"
@@ -116,7 +131,7 @@
               inputmode="numeric"
               maxlength="4"
               autocomplete="cc-csc"
-              placeholder="CVV"
+              [placeholder]="'booking.payment.securityPlaceholder' | transloco"
               [attr.aria-invalid]="!!errorFor('securityCode')"
             />
             @if (errorFor("securityCode"); as message) {
@@ -125,16 +140,19 @@
           </label>
         </div>
       </section>
-      @if ((submitted && !valid()) || hasFieldErrors) {
-        <p class="payment-error" role="alert">
-          Please check the highlighted payment details.
-        </p>
-      }
       <button class="payment-submit" type="submit" [disabled]="busy">
-        {{ busy ? "Processing…" : "Confirm and pay" }}
+        {{ (busy ? 'booking.payment.processing' : 'booking.payment.confirm') | transloco }}
         <span>{{ amount | currency: "COP" : "symbol" : "1.0-2" }}</span>
       </button>
+      @if ((submitted && !valid()) || hasFieldErrors) {
+        <p class="payment-error" role="alert">
+          {{ 'booking.payment.checkDetails' | transloco }}
+        </p>
+      }
+      <ng-content select="[bookingError]" />
     </form>
-    <app-booking-reservation-summary [quote]="quote" />
+    @if (quote) {
+      <app-booking-reservation-summary [quote]="quote" />
+    }
   </div>
 }

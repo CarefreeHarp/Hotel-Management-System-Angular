@@ -1,0 +1,1420 @@
+{
+  "app": {
+    "title": "Atlan Suites — 水畔的静谧奢华",
+    "city": "新加坡"
+  },
+  "common": {
+    "loading": "正在加载内容…",
+    "actions": {
+      "view": "查看",
+      "edit": "编辑",
+      "delete": "删除",
+      "activate": "启用",
+      "deactivate": "停用",
+      "cancel": "取消",
+      "close": "关闭",
+      "tryAgain": "重试",
+      "refresh": "刷新",
+      "backToList": "返回列表"
+    },
+    "closeNotification": "关闭通知",
+    "fields": {
+      "email": "电子邮箱",
+      "phone": "电话",
+      "nationalId": "身份证件号",
+      "id": "ID",
+      "actions": "操作",
+      "status": "状态",
+      "activation": "启用状态",
+      "name": "名称",
+      "firstName": "名",
+      "lastName": "姓",
+      "emailAddress": "电子邮箱地址",
+      "password": "密码",
+      "role": "角色"
+    },
+    "inactiveCount": "有 {{ count }} 条停用记录符合筛选条件。",
+    "activation": {
+      "updated": "启用状态已更新。",
+      "error": "无法更改启用状态。"
+    },
+    "deletedGuest": "已删除的住客",
+    "unassigned": "未分配",
+    "nightsOne": "1 晚",
+    "nightsMany": "{{ count }} 晚",
+    "guestsOne": "1 位住客",
+    "guestsMany": "{{ count }} 位住客",
+    "hotelBranch": "Atlan Suites 新加坡分店",
+    "staffEyebrow": "Atlan Suites · 员工管理",
+    "managementEyebrow": "Atlan Suites · 管理",
+    "idNumber": "ID #{{ id }}",
+    "saving": "正在保存…",
+    "checkFields": "保存前请检查标记的字段。",
+    "notSpecified": "未填写",
+    "loadingForm": "正在加载表单…",
+    "staffManagement": "员工管理",
+    "registeredDetails": "登记信息",
+    "upToChars": "最多 {{ max }} 个字符。"
+  },
+  "account": {
+    "information": "账户信息",
+    "editDescription": "更新账户信息。当前密码保持不变。",
+    "passwordTitle": "账户密码",
+    "newPassword": "新账户密码",
+    "passwordHint": "8 到 255 个字符。",
+    "passwordKept": "编辑时保留当前密码。",
+    "passwordSetOnCreate": "密码在创建账户时设置，编辑时保持不变。",
+    "staffEmailUnique": "每个员工账户的电子邮箱地址都是唯一的。",
+    "staffEmailHint": "不能被其他员工账户使用。"
+  },
+  "enums": {
+    "reservationStatus": {
+      "PENDING": "待确认",
+      "CONFIRMED": "已确认",
+      "CHECKED_IN": "已入住",
+      "CHECKED_OUT": "已退房",
+      "CANCELLED": "已取消"
+    },
+    "roomStatus": {
+      "AVAILABLE": "可用",
+      "OCCUPIED": "已入住",
+      "CLEANING": "清洁中",
+      "MAINTENANCE": "维修中"
+    },
+    "activationStatus": {
+      "ACTIVE": "启用",
+      "INACTIVE": "停用"
+    },
+    "folioStatus": {
+      "PENDING": "待支付",
+      "PAID": "已支付",
+      "CANCELLED": "已取消"
+    },
+    "paymentStatus": {
+      "APPROVED": "已批准",
+      "PENDING": "处理中",
+      "REJECTED": "已拒绝"
+    },
+    "paymentMethod": {
+      "CARD": "银行卡",
+      "CASH": "现金"
+    },
+    "refundReason": {
+      "CANCELLATION": "取消",
+      "MODIFICATION": "修改"
+    }
+  },
+  "header": {
+    "menu": "菜单",
+    "closeMenu": "关闭菜单",
+    "mainNavigation": "主导航",
+    "nav": {
+      "home": "首页",
+      "hotel": "酒店",
+      "suites": "套房",
+      "services": "服务",
+      "catalog": "服务目录"
+    },
+    "language": {
+      "button": "语言",
+      "list": "可用语言",
+      "current": "当前语言"
+    },
+    "myProfile": "我的资料",
+    "guestBadge": "住客",
+    "login": "登录",
+    "bookNow": "立即预订",
+    "logout": "退出登录"
+  },
+  "footer": {
+    "reserve": "预订",
+    "bookTitleStart": "预订您的",
+    "bookTitleEnd": "住宿",
+    "bookNow": "立即预订",
+    "contact": "联系方式",
+    "location": "酒店位置",
+    "discover": {
+      "title": "探索 Atlan",
+      "about": "关于我们",
+      "rooms": "房型与套房",
+      "services": "服务",
+      "contact": "联系我们"
+    },
+    "information": {
+      "title": "实用信息",
+      "reservations": "预订",
+      "travelGuide": "旅行指南",
+      "amenities": "设施",
+      "faq": "常见问题"
+    },
+    "social": {
+      "title": "关注我们",
+      "label": "社交媒体",
+      "instagram": "Atlan Suites 的 Instagram",
+      "facebook": "Atlan Suites 的 Facebook",
+      "youtube": "Atlan Suites 的 YouTube",
+      "x": "Atlan Suites 的 X"
+    },
+    "newsletter": {
+      "title": "获取灵感",
+      "text": "订阅我们的通讯，获取最新故事和优惠。"
+    },
+    "legal": {
+      "privacy": "隐私声明",
+      "terms": "使用条款",
+      "accessibility": "无障碍"
+    },
+    "copyright": "© 2026 Atlan Suites。保留所有权利。"
+  },
+  "landing": {
+    "scrollProgress": "页面滚动进度",
+    "hero": {
+      "imageAlt": "{{ hotel }} 的主大堂",
+      "cardLabel": "欢迎来到 {{ hotel }}",
+      "eyebrow": "欢迎",
+      "headlineStart": "欢迎",
+      "headlineEnd": "来到 Atlan",
+      "explore": "探索酒店"
+    },
+    "video": {
+      "eyebrow": "酒店",
+      "title": "无人机视角下的酒店",
+      "label": "新加坡 Atlan Suites 鸟瞰图"
+    },
+    "suites": {
+      "watermarkLine1": "客房",
+      "watermarkLine2": "与",
+      "watermarkLine3": "套房",
+      "eyebrow": "客房与套房",
+      "titleStart": "客房与",
+      "titleEnd": "套房",
+      "descriptionLabel": "客房与套房介绍",
+      "description": "我们的客房与套房是宁静的私密居所，以宽敞的空间、匠心细节和精致舒适，搭配海岸的悠然。每一次入住都为深度休憩、静谧清晨和从容奢华而设计。",
+      "carousel": "套房轮播",
+      "loading": "正在加载套房…",
+      "guests": "{{ count }} 位住客",
+      "fromPrice": "每晚 {{ price }} 起",
+      "viewDetails": "查看详情",
+      "loadError": "无法加载套房。",
+      "empty": "目前没有可用的套房。",
+      "previous": "上一间套房",
+      "next": "下一间套房"
+    },
+    "services": {
+      "title": "服务",
+      "featured": "精选服务",
+      "eyebrow": "餐饮、康体及更多",
+      "text": "探索让您在 Atlan Suites 的住宿更具个性的各项服务。",
+      "viewAll": "查看全部服务",
+      "carousel": "酒店服务轮播",
+      "loading": "正在加载服务…",
+      "loadError": "无法加载服务。",
+      "empty": "目前没有可用的服务。",
+      "controls": "服务轮播控制",
+      "previous": "上一个服务",
+      "next": "下一个服务"
+    }
+  },
+  "clientInfo": {
+    "label": "客户信息",
+    "number": "客户 #{{ id }}"
+  },
+  "gallery": {
+    "eyebrow": "图库",
+    "title": "更多照片",
+    "photoAlt": "{{ name }} — 附加照片 {{ number }}"
+  },
+  "list": {
+    "controls": "搜索与显示控制",
+    "search": "搜索",
+    "searchPlaceholder": "搜索记录…",
+    "all": "全部",
+    "orderBy": "排序方式",
+    "clear": "清除",
+    "results": "共 {{ total }} 条结果，显示 {{ count }} 条",
+    "displayMode": "显示方式",
+    "tableView": "表格视图",
+    "gridView": "网格视图",
+    "cardsLabel": "记录网格",
+    "noMatches": "没有符合搜索条件的记录。",
+    "sort": {
+      "idAsc": "ID：从小到大",
+      "idDesc": "ID：从大到小",
+      "nameAsc": "名称：A–Z",
+      "nameDesc": "名称：Z–A",
+      "priceAsc": "价格：从低到高",
+      "priceDesc": "价格：从高到低",
+      "capacityAsc": "容纳人数：从少到多",
+      "capacityDesc": "容纳人数：从多到少"
+    }
+  },
+  "pageHeading": {
+    "eyebrow": "住宿目录"
+  },
+  "photos": {
+    "title": "图库",
+    "description": "添加一张主图，并可选添加图库图片。",
+    "mainLabel": "主图网址",
+    "additionalLabel": "附加照片 {{ number }} 的网址",
+    "remove": "移除附加照片 {{ number }}",
+    "add": "＋ 添加照片",
+    "count": "已添加 {{ count }} / {{ max }} 张附加照片"
+  },
+  "priceRange": {
+    "legend": "价格（COP）",
+    "minimum": "最低价格（COP）",
+    "maximum": "最高价格（COP）"
+  },
+  "reservationCard": {
+    "label": "预订 {{ code }}",
+    "bookingNumber": "预订号",
+    "bookingDate": "预订日期：",
+    "roomTypeAlt": "已预订的房型",
+    "noPhoto": "暂无客房照片",
+    "totalPrice": "总价",
+    "paid": "已付：",
+    "refunded": "已退款：",
+    "dates": "住宿日期",
+    "roomAndServices": "房型与服务",
+    "unassignedRoomType": "未分配房型",
+    "noServices": "无附加服务",
+    "guests": "住客",
+    "rateTitle": "评价您的体验",
+    "rateLabel": "评价您的体验",
+    "rateOne": "评 1 星",
+    "rateMany": "评 {{ count }} 星",
+    "details": "详情",
+    "modify": "修改",
+    "cancel": "取消",
+    "countdown": {
+      "inProgress": "入住中",
+      "awaitingPayment": "等待付款",
+      "cancelled": "已取消",
+      "checkOutToday": "今天退房",
+      "checkOutAgoOne": "已于 1 天前退房",
+      "checkOutAgoMany": "已于 {{ days }} 天前退房",
+      "inOne": "1 天后",
+      "inMany": "{{ days }} 天后",
+      "checkInToday": "今天入住",
+      "checkInAgoOne": "入住日为 1 天前",
+      "checkInAgoMany": "入住日为 {{ days }} 天前"
+    }
+  },
+  "reservationHistory": {
+    "clientTitle": "我的预订",
+    "staffTitle": "预订记录",
+    "filtersLabel": "预订筛选",
+    "filters": {
+      "all": "全部",
+      "upcoming": "即将入住",
+      "inProgress": "入住中",
+      "awaitingReview": "待评价",
+      "awaitingPayment": "等待付款",
+      "cancelled": "已取消"
+    },
+    "guest": "住客",
+    "empty": "未找到预订。",
+    "emptyForStatus": "未找到该状态的预订。",
+    "loading": "正在加载预订…",
+    "loadError": "无法加载预订记录。"
+  },
+  "reservationContent": {
+    "editEyebrow": "编辑预订",
+    "eyebrow": "您的预订",
+    "bookingNumber": "预订号",
+    "reservationId": "预订 ID",
+    "bookingDate": "预订日期",
+    "photoAlt": "已预订的住宿",
+    "accommodation": "您的住宿",
+    "stay": "您的行程",
+    "checkIn": "入住",
+    "duration": "时长",
+    "checkOut": "退房",
+    "roomDetails": "客房详情",
+    "roomNumber": "房号",
+    "notAssigned": "未分配",
+    "floor": "楼层",
+    "guests": "住客",
+    "maxCapacity": "最多容纳人数",
+    "nightlyRate": "每晚价格",
+    "guestInfo": "住客信息",
+    "guestUnavailable": "暂无住客联系信息。",
+    "pricingLabel": "预订价格与付款记录"
+  },
+  "reservationFinance": {
+    "priceDetails": "价格明细",
+    "roomNightsOne": "1 间客房 × 1 晚",
+    "roomNightsMany": "1 间客房 × {{ count }} 晚",
+    "each": "每项 {{ price }}",
+    "additionalServices": "附加服务",
+    "none": "无",
+    "total": "合计",
+    "netPaid": "净付款",
+    "refunded": "已退款",
+    "balance": "余额",
+    "folioTitle": "账单与服务",
+    "folio": "账单 #{{ id }}",
+    "issued": "开具于 {{ date }}",
+    "noFolio": "尚未开具账单。",
+    "quantity": "数量：{{ quantity }}",
+    "charge": "费用 #{{ id }}",
+    "noServices": "未预订附加服务。",
+    "paymentsTitle": "付款记录",
+    "payment": "付款 #{{ id }}",
+    "date": "日期",
+    "method": "方式",
+    "processedBy": "处理人",
+    "selfService": "客户自助",
+    "noPayments": "暂无付款记录。",
+    "refundsTitle": "退款记录",
+    "refund": "退款 #{{ id }}",
+    "reason": "原因",
+    "notes": "备注"
+  },
+  "adminHeader": {
+    "frontDesk": "前台",
+    "adminPanel": "管理面板",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单",
+    "navigation": "管理导航",
+    "myProfile": "我的资料",
+    "logout": "退出登录",
+    "goToHotel": "前往酒店主页",
+    "sections": {
+      "clients": "客户",
+      "reservations": "预订",
+      "accounting": "财务",
+      "roomTypes": "房型",
+      "rooms": "客房",
+      "services": "服务",
+      "administrators": "管理员",
+      "operators": "操作员"
+    }
+  },
+  "clients": {
+    "list": {
+      "title": "客户",
+      "eyebrow": "Atlan Suites · 客户管理",
+      "description": "查看和管理在 Atlan Suites 注册的客户。",
+      "create": "创建客户",
+      "loading": "正在加载客户…",
+      "created": "客户创建成功。",
+      "confirmDelete": "删除客户“{{ name }}”？此操作无法撤销。",
+      "deleted": "客户删除成功。",
+      "deleteError": "无法删除客户，请重试。"
+    },
+    "table": {
+      "label": "客户表格",
+      "client": "客户",
+      "emptyTitle": "暂无客户",
+      "emptyText": "创建一个客户以开始使用。"
+    },
+    "detail": {
+      "loading": "正在加载客户…",
+      "eyebrow": "客户管理",
+      "description": "客户资料与联系信息。",
+      "edit": "编辑客户",
+      "saved": "客户保存成功。"
+    },
+    "form": {
+      "profileEyebrow": "我的资料",
+      "editProfile": "编辑资料",
+      "createTitle": "创建客户",
+      "editTitle": "编辑客户",
+      "description": "填写客户资料与联系信息。",
+      "backToProfile": "返回资料",
+      "create": "创建客户",
+      "save": "保存客户",
+      "saveProfile": "保存资料",
+      "fieldsDescription": "电子邮箱和身份证件号必须唯一。头像为可选项。",
+      "nationalIdHint": "5 到 20 个字母或数字，不含空格。",
+      "phoneHint": "7 到 15 位数字，可以 + 开头。",
+      "profilePhoto": "头像网址"
+    }
+  },
+  "administrators": {
+    "list": {
+      "watermark": "Admins",
+      "title": "管理员",
+      "description": "查看管理 Atlan Suites 的账户及其负责的操作员。",
+      "create": "创建管理员",
+      "loading": "正在加载管理员…",
+      "countOne": "已登记 1 位管理员",
+      "countMany": "已登记 {{ count }} 位管理员",
+      "viewOperators": "查看操作员",
+      "created": "管理员创建成功。",
+      "confirmDelete": "删除管理员“{{ name }}”？此操作无法撤销。",
+      "deleted": "管理员“{{ name }}”删除成功。",
+      "deleteError": "无法删除管理员“{{ name }}”，请重试。"
+    },
+    "fields": {
+      "operators": "操作员",
+      "operatorsInCharge": "负责的操作员"
+    },
+    "table": {
+      "label": "管理员表格",
+      "administrator": "管理员",
+      "emptyTitle": "暂无管理员",
+      "emptyText": "创建一位管理员以开始使用。"
+    },
+    "detail": {
+      "loading": "正在加载管理员…",
+      "eyebrow": "管理员资料",
+      "description": "管理门户中登记的账户信息。",
+      "edit": "编辑管理员",
+      "saved": "管理员保存成功。",
+      "information": "管理员信息",
+      "watermark": "Admin",
+      "reportingLine": "汇报关系",
+      "addOperator": "添加操作员",
+      "noOperators": "目前还没有向该管理员汇报的操作员。"
+    },
+    "form": {
+      "createTitle": "创建管理员",
+      "editTitle": "编辑管理员",
+      "createDescription": "填写新管理员账户的信息。",
+      "create": "创建管理员",
+      "save": "保存管理员",
+      "namePlaceholder": "管理员姓名"
+    }
+  },
+  "operators": {
+    "list": {
+      "title": "操作员",
+      "description": "查看已登记的操作员及其负责的管理员。",
+      "create": "创建操作员",
+      "loading": "正在加载操作员…",
+      "countOne": "已登记 1 位操作员",
+      "countMany": "已登记 {{ count }} 位操作员",
+      "viewAdministrators": "查看管理员",
+      "created": "操作员创建成功。",
+      "confirmDelete": "删除操作员“{{ name }}”？此操作无法撤销。",
+      "deleted": "操作员“{{ name }}”删除成功。",
+      "deleteError": "无法删除操作员“{{ name }}”，请重试。"
+    },
+    "fields": {
+      "administrator": "管理员",
+      "administratorInCharge": "负责的管理员"
+    },
+    "table": {
+      "label": "操作员表格",
+      "operator": "操作员",
+      "emptyTitle": "暂无操作员",
+      "emptyText": "创建一位操作员以开始使用。"
+    },
+    "detail": {
+      "loading": "正在加载操作员…",
+      "eyebrow": "操作员资料",
+      "description": "门户中登记的账户信息与汇报关系。",
+      "edit": "编辑操作员",
+      "saved": "操作员保存成功。",
+      "information": "操作员信息"
+    },
+    "form": {
+      "createTitle": "创建操作员",
+      "editTitle": "编辑操作员",
+      "createDescription": "填写新操作员账户的信息。",
+      "create": "创建操作员",
+      "save": "保存操作员",
+      "personalTitle": "个人信息",
+      "personalDescription": "识别操作员所需的信息。",
+      "firstNamePlaceholder": "操作员的名",
+      "lastNamePlaceholder": "操作员的姓",
+      "contactTitle": "联系方式与汇报关系",
+      "selectAdministrator": "选择一位管理员",
+      "reportsTo": "每位操作员都向一位管理员汇报。",
+      "noAdministrators": "目前还没有管理员。",
+      "createAdministratorFirst": "请先创建一位"
+    }
+  },
+  "rooms": {
+    "roomNumber": "{{ number }} 号房",
+    "list": {
+      "title": "客房",
+      "create": "+ 添加客房",
+      "loading": "正在加载客房…",
+      "active": "启用的客房",
+      "inactive": "停用的客房"
+    },
+    "sort": {
+      "numberAsc": "房号：从小到大",
+      "numberDesc": "房号：从大到小",
+      "floorAsc": "楼层：从低到高",
+      "floorDesc": "楼层：从高到低"
+    },
+    "fields": {
+      "room": "客房",
+      "type": "类型",
+      "roomType": "房型",
+      "floor": "楼层",
+      "physicalStatus": "客房状态",
+      "number": "编号",
+      "roomNumber": "房号",
+      "description": "描述",
+      "nightlyPrice": "每晚价格",
+      "maxCapacity": "最多容纳人数"
+    },
+    "table": {
+      "label": "酒店客房",
+      "tableLabel": "客房表格",
+      "emptyTitle": "暂无客房",
+      "emptyText": "创建一间客房以开始使用。"
+    },
+    "detail": {
+      "loading": "正在加载客房…",
+      "eyebrow": "客房目录",
+      "edit": "编辑客房",
+      "saved": "客房保存成功。",
+      "information": "客房信息"
+    },
+    "form": {
+      "loading": "正在加载客房信息…",
+      "createTitle": "创建客房",
+      "editTitle": "编辑客房",
+      "description": "设置客房的房号、楼层、状态和房型。",
+      "create": "创建客房",
+      "save": "保存客房",
+      "needsRoomType": "保存客房前必须先有房型。",
+      "createRoomType": "创建房型",
+      "selectExistingType": "请选择一个已有的房型。",
+      "fieldsDescription": "所有字段均为必填。房号必须唯一。",
+      "numberHint": "1 到 9999。",
+      "floorHint": "0 到 200。",
+      "selectRoomType": "选择房型"
+    }
+  },
+  "services": {
+    "included": "已包含",
+    "list": {
+      "title": "服务",
+      "create": "+ 添加服务",
+      "loading": "正在加载服务…",
+      "active": "启用的服务",
+      "inactive": "停用的服务"
+    },
+    "fields": {
+      "service": "服务",
+      "category": "类别",
+      "price": "价格",
+      "priceCop": "价格（COP）",
+      "name": "名称",
+      "summary": "简介",
+      "description": "描述",
+      "duration": "时长",
+      "schedule": "时间安排",
+      "location": "地点"
+    },
+    "table": {
+      "label": "酒店服务",
+      "tableLabel": "服务表格",
+      "emptyTitle": "暂无服务",
+      "emptyText": "创建一项服务以开始使用。"
+    },
+    "detail": {
+      "loading": "正在加载服务…",
+      "edit": "编辑服务",
+      "saved": "服务保存成功。",
+      "information": "服务信息"
+    },
+    "form": {
+      "loading": "正在加载服务…",
+      "eyebrow": "服务目录",
+      "createTitle": "创建服务",
+      "editTitle": "编辑服务",
+      "description": "设置服务的信息、价格和照片。",
+      "photos": "服务照片",
+      "create": "创建服务",
+      "save": "保存服务",
+      "requiredFields": "必填字段：名称、类别、描述、价格和主图。",
+      "priceHint": "0 到 99,999,999.99，最多两位小数。",
+      "descriptionHint": "最多 5,000 个字符。"
+    }
+  },
+  "roomTypes": {
+    "list": {
+      "watermarkLine1": "房",
+      "watermarkLine2": "型",
+      "title": "房型",
+      "create": "+ 添加房型",
+      "loading": "正在加载房型…",
+      "toastTitle": "目录已更新",
+      "confirmDelete": "删除房型“{{ name }}”？此操作无法撤销。",
+      "deleted": "房型“{{ name }}”已成功删除。",
+      "deleteError": "无法删除房型“{{ name }}”，请重试。"
+    },
+    "fields": {
+      "capacity": "容纳人数",
+      "nightlyRate": "每晚价格",
+      "name": "名称",
+      "description": "描述",
+      "pricePerNight": "每晚价格",
+      "pricePerNightCop": "每晚价格（COP）",
+      "maxCapacity": "最多容纳人数"
+    },
+    "detail": {
+      "loading": "正在加载房型…",
+      "description": "该类别客房共享的图库与商业信息。",
+      "edit": "编辑房型",
+      "checkAvailability": "查询空房",
+      "saved": "房型保存成功。",
+      "information": "房型信息",
+      "commercial": "商业信息",
+      "mainPhotoAlt": "{{ name }} 的主图"
+    },
+    "form": {
+      "createTitle": "创建房型",
+      "editTitle": "编辑房型",
+      "createDescription": "为酒店库存添加新的住宿选择。",
+      "editDescription": "设置 {{ name }} 在酒店库存中的展示方式。",
+      "photosDescription": "这些照片代表该房型下的所有客房。",
+      "create": "创建房型",
+      "save": "保存房型",
+      "commercialDescription": "显示名称、描述、基础价格和允许入住人数。",
+      "capacityHint": "1 到 10 位住客。",
+      "descriptionHint": "最多 500 个字符。",
+      "priceHint": "大于零，最多两位小数。"
+    },
+    "capacityFilter": {
+      "small": "1–2 位住客",
+      "medium": "3–4 位住客",
+      "large": "5 位及以上住客"
+    },
+    "table": {
+      "preview": "预览",
+      "nameDetails": "房型与详情",
+      "maxGuests": "最多住客",
+      "guestsOne": "1 位住客",
+      "guestsMany": "{{ count }} 位住客",
+      "perNight": "/ 晚",
+      "emptyTitle": "未找到房型",
+      "emptyText": "没有符合当前搜索或筛选条件的房型。请尝试重置筛选条件。",
+      "emptyTextAdmin": "没有符合当前搜索或筛选条件的房型。请尝试重置筛选条件或创建新房型。",
+      "clearFilters": "清除所有筛选",
+      "addNew": "+ 添加新房型"
+    }
+  },
+  "reservations": {
+    "list": {
+      "title": "预订",
+      "description": "住客的住宿、客房分配和预订记录。",
+      "loading": "正在加载预订…",
+      "deleted": "预订已永久删除。",
+      "deleteError": "无法删除预订，请重试。"
+    },
+    "sort": {
+      "guestAsc": "住客：A–Z",
+      "guestDesc": "住客：Z–A",
+      "checkInAsc": "入住日期：由近到远",
+      "checkInDesc": "入住日期：由远到近",
+      "createdAsc": "预订日期：由早到晚",
+      "createdDesc": "预订日期：由晚到早"
+    },
+    "fields": {
+      "booking": "预订",
+      "guest": "住客",
+      "stay": "住宿",
+      "room": "客房",
+      "guests": "住客人数",
+      "checkInFrom": "入住日期起",
+      "checkInTo": "入住日期止",
+      "minGuests": "最少住客人数"
+    },
+    "table": {
+      "caption": "所有住客预订",
+      "empty": "没有符合搜索条件的预订。"
+    },
+    "deleteDialog": {
+      "eyebrow": "预订管理",
+      "title": "删除预订 #{{ id }}？",
+      "description": "永久删除仅适用于特殊情况。一般情况下，将状态改为“已取消”即可。",
+      "warning": "这将删除该预订及其账单、费用和付款。",
+      "irreversible": "此操作不可撤销。",
+      "confirm": "永久删除"
+    },
+    "detail": {
+      "loading": "正在加载预订…",
+      "saved": "预订更新成功。",
+      "paymentSaved": "付款已批准，您的余额已更新。",
+      "addCardPayment": "添加银行卡付款",
+      "closePayment": "关闭付款表单",
+      "adminView": "管理员视图",
+      "operatorView": "操作员视图",
+      "backToClient": "返回客户",
+      "backToFrontDesk": "返回前台",
+      "backToReservations": "返回预订列表",
+      "backToMyReservations": "返回我的预订"
+    },
+    "cash": {
+      "title": "收取现金付款",
+      "close": "关闭现金付款",
+      "balance": "未付余额：{{ balance }}",
+      "amount": "实收金额",
+      "hint": "最低 {{ minimum }}。余额低于 {{ threshold }} 时可一次付清。",
+      "record": "登记现金付款",
+      "recording": "正在登记…",
+      "required": "请输入实收金额。",
+      "range": "请输入介于最低金额和未付余额之间的金额。"
+    },
+    "form": {
+      "legend": "编辑住宿和服务",
+      "legendStaff": "编辑住宿、服务和状态",
+      "save": "保存预订",
+      "preview": "价格预览",
+      "recalculatedTotal": "重新计算的总价",
+      "alreadyPaid": "已付金额（扣除退款后）",
+      "refundAfterSaving": "保存后退款",
+      "refundNote": "如果新总价低于已付金额，差额将自动退还。价格上涨可能产生新的未付余额。",
+      "savedNote": "在保存更改之前，下方价格明细显示的是已保存的预订。",
+      "stayAndStatus": "住宿与状态",
+      "roomAssigned": "系统会根据所选房型和日期自动分配实际客房。",
+      "maxNightsHint": "一次住宿最长 {{ nights }} 晚。",
+      "upToGuests": "最多 {{ count }} 位住客",
+      "servicesOnlyHint": "入住期间，您只能添加服务，不能移除已有服务，也不能更改日期或入住人数。",
+      "servicesDescription": "已预订的服务保留原价。停用的服务只有在已包含时才能保留。",
+      "inactiveContracted": "已停用 · 之前已预订",
+      "contractedPrice": "预订时价格",
+      "noServices": "暂无可用服务。"
+    }
+  },
+  "auth": {
+    "backHome": "返回首页",
+    "eyebrow": "Atlan Suites · 登录门户",
+    "titles": {
+      "guestSignIn": "住客登录",
+      "guestRegistration": "住客注册",
+      "staff": "员工门户"
+    },
+    "subtitles": {
+      "guest": "欢迎开启难忘的体验。登录以管理您的住宿和服务。",
+      "staff": "仅限酒店管理员和操作员访问。"
+    },
+    "selectPortal": "选择门户",
+    "portals": {
+      "guests": "住客",
+      "staff": "酒店员工"
+    },
+    "signIn": "登录",
+    "signingIn": "正在登录…",
+    "register": "注册",
+    "registering": "正在注册…",
+    "completeRegistration": "完成注册",
+    "noAccount": "还没有账户？",
+    "registerHere": "在此注册",
+    "haveAccount": "已有住客账户？",
+    "staffNotice": "酒店员工专用入口",
+    "verifying": "正在验证凭据…",
+    "enterStaff": "进入酒店管理",
+    "fields": {
+      "nationalId": "身份证件号（身份证/护照）",
+      "profilePhoto": "头像网址（可选）",
+      "staffEmail": "工作邮箱",
+      "staffPassword": "员工密码"
+    },
+    "placeholders": {
+      "firstName": "伟",
+      "lastName": "张",
+      "staffEmail": "admin@atlansuites.com 或 operator@atlansuites.com"
+    },
+    "hints": {
+      "nationalId": "5 到 20 个字母或数字",
+      "phone": "7 到 15 位数字，可加 +",
+      "password": "至少 8 个字符",
+      "profilePhoto": "图片的网页链接（可选）"
+    },
+    "demo": {
+      "title": "演示账户：",
+      "quickTitle": "快速演示账户：",
+      "fillClient": "填入 Emma Thompson（住客）",
+      "fillAdmin": "填入 Admin 1（Admin2026!）",
+      "fillOperator": "填入 Operator 1（Operator2026!）"
+    },
+    "success": {
+      "client": "欢迎，{{ name }}！",
+      "registered": "账户创建成功！欢迎，{{ name }}。",
+      "staff": "已以{{ role }}身份登录：{{ name }}。"
+    },
+    "errors": {
+      "checkFieldsContinue": "继续之前请检查标记的字段。",
+      "checkFields": "请检查标记的字段。",
+      "securePassword": "请输入至少 8 个字符的安全密码。",
+      "staffPassword": "请输入员工密码。",
+      "signInFailed": "登录失败，请重试。",
+      "registrationFailed": "住客注册失败。",
+      "invalidClient": "电子邮箱或密码错误。",
+      "invalidStaff": "员工凭据错误。"
+    }
+  },
+  "profile": {
+    "loading": "正在加载您的资料…",
+    "description": "您在 Atlan Suites 的账户信息和预订。",
+    "saved": "资料保存成功。",
+    "paymentsLink": "付款与退款",
+    "deleteAccount": "删除账户",
+    "deleting": "正在删除…",
+    "confirmDelete": "删除您的 Atlan Suites 账户？此操作无法撤销。",
+    "deleteError": "无法删除您的账户。",
+    "cancel": {
+      "title": "取消预订 {{ code }}？",
+      "description": "您的预订将被取消。住宿及相关服务的所有付款将全额退还到您的银行卡（已退款的金额除外）。您的预订和财务记录将被保留。",
+      "typeBefore": "请输入",
+      "typeAfter": "以确认。",
+      "phrase": "是的，我要取消",
+      "keep": "保留预订",
+      "cancelling": "正在取消…",
+      "error": "无法取消预订，请重试。"
+    }
+  },
+  "paymentHistory": {
+    "loading": "正在加载付款和退款…",
+    "eyebrow": "我的账户",
+    "description": "您的付款和退款。",
+    "title": "交易记录",
+    "recordsOne": "1 条记录",
+    "recordsMany": "{{ count }} 条记录",
+    "filtersLabel": "交易筛选",
+    "payments": "付款",
+    "refunds": "退款",
+    "payment": "付款",
+    "refund": "退款",
+    "processedBy": "处理人：{{ name }}",
+    "empty": "暂无付款或退款。",
+    "noPayments": "未找到付款。",
+    "noRefunds": "未找到退款。"
+  },
+  "catalog": {
+    "eyebrow": "Atlan Suites · 体验与款待",
+    "title": "酒店服务",
+    "description": "探索我们精选的招牌餐饮、身心康体、休闲娱乐和个性化协助。每项服务都旨在丰富您住宿的每一刻。",
+    "searchPlaceholder": "搜索服务（如：水疗、早餐、自行车…）",
+    "search": "搜索服务",
+    "clearSearch": "清除搜索",
+    "filterByCategory": "按类别筛选",
+    "loading": "正在加载服务目录…",
+    "viewDetails": "查看详情",
+    "emptyTitle": "未找到服务",
+    "emptyText": "没有符合所选搜索条件的服务。",
+    "resetFilters": "重置筛选",
+    "detail": {
+      "loading": "正在加载服务信息…",
+      "available": "住客可用",
+      "pricePerService": "每次服务价格",
+      "quickFacts": "服务概览",
+      "about": "关于此服务",
+      "enjoy": "在住宿期间尽情享受",
+      "bookRoom": "预订客房，亲身体验！"
+    },
+    "gallery": {
+      "eyebrow": "图片导览",
+      "title": "服务图库",
+      "description": "{{ name }} 的相关图片。",
+      "enlarge": "放大 {{ name }} 的第 {{ number }} 张图片",
+      "mainAlt": "{{ name }} — 主图",
+      "imageAlt": "{{ name }} — 图库第 {{ number }} 张图片",
+      "preview": "{{ name }} 图片预览",
+      "closePreview": "关闭图片预览"
+    }
+  },
+  "booking": {
+    "loading": "正在加载您的住宿…",
+    "error": "无法完成预订请求，请重试。",
+    "stepOf": "第 {{ step }} 步，共 {{ total }} 步",
+    "progress": "预订进度",
+    "navigation": "预订导航",
+    "previousStep": "上一步",
+    "changeDates": "更改日期",
+    "steps": {
+      "dates": "日期",
+      "room": "选择客房",
+      "services": "服务",
+      "payment": "付款"
+    },
+    "dates": {
+      "title": "选择日期",
+      "intro": "选择您希望入住的时间以及同行的住客人数。",
+      "datesOfStay": "住宿日期",
+      "chooseDate": "选择日期",
+      "previousMonth": "显示上个月",
+      "nextMonth": "显示下个月",
+      "hint": "先选择入住日期，再选择退房日期。住宿最长 {{ nights }} 晚，最早可提前 {{ years }} 年开始。",
+      "detailsEyebrow": "预订详情",
+      "guestsHint": "有几位入住？最多 {{ max }} 位。",
+      "guestQuantity": "住客人数",
+      "decreaseGuests": "减少住客",
+      "increaseGuests": "增加住客"
+    },
+    "roomTypes": {
+      "title": "选择客房",
+      "intro": "以下房型在您选择的日期可预订。",
+      "selectedStay": "已选住宿",
+      "changeDetails": "更改预订信息",
+      "available": "可预订的房型",
+      "eyebrow": "客房与套房",
+      "upToGuests": "最多 {{ count }} 位住客",
+      "roomsLeftOne": "您选择的日期仅剩 1 间",
+      "roomsLeftMany": "您选择的日期仅剩 {{ count }} 间",
+      "rate": "客房价格",
+      "from": "起价",
+      "rateNote": "总价包含住宿和所选服务。",
+      "select": "选择此房型",
+      "empty": "所选日期和住客人数下没有可用客房。请更改日期或住客人数。"
+    },
+    "services": {
+      "title": "要添加服务吗？",
+      "filters": "服务筛选",
+      "available": "可用服务",
+      "selected": "已选择",
+      "select": "选择服务",
+      "emptyCategory": "该类别暂无可用服务。",
+      "pages": "服务分页",
+      "previousPage": "上一页服务",
+      "nextPage": "下一页服务",
+      "yourSelection": "您的选择",
+      "cart": "服务购物车",
+      "cartEmpty": "尚未选择服务。",
+      "remove": "移除 {{ name }}",
+      "clearCart": "清空购物车",
+      "skip": "跳过服务",
+      "addSelected": "添加所选服务"
+    },
+    "checkout": {
+      "eyebrow": "最后一个选择",
+      "title": "您希望如何继续？",
+      "reserveNow": "立即预订",
+      "payLater": "先预订，稍后付款",
+      "payLaterText": "您的预订将保存在账户中。您可以随时分多次付款。",
+      "booking": "正在预订…",
+      "payToday": "今天付款",
+      "payNow": "立即付款",
+      "payNowText": "您可以今天付清全部或部分款项。剩余余额保留在账户中，可分多次支付。",
+      "accommodation": "住宿",
+      "totalStay": "住宿总价："
+    },
+    "summary": {
+      "nights": "晚数"
+    },
+    "payment": {
+      "orPayLater": "或先预订，稍后付款",
+      "intro": "确认您的住宿并填写付款信息。",
+      "introAdditional": "用银行卡支付全部或部分未付余额。",
+      "choose": "选择付款金额",
+      "amountToday": "今天支付的金额",
+      "amountHint": "（您可以修改此金额，其余稍后支付）",
+      "partialTotal": "您今天可以支付住宿总价的全部或部分，最低 {{ minimum }}。",
+      "partialBalance": "您今天可以支付未付余额的全部或部分，最低 {{ minimum }}。",
+      "cardDetails": "银行卡信息",
+      "cardholderName": "持卡人姓名",
+      "cardNumber": "卡号",
+      "expiryDate": "有效期",
+      "expiryPlaceholder": "MM/YY",
+      "securityCode": "安全码",
+      "securityPlaceholder": "CVV",
+      "processing": "正在处理…",
+      "confirm": "确认并付款",
+      "checkDetails": "请检查标记的付款信息。",
+      "amountRange": "付款金额至少为 {{ minimum }}，且不能超过总额 {{ total }}。"
+    }
+  },
+  "frontDesk": {
+    "eyebrow": "Atlan Suites · 前台",
+    "intro": "今日到店、在住住客、待退房以及清洁或维修中的客房。",
+    "loading": "正在加载前台…",
+    "loadError": "无法加载前台，请重试。",
+    "summaryLabel": "今日前台概况",
+    "tiles": {
+      "arrivals": "今日到店",
+      "readyArrivals": "可办理入住：{{ count }}",
+      "occupiedOne": "1 间客房已入住",
+      "occupiedMany": "{{ count }} 间客房已入住",
+      "withBalance": "有未付余额：{{ count }}",
+      "roomsToPrepare": "待准备客房",
+      "cleaningMaintenance": "清洁中 {{ cleaning }} · 维修中 {{ maintenance }}"
+    },
+    "arrivals": {
+      "title": "到店",
+      "description": "今天开始的待确认和已确认住宿，以及住宿尚未结束的延迟到店。"
+    },
+    "inHouse": {
+      "title": "在住住客",
+      "description": "已办理入住的住宿，最近退房的排在前面。"
+    },
+    "departures": {
+      "title": "待退房",
+      "description": "今天离店或已逾期的住客。退房需余额为零，客房随后转入清洁。"
+    },
+    "rooms": {
+      "title": "清洁或维修中的客房",
+      "description": "有住客即将到店的客房排在前面。",
+      "floor": "{{ floor }} 楼",
+      "guestArriving": "住客即将到店",
+      "markClean": "标记为已清洁",
+      "endMaintenance": "结束维修",
+      "forRoom": "（{{ number }} 号房）",
+      "empty": "所有客房均已就绪，没有等待清洁或维修的客房。"
+    },
+    "stays": {
+      "arrival": {
+        "caption": "今日预计到店",
+        "empty": "今天没有待到店的住客。"
+      },
+      "in-house": {
+        "caption": "当前在住住客",
+        "empty": "目前没有在住住客。"
+      },
+      "departure": {
+        "caption": "今日或逾期待退房",
+        "empty": "没有待退房的住客。"
+      },
+      "action": "操作",
+      "pendingConfirmation": "待确认",
+      "collectPayment": "收款",
+      "reviewBooking": "查看预订",
+      "forCode": "（{{ code }}）",
+      "checkIn": "办理入住",
+      "checkOut": "办理退房",
+      "waitingRoom": "等待客房",
+      "collectBalance": "收取余额"
+    },
+    "tags": {
+      "lateArrival": "延迟到店",
+      "overdueDeparture": "逾期退房",
+      "departsToday": "今天退房",
+      "roomReady": "客房就绪",
+      "beingCleaned": "清洁中",
+      "underMaintenance": "维修中",
+      "stillOccupied": "仍有人入住",
+      "noRoom": "未分配客房"
+    },
+    "notice": {
+      "updated": "前台已更新",
+      "failed": "操作未完成",
+      "checkedIn": "{{ label }} 已办理入住，客房现为已入住。",
+      "checkedOut": "{{ label }} 已办理退房，客房现在显示在待准备客房中。",
+      "ready": "{{ label }} 已就绪。",
+      "error": "无法完成操作，请重试。"
+    }
+  },
+  "accounting": {
+    "title": "财务与统计",
+    "period": "报告期间",
+    "from": "从",
+    "to": "至",
+    "apply": "应用期间",
+    "loading": "正在加载财务和预订统计…",
+    "loadError": "无法加载财务数据，请重试。",
+    "unavailable": "数据不可用",
+    "periodCaption": "报告期间：",
+    "noBookings": "此期间没有新建预订。财务总额按付款和退款日期计算。",
+    "inProgress": "入住中",
+    "overview": {
+      "label": "以哥伦比亚比索计的财务摘要",
+      "payments": "已批准付款",
+      "refunds": "已批准退款",
+      "net": "净收款",
+      "outstanding": "未付余额"
+    },
+    "stays": {
+      "title": "住宿统计",
+      "averageStay": "平均住宿",
+      "nights": "晚",
+      "averageGuests": "每笔预订平均住客"
+    },
+    "status": {
+      "title": "预订状态",
+      "chartLabel": "按当前状态统计的预订数量。可通过图例显示或隐藏某个状态。",
+      "details": "查看数量和百分比",
+      "caption": "预订状态分布",
+      "share": "占比"
+    },
+    "trend": {
+      "title": "预订趋势",
+      "chartLabel": "随时间新建的预订，支持缩放和时间范围滑块。",
+      "details": "查看各期间合计",
+      "caption": "新建预订合计",
+      "periodStarts": "期间开始"
+    },
+    "roomTypes": {
+      "title": "最受欢迎的房型",
+      "chartLabel": "按预订数和已订晚数排序的房型。可通过图例切换任一系列。",
+      "details": "查看房型排名",
+      "caption": "房型排名",
+      "bookings": "预订数",
+      "empty": "此期间没有未取消的预订。"
+    },
+    "services": {
+      "title": "最常预订的服务",
+      "chartLabel": "按预订数量排序的服务。",
+      "details": "查看数量和预订金额",
+      "caption": "服务数量和历史收费金额",
+      "concept": "服务项目",
+      "units": "数量",
+      "value": "收费金额",
+      "empty": "此期间没有服务收费。"
+    },
+    "charts": {
+      "resetView": "重置视图",
+      "download": "下载图表",
+      "reservations": "预订",
+      "reservationsUnit": "笔预订",
+      "created": "新建预订",
+      "bookedNights": "已订晚数",
+      "unitsContracted": "预订数量"
+    }
+  },
+  "adminPanel": {
+    "eyebrow": "Atlan Suites · 管理",
+    "greeting": "欢迎，",
+    "intro": "在一个地方创建、编辑和管理 Atlan Suites 展示的所有信息。",
+    "loadError": "无法加载统计数据。请确认 Spring Boot 后端正在 localhost:8080 运行。",
+    "sectionsLabel": "可管理的模块",
+    "loadingTotal": "正在加载总数…",
+    "manage": "管理{{ section }}",
+    "cards": {
+      "reservations": "所有住客预订、日期、客房分配和预订详情。",
+      "services": "住客目录中展示的餐饮、康体和礼宾服务。",
+      "roomTypes": "套房类别、每晚价格、容纳人数和照片图库。",
+      "rooms": "实际客房及其楼层、状态和所属房型。",
+      "clients": "已注册的住客账户及其联系信息。",
+      "administrators": "拥有本面板全部权限的员工账户。",
+      "operators": "前台员工及其负责的管理员。"
+    },
+    "create": {
+      "service": "新建服务",
+      "roomType": "新建房型",
+      "room": "新建客房",
+      "client": "新建客户",
+      "administrator": "新建管理员",
+      "operator": "新建操作员"
+    }
+  },
+  "errorPage": {
+    "eyebrow": "错误 {{ code }} · {{ label }}",
+    "address": "地址",
+    "goBack": "返回",
+    "goToFrontDesk": "前往前台",
+    "goToAdminPanel": "前往管理面板",
+    "goToHome": "前往首页",
+    "labels": {
+      "400": "无效请求",
+      "404": "未找到",
+      "500": "服务器错误",
+      "503": "服务器不可用"
+    },
+    "titles": {
+      "400": "此地址无效",
+      "404": "找不到此页面",
+      "500": "我们这边出了点问题",
+      "503": "无法连接服务器"
+    },
+    "messages": {
+      "400": "链接中包含酒店无法识别的值，例如不是数字的标识符。请检查地址或返回上一页。",
+      "404": "您要查找的页面或记录不存在或已被删除。",
+      "500": "服务器无法完成请求，请稍后重试。",
+      "503": "酒店服务器没有响应。请检查网络连接并稍后重试。"
+    }
+  },
+  "validation": {
+    "password": {
+      "required": "请输入密码。",
+      "length": "密码长度必须在 8 到 255 个字符之间。",
+      "invalid": "请输入 8 到 255 个字符的密码。"
+    },
+    "staffEmail": {
+      "required": "请输入电子邮箱地址。",
+      "maxlength": "电子邮箱地址不能超过 100 个字符。",
+      "email": "请输入有效的电子邮箱地址，例如 name@atlansuites.com。"
+    },
+    "photoUrl": {
+      "maxlength": "照片网址不能超过 500 个字符。",
+      "format": "请输入以 http:// 或 https:// 开头的照片网址。"
+    },
+    "price": {
+      "format": "请输入不超过 99,999,999.99 且最多两位小数的价格。"
+    },
+    "login": {
+      "email": {
+        "required": "请输入您的电子邮箱地址。",
+        "email": "请输入有效的电子邮箱地址。",
+        "maxlength": "电子邮箱地址不能超过 100 个字符。"
+      },
+      "password": {
+        "required": "请输入您的密码。"
+      }
+    },
+    "client": {
+      "name": {
+        "required": "请输入名。",
+        "maxlength": "名不能超过 60 个字符。"
+      },
+      "lastName": {
+        "required": "请输入姓。",
+        "maxlength": "姓不能超过 60 个字符。"
+      },
+      "nationalId": {
+        "required": "请输入身份证件号。",
+        "format": "身份证件号必须为 5 到 20 个字母或数字，不含空格或符号。"
+      },
+      "phone": {
+        "required": "请输入电话号码。",
+        "format": "请输入 7 到 15 位数字的电话号码，不含空格，可以 + 开头。"
+      },
+      "email": {
+        "required": "请输入电子邮箱地址。",
+        "maxlength": "电子邮箱地址不能超过 100 个字符。",
+        "email": "请输入有效的电子邮箱地址，例如 name@example.com。"
+      }
+    },
+    "administrator": {
+      "name": {
+        "required": "请输入管理员姓名。",
+        "maxlength": "姓名不能超过 60 个字符。"
+      }
+    },
+    "operator": {
+      "name": {
+        "required": "请输入操作员的名。",
+        "maxlength": "名不能超过 60 个字符。"
+      },
+      "lastName": {
+        "required": "请输入操作员的姓。",
+        "maxlength": "姓不能超过 60 个字符。"
+      },
+      "adminId": {
+        "required": "请选择负责该操作员的管理员。"
+      }
+    },
+    "roomType": {
+      "name": {
+        "required": "请输入房型名称。",
+        "maxlength": "名称不能超过 50 个字符。"
+      },
+      "description": {
+        "required": "请输入描述。",
+        "maxlength": "描述不能超过 500 个字符。"
+      },
+      "nightlyPrice": {
+        "required": "请输入每晚价格。",
+        "positive": "每晚价格必须大于零。"
+      },
+      "maxCapacity": {
+        "required": "请输入最多容纳人数。",
+        "min": "容纳人数至少为 1 位住客。",
+        "max": "容纳人数不能超过 10 位住客。",
+        "integer": "请输入整数住客人数。"
+      }
+    },
+    "photo": {
+      "mainRequired": "请输入主图网址。"
+    },
+    "room": {
+      "number": {
+        "required": "请输入房号。",
+        "min": "房号至少为 1。",
+        "max": "房号不能超过 9999。",
+        "integer": "请输入整数房号。"
+      },
+      "floor": {
+        "required": "请输入楼层。",
+        "min": "楼层不能为负数。",
+        "max": "楼层不能超过 200。",
+        "integer": "请输入整数楼层。"
+      },
+      "status": {
+        "required": "请选择客房状态。"
+      },
+      "roomTypeId": {
+        "required": "请选择房型。"
+      }
+    },
+    "service": {
+      "name": {
+        "required": "请输入服务名称。",
+        "maxlength": "名称不能超过 100 个字符。"
+      },
+      "category": {
+        "required": "请输入类别。",
+        "maxlength": "类别不能超过 50 个字符。"
+      },
+      "summary": {
+        "maxlength": "简介不能超过 255 个字符。"
+      },
+      "duration": {
+        "maxlength": "时长不能超过 50 个字符。"
+      },
+      "availability": {
+        "maxlength": "时间安排不能超过 100 个字符。"
+      },
+      "location": {
+        "maxlength": "地点不能超过 100 个字符。"
+      },
+      "description": {
+        "required": "请输入描述。",
+        "maxlength": "描述不能超过 5,000 个字符。"
+      },
+      "price": {
+        "required": "请输入价格。",
+        "min": "价格不能为负数。"
+      }
+    },
+    "reservation": {
+      "checkIn": {
+        "required": "请选择入住日期。",
+        "past": "入住日期不能早于今天。请重新选择日期。",
+        "tooFar": "最多只能提前 {{ years }} 年预订。"
+      },
+      "checkOut": {
+        "required": "请选择退房日期。",
+        "order": "退房日期必须晚于入住日期。",
+        "tooLong": "一次住宿不能超过 {{ nights }} 晚。"
+      },
+      "guests": {
+        "required": "请输入住客人数。",
+        "min": "请至少输入一位住客。",
+        "integer": "请输入整数住客人数。",
+        "capacity": "该房型最多容纳 {{ capacity }} 位住客。请减少住客人数或选择其他房型。"
+      },
+      "roomTypeId": {
+        "min": "请选择房型。"
+      },
+      "status": {
+        "required": "请选择预订状态。",
+        "pending": "预订待确认时无法办理入住。请先确认预订。",
+        "unpaid": "存在未付余额时无法办理退房。请先结清余额。"
+      }
+    },
+    "payment": {
+      "amount": {
+        "required": "请输入付款金额。",
+        "decimals": "金额最多两位小数。",
+        "max": "单笔付款不能超过 COP 99,999,999.99。"
+      },
+      "cardholderName": {
+        "required": "请输入卡上的姓名。",
+        "letters": "请按卡上显示输入姓名，只能使用字母（最多 100 个字符）。"
+      },
+      "cardNumber": {
+        "required": "请输入卡号。",
+        "length": "卡号必须为 13 到 19 位数字。"
+      },
+      "expiryDate": {
+        "required": "请输入有效期。",
+        "format": "请按 MM/YY 格式输入有效期，月份为 01 到 12。",
+        "expired": "该卡已过期。",
+        "tooFar": "请输入有效的有效期。"
+      },
+      "securityCode": {
+        "required": "请输入安全码。",
+        "length": "安全码必须为 3 或 4 位数字。"
+      }
+    }
+  },
+  "api": {
+    "default": "无法完成请求，请重试。",
+    "offline": "无法连接服务器。请检查网络连接以及后端是否正在运行，然后重试。",
+    "serverError": "服务器无法处理请求，请稍后重试。",
+    "badRequest": "部分信息无效，请检查后重试。",
+    "unauthorized": "电子邮箱或密码错误。",
+    "notFound": "所请求的记录不存在或已被删除。",
+    "conflict": "此更改与现有信息冲突。",
+    "createdNotFound": "记录已保存，但无法重新加载。请刷新列表查看。"
+  }
+}

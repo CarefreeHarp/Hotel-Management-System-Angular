@@ -3,7 +3,7 @@
 MVNW ?= ./mvnw
 MAVEN_ARGS ?=
 
-# Use the compiler's JDK when PATH contains a separate, newer Java runtime.
+# Usa el JDK del compilador cuando PATH contiene otro entorno de ejecución de Java.
 JAVA_HOME ?= $(shell dirname "$$(dirname "$$(readlink -f "$$(command -v javac)")")")
 export JAVA_HOME
 

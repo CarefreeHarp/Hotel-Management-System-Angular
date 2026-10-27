@@ -1,22 +1,16 @@
 <app-admin-header />
 <main class="catalog-page">
   <div class="catalog-page__container">
-    @if (error) { <p class="form-alert" role="alert">{{ error }}</p> }
-    @if (loading) { <app-skeleton variant="form" label="Loading service..." /> } @else {
+    @if (loading) { <app-skeleton variant="form" [label]="'services.form.loading' | transloco" /> } @else {
       <app-page-heading
-        eyebrow="Service catalog"
-        [title]="isCreateMode ? 'Create service' : 'Edit service'"
-        description="Define the service information, price and photos."
+        [eyebrow]="'services.form.eyebrow' | transloco"
+        [title]="(isCreateMode ? 'services.form.createTitle' : 'services.form.editTitle') | transloco"
+        [description]="'services.form.description' | transloco"
         ><a appButton variant="secondary" [routerLink]="[base, 'services']"
-          >Back to list</a
+          >{{ 'common.actions.backToList' | transloco }}</a
         ></app-page-heading
       >
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-        @if (submitted && form.invalid) {
-          <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
-          </p>
-        }
         <app-service-fields
           class="form-section"
           [form]="form"
@@ -24,7 +18,7 @@
         />
         <app-photo-fields
           class="form-section"
-          title="Service photos"
+          [title]="'services.form.photos' | transloco"
           [mainPhoto]="form.controls.mainImageUrl"
           [photos]="form.controls.secondaryImageUrls"
           [submitted]="submitted"
@@ -32,16 +26,29 @@
         />
         <div class="form-actions">
           <button appButton type="submit" [disabled]="saving">
-            {{ saving ? "Saving..." : isCreateMode ? "Create service" : "Save service" }}</button
+            {{
+              (saving
+                ? 'common.saving'
+                : isCreateMode
+                  ? 'services.form.create'
+                  : 'services.form.save'
+              ) | transloco
+            }}</button
           ><a
             appButton
             variant="secondary"
             [routerLink]="
               isCreateMode ? [base, 'services'] : [base, 'services', item?.serviceId]
             "
-            >Cancel</a
+            >{{ 'common.actions.cancel' | transloco }}</a
           >
         </div>
+        @if (error) { <p class="form-alert" role="alert">{{ error }}</p> }
+        @if (submitted && form.invalid) {
+          <p class="form-alert" role="alert">
+            {{ 'common.checkFields' | transloco }}
+          </p>
+        }
       </form>
     }
   </div>

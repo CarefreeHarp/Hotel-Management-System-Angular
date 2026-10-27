@@ -1,6 +1,12 @@
 :host {
   display: block;
 }
+.booking-intro {
+  margin: 1.5rem 0;
+}
+.booking-intro h2 {
+  font: 500 2rem var(--font-display);
+}
 .go-back-form {
   margin-bottom: 1.75rem;
 }
@@ -33,6 +39,9 @@
   display: grid;
   gap: 2rem;
   padding: clamp(1.5rem, 4vw, 3rem);
+}
+.payment-layout--additional {
+  grid-template-columns: minmax(0, 1fr);
 }
 .payment-form section {
   display: grid;

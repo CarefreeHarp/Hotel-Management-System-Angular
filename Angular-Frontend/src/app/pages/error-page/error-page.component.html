@@ -7,25 +7,29 @@
   <div class="error-page__container">
     <p class="error-code" aria-hidden="true">{{ code }}</p>
     <section class="error-copy" aria-labelledby="error-title">
-      <p class="eyebrow">Error {{ code }} · {{ copy.label }}</p>
-      <h1 id="error-title">{{ copy.title }}</h1>
-      <p class="message">{{ copy.message }}</p>
+      <p class="eyebrow">
+        {{ 'errorPage.eyebrow' | transloco: { code: code, label: ('errorPage.labels.' + code | transloco) } }}
+      </p>
+      <h1 id="error-title">{{ 'errorPage.titles.' + code | transloco }}</h1>
+      <p class="message">{{ 'errorPage.messages.' + code | transloco }}</p>
       <p class="address">
-        Address <code>{{ address }}</code>
+        {{ 'errorPage.address' | transloco }} <code>{{ address }}</code>
       </p>
       <div class="actions">
         @if (serverError) {
-          <button appButton type="button" (click)="retry()">Try again</button>
+          <button appButton type="button" (click)="retry()">
+            {{ 'common.actions.tryAgain' | transloco }}
+          </button>
         }
         <a
           appButton
           [variant]="serverError ? 'secondary' : 'primary'"
           [routerLink]="home"
           [queryParams]="homeParams"
-          >{{ homeLabel }}</a
+          >{{ homeLabelKey | transloco }}</a
         >
         <button appButton variant="secondary" type="button" (click)="back()">
-          Go back
+          {{ 'errorPage.goBack' | transloco }}
         </button>
       </div>
     </section>

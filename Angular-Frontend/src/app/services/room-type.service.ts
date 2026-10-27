@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { translate } from '@jsverse/transloco';
 import { Observable, concatMap, map } from 'rxjs';
 import { RoomTypeDetailDTO } from '../models/dto/room-type-detail-dto';
 import { RoomTypeListDTO } from '../models/dto/room-type-list-dto';
@@ -34,7 +35,9 @@ export class RoomTypeService {
         const created = roomTypes.find(
           (rt) => rt.name.trim().toLowerCase() === roomType.name.trim().toLowerCase(),
         );
-        if (!created) throw new Error('Created room type could not be retrieved.');
+        if (!created) {
+          throw new Error(translate('api.createdNotFound'));
+        }
         return created;
       }),
     );

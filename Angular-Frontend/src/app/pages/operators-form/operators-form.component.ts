@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, Observable, Subject, catchError, exhaustMap, forkJoin, of, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -34,6 +35,7 @@ import { OperatorFieldsComponent } from './components/operator-fields/operator-f
     PageHeadingComponent,
     ButtonComponent,
     OperatorFieldsComponent,
+    TranslocoPipe,
   ],
   templateUrl: './operators-form.component.html',
   styleUrl: './operators-form.component.scss',
@@ -166,9 +168,13 @@ export class OperatorsFormComponent implements OnInit {
     this.saveError = '';
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid || this.isSaving) return EMPTY;
+    if (this.form.invalid || this.isSaving) {
+      return EMPTY;
+    }
     const value = this.form.getRawValue();
-    if (value.adminId === null) return EMPTY;
+    if (value.adminId === null) {
+      return EMPTY;
+    }
     // Del administrador solo se envía la id: el backend lo busca para asignarlo.
     const data = {
       name: value.name.trim(),

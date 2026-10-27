@@ -10,44 +10,48 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
 import {
-  MAX_NIGHTS,
   addDays,
   latestCheckIn,
   localDate,
+  MAX_NIGHTS,
+  MAX_YEARS_AHEAD,
   stayNights,
 } from '../../../../models/booking';
 import { RoomTypeListDTO } from '../../../../models/dto/room-type-list-dto';
 import { ServiceListDTO } from '../../../../models/dto/service-list-dto';
 import { ActivationStatus } from '../../../../models/enums/activation-status';
 import { ReservationStatus } from '../../../../models/enums/reservation-status';
-import {
-  FieldMessages,
-  RESERVATION_MESSAGES,
-} from '../../../../utils/form-messages';
+import { RESERVATION_MESSAGES } from '../../../../utils/form-messages';
 import { wholeNumber } from '../../../../utils/form-validators';
 
 /** Datos de la reserva y de los tipos que las reglas necesitan al validar. */
 export interface ReservationLimits {
   // Llegada guardada: si no cambia, puede seguir en el pasado (estancias en curso o terminadas).
   originalCheckIn: () => string | undefined;
+  originalStatus: () => ReservationStatus | undefined;
   capacity: (roomTypeId: number) => number | undefined;
   balance?: () => number;
 }
 
 const noLimits: ReservationLimits = {
   originalCheckIn: () => undefined,
+  originalStatus: () => undefined,
   capacity: () => undefined,
 };
 
-// Mismas reglas de fechas y huéspedes que BookingService.update() en el backend.
+// Mantiene las restricciones de edición de ReservationServiceImpl.updateReservation en el backend.
 function checkInRule(limits: ReservationLimits): ValidatorFn {
   return (control) => {
     const value: string = control.value;
-    if (!value) return null;
-    if (value !== limits.originalCheckIn() && value < localDate())
+    if (!value) {
+      return null;
+    }
+    if (value !== limits.originalCheckIn() && value < localDate()) {
       return { past: true };
+    }
     return value > latestCheckIn() ? { tooFar: true } : null;
   };
 }
@@ -55,8 +59,12 @@ function checkInRule(limits: ReservationLimits): ValidatorFn {
 function checkOutRule(control: AbstractControl): ValidationErrors | null {
   const checkIn: string | undefined = control.parent?.get('checkIn')?.value;
   const value: string = control.value;
-  if (!value || !checkIn) return null;
-  if (value <= checkIn) return { order: true };
+  if (!value || !checkIn) {
+    return null;
+  }
+  if (value <= checkIn) {
+    return { order: true };
+  }
   return stayNights(checkIn, value) > MAX_NIGHTS ? { tooLong: true } : null;
 }
 
@@ -69,6 +77,15 @@ function capacityRule(limits: ReservationLimits): ValidatorFn {
   };
 }
 
+// La transición se compara con el estado guardado, aunque el selector cambie varias veces.
+function checkInStatusRule(limits: ReservationLimits): ValidatorFn {
+  return (control) =>
+    limits.originalStatus() === ReservationStatus.PENDING &&
+      control.value === ReservationStatus.CHECKED_IN
+      ? { pending: true }
+      : null;
+}
+
 function checkOutBalanceRule(limits: ReservationLimits): ValidatorFn {
   return (control) =>
     control.value === ReservationStatus.CHECKED_OUT &&
@@ -77,6 +94,7 @@ function checkOutBalanceRule(limits: ReservationLimits): ValidatorFn {
       : null;
 }
 
+/** Crea los controles y sus reglas. Las funciones de contexto consultan la reserva cargada y los cambios revalidan campos relacionados. */
 export function createReservationForm(limits: ReservationLimits = noLimits) {
   const form = new FormGroup({
     checkIn: new FormControl('', {
@@ -102,7 +120,11 @@ export function createReservationForm(limits: ReservationLimits = noLimits) {
     }),
     status: new FormControl(ReservationStatus.PENDING, {
       nonNullable: true,
-      validators: [Validators.required, checkOutBalanceRule(limits)],
+      validators: [
+        Validators.required,
+        checkInStatusRule(limits),
+        checkOutBalanceRule(limits),
+      ],
     }),
     serviceIds: new FormControl<number[]>([], { nonNullable: true }),
   });
@@ -123,7 +145,7 @@ export function createReservationForm(limits: ReservationLimits = noLimits) {
 
 @Component({
   selector: 'app-reservation-fields',
-  imports: [ReactiveFormsModule, FormFieldComponent, CurrencyPipe],
+  imports: [ReactiveFormsModule, FormFieldComponent, CurrencyPipe, TranslocoPipe],
   templateUrl: './reservation-fields.component.html',
   styleUrl: './reservation-fields.component.scss',
 })
@@ -133,9 +155,14 @@ export class ReservationFieldsComponent {
   @Input() services: ServiceListDTO[] = [];
   @Input() originalServiceIds: number[] = [];
   @Input() submitted = false;
+  @Input() clientMode = false;
+  @Input() servicesOnly = false;
   readonly statuses = Object.values(ReservationStatus);
   readonly active = ActivationStatus.ACTIVE;
   protected readonly messages = RESERVATION_MESSAGES;
+  // Valores de los marcadores {{ years }} y {{ nights }} de los mensajes de fechas.
+  readonly yearsAhead = { years: MAX_YEARS_AHEAD };
+  readonly maxNights = { nights: MAX_NIGHTS };
   // El selector de fechas solo ofrece fechas que las reglas aceptan.
   readonly today = localDate();
   readonly lastCheckIn = latestCheckIn();
@@ -154,16 +181,27 @@ export class ReservationFieldsComponent {
         ?.maxCapacity ?? null
     );
   }
-  get guestMessages(): FieldMessages {
-    return {
-      ...this.messages.guests,
-      capacity: `This room type accommodates at most ${this.capacity} guests. Please reduce the number of guests or choose another room type.`,
-    };
+  get statusMessage(): string {
+    const control = this.form.controls.status;
+    const serverMessage = control.getError('server');
+    if (typeof serverMessage === 'string') {
+      return serverMessage;
+    }
+    if (control.hasError('pending')) {
+      return translate(this.messages.status.pending);
+    }
+    if (control.hasError('unpaid')) {
+      return translate(this.messages.status.unpaid);
+    }
+    return translate(this.messages.status.required);
   }
   invalid(control: FormControl): boolean {
     return control.invalid && (control.touched || this.submitted);
   }
   toggleService(id: number, checked: boolean): void {
+    if (this.servicesOnly && this.originalServiceIds.includes(id)) {
+      return;
+    }
     const current = this.form.controls.serviceIds.value;
     this.form.controls.serviceIds.setValue(
       checked

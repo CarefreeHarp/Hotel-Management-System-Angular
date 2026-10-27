@@ -8,9 +8,9 @@ import com.example.demo.exception.FieldException;
 import com.example.demo.repository.ServiceRepository;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -37,8 +37,9 @@ public class ReservationRules {
      */
     public void checkNewStay(LocalDate checkIn, LocalDate checkOut, Integer guests) {
         checkDates(checkIn, checkOut, false);
-        if (guests == null || guests < 1)
+        if (guests == null || guests < 1) {
             throw invalid("guestCount", "Enter at least one guest.");
+        }
     }
 
     /**
@@ -46,25 +47,32 @@ public class ReservationRules {
      * dos años de antelación.
      */
     public void checkDates(LocalDate checkIn, LocalDate checkOut, boolean allowPastCheckIn) {
-        if (checkIn == null)
+        if (checkIn == null) {
             throw invalid("checkInDate", "Choose a check-in date.");
-        if (checkOut == null)
+        }
+        if (checkOut == null) {
             throw invalid("checkOutDate", "Choose a check-out date.");
-        if (!allowPastCheckIn && checkIn.isBefore(LocalDate.now()))
+        }
+        if (!allowPastCheckIn && checkIn.isBefore(LocalDate.now())) {
             throw invalid("checkInDate", "The check-in date cannot be in the past. Please choose new dates.");
-        if (checkIn.isAfter(LocalDate.now().plusYears(MAX_YEARS_AHEAD)))
+        }
+        if (checkIn.isAfter(LocalDate.now().plusYears(MAX_YEARS_AHEAD))) {
             throw invalid("checkInDate", "Reservations can be made at most " + MAX_YEARS_AHEAD + " years in advance.");
-        if (!checkOut.isAfter(checkIn))
+        }
+        if (!checkOut.isAfter(checkIn)) {
             throw invalid("checkOutDate", "The check-out date must be after the check-in date.");
-        if (ChronoUnit.DAYS.between(checkIn, checkOut) > MAX_NIGHTS)
+        }
+        if (ChronoUnit.DAYS.between(checkIn, checkOut) > MAX_NIGHTS) {
             throw invalid("checkOutDate", "A stay cannot exceed " + MAX_NIGHTS + " nights.");
+        }
     }
 
     /** Compara los huéspedes con la capacidad del tipo seleccionado. */
     public void checkCapacity(RoomType type, Integer guests) {
-        if (guests > type.getMaxCapacity())
+        if (guests > type.getMaxCapacity()) {
             throw invalid("guestCount", "This room type accommodates at most " + type.getMaxCapacity()
                     + " guests. Please reduce the number of guests or choose another room type.");
+        }
     }
 
     /**
@@ -74,8 +82,9 @@ public class ReservationRules {
     public Integer roomTypeId(Reservation input) {
         Integer id = input.getRoom() == null || input.getRoom().getRoomType() == null ? null
                 : input.getRoom().getRoomType().getRoomTypeId();
-        if (id == null)
+        if (id == null) {
             throw invalid("roomType", "Select a room type.");
+        }
         return id;
     }
 

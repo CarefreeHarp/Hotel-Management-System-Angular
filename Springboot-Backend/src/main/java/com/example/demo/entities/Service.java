@@ -39,7 +39,7 @@ public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "service_id")
-    // Identificador del servicio. Restricciones: Clave primaria única y autogenerada. Se conserva el identificador de la ruta al actualizar.
+    // Identificador del servicio. Restricciones: Clave primaria única y autogenerada. Se conserva el id de la ruta al editar.
     private Integer serviceId;
     @Column(nullable = false, length = 100)
     @NotBlank(message = "Enter the service name.")

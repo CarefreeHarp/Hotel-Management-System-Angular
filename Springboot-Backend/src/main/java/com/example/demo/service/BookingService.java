@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.BookingQuote;
 import com.example.demo.dto.ReservationDetailDTO;
+import com.example.demo.dto.RoomTypeAvailability;
 import com.example.demo.dto.RoomTypeListDTO;
 import com.example.demo.dto.ServiceCatalogDTO;
 import com.example.demo.entities.Client;
@@ -59,25 +60,33 @@ public class BookingService {
     }
 
     /**
-     * Valida la estancia, agrupa habitaciones disponibles por tipo y explica si no
-     * hay opciones.
+     * Valida la estancia y cuenta las habitaciones disponibles por tipo para todas
+     * las noches y huéspedes de la búsqueda. Explica si no hay opciones.
      */
-    public List<RoomTypeListDTO> listAvailableRoomTypes(LocalDate checkIn, LocalDate checkOut, Integer guests) {
+    public List<RoomTypeAvailability> listAvailableRoomTypes(LocalDate checkIn, LocalDate checkOut, Integer guests) {
         reservationRules.checkNewStay(checkIn, checkOut, guests);
-        Map<Integer, RoomTypeListDTO> result = new LinkedHashMap<>();
+        Map<Integer, RoomTypeAvailability> result = new LinkedHashMap<>();
         for (Room room : roomRepository.findAvailableForBooking(checkIn, checkOut, guests, null)) {
             RoomType type = room.getRoomType();
-            // Varias habitaciones pueden compartir tipo. La pantalla ofrece cada tipo una sola vez.
-            result.putIfAbsent(type.getRoomTypeId(), typeView(type));
+            RoomTypeAvailability current = result.get(type.getRoomTypeId());
+            // La misma consulta determina las opciones y su conteo. No cuenta habitaciones ocupadas en parte de la estancia.
+            if (current == null) {
+                result.put(type.getRoomTypeId(), new RoomTypeAvailability(typeView(type), 1));
+            } else {
+                result.put(type.getRoomTypeId(),
+                        new RoomTypeAvailability(current.roomType(), current.availableRooms() + 1));
+            }
         }
         if (result.isEmpty()) {
             Integer maximum = roomRepository.findMaximumBookableCapacity();
-            if (maximum == null)
+            if (maximum == null) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "No rooms are currently enabled for booking. Please contact the hotel.");
-            if (guests > maximum)
+            }
+            if (guests > maximum) {
                 throw invalid("guestCount", "No bookable room can accommodate " + guests + " guests. The maximum is "
                         + maximum + ". Please reduce the number of guests.");
+            }
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "No rooms are available for the selected dates and guest count. Please change the dates or the number of guests.");
         }
@@ -155,8 +164,9 @@ public class BookingService {
     /** Resuelve el cliente persistido a partir del identificador recibido. */
     private Client client(Reservation input) {
         Integer id = input.getClient() == null ? null : input.getClient().getClientId();
-        if (id == null)
+        if (id == null) {
             throw problem("Sign in to make a reservation.");
+        }
         return clientRepository.findById(id).orElseThrow(() -> problem("Client not found. Please sign in again."));
     }
 

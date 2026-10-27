@@ -1,5 +1,6 @@
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, Input, Output } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BehaviorSubject, combineLatest, map, Subject } from 'rxjs';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 import { BookingQuote } from '../../../../models/booking';
@@ -7,7 +8,7 @@ import { ServiceCatalogDTO } from '../../../../models/dto/service-catalog-dto';
 /** Mantiene la selección local y emite sus identificadores al paso padre, sin guardar la reserva. */
 @Component({
   selector: 'app-booking-services',
-  imports: [OptimizedImageDirective, CurrencyPipe, AsyncPipe],
+  imports: [OptimizedImageDirective, CurrencyPipe, AsyncPipe, DatePipe, TranslocoPipe],
   templateUrl: './booking-services.component.html',
   styleUrl: './booking-services.component.scss',
 })
@@ -26,7 +27,6 @@ export class BookingServicesComponent {
   @Input({ required: true }) set initialIds(value: number[]) {
     this.idsSubject.next([...value]);
   }
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly selectedSubject = new Subject<number[]>();
   @Output('selected') readonly selected$ = this.selectedSubject.asObservable();
   // combineLatest recalcula la vista con los últimos datos y filtros, sin repetir la consulta HTTP.
@@ -46,10 +46,14 @@ export class BookingServicesComponent {
       );
       const categories: string[] = [];
       for (const service of services) {
-        if (!categories.includes(service.category)) categories.push(service.category);
+        if (!categories.includes(service.category)) {
+          categories.push(service.category);
+        }
       }
       let total = 0;
-      for (const service of cart) total += service.price;
+      for (const service of cart) {
+        total += service.price;
+      }
       return {
         ids,
         category,
@@ -75,7 +79,9 @@ export class BookingServicesComponent {
   }
   add(id: number): void {
     const ids = this.idsSubject.value;
-    if (!ids.includes(id)) this.idsSubject.next([...ids, id]);
+    if (!ids.includes(id)) {
+      this.idsSubject.next([...ids, id]);
+    }
   }
   remove(id: number): void {
     this.idsSubject.next(this.idsSubject.value.filter((value) => value !== id));

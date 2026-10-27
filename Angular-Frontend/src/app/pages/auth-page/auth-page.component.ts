@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -7,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe, translate } from '@jsverse/transloco';
 import { EMPTY, Observable, Subject, catchError, concatMap, exhaustMap, tap, timer } from 'rxjs';
 import { ButtonComponent } from '../../components/button/button.component';
 import { FooterComponent } from '../../components/footer/footer.component';
@@ -31,12 +33,14 @@ import {
 @Component({
   selector: 'app-auth-page',
   imports: [
+    NgTemplateOutlet,
     ReactiveFormsModule,
     RouterLink,
     HeaderComponent,
     FooterComponent,
     FormFieldComponent,
     ButtonComponent,
+    TranslocoPipe,
   ],
   templateUrl: './auth-page.component.html',
   styleUrl: './auth-page.component.scss',
@@ -95,8 +99,12 @@ export class AuthPageComponent implements OnInit {
     // Un solo flujo evita enviar dos formularios a la vez. Cada error se resuelve dentro de su petición.
     this.submitSubject.pipe(
       exhaustMap((action) => {
-        if (action === 'client-login') return this.loginClient();
-        if (action === 'client-register') return this.registerClient();
+        if (action === 'client-login') {
+          return this.loginClient();
+        }
+        if (action === 'client-register') {
+          return this.registerClient();
+        }
         return this.loginStaff();
       }),
       takeUntilDestroyed(),
@@ -155,7 +163,7 @@ export class AuthPageComponent implements OnInit {
     return this.authService.loginClient(email, password).pipe(
       tap((client) => {
         this.isLoading = false;
-        this.successMessage = `Welcome, ${client.name}!`;
+        this.successMessage = translate('auth.success.client', { name: client.name });
       }),
       // concatMap espera la pausa del mensaje antes de navegar. La espera termina al salir de la página.
       concatMap((client) => timer(800).pipe(tap(() => {
@@ -165,7 +173,7 @@ export class AuthPageComponent implements OnInit {
       }))),
       catchError((err: Error) => {
         this.isLoading = false;
-        this.errorMessage = err.message || 'Sign-in failed.';
+        this.errorMessage = err.message || translate('auth.errors.signInFailed');
 
         return EMPTY;
       }),
@@ -203,7 +211,7 @@ export class AuthPageComponent implements OnInit {
     return this.authService.registerClient(payload).pipe(
       tap((createdClient) => {
         this.isLoading = false;
-        this.successMessage = `Account created successfully! Welcome, ${createdClient.name}.`;
+        this.successMessage = translate('auth.success.registered', { name: createdClient.name });
 
       }),
       concatMap((createdClient) => timer(1000).pipe(tap(() => {
@@ -216,8 +224,8 @@ export class AuthPageComponent implements OnInit {
         this.errorMessage =
           err instanceof HttpErrorResponse
             ? showApiErrors(this.clientRegisterForm, err) ||
-            'Please check the highlighted fields.'
-            : apiErrorMessage(err, 'Guest registration failed.');
+            translate('auth.errors.checkFields')
+            : apiErrorMessage(err, 'auth.errors.registrationFailed');
 
         return EMPTY;
       }),
@@ -243,9 +251,10 @@ export class AuthPageComponent implements OnInit {
     return this.authService.loginStaff(email, password).pipe(
       tap((staff) => {
         this.isLoading = false;
-        const roleLabel =
-          staff.role === 'ADMINISTRATOR' ? 'Administrator' : 'Operator';
-        this.successMessage = `Access granted as ${roleLabel}: ${staff.name}.`;
+        const role = translate(
+          staff.role === 'ADMINISTRATOR' ? 'administrators.table.administrator' : 'operators.table.operator',
+        );
+        this.successMessage = translate('auth.success.staff', { role, name: staff.name });
 
       }),
       concatMap((staff) => timer(800).pipe(tap(() => {
@@ -257,7 +266,7 @@ export class AuthPageComponent implements OnInit {
       }))),
       catchError((err: Error) => {
         this.isLoading = false;
-        this.errorMessage = err.message || 'Staff sign-in failed.';
+        this.errorMessage = err.message || translate('auth.errors.signInFailed');
 
         return EMPTY;
       }),

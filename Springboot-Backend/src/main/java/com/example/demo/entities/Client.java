@@ -33,7 +33,7 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "client_id")
-    // Identificador autogenerado y autoincremental del cliente. Restricciones: Clave primaria única y autogenerada. Se conserva el identificador de la ruta al actualizar.
+    // Identificador autogenerado y autoincremental del cliente. Restricciones: Clave primaria única y autogenerada. Se conserva el id de la ruta al editar.
     private Integer clientId;
     @Column(nullable = false, length = 60)
     @NotBlank(message = "Enter the first name.")

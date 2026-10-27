@@ -2,25 +2,31 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <app-skeleton variant="detail" label="Loading your profile…" />
+      <app-skeleton variant="detail" [label]="'profile.loading' | transloco" />
     } @else if (client) {
       <app-page-heading
-        eyebrow="My profile"
+        [eyebrow]="'header.myProfile' | transloco"
         [title]="client.name + ' ' + client.lastName"
-        description="Your account details and reservations at Atlan Suites."
-        ><a appButton routerLink="/profile/edit" [queryParams]="authParams"
-          >Edit profile</a
-        ></app-page-heading
+        [description]="'profile.description' | transloco"
+        ><div class="profile-actions">
+          <a appButton routerLink="/profile/edit" [queryParams]="authParams"
+            >{{ 'clients.form.editProfile' | transloco }}</a
+          >
+        </div></app-page-heading
       >
       @if (saved) {
-        <p class="saved-alert" role="status">Profile saved successfully.</p>
+        <p class="saved-alert" role="status">{{ 'profile.saved' | transloco }}</p>
       }
       <app-client-info [client]="client" />
+      <a class="payments-link" routerLink="/profile/payments" [queryParams]="authParams">
+        {{ 'profile.paymentsLink' | transloco }} <span aria-hidden="true">→</span>
+      </a>
       @if (errorMessage) {
         <p class="form-alert" role="alert">{{ errorMessage }}</p>
       }
       <app-reservation-history
         [reservations]="reservations"
+        (cancellationRequested)="requestCancellation($event)"
         [guestName]="client.name + ' ' + client.lastName"
       />
       <footer class="detail-actions">
@@ -31,9 +37,19 @@
           [disabled]="isDeleting"
           (click)="deleteAccount()"
         >
-          {{ isDeleting ? "Deleting…" : "Delete account" }}
+          {{ (isDeleting ? 'profile.deleting' : 'profile.deleteAccount') | transloco }}
         </button>
       </footer>
     }
   </div>
 </main>
+
+@if (pendingCancellation; as cancellation) {
+  <app-reservation-cancel-dialog
+    [reservationCode]="cancellation.reservation.reservationCode"
+    [busy]="isCancelling"
+    [errorMessage]="cancellationError"
+    (confirmed)="confirmCancellation()"
+    (dismissed)="dismissCancellation()"
+  />
+}

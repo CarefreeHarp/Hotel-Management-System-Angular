@@ -1,84 +1,61 @@
-<app-admin-header />
-<main class="catalog-page">
-  <div class="catalog-page__container">
-    <app-page-heading
-      eyebrow="Reservation management"
-      title="Edit reservation"
-      description="Update the stay, services and status while preserving the guest and recorded payments."
-    >
-      <a appButton variant="secondary" [routerLink]="[base, 'reservations']"
-        >Back to reservations</a
-      >
-    </app-page-heading>
+@if (staff) {
+  <app-admin-header />
+} @else {
+  <app-header [solid]="true" />
+}
+<main class="reservation-page">
+  <div class="reservation-container">
+    <a appButton variant="secondary" [routerLink]="backUrl" [queryParams]="authParams">{{
+      (staff ? 'reservations.detail.backToReservations' : 'reservations.detail.backToMyReservations') | transloco
+    }}</a>
     @if (loading) {
-      <app-skeleton variant="form" label="Loading reservation…" />
-    }
-    @if (error) {
-      <p class="form-alert" role="alert">{{ error }}</p>
+      <app-skeleton variant="detail" [label]="'reservations.detail.loading' | transloco" />
     }
     @if (detail; as item) {
-      <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-        @if (submitted && form.invalid) {
-          <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
-          </p>
-        }
-        <fieldset [disabled]="saving">
-          <section
-            class="booking-summary"
-            aria-label="Current booking information"
-          >
-            <p>
-              <strong>{{ item.reservation.reservationCode }}</strong> ·
-              {{ item.reservation.clientName?.trim() || "Deleted guest" }}
-            </p>
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <app-reservation-content [detail]="item" [client]="client" [staffViewTitleKey]="staffViewTitleKey" [editing]="true">
+          <fieldset reservationEditor class="editor-panel" [disabled]="saving">
+            <legend class="eyebrow">{{ (staff ? 'reservations.form.legendStaff' : 'reservations.form.legend') | transloco }}</legend>
+            <app-reservation-fields
+              [form]="form"
+              [roomTypes]="roomTypes"
+              [services]="services"
+              [originalServiceIds]="originalServiceIds"
+              [submitted]="submitted"
+              [clientMode]="!staff"
+              [servicesOnly]="servicesOnly"
+            />
+            <div class="form-actions">
+              <button appButton type="submit" [disabled]="saving">{{
+                (saving ? 'common.saving' : 'reservations.form.save') | transloco
+              }}</button>
+              <a appButton variant="secondary" [routerLink]="detailUrl" [queryParams]="authParams">{{
+                'common.actions.cancel' | transloco
+              }}</a>
+            </div>
+            @if (submitted && form.invalid) {
+              <p class="form-alert" role="alert">{{ 'common.checkFields' | transloco }}</p>
+            }
+            @if (error) {
+              <p class="form-alert" role="alert">{{ error }}</p>
+            }
+          </fieldset>
+          <section reservationPreview class="preview-panel" aria-labelledby="preview-title">
+            <h2 id="preview-title">{{ 'reservations.form.preview' | transloco }}</h2>
             <dl>
-              <div>
-                <dt>Current total</dt>
-                <dd>{{ item.total | currency: "COP" : "symbol" : "1.0-2" }}</dd>
-              </div>
-              <div>
-                <dt>Already paid</dt>
-                <dd>
-                  {{ item.paidTotal | currency: "COP" : "symbol" : "1.0-2" }}
-                </dd>
-              </div>
-              <div>
-                <dt>Recalculated total</dt>
-                <dd>
-                  {{ previewTotal | currency: "COP" : "symbol" : "1.0-2" }}
-                </dd>
-              </div>
+              <dt>{{ 'reservations.form.recalculatedTotal' | transloco }}</dt>
+              <dd>{{ previewTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
             </dl>
-            <p>
-              When changing the price of a reservation with payments, the new
-              total must exceed the amount already paid. A fully paid
-              reservation with an increased total becomes pending.
-            </p>
+            <dl>
+              <dt>{{ 'reservations.form.alreadyPaid' | transloco }}</dt>
+              <dd>{{ item.paidTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+              <dt>{{ 'reservations.form.refundAfterSaving' | transloco }}</dt>
+              <dd>{{ refundPreview | currency: "COP" : "symbol" : "1.0-2" }}</dd>
+            </dl>
+            <p>{{ 'reservations.form.refundNote' | transloco }}</p>
+            <p>{{ 'reservations.form.savedNote' | transloco }}</p>
           </section>
-          <app-reservation-fields
-            [form]="form"
-            [roomTypes]="roomTypes"
-            [services]="services"
-            [originalServiceIds]="originalServiceIds"
-            [submitted]="submitted"
-          />
-        </fieldset>
-        <div class="form-actions">
-          <button appButton type="submit" [disabled]="saving">
-            {{ saving ? "Saving…" : "Save reservation" }}
-          </button>
-          <a
-            appButton
-            variant="secondary"
-            [routerLink]="[
-              base,
-              'reservations',
-              item.reservation.reservationId,
-            ]"
-            >Cancel</a
-          >
-        </div>
+        </app-reservation-content>
       </form>
     }
   </div>

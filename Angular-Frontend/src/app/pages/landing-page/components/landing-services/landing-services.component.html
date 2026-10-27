@@ -3,7 +3,7 @@
   id="services-section"
   aria-labelledby="services-title"
 >
-  <span class="experiences-watermark" aria-hidden="true">Services</span>
+  <span class="experiences-watermark" aria-hidden="true">{{ 'landing.services.title' | transloco }}</span>
   <div class="experiences-layout">
     @if (featured; as item) {
       <a
@@ -18,32 +18,40 @@
         />
         <div class="experience-feature-overlay"></div>
         <div class="experience-feature-content">
-          <p class="eyebrow">Featured service</p>
+          <p class="eyebrow">{{ 'landing.services.featured' | transloco }}</p>
           <h3>{{ item.name }}</h3>
           <p>{{ item.availability }}</p>
         </div></a
       >
     }
     <header class="experience-info">
-      <p class="eyebrow">Dining, wellness and more</p>
-      <h2 class="section-title" id="services-title">Services</h2>
+      <p class="eyebrow">{{ 'landing.services.eyebrow' | transloco }}</p>
+      <h2 class="section-title" id="services-title">
+        {{ 'landing.services.title' | transloco }}
+      </h2>
       <p class="section-text">
-        Discover the services that make your stay at Atlan Suites your own.
+        {{ 'landing.services.text' | transloco }}
       </p>
       <a
         routerLink="/services-catalog"
         [queryParams]="authParams"
         class="btn btn-gold explore-services-btn"
-        >View all services
+        >{{ 'landing.services.viewAll' | transloco }}
       </a>
     </header>
-    <section class="services-carousel" aria-label="Hotel services carousel">
+    <section
+      class="services-carousel"
+      [attr.aria-label]="'landing.services.carousel' | transloco"
+    >
       @if (loading) {
-        <app-skeleton variant="cards" label="Loading services…" />
+        <app-skeleton
+          variant="cards"
+          [label]="'landing.services.loading' | transloco"
+        />
       } @else if (error) {
-        <p role="alert">{{ error }}</p>
+        <p role="alert">{{ error | transloco }}</p>
       } @else if (!services.length) {
-        <p>No services are available at the moment.</p>
+        <p>{{ 'landing.services.empty' | transloco }}</p>
       }
       <div class="carousel-viewport">
         <div
@@ -56,11 +64,14 @@
           }
         </div>
       </div>
-      <nav class="carousel-controls" aria-label="Service carousel controls">
+      <nav
+        class="carousel-controls"
+        [attr.aria-label]="'landing.services.controls' | transloco"
+      >
         <button
           class="carousel-control-prev"
           type="button"
-          aria-label="Previous service"
+          [attr.aria-label]="'landing.services.previous' | transloco"
           [disabled]="index === 0"
           (click)="previous()"
         >
@@ -68,7 +79,7 @@
         ><button
           class="carousel-control-next"
           type="button"
-          aria-label="Next service"
+          [attr.aria-label]="'landing.services.next' | transloco"
           [disabled]="index >= maxIndex"
           (click)="next()"
         >

@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -8,6 +9,7 @@ import {
   Router,
   RouterLink,
 } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import {
   catchError, EMPTY, exhaustMap, forkJoin,
   map, Observable, of, Subject, switchMap, tap
@@ -20,9 +22,9 @@ import {
   BookingStay,
   BookingStep,
   CardPayment,
+  RoomTypeAvailability,
   validStay,
 } from '../../models/booking';
-import { RoomTypeListDTO } from '../../models/dto/room-type-list-dto';
 import { ServiceCatalogDTO } from '../../models/dto/service-catalog-dto';
 import { ReservationService } from '../../services/reservation.service';
 import { ServiceService } from '../../services/service.service';
@@ -38,6 +40,7 @@ import { BookingServicesComponent } from './components/booking-services/booking-
 @Component({
   selector: 'app-book-now',
   imports: [
+    NgTemplateOutlet,
     SkeletonComponent,
     HeaderComponent,
     RouterLink,
@@ -46,6 +49,7 @@ import { BookingServicesComponent } from './components/booking-services/booking-
     BookingServicesComponent,
     BookingCheckoutComponent,
     BookingPaymentComponent,
+    TranslocoPipe,
   ],
   templateUrl: './book-now.component.html',
   styleUrl: './book-now.component.scss',
@@ -68,7 +72,7 @@ export class BookNowComponent {
   step: BookingStep = 'dates';
   stay: BookingStay = { checkIn: '', checkOut: '', guests: 1 };
   draft: BookingDraft | undefined;
-  types: RoomTypeListDTO[] = [];
+  types: RoomTypeAvailability[] = [];
   catalog: ServiceCatalogDTO[] = [];
   quote: BookingQuote | undefined;
   loading = false;
@@ -151,7 +155,7 @@ export class BookNowComponent {
   /** Carga únicamente los datos del paso actual. La tarjeta nunca forma parte del borrador. */
   private loadStepData(draft: BookingDraft): Observable<null> {
     this.loading = true;
-    if (this.step === 'room-types')
+    if (this.step === 'room-types') {
       return this.reservations.available(this.stay).pipe(
         map((types) => {
           this.types = types;
@@ -159,6 +163,7 @@ export class BookNowComponent {
         }),
         catchError((error) => this.failed(error)),
       );
+    }
     // forkJoin espera que terminen todas estas consultas y entrega sus resultados juntos.
     return forkJoin({
       quote: this.reservations.quote(draft),
@@ -187,10 +192,7 @@ export class BookNowComponent {
   }
 
   private bookingError(error: HttpErrorResponse): string {
-    return apiErrorMessage(
-      error,
-      'The booking request could not be completed. Please try again.',
-    );
+    return apiErrorMessage(error, 'booking.error');
   }
 
   private isStep(value: string | null): value is BookingStep {
@@ -237,7 +239,9 @@ export class BookNowComponent {
   back(): void {
     const index = this.steps.indexOf(this.step);
     const previous = this.steps[index - 1];
-    if (previous) void this.go(previous);
+    if (previous) {
+      void this.go(previous);
+    }
   }
   // El pago se envía en el cuerpo de la petición. La URL solo conserva el contexto del cliente.
   confirm(payment?: CardPayment): void {
@@ -245,8 +249,9 @@ export class BookNowComponent {
   }
 
   private createReservation(payment?: CardPayment): Observable<unknown> {
-    if (!this.draft || !this.quote || this.busy || this.clientId === undefined)
+    if (!this.draft || !this.quote || this.busy || this.clientId === undefined) {
       return EMPTY;
+    }
     this.busy = true;
     this.error = '';
     this.paymentErrors = {};
@@ -281,9 +286,12 @@ export class BookNowComponent {
     const payment: Record<string, string> = {};
     const others: string[] = [];
     for (const [field, message] of Object.entries(apiFieldErrors(error))) {
-      if (field.startsWith('initialPayment.'))
+      if (field.startsWith('initialPayment.')) {
         payment[field.slice('initialPayment.'.length)] = message;
-      else others.push(message);
+      }
+      else {
+        others.push(message);
+      }
     }
     this.paymentErrors = payment;
     this.error = Object.keys(payment).length
