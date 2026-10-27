@@ -21,7 +21,7 @@ public class FrontDeskController {
 
     @GetMapping
     @Operation(summary = "Consultar el tablero del operario", description = "Devuelve las llegadas, los huéspedes alojados, las salidas pendientes y las habitaciones en limpieza o mantenimiento de la fecha del servidor.")
-    public FrontDeskBoard readBoard() {
+    public FrontDeskBoard readFrontDeskBoard() {
         return service.readBoard();
     }
 }

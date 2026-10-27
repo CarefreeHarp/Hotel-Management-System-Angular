@@ -34,7 +34,6 @@ export class LandingServicesComponent implements OnInit {
   visibleCount = this.count();
 
   constructor() {
-    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
     fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => this.resize());
   }
   get featured(): ServiceCatalogDTO | undefined {
@@ -72,10 +71,12 @@ export class LandingServicesComponent implements OnInit {
     this.index = Math.min(this.index, this.maxIndex);
   }
   private count(): number {
-    return window.matchMedia('(min-width:1280px)').matches
-      ? 4
-      : window.matchMedia('(min-width:640px)').matches
-        ? 2
-        : 1;
+    if (window.matchMedia('(min-width:1280px)').matches) {
+      return 4;
+    }
+    if (window.matchMedia('(min-width:640px)').matches) {
+      return 2;
+    }
+    return 1;
   }
 }

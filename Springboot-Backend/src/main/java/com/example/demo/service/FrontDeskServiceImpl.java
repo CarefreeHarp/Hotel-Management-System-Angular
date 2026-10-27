@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.FrontDeskBoard;
 import com.example.demo.dto.FrontDeskBoard.RoomToPrepare;
 import com.example.demo.dto.FrontDeskBoard.Stay;
+import com.example.demo.dto.FrontDeskBoard;
 import com.example.demo.entities.Reservation;
 import com.example.demo.entities.Room;
 import com.example.demo.repository.ReservationRepository;

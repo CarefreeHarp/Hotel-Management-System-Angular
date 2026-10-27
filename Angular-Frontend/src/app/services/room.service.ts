@@ -28,7 +28,9 @@ export class RoomService {
       concatMap(() => this.getAll()),
       map((rooms) => {
         const created = rooms.find((item) => item.number === room.number);
-        if (!created) throw new Error(translate('api.createdNotFound'));
+        if (!created) {
+          throw new Error(translate('api.createdNotFound'));
+        }
         return created;
       }),
     );

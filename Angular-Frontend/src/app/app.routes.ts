@@ -23,8 +23,8 @@ import { RoomsListComponent } from './pages/rooms-list/rooms-list.component';
 
 import { AdminPanelComponent } from './pages/admin-panel/admin-panel.component';
 import { AuthPageComponent } from './pages/auth-page/auth-page.component';
-import { ClientProfileComponent } from './pages/client-profile/client-profile.component';
 import { ClientPaymentHistoryComponent } from './pages/client-payment-history/client-payment-history.component';
+import { ClientProfileComponent } from './pages/client-profile/client-profile.component';
 import { ClientServicesDetailComponent } from './pages/client-services-detail/client-services-detail.component';
 import { ClientServicesListComponent } from './pages/client-services-list/client-services-list.component';
 

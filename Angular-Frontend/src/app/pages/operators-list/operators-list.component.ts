@@ -100,7 +100,9 @@ export class OperatorsListComponent implements OnInit {
   }
   deleteCard(id: number): void {
     const item = this.operators.find((item) => item.operatorId === id);
-    if (item) this.deleteOperator(item);
+    if (item) {
+      this.deleteOperator(item);
+    }
   }
 
   private readonly operatorService = inject(OperatorService);
@@ -159,8 +161,9 @@ export class OperatorsListComponent implements OnInit {
     this.message = '';
     this.errorMessage = '';
     const fullName = `${item.name} ${item.lastName}`;
-    if (!confirm(translate('operators.list.confirmDelete', { name: fullName })))
+    if (!confirm(translate('operators.list.confirmDelete', { name: fullName }))) {
       return EMPTY;
+    }
     return this.operatorService.delete(item.operatorId).pipe(
       tap(() => {
         this.message = translate('operators.list.deleted', { name: fullName });

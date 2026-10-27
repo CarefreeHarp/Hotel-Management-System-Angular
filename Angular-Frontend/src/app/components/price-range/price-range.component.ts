@@ -13,7 +13,6 @@ export class PriceRangeComponent {
   @Input({ required: true }) limit: number = 0;
   @Input() minimum = 0;
   @Input({ required: true }) maximum: number = 0;
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly changedSubject = new Subject<{ minimum: number; maximum: number }>();
   @Output('changed') readonly changed$ = this.changedSubject.asObservable();
   changeMinimum(control: HTMLInputElement): void {

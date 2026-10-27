@@ -14,7 +14,7 @@ const keepAllowed: Record<InputRestriction, (value: string) => string> = {
 
 /**
  * Presenta un FormControl recibido y sus errores. El formulario padre define las reglas y el envío.
- * label, hint, placeholder y error llegan ya traducidos; messages trae claves de traducción.
+ * label, hint, placeholder y error llegan ya traducidos. messages trae claves de traducción.
  */
 @Component({
   selector: 'app-form-field',
@@ -56,7 +56,9 @@ export class FormFieldComponent {
   // El mensaje del backend para este campo tiene prioridad y se muestra tal cual. Luego, el de la regla local que falla.
   get errorMessage(): string {
     const server = this.control.getError('server');
-    if (typeof server === 'string' && server) return server;
+    if (typeof server === 'string' && server) {
+      return server;
+    }
     const rule = Object.keys(this.control.errors ?? {}).find(
       (key) => this.messages[key],
     );
@@ -72,9 +74,13 @@ export class FormFieldComponent {
 
   // Quita al escribir los caracteres que el campo no admite, por ejemplo letras en un teléfono.
   restrictInput(input: HTMLInputElement): void {
-    if (!this.restrict) return;
+    if (!this.restrict) {
+      return;
+    }
     const value = keepAllowed[this.restrict](input.value);
-    if (value === input.value) return;
+    if (value === input.value) {
+      return;
+    }
     input.value = value;
     this.control.setValue(value);
   }

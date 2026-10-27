@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { translate, TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, translate } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import { ButtonComponent } from '../../../../components/button/button.component';
 import { ListControlsComponent } from '../../../../components/list-controls/list-controls.component';
@@ -39,7 +39,6 @@ export class RoomTypeTableComponent {
   readonly adminArea = isAdminArea(this.route);
 
   @Input() roomTypes: RoomTypeListDTO[] = [];
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly deleteSubject = new Subject<number>();
   @Output('delete') readonly delete$ = this.deleteSubject.asObservable();
 
@@ -100,10 +99,12 @@ export class RoomTypeTableComponent {
       .sort((a, b) => {
         const sort = this.listState.sort;
         const direction = sort.endsWith('-desc') ? -1 : 1;
-        if (sort.startsWith('price-'))
+        if (sort.startsWith('price-')) {
           return direction * (a.nightlyPrice - b.nightlyPrice);
-        if (sort.startsWith('capacity-'))
+        }
+        if (sort.startsWith('capacity-')) {
           return direction * (a.maxCapacity - b.maxCapacity);
+        }
         return compareRecords(sort, a.roomTypeId, b.roomTypeId, a.name, b.name);
       });
   }

@@ -29,16 +29,20 @@ export class ErrorPageComponent {
   // /error/500 trae el código en la ruta. Las rutas inexistentes, en sus datos (404).
   readonly code = toCode(
     this.route.snapshot.paramMap.get('code') ??
-      this.route.snapshot.data['code'],
+    this.route.snapshot.data['code'],
   );
   readonly serverError = this.code >= 500;
   readonly home = basePath(this.route);
   readonly staffArea = this.home !== '/';
-  readonly homeLabelKey = this.route.snapshot.paramMap.has('operatorId')
-    ? 'errorPage.goToFrontDesk'
-    : this.staffArea
-      ? 'errorPage.goToAdminPanel'
-      : 'errorPage.goToHome';
+  get homeLabelKey(): string {
+    if (this.route.snapshot.paramMap.has('operatorId')) {
+      return 'errorPage.goToFrontDesk';
+    }
+    if (this.staffArea) {
+      return 'errorPage.goToAdminPanel';
+    }
+    return 'errorPage.goToHome';
+  }
 
   // La barra de direcciones conserva la página que falló.
   get address(): string {

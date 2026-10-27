@@ -15,7 +15,6 @@ import { basePath } from '../../../../utils/base-path';
 })
 export class ServiceTableComponent {
   @Input({ required: true }) services: ServiceListDTO[] = [];
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly toggleActivationSubject = new Subject<ServiceListDTO>();
   @Output('toggleActivation') readonly toggleActivation$ = this.toggleActivationSubject.asObservable();
   private readonly route = inject(ActivatedRoute);

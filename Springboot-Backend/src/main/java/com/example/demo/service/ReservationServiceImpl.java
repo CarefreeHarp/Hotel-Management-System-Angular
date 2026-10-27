@@ -2,17 +2,17 @@ package com.example.demo.service;
 
 import com.example.demo.dto.ReservationDTO;
 import com.example.demo.dto.ReservationDetailDTO;
-import com.example.demo.entities.Reservation;
-import com.example.demo.entities.Payment;
 import com.example.demo.entities.Operator;
+import com.example.demo.entities.Payment;
+import com.example.demo.entities.Reservation;
 import com.example.demo.entities.Room;
 import com.example.demo.entities.RoomType;
 import com.example.demo.entities.Service;
 import com.example.demo.entities.enums.ReservationStatus;
 import com.example.demo.entities.enums.RoomStatus;
 import com.example.demo.exception.FieldException;
-import com.example.demo.repository.ReservationRepository;
 import com.example.demo.repository.OperatorRepository;
+import com.example.demo.repository.ReservationRepository;
 import com.example.demo.repository.RoomRepository;
 import com.example.demo.repository.RoomTypeRepository;
 import com.example.demo.service.interfaces.ReservationService;
@@ -96,21 +96,25 @@ public class ReservationServiceImpl implements ReservationService {
         applyUpdate(current, input);
     }
 
-    /** El cliente edita estancias futuras; durante la estancia solo añade servicios. Conserva tipo y estado. */
+    /** El cliente edita estancias futuras. durante la estancia solo añade servicios. Conserva tipo y estado. */
     @Override
     public void updateClientReservation(Integer id, Integer clientId, Reservation input) {
         Reservation current = clientReservation(id, clientId);
         if (current.getStatus() == ReservationStatus.CHECKED_IN) {
-            if (!current.getCheckInDate().equals(input.getCheckInDate()))
+            if (!current.getCheckInDate().equals(input.getCheckInDate())) {
                 throw invalid("checkInDate", "The arrival date cannot be changed during the stay.");
-            if (!current.getCheckOutDate().equals(input.getCheckOutDate()))
+            }
+            if (!current.getCheckOutDate().equals(input.getCheckOutDate())) {
                 throw invalid("checkOutDate", "The departure date cannot be changed during the stay.");
-            if (!current.getGuestCount().equals(input.getGuestCount()))
+            }
+            if (!current.getGuestCount().equals(input.getGuestCount())) {
                 throw invalid("guestCount", "The guest count cannot be changed during the stay.");
+            }
             Set<Integer> selected = new HashSet<>(reservationRules.serviceIds(input));
             for (Service service : current.getServices()) {
-                if (!selected.contains(service.getServiceId()))
+                if (!selected.contains(service.getServiceId())) {
                     throw invalid("services", "Existing services cannot be removed during the stay. You can only add services.");
+                }
             }
         } else if ((current.getStatus() != ReservationStatus.PENDING && current.getStatus() != ReservationStatus.CONFIRMED)
                 || current.getCheckInDate().isBefore(LocalDate.now())) {
@@ -171,13 +175,16 @@ public class ReservationServiceImpl implements ReservationService {
         // no puede ser pasada.
         reservationRules.checkDates(input.getCheckInDate(), input.getCheckOutDate(),
                 current.getCheckInDate().equals(input.getCheckInDate()));
-        if (input.getGuestCount() == null || input.getGuestCount() < 1)
+        if (input.getGuestCount() == null || input.getGuestCount() < 1) {
             throw invalid("guestCount", "Enter at least one guest.");
-        if (input.getStatus() == null)
+        }
+        if (input.getStatus() == null) {
             throw invalid("status", "Choose a reservation status.");
+        }
         // El estado persistido determina la transición. Se revisa bajo el bloqueo y antes de cambiar habitación o folio.
-        if (current.getStatus() == ReservationStatus.PENDING && input.getStatus() == ReservationStatus.CHECKED_IN)
+        if (current.getStatus() == ReservationStatus.PENDING && input.getStatus() == ReservationStatus.CHECKED_IN) {
             throw invalid("status", "Check-in is not allowed while the reservation is pending. Confirm the reservation first.");
+        }
         Integer typeId = reservationRules.roomTypeId(input);
         RoomType type = roomTypeRepository.lockForBooking(typeId)
                 .orElseThrow(() -> invalid("roomType", "The selected room type does not exist."));

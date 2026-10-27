@@ -19,7 +19,7 @@ install:
 	npm ci
 	touch node_modules/.make-install-stamp
 
-# A successful install is shared by all targets, including parallel checks.
+# La instalación completa se comparte entre objetivos, incluso al ejecutar comprobaciones en paralelo.
 node_modules/.make-install-stamp: package.json package-lock.json
 	npm ci
 	touch $@

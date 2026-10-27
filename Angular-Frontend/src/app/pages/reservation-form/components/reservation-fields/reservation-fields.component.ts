@@ -13,11 +13,11 @@ import {
 import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
 import {
-  MAX_NIGHTS,
-  MAX_YEARS_AHEAD,
   addDays,
   latestCheckIn,
   localDate,
+  MAX_NIGHTS,
+  MAX_YEARS_AHEAD,
   stayNights,
 } from '../../../../models/booking';
 import { RoomTypeListDTO } from '../../../../models/dto/room-type-list-dto';
@@ -46,9 +46,12 @@ const noLimits: ReservationLimits = {
 function checkInRule(limits: ReservationLimits): ValidatorFn {
   return (control) => {
     const value: string = control.value;
-    if (!value) return null;
-    if (value !== limits.originalCheckIn() && value < localDate())
+    if (!value) {
+      return null;
+    }
+    if (value !== limits.originalCheckIn() && value < localDate()) {
       return { past: true };
+    }
     return value > latestCheckIn() ? { tooFar: true } : null;
   };
 }
@@ -56,8 +59,12 @@ function checkInRule(limits: ReservationLimits): ValidatorFn {
 function checkOutRule(control: AbstractControl): ValidationErrors | null {
   const checkIn: string | undefined = control.parent?.get('checkIn')?.value;
   const value: string = control.value;
-  if (!value || !checkIn) return null;
-  if (value <= checkIn) return { order: true };
+  if (!value || !checkIn) {
+    return null;
+  }
+  if (value <= checkIn) {
+    return { order: true };
+  }
   return stayNights(checkIn, value) > MAX_NIGHTS ? { tooLong: true } : null;
 }
 
@@ -177,16 +184,24 @@ export class ReservationFieldsComponent {
   get statusMessage(): string {
     const control = this.form.controls.status;
     const serverMessage = control.getError('server');
-    if (typeof serverMessage === 'string') return serverMessage;
-    if (control.hasError('pending')) return translate(this.messages.status.pending);
-    if (control.hasError('unpaid')) return translate(this.messages.status.unpaid);
+    if (typeof serverMessage === 'string') {
+      return serverMessage;
+    }
+    if (control.hasError('pending')) {
+      return translate(this.messages.status.pending);
+    }
+    if (control.hasError('unpaid')) {
+      return translate(this.messages.status.unpaid);
+    }
     return translate(this.messages.status.required);
   }
   invalid(control: FormControl): boolean {
     return control.invalid && (control.touched || this.submitted);
   }
   toggleService(id: number, checked: boolean): void {
-    if (this.servicesOnly && this.originalServiceIds.includes(id)) return;
+    if (this.servicesOnly && this.originalServiceIds.includes(id)) {
+      return;
+    }
     const current = this.form.controls.serviceIds.value;
     this.form.controls.serviceIds.setValue(
       checked

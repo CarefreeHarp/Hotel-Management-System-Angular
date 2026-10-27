@@ -12,12 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-/**
- * CAPA DE REPOSITORIO: acceso a la tabla ROOM_TYPE con Spring Data JPA.
- *
- * La llave primaria es room_type_id, de tipo Integer, y la genera la base de
- * datos con IDENTITY: por eso un tipo nuevo se guarda con el id en null.
- */
+/** Consultas y proyecciones de lectura de RoomType. */
 @Repository
 public interface RoomTypeRepository extends JpaRepository<RoomType, Integer> {
 

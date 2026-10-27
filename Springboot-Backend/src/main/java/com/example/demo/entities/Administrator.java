@@ -32,7 +32,7 @@ public class Administrator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "admin_id")
-    // Identificador del administrador. Restricciones: Clave primaria única y autogenerada. Se conserva el identificador de la ruta al actualizar.
+    // Identificador del administrador. Restricciones: Clave primaria única y autogenerada. Se conserva el id de la ruta al editar.
     private Integer adminId;
     @Column(nullable = false, length = 60)
     @NotBlank(message = "Enter the administrator's name.")

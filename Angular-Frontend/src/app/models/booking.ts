@@ -92,6 +92,8 @@ export interface ReservationDetails {
   payments: ReservationPayment[];
   refunds: ReservationRefund[];
 }
+export const MILLISECONDS_PER_DAY = 86_400_000;
+
 // Límites de una reserva y del pago simulado: los mismos que BookingService en el backend.
 export const MAX_NIGHTS = 90;
 export const MAX_YEARS_AHEAD = 2;
@@ -131,11 +133,13 @@ export function latestCheckIn(): string {
 }
 // Las fechas ISO sin hora se comparan como días completos, independientemente del horario local.
 export function stayNights(checkIn: string, checkOut: string): number {
-  return Math.round((Date.parse(checkOut) - Date.parse(checkIn)) / 86400000);
+  return Math.round((Date.parse(checkOut) - Date.parse(checkIn)) / MILLISECONDS_PER_DAY);
 }
 export function validStay(stay: BookingStay): boolean {
   const validDate = (value: string): boolean => {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return false;
+    }
     const date = new Date(`${value}T12:00:00`);
     return !Number.isNaN(date.getTime()) && localDate(date) === value;
   };

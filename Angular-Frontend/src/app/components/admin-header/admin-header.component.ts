@@ -63,7 +63,6 @@ export class AdminHeaderComponent {
   menuOpen = false;
 
   constructor() {
-    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
     fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => this.closeDesktopMenu());
   }
 
@@ -79,6 +78,8 @@ export class AdminHeaderComponent {
     void this.router.navigate(['/']);
   }
   closeDesktopMenu(): void {
-    if (window.innerWidth > 1440) this.closeMenu();
+    if (window.innerWidth > 1440) {
+      this.closeMenu();
+    }
   }
 }

@@ -8,7 +8,7 @@ export interface RecordCard {
   id: number;
   title: string;
   image?: string;
-  // labelKey es una clave de traducción; value, el dato ya formateado o traducido.
+  // labelKey es una clave de traducción. value, el dato ya formateado o traducido.
   details: { labelKey: string; value: string }[];
   detailUrl: string;
   editUrl: string;
@@ -24,7 +24,6 @@ export interface RecordCard {
 })
 export class RecordCardsComponent {
   @Input() cards: RecordCard[] = [];
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly deleteRecordSubject = new Subject<number>();
   @Output('deleteRecord') readonly deleteRecord$ = this.deleteRecordSubject.asObservable();
   protected readonly toggleActivationSubject = new Subject<number>();

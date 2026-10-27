@@ -130,7 +130,9 @@ export class ServicesFormComponent {
           this.submitted = false;
           this.form.controls.secondaryImageUrls.clear();
           this.form.reset();
-          if (this.isCreateMode) return of(undefined);
+          if (this.isCreateMode) {
+            return of(undefined);
+          }
           // Una id inválida muestra la pantalla 400. Si el servicio no carga, la que corresponda.
           if (!Number.isSafeInteger(id) || id <= 0) {
             showErrorPage(this.router, this.route, 400);
@@ -160,8 +162,9 @@ export class ServicesFormComponent {
 
   addPhoto(value = ''): void {
     // El backend admite como mucho 10 fotos adicionales por servicio.
-    if (this.form.controls.secondaryImageUrls.length >= MAX_ADDITIONAL_PHOTOS)
+    if (this.form.controls.secondaryImageUrls.length >= MAX_ADDITIONAL_PHOTOS) {
       return;
+    }
     this.form.controls.secondaryImageUrls.push(
       new FormControl(value, {
         nonNullable: true,
@@ -189,14 +192,20 @@ export class ServicesFormComponent {
   }
 
   private saveChanges(): Observable<unknown> {
-    if (this.saving || this.loading) return EMPTY;
+    if (this.saving || this.loading) {
+      return EMPTY;
+    }
     this.error = '';
     this.submitted = true;
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid) return EMPTY;
+    if (this.form.invalid) {
+      return EMPTY;
+    }
     const value = this.form.getRawValue();
-    if (value.price === null) return EMPTY;
+    if (value.price === null) {
+      return EMPTY;
+    }
     const data: ServiceData = {
       ...value,
       name: value.name.trim(),
@@ -214,7 +223,9 @@ export class ServicesFormComponent {
         .filter(Boolean),
     };
     const item = this.item;
-    if (!this.isCreateMode && !item) return EMPTY;
+    if (!this.isCreateMode && !item) {
+      return EMPTY;
+    }
     this.saving = true;
     // Ya no se descargan todos los servicios para revisar el nombre: si se repite,
     // el backend responde 409 y su mensaje se muestra bajo el campo del nombre.

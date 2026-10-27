@@ -21,7 +21,9 @@ export class ReservationHistoryComponent {
   @Output() readonly cancellationRequested = this.cancellationRequestedSubject.asObservable();
 
   requestCancellation(id: number): void {
-    if (!this.staff) this.cancellationRequestedSubject.next(id);
+    if (!this.staff) {
+      this.cancellationRequestedSubject.next(id);
+    }
   }
 
   selectedFilter: 'all' | ReservationStatus = 'all';
@@ -30,30 +32,30 @@ export class ReservationHistoryComponent {
     labelKey: string;
     status: 'all' | ReservationStatus;
   }[] = [
-    { labelKey: 'reservationHistory.filters.all', status: 'all' },
-    { labelKey: 'reservationHistory.filters.upcoming', status: ReservationStatus.CONFIRMED },
-    { labelKey: 'reservationHistory.filters.inProgress', status: ReservationStatus.CHECKED_IN },
-    { labelKey: 'reservationHistory.filters.awaitingReview', status: ReservationStatus.CHECKED_OUT },
-    { labelKey: 'reservationHistory.filters.awaitingPayment', status: ReservationStatus.PENDING },
-    { labelKey: 'reservationHistory.filters.cancelled', status: ReservationStatus.CANCELLED },
-  ];
+      { labelKey: 'reservationHistory.filters.all', status: 'all' },
+      { labelKey: 'reservationHistory.filters.upcoming', status: ReservationStatus.CONFIRMED },
+      { labelKey: 'reservationHistory.filters.inProgress', status: ReservationStatus.CHECKED_IN },
+      { labelKey: 'reservationHistory.filters.awaitingReview', status: ReservationStatus.CHECKED_OUT },
+      { labelKey: 'reservationHistory.filters.awaitingPayment', status: ReservationStatus.PENDING },
+      { labelKey: 'reservationHistory.filters.cancelled', status: ReservationStatus.CANCELLED },
+    ];
   // Cliente y personal comparten las reservas. Cambian únicamente las etiquetas de sus filtros.
   get filters(): { labelKey: string; status: 'all' | ReservationStatus }[] {
     return this.staff
       ? [
-          { labelKey: 'reservationHistory.filters.all', status: 'all' },
-          ...Object.values(ReservationStatus).map((status) => ({
-            labelKey: `enums.reservationStatus.${status}`,
-            status,
-          })),
-        ]
+        { labelKey: 'reservationHistory.filters.all', status: 'all' },
+        ...Object.values(ReservationStatus).map((status) => ({
+          labelKey: `enums.reservationStatus.${status}`,
+          status,
+        })),
+      ]
       : this.clientFilters;
   }
   get filteredReservations(): ReservationDetails[] {
     return this.selectedFilter === 'all'
       ? this.reservations
       : this.reservations.filter(
-          (detail) => detail.reservation.status === this.selectedFilter,
-        );
+        (detail) => detail.reservation.status === this.selectedFilter,
+      );
   }
 }

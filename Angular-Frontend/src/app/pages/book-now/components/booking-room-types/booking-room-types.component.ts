@@ -16,7 +16,6 @@ export class BookingRoomTypesComponent {
     checkOut: '',
     guests: 1,
   };
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly changeDatesSubject = new Subject<void>();
   @Output('changeDates') readonly changeDates$ = this.changeDatesSubject.asObservable();
   @Input({ required: true }) types: RoomTypeAvailability[] = [];

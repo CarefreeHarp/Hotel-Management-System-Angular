@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { translate, TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, translate } from '@jsverse/transloco';
 import { EMPTY, Observable, Subject, catchError, exhaustMap, switchMap, takeUntil, tap, timer } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -95,11 +95,14 @@ export class RoomTypeTablePageComponent implements OnInit {
   }
 
   private performAction(id: number): Observable<unknown> {
-    if (!this.adminArea) return EMPTY;
+    if (!this.adminArea) {
+      return EMPTY;
+    }
     const deletedItem = this.roomTypes.find((rt) => rt.roomTypeId === id);
     const name = deletedItem?.name || id;
-    if (!confirm(translate('roomTypes.list.confirmDelete', { name })))
+    if (!confirm(translate('roomTypes.list.confirmDelete', { name }))) {
       return EMPTY;
+    }
     return this.roomTypeService.delete(id).pipe(
       tap(() => {
         this.loadRoomTypes();

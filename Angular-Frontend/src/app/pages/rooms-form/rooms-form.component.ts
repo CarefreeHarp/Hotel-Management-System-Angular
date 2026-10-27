@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { translate, TranslocoPipe } from '@jsverse/transloco';
-import { EMPTY, Observable, Subject, catchError, exhaustMap, finalize, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, exhaustMap, finalize, forkJoin, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
@@ -128,7 +128,7 @@ export class RoomsFormComponent {
         this.loading = false;
         this.roomTypes = roomTypes;
         this.item = item;
-        if (item)
+        if (item) {
           this.form.patchValue({
             number: item.number,
             floor: item.floor,
@@ -136,6 +136,7 @@ export class RoomsFormComponent {
             activationStatus: item.activationStatus,
             roomTypeId: item.roomType.roomTypeId,
           });
+        }
       });
   }
 
@@ -144,25 +145,32 @@ export class RoomsFormComponent {
   }
 
   private saveChanges(): Observable<unknown> {
-    if (this.saving || this.loading || !this.roomTypes.length) return EMPTY;
+    if (this.saving || this.loading || !this.roomTypes.length) {
+      return EMPTY;
+    }
     this.submitted = true;
     this.error = '';
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid) return EMPTY;
+    if (this.form.invalid) {
+      return EMPTY;
+    }
     const value = this.form.getRawValue();
     if (
       value.number === null ||
       value.floor === null ||
       value.roomTypeId === null
-    )
+    ) {
       return EMPTY;
+    }
     if (!this.roomTypes.some((type) => type.roomTypeId === value.roomTypeId)) {
       this.error = translate('rooms.form.selectExistingType');
       return EMPTY;
     }
     const item = this.item;
-    if (!this.isCreateMode && !item) return EMPTY;
+    if (!this.isCreateMode && !item) {
+      return EMPTY;
+    }
     const data: RoomData = {
       number: value.number,
       floor: value.floor,

@@ -1,7 +1,7 @@
 /**
  * Clave de traducción del mensaje de cada regla, por la clave del error de Angular
  * (required, maxlength, email…). En inglés es el mismo texto que envía el backend
- * para ese campo. FormFieldComponent traduce la clave; los mensajes que llegan del
+ * para ese campo. FormFieldComponent traduce la clave. Los mensajes que llegan del
  * servidor se muestran tal cual.
  */
 export type FieldMessages = Partial<Record<string, string>>;

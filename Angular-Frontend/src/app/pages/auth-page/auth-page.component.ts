@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { translate, TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, translate } from '@jsverse/transloco';
 import { EMPTY, Observable, Subject, catchError, concatMap, exhaustMap, tap, timer } from 'rxjs';
 import { ButtonComponent } from '../../components/button/button.component';
 import { FooterComponent } from '../../components/footer/footer.component';
@@ -99,8 +99,12 @@ export class AuthPageComponent implements OnInit {
     // Un solo flujo evita enviar dos formularios a la vez. Cada error se resuelve dentro de su petición.
     this.submitSubject.pipe(
       exhaustMap((action) => {
-        if (action === 'client-login') return this.loginClient();
-        if (action === 'client-register') return this.registerClient();
+        if (action === 'client-login') {
+          return this.loginClient();
+        }
+        if (action === 'client-register') {
+          return this.registerClient();
+        }
         return this.loginStaff();
       }),
       takeUntilDestroyed(),

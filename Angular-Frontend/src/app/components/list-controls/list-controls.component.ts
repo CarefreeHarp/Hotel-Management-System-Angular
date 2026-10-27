@@ -40,7 +40,6 @@ export class ListControlsComponent {
     });
   }
   @Input() total = 0;
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly changedSubject = new Subject<ListState>();
   @Output('changed') readonly changed$ = this.changedSubject.asObservable();
   update(patch: Partial<ListState>): void {

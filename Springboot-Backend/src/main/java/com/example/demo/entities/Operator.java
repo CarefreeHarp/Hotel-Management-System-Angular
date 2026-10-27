@@ -30,7 +30,7 @@ public class Operator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "operator_id")
-    // Identificador del operario. Restricciones: Clave primaria única y autogenerada. Se conserva el identificador de la ruta al actualizar.
+    // Identificador del operario. Restricciones: Clave primaria única y autogenerada. Se conserva el id de la ruta al editar.
     private Integer operatorId;
     @Column(nullable = false, length = 60)
     @NotBlank(message = "Enter the operator's first name.")

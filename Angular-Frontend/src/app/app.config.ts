@@ -2,9 +2,9 @@ import { DOCUMENT, registerLocaleData } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import {
   ApplicationConfig,
-  LOCALE_ID,
   inject,
   isDevMode,
+  LOCALE_ID,
   provideAppInitializer,
   provideZoneChangeDetection,
 } from '@angular/core';
@@ -17,7 +17,7 @@ import { routes } from './app.routes';
 import { TranslocoHttpLoader } from './transloco-loader';
 import { DEFAULT_LANGUAGE, LANGUAGES, savedLanguage } from './utils/language';
 
-// Formatos de Angular (fechas, números y moneda) por locale de LANGUAGES. El inglés viene incluido;
+// Formatos de Angular (fechas, números y moneda) por locale de LANGUAGES. El inglés viene incluido.
 // los demás se descargan solo para el idioma elegido, así no pesan en la carga inicial.
 const LOCALE_DATA: Record<string, () => Promise<{ default: unknown }>> = {
   'es-CO': () => import('@angular/common/locales/es-CO'),
@@ -31,7 +31,9 @@ const LOCALE_DATA: Record<string, () => Promise<{ default: unknown }>> = {
 
 async function loadLocaleData(locale: string): Promise<void> {
   const loader = LOCALE_DATA[locale];
-  if (loader) registerLocaleData((await loader()).default);
+  if (loader) {
+    registerLocaleData((await loader()).default);
+  }
 }
 
 // Cambiar de idioma recarga la página, así que el idioma se decide una sola vez al arrancar.

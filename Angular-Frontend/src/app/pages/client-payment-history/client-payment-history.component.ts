@@ -133,7 +133,7 @@ export class ClientPaymentHistoryComponent implements OnInit {
       }
     }
 
-    // Las fechas del backend son ISO locales; ordenarlas como texto deja primero la más reciente.
+    // Las fechas del backend son ISO locales. ordenarlas como texto deja primero la más reciente.
     this.movements = movements.sort((first, second) =>
       second.date.localeCompare(first.date) || second.id - first.id,
     );

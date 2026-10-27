@@ -8,20 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-/**
- * CAPA DE REPOSITORIO: acceso a la tabla CLIENT con Spring Data JPA.
- *
- * Al extender JpaRepository ya se heredan las operaciones básicas sin escribir
- * código: findAll, findById, save, deleteById, existsById y count. El segundo
- * tipo genérico es el de la llave primaria (client_id, de tipo Integer).
- *
- * Los dos métodos declarados abajo son "derived queries": Spring Data lee el
- * nombre del método y genera él mismo la consulta, así que tampoco hay que
- * escribir SQL. Antes estas búsquedas se hacían recorriendo la lista completa
- * de clientes en la capa de servicio. Ahora las resuelve la base de datos.
- *
- * Devuelven Optional porque puede que no exista ningún cliente con ese dato.
- */
+/** Consultas y proyecciones de lectura de Client. */
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Integer> {
 

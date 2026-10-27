@@ -117,7 +117,9 @@ export class ServicesListComponent {
       .sort((a, b) => {
         const sort = this.listState.sort;
         const direction = sort.endsWith('-desc') ? -1 : 1;
-        if (sort.startsWith('price-')) return direction * (a.price - b.price);
+        if (sort.startsWith('price-')) {
+          return direction * (a.price - b.price);
+        }
         return compareRecords(sort, a.serviceId, b.serviceId, a.name, b.name);
       });
   }
@@ -177,7 +179,9 @@ export class ServicesListComponent {
   }
   toggleById(id: number): void {
     const item = this.items.find((item) => item.serviceId === id);
-    if (item) this.toggle(item);
+    if (item) {
+      this.toggle(item);
+    }
   }
   toggle(item: ServiceListDTO): void {
     this.actionSubject.next(item);

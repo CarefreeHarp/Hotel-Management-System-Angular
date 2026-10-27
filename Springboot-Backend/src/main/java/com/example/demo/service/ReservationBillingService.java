@@ -1,27 +1,26 @@
 package com.example.demo.service;
 
-import java.time.LocalDateTime;
 import com.example.demo.dto.ReservationDTO;
 import com.example.demo.dto.ReservationDetailDTO;
 import com.example.demo.entities.Folio;
 import com.example.demo.entities.FolioItem;
-import com.example.demo.entities.Payment;
 import com.example.demo.entities.Operator;
-import com.example.demo.entities.Reservation;
+import com.example.demo.entities.Payment;
 import com.example.demo.entities.Refund;
+import com.example.demo.entities.Reservation;
 import com.example.demo.entities.Room;
 import com.example.demo.entities.Service;
 import com.example.demo.entities.enums.FolioStatus;
 import com.example.demo.entities.enums.PaymentStatus;
-import com.example.demo.entities.enums.ReservationStatus;
 import com.example.demo.entities.enums.RefundReason;
+import com.example.demo.entities.enums.ReservationStatus;
 import com.example.demo.exception.FieldException;
 import com.example.demo.repository.FolioItemRepository;
 import com.example.demo.repository.FolioRepository;
 import com.example.demo.repository.PaymentRepository;
 import com.example.demo.repository.RefundRepository;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,31 +79,9 @@ public class ReservationBillingService {
                     .issuedAt(current.getCreatedAt()).status(FolioStatus.PENDING).build());
         }
         List<FolioItem> charges = new ArrayList<>(charges(folio));
-        List<Integer> selectedIds = new ArrayList<>();
-        for (Service service : selectedServices) {
-            selectedIds.add(service.getServiceId());
-        }
-
-        // Los servicios conservados y los cargos independientes mantienen el precio contratado.
-        List<FolioItem> removed = new ArrayList<>();
-        for (FolioItem item : charges) {
-            if (item.getService() != null && !selectedIds.contains(item.getService().getServiceId())) {
-                removed.add(item);
-            }
-        }
+        List<FolioItem> removed = removedServiceCharges(charges, selectedServices);
         charges.removeAll(removed);
-        for (Service service : selectedServices) {
-            boolean alreadyCharged = false;
-            for (FolioItem item : charges) {
-                if (item.getService() != null && item.getService().getServiceId().equals(service.getServiceId())) {
-                    alreadyCharged = true;
-                    break;
-                }
-            }
-            if (!alreadyCharged) {
-                charges.add(serviceCharge(folio, service, LocalDateTime.now()));
-            }
-        }
+        addNewServiceCharges(folio, charges, selectedServices);
 
         BigDecimal total = stayTotal(input, nightlyPrice).add(chargesTotal(charges));
         BigDecimal paid = previous.paidTotal();
@@ -136,6 +113,37 @@ public class ReservationBillingService {
         return status;
     }
 
+    /** Los servicios conservados y cargos independientes mantienen sus precios históricos. */
+    private List<FolioItem> removedServiceCharges(List<FolioItem> charges, List<Service> selectedServices) {
+        List<Integer> selectedIds = new ArrayList<>();
+        for (Service service : selectedServices) {
+            selectedIds.add(service.getServiceId());
+        }
+        List<FolioItem> removed = new ArrayList<>();
+        for (FolioItem charge : charges) {
+            if (charge.getService() != null && !selectedIds.contains(charge.getService().getServiceId())) {
+                removed.add(charge);
+            }
+        }
+        return removed;
+    }
+
+    /** Solo los servicios nuevos reciben el precio vigente del catálogo al crear el cargo. */
+    private void addNewServiceCharges(Folio folio, List<FolioItem> charges, List<Service> selectedServices) {
+        for (Service service : selectedServices) {
+            boolean alreadyCharged = false;
+            for (FolioItem charge : charges) {
+                if (charge.getService() != null && charge.getService().getServiceId().equals(service.getServiceId())) {
+                    alreadyCharged = true;
+                    break;
+                }
+            }
+            if (!alreadyCharged) {
+                charges.add(serviceCharge(folio, service, LocalDateTime.now()));
+            }
+        }
+    }
+
     /**
      * Devuelve el pagado neto y cancela el folio bajo el bloqueo de la reserva que
      * mantiene el servicio coordinador. Repetir o concurrir la cancelación no
@@ -155,7 +163,7 @@ public class ReservationBillingService {
         folio.setStatus(FolioStatus.CANCELLED);
     }
 
-    /** Registra un abono nuevo; el coordinador mantiene bloqueada la reserva durante toda la operación. */
+    /** Registra un abono nuevo. El coordinador mantiene bloqueada la reserva durante toda la operación. */
     public void addCardPayment(Reservation reservation, Payment input) {
         ReservationDetailDTO previous = detail(reservation);
         paymentValidator.validateAdditional(input, previous.balance());
@@ -163,7 +171,7 @@ public class ReservationBillingService {
         savePayment(reservation, previous, input.getAmount(), "CARD", null);
     }
 
-    /** Un pago presencial usa el mismo saldo y folio; el operario queda en el historial. */
+    /** Un pago presencial usa el mismo saldo y folio. El operario queda en el historial. */
     public void addCashPayment(Reservation reservation, Operator operator, BigDecimal amount) {
         ReservationDetailDTO previous = detail(reservation);
         paymentValidator.validateCash(amount, previous.balance());
@@ -178,7 +186,7 @@ public class ReservationBillingService {
             createFolio(reservation, null, previous.total());
             folio = folioRepository.findByReservation_ReservationId(reservation.getReservationId()).orElseThrow();
         }
-        // Cada abono crea una fila; los pagos y reembolsos anteriores se conservan.
+        // Cada abono crea una fila. los pagos y reembolsos anteriores se conservan.
         paymentRepository.save(Payment.builder().folio(folio).operator(operator).amount(amount)
                 .paymentMethod(method).status(PaymentStatus.APPROVED).paidAt(LocalDateTime.now()).build());
         BigDecimal paid = previous.paidTotal().add(amount);
@@ -212,7 +220,7 @@ public class ReservationBillingService {
         }
     }
 
-    /** PAYMENT queda intacto; cada método de devolución se registra en REFUND. */
+    /** PAYMENT queda intacto. cada método de devolución se registra en REFUND. */
     private void saveRefundRow(Folio folio, BigDecimal amount, String method, RefundReason reason) {
         refundRepository.save(Refund.builder().folio(folio).operator(null).amount(amount).refundMethod(method)
                 .reason(reason).status(PaymentStatus.APPROVED).notes("").refundedAt(LocalDateTime.now()).build());

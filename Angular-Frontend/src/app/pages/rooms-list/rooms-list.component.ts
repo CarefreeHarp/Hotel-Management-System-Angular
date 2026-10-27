@@ -118,9 +118,12 @@ export class RoomsListComponent {
       .sort((a, b) => {
         const sort = this.listState.sort;
         const direction = sort.endsWith('-desc') ? -1 : 1;
-        if (sort.startsWith('floor-')) return direction * (a.floor - b.floor);
-        if (sort.startsWith('number-'))
+        if (sort.startsWith('floor-')) {
+          return direction * (a.floor - b.floor);
+        }
+        if (sort.startsWith('number-')) {
           return direction * (a.number - b.number);
+        }
         return compareRecords(
           sort,
           a.roomId,
@@ -181,7 +184,9 @@ export class RoomsListComponent {
   }
   toggleById(id: number): void {
     const item = this.items.find((item) => item.roomId === id);
-    if (item) this.toggle(item);
+    if (item) {
+      this.toggle(item);
+    }
   }
   toggle(item: RoomListDTO): void {
     this.actionSubject.next(item);

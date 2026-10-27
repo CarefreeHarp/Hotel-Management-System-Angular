@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe, formatDate } from '@angular/common';
-import { Component, Input, LOCALE_ID, Output, inject } from '@angular/core';
+import { Component, inject, Input, LOCALE_ID, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { BehaviorSubject, map, Subject } from 'rxjs';
@@ -38,7 +38,6 @@ export class BookingDatesComponent {
     checkOut: '',
     guests: 1,
   };
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly continueBookingSubject = new Subject<BookingStay>();
   @Output('continueBooking') readonly continueBooking$ = this.continueBookingSubject.asObservable();
   checkIn = '';
@@ -69,7 +68,7 @@ export class BookingDatesComponent {
     const days: CalendarDay[] = [];
     // Seis semanas completas mantienen estable la cuadrícula incluso en meses largos.
     const calendarCells = 6 * 7;
-    for (let index = 0;index < calendarCells;index++) {
+    for (let index = 0; index < calendarCells; index++) {
       const date = new Date(first.getFullYear(), first.getMonth(), index - first.getDay() + 1);
       const value = localDate(date);
       days.push({
@@ -103,7 +102,9 @@ export class BookingDatesComponent {
       this.checkOut ||
       value <= this.checkIn ||
       stayNights(this.checkIn, value) > MAX_NIGHTS;
-    if (!startsAgain) this.checkOut = value;
+    if (!startsAgain) {
+      this.checkOut = value;
+    }
     else if (value <= this.lastCheckIn) {
       this.checkIn = value;
       this.checkOut = '';
@@ -111,8 +112,12 @@ export class BookingDatesComponent {
   }
   // Después de la última llegada posible solo se puede elegir la salida de la estancia ya empezada.
   isDisabled(day: { value: string; disabled: boolean }): boolean {
-    if (day.disabled) return true;
-    if (day.value <= this.lastCheckIn) return false;
+    if (day.disabled) {
+      return true;
+    }
+    if (day.value <= this.lastCheckIn) {
+      return false;
+    }
     return (
       !this.checkIn ||
       !!this.checkOut ||
@@ -132,11 +137,12 @@ export class BookingDatesComponent {
     });
   }
   submit(): void {
-    if (this.valid())
+    if (this.valid()) {
       this.continueBookingSubject.next({
         checkIn: this.checkIn,
         checkOut: this.checkOut,
         guests: this.guests,
       });
+    }
   }
 }

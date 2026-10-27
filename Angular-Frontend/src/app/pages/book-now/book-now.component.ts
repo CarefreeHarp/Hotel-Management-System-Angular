@@ -155,7 +155,7 @@ export class BookNowComponent {
   /** Carga únicamente los datos del paso actual. La tarjeta nunca forma parte del borrador. */
   private loadStepData(draft: BookingDraft): Observable<null> {
     this.loading = true;
-    if (this.step === 'room-types')
+    if (this.step === 'room-types') {
       return this.reservations.available(this.stay).pipe(
         map((types) => {
           this.types = types;
@@ -163,6 +163,7 @@ export class BookNowComponent {
         }),
         catchError((error) => this.failed(error)),
       );
+    }
     // forkJoin espera que terminen todas estas consultas y entrega sus resultados juntos.
     return forkJoin({
       quote: this.reservations.quote(draft),
@@ -238,7 +239,9 @@ export class BookNowComponent {
   back(): void {
     const index = this.steps.indexOf(this.step);
     const previous = this.steps[index - 1];
-    if (previous) void this.go(previous);
+    if (previous) {
+      void this.go(previous);
+    }
   }
   // El pago se envía en el cuerpo de la petición. La URL solo conserva el contexto del cliente.
   confirm(payment?: CardPayment): void {
@@ -246,8 +249,9 @@ export class BookNowComponent {
   }
 
   private createReservation(payment?: CardPayment): Observable<unknown> {
-    if (!this.draft || !this.quote || this.busy || this.clientId === undefined)
+    if (!this.draft || !this.quote || this.busy || this.clientId === undefined) {
       return EMPTY;
+    }
     this.busy = true;
     this.error = '';
     this.paymentErrors = {};
@@ -282,9 +286,12 @@ export class BookNowComponent {
     const payment: Record<string, string> = {};
     const others: string[] = [];
     for (const [field, message] of Object.entries(apiFieldErrors(error))) {
-      if (field.startsWith('initialPayment.'))
+      if (field.startsWith('initialPayment.')) {
         payment[field.slice('initialPayment.'.length)] = message;
-      else others.push(message);
+      }
+      else {
+        others.push(message);
+      }
     }
     this.paymentErrors = payment;
     this.error = Object.keys(payment).length

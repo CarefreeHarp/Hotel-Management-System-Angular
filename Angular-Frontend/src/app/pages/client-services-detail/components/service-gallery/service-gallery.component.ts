@@ -24,6 +24,8 @@ export class ServiceGalleryComponent {
     this.lightbox?.nativeElement.close();
   }
   backdrop(event: MouseEvent): void {
-    if (event.target === this.lightbox?.nativeElement) this.close();
+    if (event.target === this.lightbox?.nativeElement) {
+      this.close();
+    }
   }
 }

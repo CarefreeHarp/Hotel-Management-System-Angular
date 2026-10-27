@@ -14,12 +14,12 @@ import { canModifyReservation, canPayReservation, CardPayment, MAX_PAYMENT, MIN_
 import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 import { ClientService } from '../../services/client.service';
 import { ReservationService } from '../../services/reservation.service';
+import { apiErrorMessage, apiFieldErrors } from '../../utils/api-error';
 import { basePath } from '../../utils/base-path';
 import { clientQuery } from '../../utils/client-query';
-import { apiErrorMessage, apiFieldErrors } from '../../utils/api-error';
-import { BookingPaymentComponent } from '../book-now/components/booking-payment/booking-payment.component';
 import { catchErrorPage, showErrorPage } from '../../utils/error-page';
 import { hasMaxDecimals } from '../../utils/form-validators';
+import { BookingPaymentComponent } from '../book-now/components/booking-payment/booking-payment.component';
 
 /** Carga reserva y huésped. El componente de finanzas presenta los cargos y pagos recibidos. */
 @Component({
@@ -71,15 +71,25 @@ export class ReservationDetailComponent implements OnInit {
     return Math.min(MIN_PAYMENT, this.detail?.balance ?? 0);
   }
   get cashErrorForAmount(): string {
-    if (this.cashAmountError) return this.cashAmountError;
-    if (!this.cashSubmitted) return '';
+    if (this.cashAmountError) {
+      return this.cashAmountError;
+    }
+    if (!this.cashSubmitted) {
+      return '';
+    }
     const amount = this.cashAmount;
-    if (amount === null || !Number.isFinite(amount)) return translate('reservations.cash.required');
-    if (!hasMaxDecimals(amount, 2)) return translate('validation.payment.amount.decimals');
+    if (amount === null || !Number.isFinite(amount)) {
+      return translate('reservations.cash.required');
+    }
+    if (!hasMaxDecimals(amount, 2)) {
+      return translate('validation.payment.amount.decimals');
+    }
     if (amount < this.minimumCashPayment || amount > (this.detail?.balance ?? 0)) {
       return translate('reservations.cash.range');
     }
-    if (amount > MAX_PAYMENT) return translate('validation.payment.amount.max');
+    if (amount > MAX_PAYMENT) {
+      return translate('validation.payment.amount.max');
+    }
     return '';
   }
   get ownsReservation(): boolean {
@@ -101,8 +111,12 @@ export class ReservationDetailComponent implements OnInit {
     );
   }
   get staffViewTitleKey(): string {
-    if (this.route.snapshot.paramMap.has('adminId')) return 'reservations.detail.adminView';
-    if (this.route.snapshot.paramMap.has('operatorId')) return 'reservations.detail.operatorView';
+    if (this.route.snapshot.paramMap.has('adminId')) {
+      return 'reservations.detail.adminView';
+    }
+    if (this.route.snapshot.paramMap.has('operatorId')) {
+      return 'reservations.detail.operatorView';
+    }
     return '';
   }
   get clientHistoryId(): number | undefined {
@@ -114,18 +128,27 @@ export class ReservationDetailComponent implements OnInit {
     return this.staff && this.route.snapshot.queryParamMap.get('from') === 'front-desk';
   }
   get backUrl(): string {
-    if (this.clientHistoryId !== undefined)
+    if (this.clientHistoryId !== undefined) {
       return `${basePath(this.route)}/clients/${this.clientHistoryId}`;
-    if (this.fromFrontDesk) return basePath(this.route);
+    }
+    if (this.fromFrontDesk) {
+      return basePath(this.route);
+    }
     return this.staff ? `${basePath(this.route)}/reservations` : '/profile';
   }
   get backLabelKey(): string {
-    if (this.clientHistoryId !== undefined) return 'reservations.detail.backToClient';
-    if (this.fromFrontDesk) return 'reservations.detail.backToFrontDesk';
+    if (this.clientHistoryId !== undefined) {
+      return 'reservations.detail.backToClient';
+    }
+    if (this.fromFrontDesk) {
+      return 'reservations.detail.backToFrontDesk';
+    }
     return this.staff ? 'reservations.detail.backToReservations' : 'reservations.detail.backToMyReservations';
   }
   get editUrl(): string {
-    if (!this.staff) return `/reservation/${this.detail?.reservation.reservationId}/edit`;
+    if (!this.staff) {
+      return `/reservation/${this.detail?.reservation.reservationId}/edit`;
+    }
     return `${basePath(this.route)}/reservations/${this.detail?.reservation.reservationId}/edit`;
   }
   get authParams(): { auth?: number } {
@@ -188,14 +211,18 @@ export class ReservationDetailComponent implements OnInit {
   }
 
   togglePayment(): void {
-    if (this.paying) return;
+    if (this.paying) {
+      return;
+    }
     this.paymentError = '';
     this.paymentErrors = {};
     this.showPayment = !this.showPayment;
   }
 
   toggleCashPayment(): void {
-    if (this.paying) return;
+    if (this.paying) {
+      return;
+    }
     this.showCashPayment = !this.showCashPayment;
     this.cashAmount = this.showCashPayment ? Math.min(this.detail?.balance ?? 0, MAX_PAYMENT) : null;
     this.cashSubmitted = false;
@@ -205,27 +232,35 @@ export class ReservationDetailComponent implements OnInit {
 
   payCash(): void {
     this.cashSubmitted = true;
-    if (!this.canTakeCash || this.paying || this.cashErrorForAmount || this.cashAmount === null) return;
+    if (!this.canTakeCash || this.paying || this.cashErrorForAmount || this.cashAmount === null) {
+      return;
+    }
     this.cashPaymentSubject.next(this.cashAmount);
   }
 
   private performCashPayment(amount: number): Observable<unknown> {
     const operatorId = this.operatorId;
     const id = this.detail?.reservation.reservationId;
-    if (!this.canTakeCash || this.paying || operatorId === undefined || id === undefined) return EMPTY;
+    if (!this.canTakeCash || this.paying || operatorId === undefined || id === undefined) {
+      return EMPTY;
+    }
     this.paying = true;
     this.paymentSaved = false;
     this.paymentError = '';
     this.cashAmountError = '';
     return this.reservations.addCashPayment(id, operatorId, amount).pipe(
       tap((detail) => {
-        if (this.operatorId !== operatorId || this.detail?.reservation.reservationId !== id) return;
+        if (this.operatorId !== operatorId || this.detail?.reservation.reservationId !== id) {
+          return;
+        }
         this.detail = detail;
         this.showCashPayment = false;
         this.paymentSaved = true;
       }),
       catchError((error: unknown) => {
-        if (this.operatorId !== operatorId || this.detail?.reservation.reservationId !== id) return EMPTY;
+        if (this.operatorId !== operatorId || this.detail?.reservation.reservationId !== id) {
+          return EMPTY;
+        }
         this.cashAmountError = apiFieldErrors(error)['amount'] ?? '';
         this.paymentError = this.cashAmountError ? '' : apiErrorMessage(error);
         return EMPTY;
@@ -237,7 +272,9 @@ export class ReservationDetailComponent implements OnInit {
   private performPayment(payment: CardPayment): Observable<unknown> {
     const clientId = this.authParams.auth;
     const id = this.detail?.reservation.reservationId;
-    if (!this.canPay || this.paying || clientId === undefined || id === undefined) return EMPTY;
+    if (!this.canPay || this.paying || clientId === undefined || id === undefined) {
+      return EMPTY;
+    }
     this.paying = true;
     this.paymentSaved = false;
     this.paymentError = '';
@@ -245,13 +282,17 @@ export class ReservationDetailComponent implements OnInit {
     return this.reservations.addPayment(id, clientId, payment).pipe(
       tap((detail) => {
         // Una respuesta tardía no debe sustituir otra reserva o cliente al cambiar la URL.
-        if (this.authParams.auth !== clientId || this.detail?.reservation.reservationId !== id) return;
+        if (this.authParams.auth !== clientId || this.detail?.reservation.reservationId !== id) {
+          return;
+        }
         this.detail = detail;
         this.showPayment = false;
         this.paymentSaved = true;
       }),
       catchError((error: unknown) => {
-        if (this.authParams.auth !== clientId || this.detail?.reservation.reservationId !== id) return EMPTY;
+        if (this.authParams.auth !== clientId || this.detail?.reservation.reservationId !== id) {
+          return EMPTY;
+        }
         for (const [field, message] of Object.entries(apiFieldErrors(error))) {
           if (field.startsWith('initialPayment.')) {
             this.paymentErrors[field.slice('initialPayment.'.length)] = message;

@@ -138,7 +138,9 @@ export class AdministratorsFormComponent implements OnInit {
     this.saveError = '';
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid || this.isSaving) return EMPTY;
+    if (this.form.invalid || this.isSaving) {
+      return EMPTY;
+    }
     const value = this.form.getRawValue();
     const name = value.name.trim();
     const email = value.email.trim();

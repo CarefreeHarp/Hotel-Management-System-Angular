@@ -121,7 +121,9 @@ export class RoomTypeFormPageComponent {
         this.form.controls.secondaryPhotos.clear();
         this.form.reset();
         this.loading = !this.isCreateMode;
-        if (this.isCreateMode) return of(undefined);
+        if (this.isCreateMode) {
+          return of(undefined);
+        }
 
         // Una id inválida muestra la pantalla 400. Si el tipo no carga, la que corresponda.
         if (!Number.isSafeInteger(id) || id <= 0) {
@@ -132,11 +134,15 @@ export class RoomTypeFormPageComponent {
       }),
       takeUntilDestroyed(),
     ).subscribe((roomType) => {
-      if (!roomType) return;
+      if (!roomType) {
+        return;
+      }
       this.roomType = roomType;
       this.form.patchValue(roomType);
       this.form.controls.secondaryPhotos.clear();
-      for (const photo of roomType.secondaryPhotos) this.addPhoto(photo);
+      for (const photo of roomType.secondaryPhotos) {
+        this.addPhoto(photo);
+      }
       this.form.markAsPristine();
       this.loading = false;
     });
@@ -144,8 +150,9 @@ export class RoomTypeFormPageComponent {
 
   addPhoto(value = ''): void {
     // El backend admite como mucho 10 fotos adicionales por tipo.
-    if (this.form.controls.secondaryPhotos.length >= MAX_ADDITIONAL_PHOTOS)
+    if (this.form.controls.secondaryPhotos.length >= MAX_ADDITIONAL_PHOTOS) {
       return;
+    }
     this.form.controls.secondaryPhotos.push(
       new FormControl(value, {
         nonNullable: true,
@@ -159,14 +166,20 @@ export class RoomTypeFormPageComponent {
   }
 
   private saveChanges(): Observable<unknown> {
-    if (this.saving) return EMPTY;
+    if (this.saving) {
+      return EMPTY;
+    }
     this.submitted = true;
     this.error = '';
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid) return EMPTY;
+    if (this.form.invalid) {
+      return EMPTY;
+    }
     const value = this.form.getRawValue();
-    if (value.nightlyPrice === null || value.maxCapacity === null) return EMPTY;
+    if (value.nightlyPrice === null || value.maxCapacity === null) {
+      return EMPTY;
+    }
     const roomTypeData = {
       name: value.name.trim(),
       description: value.description.trim(),
@@ -178,7 +191,9 @@ export class RoomTypeFormPageComponent {
         .filter(Boolean),
     };
     const roomType = this.roomType;
-    if (!this.isCreateMode && !roomType) return EMPTY;
+    if (!this.isCreateMode && !roomType) {
+      return EMPTY;
+    }
     this.saving = true;
     if (this.isCreateMode) {
       return this.service
@@ -199,7 +214,9 @@ export class RoomTypeFormPageComponent {
         );
       return EMPTY;
     }
-    if (!roomType) return EMPTY;
+    if (!roomType) {
+      return EMPTY;
+    }
     return this.service
       .update(roomType.roomTypeId, {
         ...roomTypeData,

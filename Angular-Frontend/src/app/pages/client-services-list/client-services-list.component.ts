@@ -79,13 +79,19 @@ export class ClientServicesListComponent {
   private filterServices(services: ServiceCatalogDTO[], category: string, query: string): ServiceCatalogDTO[] {
     const result: ServiceCatalogDTO[] = [];
     for (const service of services) {
-      if (category !== 'ALL' && service.category !== category) continue;
+      if (category !== 'ALL' && service.category !== category) {
+        continue;
+      }
       const values = [service.name, service.summary, service.description, service.category];
       let matches = !query;
       for (const value of values) {
-        if (value?.toLowerCase().includes(query)) matches = true;
+        if (value?.toLowerCase().includes(query)) {
+          matches = true;
+        }
       }
-      if (matches) result.push(service);
+      if (matches) {
+        result.push(service);
+      }
     }
     return result;
   }

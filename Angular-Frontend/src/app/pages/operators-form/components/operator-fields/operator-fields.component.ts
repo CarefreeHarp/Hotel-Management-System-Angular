@@ -29,7 +29,9 @@ export class OperatorFieldsComponent {
   // El selector de administrador usa la misma regla de visibilidad de errores que los demás campos.
   get adminInvalid(): boolean {
     const adminId = this.form?.controls.adminId;
-    if (!adminId) return false;
+    if (!adminId) {
+      return false;
+    }
     return adminId.invalid && (adminId.touched || this.submitted);
   }
 }

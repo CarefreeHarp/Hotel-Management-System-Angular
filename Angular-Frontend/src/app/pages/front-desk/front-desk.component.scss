@@ -31,7 +31,7 @@ h1 {
   text-transform: uppercase;
 }
 
-// Mismas tarjetas que el panel del administrador; cada una lleva a su sección.
+// Mismas tarjetas que el panel del administrador. cada una lleva a su sección.
 .desk-summary {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

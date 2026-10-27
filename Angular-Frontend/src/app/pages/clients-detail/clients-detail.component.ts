@@ -1,7 +1,7 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { translate, TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, translate } from '@jsverse/transloco';
 import {
   EMPTY,
   catchError,

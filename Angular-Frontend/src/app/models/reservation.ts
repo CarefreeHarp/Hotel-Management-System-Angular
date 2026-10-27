@@ -1,7 +1,7 @@
 import type { ReservationStatus } from './enums/reservation-status';
 import type { Room } from './room';
 
-// El backend no envía el cliente (JsonIgnore): las reservas se piden por cliente.
+// Las pantallas reciben DTOs de reserva y consultan al cliente por su identificador.
 export interface Reservation {
   reservationId: number;
   reservationCode: string;

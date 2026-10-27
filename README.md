@@ -72,7 +72,7 @@ The application currently uses route identifiers as user context rather than aut
 
 ## Angular composition and reactive state
 
-`AppComponent` contains `RouterOutlet`. Routed pages coordinate data loading and navigation, shared components live under `components/`, and components used by only one page live under that page. Templates and SCSS remain in external files. Only the landing page composes the public header and footer.
+`AppComponent` contains `RouterOutlet`. Routed pages coordinate data loading and navigation, shared components live under `components/`, and components used by only one page live under that page. Templates and SCSS remain in external files. Public pages compose the shared header and footer where their implemented design uses them. Staff pages use the administration header.
 
 ```mermaid
 flowchart TD
@@ -151,9 +151,9 @@ When an edit reduces the total below net paid, the difference is recorded as an 
 
 An operator can choose **Receive cash payment** on a reservation's detail page. `POST /reservations/{id}/cash-payments?operatorId=...` validates the operator and the current balance under the same reservation lock, then records an approved `CASH` payment with that operator. It applies the same amount limits and accepts the exact remaining balance when below COP 100,000. The API sets the method, status and operator from server-side data; values supplied for those fields in the request body are ignored. Card and cash payments share the folio and reduce one balance. If a later edit or cancellation requires a refund, cash paid is returned as `CASH` first and any remainder as `CARD`, with both methods recorded in `REFUND`.
 
-Backend regression tests run with `./mvnw test` (Windows: `mvnw.cmd test`) against H2 in memory, independently of the local database file.
+Verification uses strict frontend type and template checks, translation checks, builds and focused runtime checks. No automated test sources or test-only dependencies are retained.
 
-Cancellation preserves the reservation, folio, prices, charges and payments. In the same locked transaction, approved payments minus existing approved refunds determine the amount to refund. Client cancellation and staff edits that set the status to `CANCELLED` share the same refund operation. It records an approved `CANCELLATION` refund with no operator, method `CARD` and empty notes. Staff edits retain their existing charge reconciliation before refunding. Repeated cancellation does not create duplicate refunds. Permanent staff deletion is a separate operation that removes the associated financial records.
+Cancellation preserves the reservation, folio, prices, charges and payments. In the same locked transaction, approved payments minus existing approved refunds determine the amount to refund. Client cancellation and staff edits that set the status to `CANCELLED` share the same refund operation. It records approved `CANCELLATION` refunds with no operator and empty notes, returning cash first and then card payments as described above. Staff edits retain their existing charge reconciliation before refunding. Repeated cancellation does not create duplicate refunds. Permanent staff deletion is a separate operation that removes the associated financial records.
 
 Net paid is approved payments minus approved refunds. Active reservation balances use contracted totals minus net paid; cancelled reservations retain their historical totals but have no outstanding balance. Billing calculations use Java decimal values, while frontend numeric values are for presentation.
 
@@ -235,7 +235,7 @@ The frontend Makefile installs locked dependencies with `npm ci` when needed. Th
 | `make -C Angular-Frontend check` | TypeScript checking, translation check and production build. |
 | `make -C Springboot-Backend check` | Maven clean verification lifecycle, including compilation and packaging. |
 
-The backend has JUnit/H2 regression tests; the frontend has no automated test script yet. The frontend defaults to port `4200` and the backend to `8080`; `SERVER_PORT` overrides the backend port, while frontend HTTP service URLs currently target `http://localhost:8080`.
+Neither application retains automated test sources or test-only dependencies. The frontend defaults to port `4200` and the backend to `8080`; `SERVER_PORT` overrides the backend port, while frontend HTTP service URLs currently target `http://localhost:8080`.
 
 - [Application](http://localhost:4200)
 - [Swagger UI](http://localhost:8080/swagger-ui/index.html)

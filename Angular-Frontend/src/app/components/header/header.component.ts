@@ -47,7 +47,6 @@ export class HeaderComponent {
   isScrolled = false;
 
   constructor() {
-    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
     fromEvent(window, 'scroll').pipe(takeUntilDestroyed()).subscribe(() => this.updateScroll());
     fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => this.updateHeaderLayout());
   }

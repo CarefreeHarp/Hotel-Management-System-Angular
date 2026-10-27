@@ -12,7 +12,6 @@ import { BookingQuote } from '../../../../models/booking';
 export class BookingCheckoutComponent {
   @Input({ required: true }) quote: BookingQuote | undefined;
   @Input() busy = false;
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly payLaterSubject = new Subject<void>();
   @Output('payLater') readonly payLater$ = this.payLaterSubject.asObservable();
   protected readonly payNowSubject = new Subject<void>();

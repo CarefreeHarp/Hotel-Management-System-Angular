@@ -2,8 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.dto.BookingQuote;
 import com.example.demo.dto.ReservationDetailDTO;
-import com.example.demo.dto.RoomTypeListDTO;
 import com.example.demo.dto.RoomTypeAvailability;
+import com.example.demo.dto.RoomTypeListDTO;
 import com.example.demo.dto.ServiceCatalogDTO;
 import com.example.demo.entities.Client;
 import com.example.demo.entities.Payment;
@@ -79,12 +79,14 @@ public class BookingService {
         }
         if (result.isEmpty()) {
             Integer maximum = roomRepository.findMaximumBookableCapacity();
-            if (maximum == null)
+            if (maximum == null) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "No rooms are currently enabled for booking. Please contact the hotel.");
-            if (guests > maximum)
+            }
+            if (guests > maximum) {
                 throw invalid("guestCount", "No bookable room can accommodate " + guests + " guests. The maximum is "
                         + maximum + ". Please reduce the number of guests.");
+            }
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "No rooms are available for the selected dates and guest count. Please change the dates or the number of guests.");
         }
@@ -162,8 +164,9 @@ public class BookingService {
     /** Resuelve el cliente persistido a partir del identificador recibido. */
     private Client client(Reservation input) {
         Integer id = input.getClient() == null ? null : input.getClient().getClientId();
-        if (id == null)
+        if (id == null) {
             throw problem("Sign in to make a reservation.");
+        }
         return clientRepository.findById(id).orElseThrow(() -> problem("Client not found. Please sign in again."));
     }
 

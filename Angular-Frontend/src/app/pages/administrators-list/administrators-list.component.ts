@@ -81,7 +81,9 @@ export class AdministratorsListComponent implements OnInit {
   }
   deleteCard(id: number): void {
     const item = this.administrators.find((item) => item.adminId === id);
-    if (item) this.deleteAdministrator(item);
+    if (item) {
+      this.deleteAdministrator(item);
+    }
   }
 
   private readonly administratorService = inject(AdministratorService);
@@ -141,8 +143,9 @@ export class AdministratorsListComponent implements OnInit {
   private performAction(item: AdministratorListDTO): Observable<unknown> {
     this.message = '';
     this.errorMessage = '';
-    if (!confirm(translate('administrators.list.confirmDelete', { name: item.name })))
+    if (!confirm(translate('administrators.list.confirmDelete', { name: item.name }))) {
       return EMPTY;
+    }
     return this.administratorService.delete(item.adminId).pipe(
       tap(() => {
         this.message = translate('administrators.list.deleted', { name: item.name });

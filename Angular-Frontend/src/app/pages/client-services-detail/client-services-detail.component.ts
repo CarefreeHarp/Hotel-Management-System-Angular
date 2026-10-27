@@ -63,16 +63,17 @@ export class ClientServicesDetailComponent {
       const request =
         Number.isSafeInteger(numericId) && numericId > 0
           ? this.serviceService
-              .getById(numericId)
-              .pipe(
-                catchError(() => this.serviceService.getByUrlName(idOrSlug)),
-              )
+            .getById(numericId)
+            .pipe(
+              catchError(() => this.serviceService.getByUrlName(idOrSlug)),
+            )
           : this.serviceService.getByUrlName(idOrSlug);
       return request.pipe(
         // Un servicio inactivo no está en el catálogo: para el huésped no existe.
         tap((service) => {
-          if (service.activationStatus !== 'ACTIVE')
+          if (service.activationStatus !== 'ACTIVE') {
             showErrorPage(this.router, this.route, 404);
+          }
         }),
         filter((service) => service.activationStatus === 'ACTIVE'),
         map((service) => ({ service, isLoading: false })),

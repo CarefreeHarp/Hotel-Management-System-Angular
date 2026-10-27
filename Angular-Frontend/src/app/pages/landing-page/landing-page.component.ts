@@ -38,7 +38,6 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
   private fadeObserver?: IntersectionObserver;
 
   constructor() {
-    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
     fromEvent(window, 'scroll').pipe(takeUntilDestroyed()).subscribe(() => this.updateScrollProgress());
   }
 

@@ -1,6 +1,5 @@
 package com.example.demo.entities;
 
-import java.time.LocalDateTime;
 import com.example.demo.entities.enums.PaymentStatus;
 import com.example.demo.entities.enums.RefundReason;
 import jakarta.persistence.Column;
@@ -20,6 +19,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -72,7 +72,7 @@ public class Refund {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @NotNull(message = "Choose the refund reason.")
-    // CANCELLATION si se canceló la reserva; MODIFICATION si su total quedó por debajo de lo pagado.
+    // CANCELLATION si se canceló la reserva. MODIFICATION si su total quedó por debajo de lo pagado.
     private RefundReason reason;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)

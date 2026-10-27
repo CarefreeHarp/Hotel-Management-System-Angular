@@ -62,8 +62,9 @@ public class ServiceServiceImpl implements ServiceService {
     public void create(Service service) {
         service.setServiceId(null);
         checkUrlNameIsFree(service, null);
-        if (service.getSecondaryImageUrls() == null)
+        if (service.getSecondaryImageUrls() == null) {
             service.setSecondaryImageUrls(new ArrayList<>());
+        }
         serviceRepository.save(service);
     }
 
@@ -76,8 +77,9 @@ public class ServiceServiceImpl implements ServiceService {
         }
         checkUrlNameIsFree(service, registered.getServiceId());
         service.setServiceId(registered.getServiceId());
-        if (service.getSecondaryImageUrls() == null)
+        if (service.getSecondaryImageUrls() == null) {
             service.setSecondaryImageUrls(new ArrayList<>());
+        }
         serviceRepository.save(service);
     }
 

@@ -7,8 +7,12 @@ import { ActivatedRoute } from '@angular/router';
  */
 export function basePath(route: ActivatedRoute): string {
   const params = route.snapshot.paramMap;
-  if (params.has('adminId')) return `/admin/${params.get('adminId')}`;
-  if (params.has('operatorId')) return `/operator/${params.get('operatorId')}`;
+  if (params.has('adminId')) {
+    return `/admin/${params.get('adminId')}`;
+  }
+  if (params.has('operatorId')) {
+    return `/operator/${params.get('operatorId')}`;
+  }
   return '/';
 }
 

@@ -14,7 +14,6 @@ import { basePath } from '../../../../utils/base-path';
 })
 export class AdministratorTableComponent {
   @Input({ required: true }) administrators: AdministratorListDTO[] = [];
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly deleteSubject = new Subject<AdministratorListDTO>();
   @Output('delete') readonly delete$ = this.deleteSubject.asObservable();
   private readonly route = inject(ActivatedRoute);

@@ -35,7 +35,9 @@ export class RoomTypeService {
         const created = roomTypes.find(
           (rt) => rt.name.trim().toLowerCase() === roomType.name.trim().toLowerCase(),
         );
-        if (!created) throw new Error(translate('api.createdNotFound'));
+        if (!created) {
+          throw new Error(translate('api.createdNotFound'));
+        }
         return created;
       }),
     );

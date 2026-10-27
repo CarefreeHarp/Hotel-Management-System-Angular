@@ -168,9 +168,13 @@ export class OperatorsFormComponent implements OnInit {
     this.saveError = '';
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid || this.isSaving) return EMPTY;
+    if (this.form.invalid || this.isSaving) {
+      return EMPTY;
+    }
     const value = this.form.getRawValue();
-    if (value.adminId === null) return EMPTY;
+    if (value.adminId === null) {
+      return EMPTY;
+    }
     // Del administrador solo se envía la id: el backend lo busca para asignarlo.
     const data = {
       name: value.name.trim(),

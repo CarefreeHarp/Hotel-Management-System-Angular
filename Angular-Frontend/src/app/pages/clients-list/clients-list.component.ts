@@ -85,7 +85,9 @@ export class ClientsListComponent implements OnInit {
   }
   deleteCard(id: number): void {
     const item = this.clients.find((item) => item.clientId === id);
-    if (item) this.deleteClient(item);
+    if (item) {
+      this.deleteClient(item);
+    }
   }
 
   private readonly service = inject(ClientService);
@@ -145,7 +147,9 @@ export class ClientsListComponent implements OnInit {
     this.message = '';
     this.errorMessage = '';
     const name = `${client.name} ${client.lastName}`;
-    if (!confirm(translate('clients.list.confirmDelete', { name }))) return EMPTY;
+    if (!confirm(translate('clients.list.confirmDelete', { name }))) {
+      return EMPTY;
+    }
     return this.service.delete(client.clientId).pipe(
       tap(() => {
         this.message = translate('clients.list.deleted');

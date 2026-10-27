@@ -10,7 +10,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const i18nDir = join(root, 'public', 'i18n');
 const appDir = join(root, 'src', 'app');
 // Atributos con texto que el usuario ve o escucha. Escritos sin [enlace] deben usar el pipe.
-// data-label es la etiqueta de cada celda que el CSS muestra en las tablas en pantallas pequeñas;
+// data-label es la etiqueta de cada celda que el CSS muestra en las tablas en pantallas pequeñas.
 // data-role es la palabra de fondo de las fichas del personal.
 const TEXT_ATTRIBUTES = [
   'aria-label',
@@ -104,7 +104,7 @@ for (const file of sourceFiles(join(appDir, 'models', 'enums'), '.ts')) {
 }
 
 // 3. Texto escrito a mano en las plantillas.
-// Quita las expresiones de control (@if (...), @for (...), @let x = ...;) y deja solo el texto.
+// Quita las expresiones de control (@if (...), @for (...), @let x = ...) y deja solo el texto.
 function removeControlFlow(text) {
   let result = text.replace(/@let\s[^;]*;/g, blank);
   const keyword = /@(?:else\s+if|if|for|switch|case|defer|else|empty|default|placeholder|loading|error)\b\s*/g;

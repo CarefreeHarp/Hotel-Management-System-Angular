@@ -29,7 +29,6 @@ export class FrontDeskStaysComponent {
   @Input({ required: true }) today = '';
   @Input({ required: true }) base = '';
   @Input() busy = false;
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly checkInSubject = new Subject<FrontDeskStay>();
   protected readonly checkOutSubject = new Subject<FrontDeskStay>();
   @Output('checkIn') readonly checkIn$ = this.checkInSubject.asObservable();
@@ -65,7 +64,7 @@ export class FrontDeskStaysComponent {
       : undefined;
   }
 
-  /** El check-in solo se ofrece con la habitación disponible; el backend repite la comprobación. */
+  /** El check-in solo se ofrece con la habitación disponible. El backend repite la comprobación. */
   roomTag(stay: FrontDeskStay): StayTag {
     switch (stay.roomStatus) {
       case RoomStatus.AVAILABLE:

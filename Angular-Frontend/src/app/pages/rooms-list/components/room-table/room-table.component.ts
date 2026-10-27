@@ -14,7 +14,6 @@ import { basePath } from '../../../../utils/base-path';
 })
 export class RoomTableComponent {
   @Input({ required: true }) rooms: RoomListDTO[] = [];
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly toggleActivationSubject = new Subject<RoomListDTO>();
   @Output('toggleActivation') readonly toggleActivation$ = this.toggleActivationSubject.asObservable();
   private readonly route = inject(ActivatedRoute);

@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { translate, TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, translate } from '@jsverse/transloco';
 import {
   EMPTY, Observable, Subject, catchError, concatMap, exhaustMap, finalize,
   forkJoin, of, switchMap, tap,
@@ -112,13 +112,17 @@ export class ClientProfileComponent implements OnInit {
   }
 
   requestCancellation(id: number): void {
-    if (this.isCancelling || this.pendingCancellationId !== undefined) return;
+    if (this.isCancelling || this.pendingCancellationId !== undefined) {
+      return;
+    }
     this.cancellationError = '';
     this.pendingCancellationId = id;
   }
 
   dismissCancellation(): void {
-    if (this.isCancelling) return;
+    if (this.isCancelling) {
+      return;
+    }
     this.pendingCancellationId = undefined;
     this.cancellationError = '';
   }
@@ -132,7 +136,9 @@ export class ClientProfileComponent implements OnInit {
   /** Cancela y vuelve a leer el detalle para actualizar tarjeta y filtros con el estado persistido. */
   private performCancellation(id: number): Observable<unknown> {
     const clientId = this.authParams.auth;
-    if (clientId === undefined) return EMPTY;
+    if (clientId === undefined) {
+      return EMPTY;
+    }
     this.isCancelling = true;
     this.cancellationError = '';
     return this.reservationsService.cancel(id).pipe(
@@ -140,7 +146,9 @@ export class ClientProfileComponent implements OnInit {
       concatMap(() => this.reservationsService.details(id)),
       tap((detail) => {
         // Una respuesta tardía no debe modificar el perfil de otro cliente tras cambiar auth.
-        if (this.authParams.auth !== clientId) return;
+        if (this.authParams.auth !== clientId) {
+          return;
+        }
         this.reservations = this.reservations.map((current) =>
           current.reservation.reservationId === id ? detail : current,
         );
@@ -167,8 +175,9 @@ export class ClientProfileComponent implements OnInit {
       !this.client ||
       this.isDeleting ||
       !confirm(translate('profile.confirmDelete'))
-    )
+    ) {
       return EMPTY;
+    }
     this.isDeleting = true;
     this.errorMessage = '';
     return this.clients

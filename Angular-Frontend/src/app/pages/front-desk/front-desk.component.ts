@@ -4,15 +4,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { translate, TranslocoPipe } from '@jsverse/transloco';
 import {
-  EMPTY,
-  Observable,
-  Subject,
   catchError,
+  EMPTY,
   exhaustMap,
   finalize,
   map,
+  Observable,
   of,
   startWith,
+  Subject,
   switchMap,
   takeUntil,
   tap,
@@ -180,18 +180,22 @@ export class FrontDeskComponent {
   private perform(action: DeskAction): Observable<unknown> {
     this.busy = true;
     this.dismissNotice();
-    const request =
-      action.kind === 'check-in'
-        ? this.reservations.checkIn(action.id)
-        : action.kind === 'check-out'
-          ? this.reservations.checkOut(action.id)
-          : this.rooms.markReady(action.id);
-    const doneKey =
-      action.kind === 'check-in'
-        ? 'frontDesk.notice.checkedIn'
-        : action.kind === 'check-out'
-          ? 'frontDesk.notice.checkedOut'
-          : 'frontDesk.notice.ready';
+    let request: Observable<unknown>;
+    let doneKey: string;
+    switch (action.kind) {
+      case 'check-in':
+        request = this.reservations.checkIn(action.id);
+        doneKey = 'frontDesk.notice.checkedIn';
+        break;
+      case 'check-out':
+        request = this.reservations.checkOut(action.id);
+        doneKey = 'frontDesk.notice.checkedOut';
+        break;
+      case 'ready':
+        request = this.rooms.markReady(action.id);
+        doneKey = 'frontDesk.notice.ready';
+        break;
+    }
     return request.pipe(
       tap(() => {
         this.notice = {

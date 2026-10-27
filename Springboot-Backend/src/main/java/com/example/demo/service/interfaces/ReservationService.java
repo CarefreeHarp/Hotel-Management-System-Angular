@@ -2,8 +2,8 @@ package com.example.demo.service.interfaces;
 
 import com.example.demo.dto.ReservationDTO;
 import com.example.demo.dto.ReservationDetailDTO;
-import com.example.demo.entities.Reservation;
 import com.example.demo.entities.Payment;
+import com.example.demo.entities.Reservation;
 import java.util.List;
 
 /**

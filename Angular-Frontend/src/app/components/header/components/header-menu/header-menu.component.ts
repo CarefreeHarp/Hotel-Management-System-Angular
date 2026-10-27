@@ -43,7 +43,9 @@ export class HeaderMenuComponent implements OnDestroy {
 
   open(): void {
     const dialog = this.drawer?.nativeElement;
-    if (!dialog || dialog.open) return;
+    if (!dialog || dialog.open) {
+      return;
+    }
     this.previousOverflow = this.document.body.style.overflow;
     this.document.body.style.overflow = 'hidden';
     dialog.showModal();
@@ -51,7 +53,9 @@ export class HeaderMenuComponent implements OnDestroy {
   }
 
   close(): void {
-    if (!this.drawer?.nativeElement.open || this.isClosing) return;
+    if (!this.drawer?.nativeElement.open || this.isClosing) {
+      return;
+    }
     this.isClosing = true;
     if (
       this.document.defaultView?.matchMedia('(prefers-reduced-motion: reduce)')
@@ -69,14 +73,17 @@ export class HeaderMenuComponent implements OnDestroy {
       event &&
       (event.target !== this.drawer?.nativeElement ||
         event.propertyName !== 'transform')
-    )
+    ) {
       return;
-    if (!this.isClosing) return;
+    }
+    if (!this.isClosing) {
+      return;
+    }
     this.drawer?.nativeElement.close();
     this.resetState();
   }
 
-  // Elegir otro idioma lo guarda y recarga la página; el idioma actual solo cierra la lista.
+  // Elegir otro idioma lo guarda y recarga la página. El idioma actual solo cierra la lista.
   selectLanguage(language: AppLanguage): void {
     if (language.code === this.currentLanguage.code) {
       this.languagesOpen = false;
@@ -104,8 +111,9 @@ export class HeaderMenuComponent implements OnDestroy {
         event.clientX > bounds.right ||
         event.clientY < bounds.top ||
         event.clientY > bounds.bottom)
-    )
+    ) {
       this.close();
+    }
   }
 
   ngOnDestroy(): void {

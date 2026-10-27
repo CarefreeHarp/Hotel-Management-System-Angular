@@ -95,7 +95,7 @@ export class ReservationService {
       params: { clientId },
     });
   }
-  /** El operador envía solo el importe; el backend registra CASH y su identificador. */
+  /** El operador envía solo el importe. El backend registra CASH y su identificador. */
   addCashPayment(id: number, operatorId: number, amount: number): Observable<ReservationDetails> {
     return this.http.post<ReservationDetails>(`${this.apiUrl}/${id}/cash-payments`, { amount }, {
       params: { operatorId },

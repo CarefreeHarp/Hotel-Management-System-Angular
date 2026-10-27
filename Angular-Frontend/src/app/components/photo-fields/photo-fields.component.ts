@@ -23,7 +23,6 @@ export class PhotoFieldsComponent {
   // Textos ya traducidos. Sin valor se muestran el título y la descripción genéricos.
   @Input() title = '';
   @Input() description = '';
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly addPhotoSubject = new Subject<void>();
   @Output('addPhoto') readonly addPhoto$ = this.addPhotoSubject.asObservable();
   protected readonly messages = PHOTO_MESSAGES;

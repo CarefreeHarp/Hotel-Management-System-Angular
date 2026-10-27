@@ -14,7 +14,6 @@ import { basePath } from '../../../../utils/base-path';
 })
 export class OperatorTableComponent {
   @Input({ required: true }) operators: OperatorDTO[] = [];
-  // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly deleteSubject = new Subject<OperatorDTO>();
   @Output('delete') readonly delete$ = this.deleteSubject.asObservable();
   private readonly route = inject(ActivatedRoute);

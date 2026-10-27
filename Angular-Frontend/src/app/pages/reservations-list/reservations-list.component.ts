@@ -1,6 +1,6 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, LOCALE_ID } from '@angular/core';
+import { Component, inject, LOCALE_ID } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { translate, TranslocoPipe } from '@jsverse/transloco';
@@ -48,7 +48,6 @@ export class ReservationsListComponent {
   private readonly service = inject(ReservationService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly reloadSubject = new Subject<void>();
   // BehaviorSubject conserva el valor actual. next publica un cambio a quienes lo observan.
   private readonly listSubject = new BehaviorSubject(initialListState());
@@ -105,7 +104,9 @@ export class ReservationsListComponent {
   }
   /** Abre la confirmación compartida por las vistas de tabla y tarjetas sin iniciar el borrado. */
   remove(id: number): void {
-    if (this.deleting || this.pendingDeletionId !== undefined) return;
+    if (this.deleting || this.pendingDeletionId !== undefined) {
+      return;
+    }
     this.pendingDeletionId = id;
   }
 
@@ -115,13 +116,17 @@ export class ReservationsListComponent {
 
   confirmDeletion(): void {
     const id = this.pendingDeletionId;
-    if (id === undefined || this.deleting) return;
+    if (id === undefined || this.deleting) {
+      return;
+    }
     this.pendingDeletionId = undefined;
     this.actionSubject.next(id);
   }
 
   private performAction(id: number): Observable<unknown> {
-    if (this.deleting) return EMPTY;
+    if (this.deleting) {
+      return EMPTY;
+    }
     this.deleting = true;
     this.actionError = '';
     this.message = '';
@@ -146,9 +151,11 @@ export class ReservationsListComponent {
   }
   private filters(items: ReservationDTO[]): ListFilter[] {
     const types = new Map<number, string>();
-    for (const item of items)
-      if (item.roomTypeId !== undefined)
+    for (const item of items) {
+      if (item.roomTypeId !== undefined) {
         types.set(item.roomTypeId, item.roomTypeName ?? translate('common.unassigned'));
+      }
+    }
     return [
       {
         key: 'status',
@@ -172,7 +179,7 @@ export class ReservationsListComponent {
     ];
   }
   private filter(items: ReservationDTO[], state: ListState): ReservationDTO[] {
-    const f = state.filters;
+    const filters = state.filters;
     return items
       .filter(
         (item) =>
@@ -184,24 +191,27 @@ export class ReservationsListComponent {
             item.roomNumber,
             item.roomTypeName,
           ]) &&
-          (!f['status'] || item.status === f['status']) &&
-          (!f['roomType'] || String(item.roomTypeId) === f['roomType']) &&
-          (!f['from'] || item.checkInDate >= f['from']) &&
-          (!f['to'] || item.checkInDate <= f['to']) &&
-          (!f['guests'] || item.guestCount >= Number(f['guests'])),
+          (!filters['status'] || item.status === filters['status']) &&
+          (!filters['roomType'] || String(item.roomTypeId) === filters['roomType']) &&
+          (!filters['from'] || item.checkInDate >= filters['from']) &&
+          (!filters['to'] || item.checkInDate <= filters['to']) &&
+          (!filters['guests'] || item.guestCount >= Number(filters['guests'])),
       )
       .sort((a, b) => {
         const direction = state.sort.endsWith('-desc') ? -1 : 1;
-        if (state.sort.startsWith('guest-'))
+        if (state.sort.startsWith('guest-')) {
           return (
             direction * (a.clientName ?? '').localeCompare(b.clientName ?? '')
           );
-        if (state.sort.startsWith('checkIn-'))
+        }
+        if (state.sort.startsWith('checkIn-')) {
           return direction * a.checkInDate.localeCompare(b.checkInDate);
-        if (state.sort.startsWith('created-'))
+        }
+        if (state.sort.startsWith('created-')) {
           return (
             direction * (a.createdAt ?? '').localeCompare(b.createdAt ?? '')
           );
+        }
         return direction * (a.reservationId - b.reservationId);
       });
   }

@@ -68,7 +68,7 @@ public class ClientController {
 
     @GetMapping("/login")
     @Operation(summary = "Iniciar sesión como cliente", description = "Recibe el correo y la contraseña como parámetros de la URL (?email=&password=) y devuelve el cliente; su id va en la URL del perfil.")
-    public ClientDetailDTO login(@RequestParam @NotBlank(message = "Enter your email address.") String email,
+    public ClientDetailDTO loginClient(@RequestParam @NotBlank(message = "Enter your email address.") String email,
             @RequestParam @NotBlank(message = "Enter your password.") String password) {
         return service.login(email, password);
     }

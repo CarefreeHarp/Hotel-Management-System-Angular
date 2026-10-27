@@ -14,13 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-/**
- * CAPA DE REPOSITORIO: acceso a la tabla RESERVATION con Spring Data JPA.
- *
- * Las consultas de @Query arman las reservas del perfil como DTO, y las
- * derivadas cuentan las reservas de una habitación o un servicio con un
- * SELECT COUNT: la capa de servicio lee ese total antes de borrar.
- */
+/** Consultas y proyecciones de lectura de Reservation. */
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 

@@ -20,7 +20,7 @@ export class ReservationCancelDialogComponent implements AfterViewInit, OnDestro
   private readonly dismissedSubject = new Subject<void>();
   @Output() readonly confirmed = this.confirmedSubject.asObservable();
   @Output() readonly dismissed = this.dismissedSubject.asObservable();
-  // La frase cambia con el idioma; se traduce al crear el diálogo.
+  // La frase cambia con el idioma. se traduce al crear el diálogo.
   readonly confirmationPhrase = translate('profile.cancel.phrase');
   confirmationText = '';
 
@@ -30,13 +30,17 @@ export class ReservationCancelDialogComponent implements AfterViewInit, OnDestro
 
   confirmCancellation(): void {
     // También comprueba los envíos con Enter. No acepta espacios extra ni cambios de mayúsculas.
-    if (this.busy || this.confirmationText !== this.confirmationPhrase) return;
+    if (this.busy || this.confirmationText !== this.confirmationPhrase) {
+      return;
+    }
     this.confirmedSubject.next();
   }
 
   dismiss(event?: Event): void {
     event?.preventDefault();
-    if (this.busy) return;
+    if (this.busy) {
+      return;
+    }
     this.dialog?.nativeElement.close();
     this.dismissedSubject.next();
   }

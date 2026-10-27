@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.1.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/> <!-- Resuelve el proyecto padre desde el repositorio de Maven. -->
     </parent>
     <groupId>com.example</groupId>
     <artifactId>atlan-suites-backend</artifactId>
@@ -30,11 +30,6 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
