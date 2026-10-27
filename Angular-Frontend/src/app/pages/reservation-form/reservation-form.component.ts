@@ -4,6 +4,7 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import {
   catchError,
   combineLatest,
@@ -23,7 +24,7 @@ import { ButtonComponent } from '../../components/button/button.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ReservationContentComponent } from '../../components/reservation-content/reservation-content.component';
 import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { canModifyReservation, ReservationDetails } from '../../models/booking';
+import { canModifyReservation, MILLISECONDS_PER_DAY, ReservationDetails } from '../../models/booking';
 import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 import { RoomTypeListDTO } from '../../models/dto/room-type-list-dto';
 import { ServiceListDTO } from '../../models/dto/service-list-dto';
@@ -53,6 +54,7 @@ import {
     ButtonComponent,
     ReservationContentComponent,
     ReservationFieldsComponent,
+    TranslocoPipe,
   ],
   templateUrl: './reservation-form.component.html',
   styleUrl: './reservation-form.component.scss',
@@ -88,15 +90,22 @@ export class ReservationFormComponent {
   get base(): string {
     return basePath(this.route);
   }
-  get staffViewTitle(): string {
-    if (!this.staff) return '';
-    return this.route.snapshot.paramMap.has('adminId') ? 'Admin view' : 'Operator view';
+  get staffViewTitleKey(): string {
+    if (!this.staff) {
+      return '';
+    }
+    return this.route.snapshot.paramMap.has('adminId')
+      ? 'reservations.detail.adminView'
+      : 'reservations.detail.operatorView';
   }
   get staff(): boolean {
     return this.route.snapshot.paramMap.has('adminId') || this.route.snapshot.paramMap.has('operatorId');
   }
   get authParams(): { auth?: number } {
     return clientQuery(this.route);
+  }
+  get servicesOnly(): boolean {
+    return !this.staff && this.detail?.reservation.status === 'CHECKED_IN';
   }
   get detailUrl(): string {
     const id = this.detail?.reservation.reservationId;
@@ -112,11 +121,13 @@ export class ReservationFormComponent {
   // La vista previa conserva cargos contratados y solo toma el precio actual de los servicios nuevos.
   get previewTotal(): number {
     const detail = this.detail;
-    if (!detail) return 0;
+    if (!detail) {
+      return 0;
+    }
     const draft = this.form.getRawValue();
     const nights = Math.max(
       0,
-      (Date.parse(draft.checkOut) - Date.parse(draft.checkIn)) / 86400000,
+      (Date.parse(draft.checkOut) - Date.parse(draft.checkIn)) / MILLISECONDS_PER_DAY,
     );
     let rate = detail.nightlyPrice;
     if (draft.roomTypeId !== detail.reservation.roomTypeId) {
@@ -133,7 +144,9 @@ export class ReservationFormComponent {
     for (const service of this.services) {
       const selected = draft.serviceIds.includes(service.serviceId);
       const alreadyCharged = this.originalServiceIds.includes(service.serviceId);
-      if (selected && !alreadyCharged) additions += service.price;
+      if (selected && !alreadyCharged) {
+        additions += service.price;
+      }
     }
     return (Number.isFinite(nights) ? nights : 0) * rate + charges + additions;
   }
@@ -171,7 +184,9 @@ export class ReservationFormComponent {
           }).pipe(
             switchMap((data) => {
               const clientId = data.detail.clientId;
-              if (clientId === undefined) return of({ ...data, client: undefined });
+              if (clientId === undefined) {
+                return of({ ...data, client: undefined });
+              }
               // La ficha es secundaria. Su ausencia no bloquea la edición de la reserva.
               return this.clients.getById(clientId).pipe(
                 map((client) => ({ ...data, client })),
@@ -201,9 +216,12 @@ export class ReservationFormComponent {
         this.services = data.services;
         this.originalServiceIds = [];
         for (const charge of data.detail.charges) {
-          if (charge.serviceId !== undefined) this.originalServiceIds.push(charge.serviceId);
+          if (charge.serviceId !== undefined) {
+            this.originalServiceIds.push(charge.serviceId);
+          }
         }
         const item = data.detail.reservation;
+        this.form.enable({ emitEvent: false });
         this.form.reset({
           checkIn: item.checkInDate,
           checkOut: item.checkOutDate,
@@ -212,6 +230,11 @@ export class ReservationFormComponent {
           status: item.status,
           serviceIds: this.originalServiceIds,
         });
+        if (this.servicesOnly) {
+          for (const name of ['checkIn', 'checkOut', 'guests', 'roomTypeId', 'status'] as const) {
+            this.form.controls[name].disable({ emitEvent: false });
+          }
+        }
       });
   }
   save(): void {
@@ -219,15 +242,21 @@ export class ReservationFormComponent {
   }
 
   private saveChanges(): Observable<unknown> {
-    if (this.saving || this.loading || !this.detail) return EMPTY;
+    if (this.saving || this.loading || !this.detail) {
+      return EMPTY;
+    }
     const clientId = this.authParams.auth;
-    if (!this.staff && clientId === undefined) return EMPTY;
+    if (!this.staff && clientId === undefined) {
+      return EMPTY;
+    }
     this.submitted = true;
     this.error = '';
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
     // El orden de las fechas, las 90 noches y la capacidad ya los revisan los validadores del formulario.
-    if (this.form.invalid) return EMPTY;
+    if (this.form.invalid) {
+      return EMPTY;
+    }
     const draft = this.form.getRawValue();
     const id = this.detail.reservation.reservationId;
     const destination = this.detailUrl;
@@ -245,7 +274,9 @@ export class ReservationFormComponent {
         }),
       ).pipe(
         tap(() => {
-          if (this.detail?.reservation.reservationId !== id || this.authParams.auth !== clientId) return;
+          if (this.detail?.reservation.reservationId !== id || this.authParams.auth !== clientId) {
+            return;
+          }
           void this.router.navigate([destination], { queryParams });
         }),
         catchError((error: HttpErrorResponse) => {

@@ -87,7 +87,9 @@ const localImages: Record<string, ImageVariant[]> = {
 
 // Las rutas ya optimizadas también reutilizan las variantes de tamaño de la imagen original.
 for (const variants of Object.values(localImages)) {
-  for (const variant of variants) localImages[variant.src] = variants;
+  for (const variant of variants) {
+    localImages[variant.src] = variants;
+  }
 }
 
 /** Solicita imágenes del tamaño necesario. Reducirlas solo con CSS no reduce la descarga. */
@@ -104,10 +106,14 @@ export class OptimizedImageDirective {
   }
   // Solo Unsplash permite ajustar el tamaño por URL. Las demás fuentes se conservan intactas.
   private unsplash(width: number): string | undefined {
-    if (!this.src) return undefined;
+    if (!this.src) {
+      return undefined;
+    }
     try {
       const url = new URL(this.src);
-      if (url.hostname !== 'images.unsplash.com') return undefined;
+      if (url.hostname !== 'images.unsplash.com') {
+        return undefined;
+      }
       url.searchParams.set('auto', 'format');
       url.searchParams.set('w', String(width));
       url.searchParams.set('q', '80');
@@ -127,11 +133,14 @@ export class OptimizedImageDirective {
     return this.unsplash(this.imageWidth) ?? this.src;
   }
   @HostBinding('attr.srcset') get sourceSet(): string | undefined {
-    if (this.variants)
+    if (this.variants) {
       return this.variants
         .map((item) => `${item.src} ${item.width}w`)
         .join(', ');
-    if (!this.unsplash(this.imageWidth)) return undefined;
+    }
+    if (!this.unsplash(this.imageWidth)) {
+      return undefined;
+    }
     return [...new Set([320, 640, this.imageWidth, this.imageWidth * 2])]
       .sort((a, b) => a - b)
       .map((width) => `${this.unsplash(width)} ${width}w`)

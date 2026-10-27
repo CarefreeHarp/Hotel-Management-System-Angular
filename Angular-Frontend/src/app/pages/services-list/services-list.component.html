@@ -1,14 +1,14 @@
 <app-admin-header />
 <main class="room-types-page-main">
-  <span class="page-watermark" aria-hidden="true">Services</span>
+  <span class="page-watermark" aria-hidden="true">{{ 'services.list.title' | transloco }}</span>
   <div class="page-container">
     <header class="catalog-heading">
       <div>
-        <p class="eyebrow">Atlan Suites · Management</p>
-        <h1>Services</h1>
+        <p class="eyebrow">{{ 'common.managementEyebrow' | transloco }}</p>
+        <h1>{{ 'services.list.title' | transloco }}</h1>
       </div>
       <a appButton [create]="true" [routerLink]="[base, 'services', 'new']"
-        >+ Add service</a
+        >{{ 'services.list.create' | transloco }}</a
       >
     </header>
     @if (message) {
@@ -18,7 +18,10 @@
       <p class="notice is-error" role="alert">{{ error }}</p>
     }
     @if (loading) {
-      <app-skeleton [variant]="listState.view === 'table' ? 'table' : 'cards'" label="Loading services…" />
+      <app-skeleton
+        [variant]="listState.view === 'table' ? 'table' : 'cards'"
+        [label]="'services.list.loading' | transloco"
+      />
     } @else {
       <app-list-controls
         [state]="listState"
@@ -30,7 +33,7 @@
         [total]="items.length"
         (changed)="listState = $event"
       />
-      <section aria-label="Active services">
+      <section [attr.aria-label]="'services.list.active' | transloco">
         @if (listState.view === "table") {
           <app-service-table
             [services]="activeItems"
@@ -45,8 +48,10 @@
       </section>
       <section class="inactive-section" aria-labelledby="inactive-title">
         <header class="inactive-heading">
-          <h2 id="inactive-title">Inactive services</h2>
-          <p>{{ inactiveItems.length }} inactive records match your filters.</p>
+          <h2 id="inactive-title">{{ 'services.list.inactive' | transloco }}</h2>
+          <p>
+            {{ 'common.inactiveCount' | transloco: { count: inactiveItems.length } }}
+          </p>
         </header>
         @if (listState.view === "table") {
           <app-service-table

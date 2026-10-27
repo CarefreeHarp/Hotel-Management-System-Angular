@@ -1,11 +1,12 @@
 import { Component, Input } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
 import { ADMINISTRATOR_MESSAGES } from '../../../../utils/form-messages';
 import type { AdministratorsFormComponent } from '../../administrators-form.component';
 
 @Component({
   selector: 'app-administrator-fields',
-  imports: [FormFieldComponent],
+  imports: [FormFieldComponent, TranslocoPipe],
   templateUrl: './administrator-fields.component.html',
   styleUrl: './administrator-fields.component.scss',
 })

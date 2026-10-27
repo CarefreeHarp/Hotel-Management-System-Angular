@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, Observable, Subject, catchError, exhaustMap, of, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -53,6 +54,7 @@ export type ClientForm = FormGroup<{
     PageHeadingComponent,
     ButtonComponent,
     ClientFieldsComponent,
+    TranslocoPipe,
   ],
   templateUrl: './clients-form.component.html',
   styleUrl: './clients-form.component.scss',
@@ -146,7 +148,9 @@ export class ClientsFormComponent implements OnInit {
           takeUntilDestroyed(this.destroyRef),
         )
         .subscribe((client) => {
-          if (client) this.fillForm(client);
+          if (client) {
+            this.fillForm(client);
+          }
           this.isLoading = false;
         });
       return;
@@ -159,7 +163,9 @@ export class ClientsFormComponent implements OnInit {
         this.form.reset();
         this.form.controls.password.enable();
         this.isLoading = !this.isCreateMode;
-        if (this.isCreateMode) return of(undefined);
+        if (this.isCreateMode) {
+          return of(undefined);
+        }
         this.form.controls.password.disable();
         const id = Number(idParam);
         if (!Number.isSafeInteger(id) || id <= 0) {
@@ -170,7 +176,9 @@ export class ClientsFormComponent implements OnInit {
       }),
       takeUntilDestroyed(this.destroyRef),
     ).subscribe((client) => {
-      if (client) this.fillForm(client);
+      if (client) {
+        this.fillForm(client);
+      }
       this.isLoading = false;
     });
   }
@@ -196,7 +204,9 @@ export class ClientsFormComponent implements OnInit {
     this.saveError = '';
     clearApiErrors(this.form);
     this.form.markAllAsTouched();
-    if (this.form.invalid || this.isSaving || this.isLoading) return EMPTY;
+    if (this.form.invalid || this.isSaving || this.isLoading) {
+      return EMPTY;
+    }
     const value = this.form.getRawValue();
     const profilePhoto = value.profilePhoto.trim();
     const data = {
@@ -207,7 +217,9 @@ export class ClientsFormComponent implements OnInit {
       email: value.email.trim(),
       ...(profilePhoto ? { profilePhoto } : {}),
     };
-    if (!this.isCreateMode && this.clientId === undefined) return EMPTY;
+    if (!this.isCreateMode && this.clientId === undefined) {
+      return EMPTY;
+    }
     this.isSaving = true;
     if (this.isCreateMode) {
       return this.service.add({ ...data, password: value.password }).pipe(

@@ -7,14 +7,15 @@ import {
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import {
-  Observable,
-  Subject,
   catchError,
   combineLatest,
   map,
+  Observable,
   of,
   startWith,
+  Subject,
   switchMap,
 } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
@@ -53,6 +54,7 @@ interface AccountingState {
     SkeletonComponent,
     AccountingOverviewComponent,
     AnalyticsChartComponent,
+    TranslocoPipe,
   ],
   templateUrl: './accounting.component.html',
   styleUrl: './accounting.component.scss',
@@ -89,7 +91,7 @@ export class AccountingComponent {
         catchError(() =>
           of({
             loading: false,
-            error: 'Unable to load accounting data. Please try again.',
+            error: translate('accounting.loadError'),
           }),
         ),
         startWith({ loading: true, error: '' }),
@@ -98,7 +100,9 @@ export class AccountingComponent {
   );
 
   applyFilters(): void {
-    if (!this.from || !this.to || this.from > this.to) return;
+    if (!this.from || !this.to || this.from > this.to) {
+      return;
+    }
     void this.router.navigate([basePath(this.route), 'accounting'], {
       queryParams: { from: this.from, to: this.to },
     });

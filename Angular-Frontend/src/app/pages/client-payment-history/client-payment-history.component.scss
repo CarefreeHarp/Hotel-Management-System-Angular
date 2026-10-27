@@ -1,47 +1,18 @@
 @use "../../../styles/staff-detail";
 
-.summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+.filters img,
+.movement-kind img {
+  flex-shrink: 0;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(77%) sepia(25%) saturate(632%) hue-rotate(354deg) brightness(90%) contrast(88%);
 }
 
-.summary-card,
 .history {
+  padding: 1.5rem;
   border: 1px solid rgba(221, 232, 239, 0.14);
   border-radius: 0.9rem;
   background: rgba(255, 255, 255, 0.035);
 }
-
-.summary-card {
-  padding: 1.3rem 1.5rem;
-
-  p {
-    margin: 0 0 0.45rem;
-    color: #aab8c3;
-    font-size: 0.78rem;
-  }
-
-  strong {
-    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-    font-variant-numeric: tabular-nums;
-  }
-}
-
-.summary-card--net {
-  border-color: rgba(211, 174, 123, 0.48);
-  background: rgba(184, 140, 90, 0.12);
-
-  strong { color: #e0bd8c; }
-}
-
-.summary-note {
-  margin: 0.8rem 0 2rem;
-  color: #9faeb9;
-  font-size: 0.8rem;
-}
-
-.history { padding: 1.5rem; }
 
 .history-heading {
   display: flex;
@@ -81,6 +52,9 @@
 }
 
 .movement-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   color: #a8c7dc;
   font-size: 0.7rem;
   font-weight: 700;
@@ -122,7 +96,6 @@
 }
 
 @media (max-width: 700px) {
-  .summary { grid-template-columns: 1fr; }
   .movement { flex-direction: column; gap: 0.5rem; }
   .movement-detail { text-align: left; }
 }

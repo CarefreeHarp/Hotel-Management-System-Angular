@@ -1,0 +1,1420 @@
+{
+  "app": {
+    "title": "Atlan Suites — فخامة هادئة على الماء",
+    "city": "سنغافورة"
+  },
+  "common": {
+    "loading": "جارٍ تحميل المحتوى…",
+    "actions": {
+      "view": "عرض",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "activate": "تفعيل",
+      "deactivate": "إيقاف التفعيل",
+      "cancel": "إلغاء",
+      "close": "إغلاق",
+      "tryAgain": "إعادة المحاولة",
+      "refresh": "تحديث",
+      "backToList": "العودة إلى القائمة"
+    },
+    "closeNotification": "إغلاق الإشعار",
+    "fields": {
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "nationalId": "رقم الهوية",
+      "id": "المعرّف",
+      "actions": "الإجراءات",
+      "status": "الحالة",
+      "activation": "التفعيل",
+      "name": "الاسم",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "emailAddress": "عنوان البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "role": "الدور"
+    },
+    "inactiveCount": "عدد السجلات غير النشطة المطابقة للتصفية: {{ count }}.",
+    "activation": {
+      "updated": "تم تحديث حالة التفعيل.",
+      "error": "تعذّر تغيير حالة التفعيل."
+    },
+    "deletedGuest": "نزيل محذوف",
+    "unassigned": "غير مخصّص",
+    "nightsOne": "ليلة واحدة",
+    "nightsMany": "عدد الليالي: {{ count }}",
+    "guestsOne": "نزيل واحد",
+    "guestsMany": "عدد النزلاء: {{ count }}",
+    "hotelBranch": "Atlan Suites، فرع سنغافورة",
+    "staffEyebrow": "Atlan Suites · إدارة الموظفين",
+    "managementEyebrow": "Atlan Suites · الإدارة",
+    "idNumber": "المعرّف #{{ id }}",
+    "saving": "جارٍ الحفظ…",
+    "checkFields": "يرجى مراجعة الحقول المحددة قبل الحفظ.",
+    "notSpecified": "غير محدد",
+    "loadingForm": "جارٍ تحميل النموذج…",
+    "staffManagement": "إدارة الموظفين",
+    "registeredDetails": "البيانات المسجّلة",
+    "upToChars": "حتى {{ max }} حرفًا."
+  },
+  "account": {
+    "information": "معلومات الحساب",
+    "editDescription": "حدّث بيانات الحساب. تبقى كلمة المرور الحالية كما هي.",
+    "passwordTitle": "كلمة مرور الحساب",
+    "newPassword": "كلمة مرور الحساب الجديد",
+    "passwordHint": "من 8 إلى 255 حرفًا.",
+    "passwordKept": "يحتفظ التعديل بكلمة المرور الحالية.",
+    "passwordSetOnCreate": "تُحدَّد كلمة المرور عند إنشاء الحساب وتبقى عند التعديل.",
+    "staffEmailUnique": "لكل حساب موظف عنوان بريد إلكتروني فريد.",
+    "staffEmailHint": "يجب ألا يكون مستخدمًا في حساب موظف آخر."
+  },
+  "enums": {
+    "reservationStatus": {
+      "PENDING": "قيد الانتظار",
+      "CONFIRMED": "مؤكَّد",
+      "CHECKED_IN": "تم تسجيل الوصول",
+      "CHECKED_OUT": "تم تسجيل المغادرة",
+      "CANCELLED": "ملغى"
+    },
+    "roomStatus": {
+      "AVAILABLE": "متاحة",
+      "OCCUPIED": "مشغولة",
+      "CLEANING": "قيد التنظيف",
+      "MAINTENANCE": "قيد الصيانة"
+    },
+    "activationStatus": {
+      "ACTIVE": "نشط",
+      "INACTIVE": "غير نشط"
+    },
+    "folioStatus": {
+      "PENDING": "قيد الانتظار",
+      "PAID": "مدفوع",
+      "CANCELLED": "ملغى"
+    },
+    "paymentStatus": {
+      "APPROVED": "مقبول",
+      "PENDING": "قيد المعالجة",
+      "REJECTED": "مرفوض"
+    },
+    "paymentMethod": {
+      "CARD": "بطاقة",
+      "CASH": "نقدًا"
+    },
+    "refundReason": {
+      "CANCELLATION": "إلغاء",
+      "MODIFICATION": "تعديل"
+    }
+  },
+  "header": {
+    "menu": "القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "mainNavigation": "التنقل الرئيسي",
+    "nav": {
+      "home": "الرئيسية",
+      "hotel": "الفندق",
+      "suites": "الأجنحة",
+      "services": "الخدمات",
+      "catalog": "دليل الخدمات"
+    },
+    "language": {
+      "button": "اللغة",
+      "list": "اللغات المتاحة",
+      "current": "اللغة الحالية"
+    },
+    "myProfile": "ملفي الشخصي",
+    "guestBadge": "نزيل",
+    "login": "تسجيل الدخول",
+    "bookNow": "احجز الآن",
+    "logout": "تسجيل الخروج"
+  },
+  "footer": {
+    "reserve": "احجز",
+    "bookTitleStart": "احجز",
+    "bookTitleEnd": "إقامتك",
+    "bookNow": "احجز الآن",
+    "contact": "اتصل بنا",
+    "location": "موقع الفندق",
+    "discover": {
+      "title": "اكتشف Atlan",
+      "about": "من نحن",
+      "rooms": "أنواع الغرف والأجنحة",
+      "services": "الخدمات",
+      "contact": "تواصل معنا"
+    },
+    "information": {
+      "title": "معلومات مفيدة",
+      "reservations": "الحجوزات",
+      "travelGuide": "دليل السفر",
+      "amenities": "المرافق",
+      "faq": "الأسئلة الشائعة"
+    },
+    "social": {
+      "title": "تابعنا",
+      "label": "وسائل التواصل الاجتماعي",
+      "instagram": "Atlan Suites على Instagram",
+      "facebook": "Atlan Suites على Facebook",
+      "youtube": "Atlan Suites على YouTube",
+      "x": "Atlan Suites على X"
+    },
+    "newsletter": {
+      "title": "استلهم",
+      "text": "اشترك في نشرتنا الإخبارية لتصلك أحدث القصص والعروض."
+    },
+    "legal": {
+      "privacy": "إشعار الخصوصية",
+      "terms": "شروط الاستخدام",
+      "accessibility": "إمكانية الوصول"
+    },
+    "copyright": "© 2026 Atlan Suites. جميع الحقوق محفوظة."
+  },
+  "landing": {
+    "scrollProgress": "تقدّم التمرير في الصفحة",
+    "hero": {
+      "imageAlt": "الردهة الرئيسية في {{ hotel }}",
+      "cardLabel": "مرحبًا بك في {{ hotel }}",
+      "eyebrow": "مرحبًا",
+      "headlineStart": "مرحبًا بك",
+      "headlineEnd": "في Atlan",
+      "explore": "استكشف الفندق"
+    },
+    "video": {
+      "eyebrow": "الفندق",
+      "title": "الفندق من منظور طائرة مسيّرة",
+      "label": "منظر جوي لفندق Atlan Suites في سنغافورة"
+    },
+    "suites": {
+      "watermarkLine1": "الغرف",
+      "watermarkLine2": "و",
+      "watermarkLine3": "الأجنحة",
+      "eyebrow": "الغرف والأجنحة",
+      "titleStart": "الغرف",
+      "titleEnd": "والأجنحة",
+      "descriptionLabel": "وصف الغرف والأجنحة",
+      "description": "صُممت غرفنا وأجنحتنا كملاذات خاصة هادئة، تجمع بين المساحات الرحبة والتفاصيل المصنوعة يدويًا والراحة الراقية مع هدوء الساحل. كل إقامة مهيّأة لراحة عميقة وصباحات هادئة وفخامة بلا عناء.",
+      "carousel": "عرض الأجنحة",
+      "loading": "جارٍ تحميل الأجنحة…",
+      "guests": "عدد النزلاء: {{ count }}",
+      "fromPrice": "ابتداءً من {{ price }} لليلة",
+      "viewDetails": "عرض التفاصيل",
+      "loadError": "تعذّر تحميل الأجنحة.",
+      "empty": "لا تتوفر أجنحة حاليًا.",
+      "previous": "الجناح السابق",
+      "next": "الجناح التالي"
+    },
+    "services": {
+      "title": "الخدمات",
+      "featured": "خدمة مميزة",
+      "eyebrow": "المطاعم والعافية والمزيد",
+      "text": "اكتشف الخدمات التي تجعل إقامتك في Atlan Suites تجربة خاصة بك.",
+      "viewAll": "عرض جميع الخدمات",
+      "carousel": "عرض خدمات الفندق",
+      "loading": "جارٍ تحميل الخدمات…",
+      "loadError": "تعذّر تحميل الخدمات.",
+      "empty": "لا تتوفر خدمات حاليًا.",
+      "controls": "عناصر التحكم في عرض الخدمات",
+      "previous": "الخدمة السابقة",
+      "next": "الخدمة التالية"
+    }
+  },
+  "clientInfo": {
+    "label": "معلومات العميل",
+    "number": "العميل #{{ id }}"
+  },
+  "gallery": {
+    "eyebrow": "المعرض",
+    "title": "صور إضافية",
+    "photoAlt": "{{ name }} — صورة إضافية {{ number }}"
+  },
+  "list": {
+    "controls": "أدوات البحث والعرض",
+    "search": "بحث",
+    "searchPlaceholder": "ابحث في السجلات…",
+    "all": "الكل",
+    "orderBy": "ترتيب حسب",
+    "clear": "مسح",
+    "results": "{{ count }} من أصل {{ total }} نتيجة",
+    "displayMode": "طريقة العرض",
+    "tableView": "عرض جدول",
+    "gridView": "عرض شبكي",
+    "cardsLabel": "شبكة السجلات",
+    "noMatches": "لا توجد سجلات مطابقة لبحثك.",
+    "sort": {
+      "idAsc": "المعرّف: تصاعدي",
+      "idDesc": "المعرّف: تنازلي",
+      "nameAsc": "الاسم: A–Z",
+      "nameDesc": "الاسم: Z–A",
+      "priceAsc": "السعر: من الأقل إلى الأعلى",
+      "priceDesc": "السعر: من الأعلى إلى الأقل",
+      "capacityAsc": "السعة: من الأقل إلى الأعلى",
+      "capacityDesc": "السعة: من الأعلى إلى الأقل"
+    }
+  },
+  "pageHeading": {
+    "eyebrow": "دليل أماكن الإقامة"
+  },
+  "photos": {
+    "title": "المعرض",
+    "description": "أضف صورة رئيسية، وصورًا للمعرض إن شئت.",
+    "mainLabel": "رابط الصورة الرئيسية",
+    "additionalLabel": "رابط الصورة الإضافية {{ number }}",
+    "remove": "إزالة الصورة الإضافية {{ number }}",
+    "add": "＋ إضافة صورة أخرى",
+    "count": "{{ count }} من أصل {{ max }} صور إضافية"
+  },
+  "priceRange": {
+    "legend": "السعر (COP)",
+    "minimum": "أدنى سعر (COP)",
+    "maximum": "أعلى سعر (COP)"
+  },
+  "reservationCard": {
+    "label": "الحجز {{ code }}",
+    "bookingNumber": "رقم الحجز",
+    "bookingDate": "تاريخ الحجز:",
+    "roomTypeAlt": "نوع الغرفة المحجوزة",
+    "noPhoto": "صورة الغرفة غير متاحة",
+    "totalPrice": "السعر الإجمالي",
+    "paid": "المدفوع:",
+    "refunded": "المسترد:",
+    "dates": "تواريخ الإقامة",
+    "roomAndServices": "نوع الغرفة والخدمات",
+    "unassignedRoomType": "نوع غرفة غير مخصّص",
+    "noServices": "لا توجد خدمات إضافية",
+    "guests": "النزلاء",
+    "rateTitle": "قيّم تجربتك",
+    "rateLabel": "قيّم تجربتك",
+    "rateOne": "تقييم بنجمة واحدة",
+    "rateMany": "تقييم بـ {{ count }} نجوم",
+    "details": "التفاصيل",
+    "modify": "تعديل",
+    "cancel": "إلغاء",
+    "countdown": {
+      "inProgress": "جارية",
+      "awaitingPayment": "بانتظار الدفع",
+      "cancelled": "ملغاة",
+      "checkOutToday": "المغادرة اليوم",
+      "checkOutAgoOne": "كانت المغادرة قبل يوم واحد",
+      "checkOutAgoMany": "كانت المغادرة قبل {{ days }} أيام",
+      "inOne": "بعد يوم واحد",
+      "inMany": "بعد {{ days }} أيام",
+      "checkInToday": "الوصول اليوم",
+      "checkInAgoOne": "كان الوصول قبل يوم واحد",
+      "checkInAgoMany": "كان الوصول قبل {{ days }} أيام"
+    }
+  },
+  "reservationHistory": {
+    "clientTitle": "حجوزاتي",
+    "staffTitle": "سجل الحجوزات",
+    "filtersLabel": "تصفية الحجوزات",
+    "filters": {
+      "all": "الكل",
+      "upcoming": "القادمة",
+      "inProgress": "الجارية",
+      "awaitingReview": "بانتظار التقييم",
+      "awaitingPayment": "بانتظار الدفع",
+      "cancelled": "الملغاة"
+    },
+    "guest": "النزيل",
+    "empty": "لم يتم العثور على حجوزات.",
+    "emptyForStatus": "لا توجد حجوزات بهذه الحالة.",
+    "loading": "جارٍ تحميل الحجوزات…",
+    "loadError": "تعذّر تحميل سجل الحجوزات."
+  },
+  "reservationContent": {
+    "editEyebrow": "تعديل الحجز",
+    "eyebrow": "حجزك",
+    "bookingNumber": "رقم الحجز",
+    "reservationId": "معرّف الحجز",
+    "bookingDate": "تاريخ الحجز",
+    "photoAlt": "مكان الإقامة المحجوز",
+    "accommodation": "مكان إقامتك",
+    "stay": "إقامتك",
+    "checkIn": "الوصول",
+    "duration": "المدة",
+    "checkOut": "المغادرة",
+    "roomDetails": "تفاصيل الغرفة",
+    "roomNumber": "رقم الغرفة",
+    "notAssigned": "غير مخصّصة",
+    "floor": "الطابق",
+    "guests": "النزلاء",
+    "maxCapacity": "السعة القصوى",
+    "nightlyRate": "سعر الليلة",
+    "guestInfo": "معلومات النزيل",
+    "guestUnavailable": "معلومات الاتصال بالنزيل غير متاحة.",
+    "pricingLabel": "تسعير الحجز وسجل المدفوعات"
+  },
+  "reservationFinance": {
+    "priceDetails": "تفاصيل السعر",
+    "roomNightsOne": "غرفة واحدة × ليلة واحدة",
+    "roomNightsMany": "غرفة واحدة × {{ count }} ليالٍ",
+    "each": "{{ price }} للواحدة",
+    "additionalServices": "الخدمات الإضافية",
+    "none": "لا يوجد",
+    "total": "الإجمالي",
+    "netPaid": "صافي المدفوع",
+    "refunded": "المسترد",
+    "balance": "الرصيد",
+    "folioTitle": "الفاتورة والخدمات",
+    "folio": "الفاتورة #{{ id }}",
+    "issued": "صدرت في {{ date }}",
+    "noFolio": "لم تصدر أي فاتورة.",
+    "quantity": "الكمية: {{ quantity }}",
+    "charge": "الرسم #{{ id }}",
+    "noServices": "لم يتم التعاقد على خدمات إضافية.",
+    "paymentsTitle": "سجل المدفوعات",
+    "payment": "الدفعة #{{ id }}",
+    "date": "التاريخ",
+    "method": "الطريقة",
+    "processedBy": "تمت المعالجة بواسطة",
+    "selfService": "العميل بنفسه",
+    "noPayments": "لا توجد مدفوعات مسجّلة.",
+    "refundsTitle": "سجل المبالغ المستردة",
+    "refund": "الاسترداد #{{ id }}",
+    "reason": "السبب",
+    "notes": "ملاحظات"
+  },
+  "adminHeader": {
+    "frontDesk": "الاستقبال",
+    "adminPanel": "لوحة الإدارة",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "navigation": "التنقل الإداري",
+    "myProfile": "ملفي الشخصي",
+    "logout": "تسجيل الخروج",
+    "goToHotel": "الذهاب إلى الفندق",
+    "sections": {
+      "clients": "العملاء",
+      "reservations": "الحجوزات",
+      "accounting": "المحاسبة",
+      "roomTypes": "أنواع الغرف",
+      "rooms": "الغرف",
+      "services": "الخدمات",
+      "administrators": "المسؤولون",
+      "operators": "المشغّلون"
+    }
+  },
+  "clients": {
+    "list": {
+      "title": "العملاء",
+      "eyebrow": "Atlan Suites · إدارة العملاء",
+      "description": "اعرض وأدِر العملاء المسجّلين في Atlan Suites.",
+      "create": "إنشاء عميل",
+      "loading": "جارٍ تحميل العملاء…",
+      "created": "تم إنشاء العميل بنجاح.",
+      "confirmDelete": "حذف العميل «{{ name }}»؟ لا يمكن التراجع عن ذلك.",
+      "deleted": "تم حذف العميل بنجاح.",
+      "deleteError": "تعذّر حذف العميل. يرجى المحاولة مرة أخرى."
+    },
+    "table": {
+      "label": "جدول العملاء",
+      "client": "العميل",
+      "emptyTitle": "لا يوجد عملاء بعد",
+      "emptyText": "أنشئ عميلًا للبدء."
+    },
+    "detail": {
+      "loading": "جارٍ تحميل العميل…",
+      "eyebrow": "إدارة العملاء",
+      "description": "الملف الشخصي للعميل ومعلومات الاتصال.",
+      "edit": "تعديل العميل",
+      "saved": "تم حفظ العميل بنجاح."
+    },
+    "form": {
+      "profileEyebrow": "ملفي الشخصي",
+      "editProfile": "تعديل الملف الشخصي",
+      "createTitle": "إنشاء عميل",
+      "editTitle": "تعديل العميل",
+      "description": "أدخل الملف الشخصي للعميل ومعلومات الاتصال.",
+      "backToProfile": "العودة إلى الملف الشخصي",
+      "create": "إنشاء العميل",
+      "save": "حفظ العميل",
+      "saveProfile": "حفظ الملف الشخصي",
+      "fieldsDescription": "يجب أن يكون البريد الإلكتروني ورقم الهوية فريدين. صورة الملف الشخصي اختيارية.",
+      "nationalIdHint": "من 5 إلى 20 حرفًا أو رقمًا، دون مسافات.",
+      "phoneHint": "من 7 إلى 15 رقمًا؛ يمكن أن يبدأ بـ +.",
+      "profilePhoto": "رابط صورة الملف الشخصي"
+    }
+  },
+  "administrators": {
+    "list": {
+      "watermark": "Admins",
+      "title": "المسؤولون",
+      "description": "اعرض الحسابات التي تدير Atlan Suites والمشغّلين التابعين لها.",
+      "create": "إنشاء مسؤول",
+      "loading": "جارٍ تحميل المسؤولين…",
+      "countOne": "مسؤول واحد مسجّل",
+      "countMany": "عدد المسؤولين المسجّلين: {{ count }}",
+      "viewOperators": "عرض المشغّلين",
+      "created": "تم إنشاء المسؤول بنجاح.",
+      "confirmDelete": "حذف المسؤول «{{ name }}»؟ لا يمكن التراجع عن ذلك.",
+      "deleted": "تم حذف المسؤول «{{ name }}» بنجاح.",
+      "deleteError": "تعذّر حذف المسؤول «{{ name }}». يرجى المحاولة مرة أخرى."
+    },
+    "fields": {
+      "operators": "المشغّلون",
+      "operatorsInCharge": "المشغّلون التابعون"
+    },
+    "table": {
+      "label": "جدول المسؤولين",
+      "administrator": "المسؤول",
+      "emptyTitle": "لا يوجد مسؤولون بعد",
+      "emptyText": "أنشئ مسؤولًا للبدء."
+    },
+    "detail": {
+      "loading": "جارٍ تحميل المسؤول…",
+      "eyebrow": "ملف المسؤول",
+      "description": "بيانات الحساب المسجّلة في بوابة الإدارة.",
+      "edit": "تعديل المسؤول",
+      "saved": "تم حفظ المسؤول بنجاح.",
+      "information": "معلومات المسؤول",
+      "watermark": "Admin",
+      "reportingLine": "التبعية الإدارية",
+      "addOperator": "إضافة مشغّل",
+      "noOperators": "لا يوجد مشغّلون تابعون لهذا المسؤول بعد."
+    },
+    "form": {
+      "createTitle": "إنشاء مسؤول",
+      "editTitle": "تعديل المسؤول",
+      "createDescription": "أدخل بيانات حساب المسؤول الجديد.",
+      "create": "إنشاء المسؤول",
+      "save": "حفظ المسؤول",
+      "namePlaceholder": "اسم المسؤول"
+    }
+  },
+  "operators": {
+    "list": {
+      "title": "المشغّلون",
+      "description": "اعرض المشغّلين المسجّلين والمسؤول عن كل منهم.",
+      "create": "إنشاء مشغّل",
+      "loading": "جارٍ تحميل المشغّلين…",
+      "countOne": "مشغّل واحد مسجّل",
+      "countMany": "عدد المشغّلين المسجّلين: {{ count }}",
+      "viewAdministrators": "عرض المسؤولين",
+      "created": "تم إنشاء المشغّل بنجاح.",
+      "confirmDelete": "حذف المشغّل «{{ name }}»؟ لا يمكن التراجع عن ذلك.",
+      "deleted": "تم حذف المشغّل «{{ name }}» بنجاح.",
+      "deleteError": "تعذّر حذف المشغّل «{{ name }}». يرجى المحاولة مرة أخرى."
+    },
+    "fields": {
+      "administrator": "المسؤول",
+      "administratorInCharge": "المسؤول المباشر"
+    },
+    "table": {
+      "label": "جدول المشغّلين",
+      "operator": "المشغّل",
+      "emptyTitle": "لا يوجد مشغّلون بعد",
+      "emptyText": "أنشئ مشغّلًا للبدء."
+    },
+    "detail": {
+      "loading": "جارٍ تحميل المشغّل…",
+      "eyebrow": "ملف المشغّل",
+      "description": "بيانات الحساب والتبعية الإدارية المسجّلة في البوابة.",
+      "edit": "تعديل المشغّل",
+      "saved": "تم حفظ المشغّل بنجاح.",
+      "information": "معلومات المشغّل"
+    },
+    "form": {
+      "createTitle": "إنشاء مشغّل",
+      "editTitle": "تعديل المشغّل",
+      "createDescription": "أدخل بيانات حساب المشغّل الجديد.",
+      "create": "إنشاء المشغّل",
+      "save": "حفظ المشغّل",
+      "personalTitle": "المعلومات الشخصية",
+      "personalDescription": "البيانات اللازمة لتحديد هوية المشغّل.",
+      "firstNamePlaceholder": "الاسم الأول للمشغّل",
+      "lastNamePlaceholder": "اسم عائلة المشغّل",
+      "contactTitle": "الاتصال والتبعية الإدارية",
+      "selectAdministrator": "اختر مسؤولًا",
+      "reportsTo": "يتبع كل مشغّل مسؤولًا واحدًا.",
+      "noAdministrators": "لا يوجد مسؤولون بعد.",
+      "createAdministratorFirst": "أنشئ مسؤولًا أولًا"
+    }
+  },
+  "rooms": {
+    "roomNumber": "الغرفة {{ number }}",
+    "list": {
+      "title": "الغرف",
+      "create": "+ إضافة غرفة",
+      "loading": "جارٍ تحميل الغرف…",
+      "active": "الغرف النشطة",
+      "inactive": "الغرف غير النشطة"
+    },
+    "sort": {
+      "numberAsc": "الغرفة: تصاعدي",
+      "numberDesc": "الغرفة: تنازلي",
+      "floorAsc": "الطابق: تصاعدي",
+      "floorDesc": "الطابق: تنازلي"
+    },
+    "fields": {
+      "room": "الغرفة",
+      "type": "النوع",
+      "roomType": "نوع الغرفة",
+      "floor": "الطابق",
+      "physicalStatus": "الحالة الفعلية",
+      "number": "الرقم",
+      "roomNumber": "رقم الغرفة",
+      "description": "الوصف",
+      "nightlyPrice": "سعر الليلة",
+      "maxCapacity": "السعة القصوى"
+    },
+    "table": {
+      "label": "غرف الفندق",
+      "tableLabel": "جدول الغرف",
+      "emptyTitle": "لا توجد غرف بعد",
+      "emptyText": "أنشئ غرفة للبدء."
+    },
+    "detail": {
+      "loading": "جارٍ تحميل الغرفة…",
+      "eyebrow": "دليل الغرف",
+      "edit": "تعديل الغرفة",
+      "saved": "تم حفظ الغرفة بنجاح.",
+      "information": "معلومات الغرفة"
+    },
+    "form": {
+      "loading": "جارٍ تحميل معلومات الغرفة…",
+      "createTitle": "إنشاء غرفة",
+      "editTitle": "تعديل الغرفة",
+      "description": "حدّد رقم الغرفة وطابقها وحالتها ونوعها.",
+      "create": "إنشاء الغرفة",
+      "save": "حفظ الغرفة",
+      "needsRoomType": "يجب وجود نوع غرفة قبل حفظ أي غرفة.",
+      "createRoomType": "إنشاء نوع غرفة",
+      "selectExistingType": "اختر نوع غرفة موجودًا.",
+      "fieldsDescription": "جميع الحقول مطلوبة. يجب أن يكون رقم الغرفة فريدًا.",
+      "numberHint": "من 1 إلى 9999.",
+      "floorHint": "من 0 إلى 200.",
+      "selectRoomType": "اختر نوع الغرفة"
+    }
+  },
+  "services": {
+    "included": "مشمول",
+    "list": {
+      "title": "الخدمات",
+      "create": "+ إضافة خدمة",
+      "loading": "جارٍ تحميل الخدمات…",
+      "active": "الخدمات النشطة",
+      "inactive": "الخدمات غير النشطة"
+    },
+    "fields": {
+      "service": "الخدمة",
+      "category": "الفئة",
+      "price": "السعر",
+      "priceCop": "السعر (COP)",
+      "name": "الاسم",
+      "summary": "الملخص",
+      "description": "الوصف",
+      "duration": "المدة",
+      "schedule": "المواعيد",
+      "location": "المكان"
+    },
+    "table": {
+      "label": "خدمات الفندق",
+      "tableLabel": "جدول الخدمات",
+      "emptyTitle": "لا توجد خدمات بعد",
+      "emptyText": "أنشئ خدمة للبدء."
+    },
+    "detail": {
+      "loading": "جارٍ تحميل الخدمة…",
+      "edit": "تعديل الخدمة",
+      "saved": "تم حفظ الخدمة بنجاح.",
+      "information": "معلومات الخدمة"
+    },
+    "form": {
+      "loading": "جارٍ تحميل الخدمة…",
+      "eyebrow": "دليل الخدمات",
+      "createTitle": "إنشاء خدمة",
+      "editTitle": "تعديل الخدمة",
+      "description": "حدّد معلومات الخدمة وسعرها وصورها.",
+      "photos": "صور الخدمة",
+      "create": "إنشاء الخدمة",
+      "save": "حفظ الخدمة",
+      "requiredFields": "الحقول المطلوبة: الاسم والفئة والوصف والسعر والصورة الرئيسية.",
+      "priceHint": "من 0 إلى 99,999,999.99، بحد أقصى منزلتين عشريتين.",
+      "descriptionHint": "5,000 حرف كحد أقصى."
+    }
+  },
+  "roomTypes": {
+    "list": {
+      "watermarkLine1": "أنواع",
+      "watermarkLine2": "الغرف",
+      "title": "أنواع الغرف",
+      "create": "+ إضافة نوع غرفة",
+      "loading": "جارٍ تحميل أنواع الغرف…",
+      "toastTitle": "تم تحديث الدليل",
+      "confirmDelete": "حذف نوع الغرفة «{{ name }}»؟ لا يمكن التراجع عن ذلك.",
+      "deleted": "تم حذف نوع الغرفة «{{ name }}» بنجاح.",
+      "deleteError": "تعذّر حذف نوع الغرفة «{{ name }}». يرجى المحاولة مرة أخرى."
+    },
+    "fields": {
+      "capacity": "السعة",
+      "nightlyRate": "سعر الليلة",
+      "name": "الاسم",
+      "description": "الوصف",
+      "pricePerNight": "السعر لليلة",
+      "pricePerNightCop": "السعر لليلة (COP)",
+      "maxCapacity": "السعة القصوى"
+    },
+    "detail": {
+      "loading": "جارٍ تحميل نوع الغرفة…",
+      "description": "معرض ومعلومات تجارية مشتركة لغرف هذه الفئة.",
+      "edit": "تعديل نوع الغرفة",
+      "checkAvailability": "التحقق من التوفر",
+      "saved": "تم حفظ نوع الغرفة بنجاح.",
+      "information": "معلومات نوع الغرفة",
+      "commercial": "المعلومات التجارية",
+      "mainPhotoAlt": "الصورة الرئيسية لـ {{ name }}"
+    },
+    "form": {
+      "createTitle": "إنشاء نوع غرفة",
+      "editTitle": "تعديل نوع الغرفة",
+      "createDescription": "أضف خيار إقامة جديدًا إلى مخزون الفندق.",
+      "editDescription": "حدّد كيف سيظهر {{ name }} في مخزون الفندق.",
+      "photosDescription": "تمثّل هذه الصور جميع الغرف المخصّصة لهذا النوع.",
+      "create": "إنشاء نوع الغرفة",
+      "save": "حفظ نوع الغرفة",
+      "commercialDescription": "الاسم المعروض والوصف والسعر الأساسي والإشغال المسموح.",
+      "capacityHint": "من 1 إلى 10 نزلاء.",
+      "descriptionHint": "500 حرف كحد أقصى.",
+      "priceHint": "أكبر من صفر، بحد أقصى منزلتين عشريتين."
+    },
+    "capacityFilter": {
+      "small": "1–2 نزيل",
+      "medium": "3–4 نزلاء",
+      "large": "5+ نزلاء"
+    },
+    "table": {
+      "preview": "معاينة",
+      "nameDetails": "نوع الغرفة والتفاصيل",
+      "maxGuests": "الحد الأقصى للنزلاء",
+      "guestsOne": "نزيل واحد",
+      "guestsMany": "{{ count }} نزلاء",
+      "perNight": "/ لليلة",
+      "emptyTitle": "لم يتم العثور على أنواع غرف",
+      "emptyText": "لا توجد أنواع غرف مطابقة لبحثك أو للتصفية الحالية. جرّب إعادة ضبط عوامل التصفية.",
+      "emptyTextAdmin": "لا توجد أنواع غرف مطابقة لبحثك أو للتصفية الحالية. جرّب إعادة ضبط عوامل التصفية أو إنشاء نوع غرفة جديد.",
+      "clearFilters": "مسح جميع عوامل التصفية",
+      "addNew": "+ إضافة نوع غرفة جديد"
+    }
+  },
+  "reservations": {
+    "list": {
+      "title": "الحجوزات",
+      "description": "إقامات النزلاء وتخصيص الغرف وسجل الحجوزات.",
+      "loading": "جارٍ تحميل الحجوزات…",
+      "deleted": "تم حذف الحجز نهائيًا.",
+      "deleteError": "تعذّر حذف الحجز. يرجى المحاولة مرة أخرى."
+    },
+    "sort": {
+      "guestAsc": "النزيل: A–Z",
+      "guestDesc": "النزيل: Z–A",
+      "checkInAsc": "الوصول: الأقرب أولًا",
+      "checkInDesc": "الوصول: الأبعد أولًا",
+      "createdAsc": "تاريخ الحجز: الأقدم أولًا",
+      "createdDesc": "تاريخ الحجز: الأحدث أولًا"
+    },
+    "fields": {
+      "booking": "الحجز",
+      "guest": "النزيل",
+      "stay": "الإقامة",
+      "room": "الغرفة",
+      "guests": "النزلاء",
+      "checkInFrom": "الوصول من",
+      "checkInTo": "الوصول حتى",
+      "minGuests": "الحد الأدنى للنزلاء"
+    },
+    "table": {
+      "caption": "جميع حجوزات النزلاء",
+      "empty": "لا توجد حجوزات مطابقة لبحثك."
+    },
+    "deleteDialog": {
+      "eyebrow": "إدارة الحجوزات",
+      "title": "حذف الحجز #{{ id }}؟",
+      "description": "الحذف النهائي مخصّص للحالات الخاصة فقط. في الحالات العادية قد يكفي تغيير الحالة إلى «ملغى».",
+      "warning": "سيؤدي ذلك إلى حذف الحجز وفاتورته ورسومه ومدفوعاته.",
+      "irreversible": "لا يمكن التراجع عن هذا الإجراء.",
+      "confirm": "حذف نهائي"
+    },
+    "detail": {
+      "loading": "جارٍ تحميل الحجز…",
+      "saved": "تم تحديث الحجز بنجاح.",
+      "paymentSaved": "تمت الموافقة على الدفعة وتم تحديث رصيدك.",
+      "addCardPayment": "إضافة دفعة بالبطاقة",
+      "closePayment": "إغلاق نموذج الدفع",
+      "adminView": "عرض المسؤول",
+      "operatorView": "عرض المشغّل",
+      "backToClient": "العودة إلى العميل",
+      "backToFrontDesk": "العودة إلى الاستقبال",
+      "backToReservations": "العودة إلى الحجوزات",
+      "backToMyReservations": "العودة إلى حجوزاتي"
+    },
+    "cash": {
+      "title": "استلام دفعة نقدية",
+      "close": "إغلاق الدفعة النقدية",
+      "balance": "الرصيد المستحق: {{ balance }}",
+      "amount": "المبلغ المستلم",
+      "hint": "الحد الأدنى {{ minimum }}. يمكن دفع الرصيد كاملًا عندما يقل عن {{ threshold }}.",
+      "record": "تسجيل الدفعة النقدية",
+      "recording": "جارٍ التسجيل…",
+      "required": "أدخل المبلغ المستلم.",
+      "range": "أدخل مبلغًا بين الحد الأدنى والرصيد المستحق."
+    },
+    "form": {
+      "legend": "تعديل الإقامة والخدمات",
+      "legendStaff": "تعديل الإقامة والخدمات والحالة",
+      "save": "حفظ الحجز",
+      "preview": "معاينة السعر",
+      "recalculatedTotal": "الإجمالي بعد إعادة الحساب",
+      "alreadyPaid": "المدفوع مسبقًا (بعد الاسترداد)",
+      "refundAfterSaving": "المبلغ المسترد عند الحفظ",
+      "refundNote": "إذا كان الإجمالي الجديد أقل من المبلغ المدفوع، يُسترد الفرق تلقائيًا. وقد تؤدي الزيادة إلى رصيد مستحق جديد.",
+      "savedNote": "تعرض تفاصيل السعر أدناه الحجز المحفوظ إلى أن يتم حفظ التغييرات.",
+      "stayAndStatus": "الإقامة والحالة",
+      "roomAssigned": "تُخصَّص غرفة فعلية تلقائيًا لنوع الغرفة والتواريخ المختارة.",
+      "maxNightsHint": "يمكن أن تستمر الإقامة حتى {{ nights }} ليلة.",
+      "upToGuests": "حتى {{ count }} نزلاء",
+      "servicesOnlyHint": "أثناء إقامتك، يمكنك إضافة خدمات فقط. لا يمكن إزالة الخدمات الحالية أو تغيير التواريخ أو عدد الضيوف.",
+      "servicesDescription": "تحتفظ الخدمات المتعاقد عليها سابقًا بأسعارها الأصلية. لا يمكن الإبقاء على الخدمات غير النشطة إلا إذا كانت مشمولة مسبقًا.",
+      "inactiveContracted": "غير نشطة · متعاقد عليها سابقًا",
+      "contractedPrice": "السعر المتعاقد عليه",
+      "noServices": "لا توجد خدمات متاحة."
+    }
+  },
+  "auth": {
+    "backHome": "العودة إلى الرئيسية",
+    "eyebrow": "Atlan Suites · بوابة الدخول",
+    "titles": {
+      "guestSignIn": "دخول النزلاء",
+      "guestRegistration": "تسجيل النزلاء",
+      "staff": "بوابة الموظفين"
+    },
+    "subtitles": {
+      "guest": "مرحبًا بك في تجربة لا تُنسى. سجّل الدخول لإدارة إقامتك وخدماتك.",
+      "staff": "دخول مقصور على مسؤولي الفندق ومشغّليه."
+    },
+    "selectPortal": "اختيار البوابة",
+    "portals": {
+      "guests": "النزلاء",
+      "staff": "موظفو الفندق"
+    },
+    "signIn": "تسجيل الدخول",
+    "signingIn": "جارٍ تسجيل الدخول…",
+    "register": "التسجيل",
+    "registering": "جارٍ التسجيل…",
+    "completeRegistration": "إتمام التسجيل",
+    "noAccount": "ليس لديك حساب بعد؟",
+    "registerHere": "سجّل هنا",
+    "haveAccount": "لديك حساب نزيل بالفعل؟",
+    "staffNotice": "دخول حصري لموظفي الفندق",
+    "verifying": "جارٍ التحقق من بيانات الدخول…",
+    "enterStaff": "الدخول إلى إدارة الفندق",
+    "fields": {
+      "nationalId": "رقم الهوية (بطاقة الهوية/جواز السفر)",
+      "profilePhoto": "رابط صورة الملف الشخصي (اختياري)",
+      "staffEmail": "البريد الإلكتروني للعمل",
+      "staffPassword": "كلمة مرور الموظف"
+    },
+    "placeholders": {
+      "firstName": "أحمد",
+      "lastName": "حسن",
+      "staffEmail": "admin@atlansuites.com أو operator@atlansuites.com"
+    },
+    "hints": {
+      "nationalId": "من 5 إلى 20 حرفًا أو رقمًا",
+      "phone": "من 7 إلى 15 رقمًا، و+ اختيارية",
+      "password": "8 أحرف على الأقل",
+      "profilePhoto": "رابط ويب لصورة (اختياري)"
+    },
+    "demo": {
+      "title": "بيانات دخول تجريبية:",
+      "quickTitle": "بيانات دخول تجريبية سريعة:",
+      "fillClient": "تعبئة بيانات Emma Thompson (نزيلة)",
+      "fillAdmin": "تعبئة بيانات Admin 1 (Admin2026!)",
+      "fillOperator": "تعبئة بيانات Operator 1 (Operator2026!)"
+    },
+    "success": {
+      "client": "مرحبًا، {{ name }}!",
+      "registered": "تم إنشاء الحساب بنجاح! مرحبًا، {{ name }}.",
+      "staff": "تم منح الدخول بصفة {{ role }}: {{ name }}."
+    },
+    "errors": {
+      "checkFieldsContinue": "يرجى مراجعة الحقول المحددة قبل المتابعة.",
+      "checkFields": "يرجى مراجعة الحقول المحددة.",
+      "securePassword": "أدخل كلمة مرور آمنة من 8 أحرف على الأقل.",
+      "staffPassword": "أدخل كلمة مرور الموظف.",
+      "signInFailed": "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.",
+      "registrationFailed": "فشل تسجيل النزيل.",
+      "invalidClient": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "invalidStaff": "بيانات دخول الموظف غير صحيحة."
+    }
+  },
+  "profile": {
+    "loading": "جارٍ تحميل ملفك الشخصي…",
+    "description": "بيانات حسابك وحجوزاتك في Atlan Suites.",
+    "saved": "تم حفظ الملف الشخصي بنجاح.",
+    "paymentsLink": "المدفوعات والمبالغ المستردة",
+    "deleteAccount": "حذف الحساب",
+    "deleting": "جارٍ الحذف…",
+    "confirmDelete": "حذف حسابك في Atlan Suites؟ لا يمكن التراجع عن ذلك.",
+    "deleteError": "تعذّر حذف حسابك.",
+    "cancel": {
+      "title": "إلغاء الحجز {{ code }}؟",
+      "description": "سيتم إلغاء حجزك. ستُسترد جميع مدفوعات إقامتك والخدمات المرتبطة بها بالكامل إلى بطاقتك، باستثناء المبالغ المستردة سابقًا. سيتم الاحتفاظ بحجزك وسجلك المالي.",
+      "typeBefore": "اكتب",
+      "typeAfter": "للتأكيد.",
+      "phrase": "نعم، أريد الإلغاء",
+      "keep": "الإبقاء على الحجز",
+      "cancelling": "جارٍ الإلغاء…",
+      "error": "تعذّر إلغاء الحجز. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "paymentHistory": {
+    "loading": "جارٍ تحميل المدفوعات والمبالغ المستردة…",
+    "eyebrow": "حسابي",
+    "description": "مدفوعاتك ومبالغك المستردة.",
+    "title": "سجل المعاملات",
+    "recordsOne": "سجل واحد",
+    "recordsMany": "عدد السجلات: {{ count }}",
+    "filtersLabel": "تصفية المعاملات",
+    "payments": "المدفوعات",
+    "refunds": "المبالغ المستردة",
+    "payment": "دفعة",
+    "refund": "استرداد",
+    "processedBy": "تمت المعالجة بواسطة {{ name }}",
+    "empty": "لا توجد مدفوعات أو مبالغ مستردة بعد.",
+    "noPayments": "لم يتم العثور على مدفوعات.",
+    "noRefunds": "لم يتم العثور على مبالغ مستردة."
+  },
+  "catalog": {
+    "eyebrow": "Atlan Suites · التجارب والضيافة",
+    "title": "خدمات الفندق",
+    "description": "استكشف مجموعتنا المختارة من المأكولات المميزة والعافية الشاملة والترفيه والمساعدة الشخصية. صُممت كل خدمة لإثراء كل لحظة من إقامتك.",
+    "searchPlaceholder": "ابحث عن خدمات (مثل: سبا، فطور، دراجة…)",
+    "search": "البحث عن الخدمات",
+    "clearSearch": "مسح البحث",
+    "filterByCategory": "التصفية حسب الفئة",
+    "loading": "جارٍ تحميل دليل الخدمات…",
+    "viewDetails": "عرض التفاصيل",
+    "emptyTitle": "لم يتم العثور على خدمات",
+    "emptyText": "لا توجد خدمات مطابقة لمعايير البحث المحددة.",
+    "resetFilters": "إعادة ضبط التصفية",
+    "detail": {
+      "loading": "جارٍ تحميل معلومات الخدمة…",
+      "available": "متاحة للنزلاء",
+      "pricePerService": "السعر لكل خدمة",
+      "quickFacts": "لمحة سريعة عن الخدمة",
+      "about": "عن هذه الخدمة",
+      "enjoy": "استمتع بها خلال إقامتك",
+      "bookRoom": "احجز غرفة لدينا لتجربتها!"
+    },
+    "gallery": {
+      "eyebrow": "جولة مصوّرة",
+      "title": "معرض الخدمة",
+      "description": "صور مرتبطة بـ {{ name }}.",
+      "enlarge": "تكبير الصورة {{ number }} من {{ name }}",
+      "mainAlt": "{{ name }} — الصورة الرئيسية",
+      "imageAlt": "{{ name }} — صورة المعرض {{ number }}",
+      "preview": "معاينة صورة {{ name }}",
+      "closePreview": "إغلاق المعاينة"
+    }
+  },
+  "booking": {
+    "loading": "جارٍ تحميل إقامتك…",
+    "error": "تعذّر إتمام طلب الحجز. يرجى المحاولة مرة أخرى.",
+    "stepOf": "الخطوة {{ step }} من {{ total }}",
+    "progress": "تقدّم الحجز",
+    "navigation": "التنقل في الحجز",
+    "previousStep": "الخطوة السابقة",
+    "changeDates": "تغيير التواريخ",
+    "steps": {
+      "dates": "التواريخ",
+      "room": "اختيار الغرفة",
+      "services": "الخدمات",
+      "payment": "الدفع"
+    },
+    "dates": {
+      "title": "اختر تواريخك",
+      "intro": "حدّد موعد إقامتك وعدد النزلاء المرافقين لك.",
+      "datesOfStay": "تواريخ الإقامة",
+      "chooseDate": "اختر تاريخًا",
+      "previousMonth": "عرض الشهر السابق",
+      "nextMonth": "عرض الشهر التالي",
+      "hint": "اختر تاريخ الوصول ثم تاريخ المغادرة. تمتد الإقامة حتى {{ nights }} ليلة، ويمكن أن تبدأ خلال {{ years }} سنوات من اليوم.",
+      "detailsEyebrow": "تفاصيل الحجز",
+      "guestsHint": "كم شخصًا سيقيم؟ حتى {{ max }}.",
+      "guestQuantity": "عدد النزلاء",
+      "decreaseGuests": "تقليل عدد النزلاء",
+      "increaseGuests": "زيادة عدد النزلاء"
+    },
+    "roomTypes": {
+      "title": "اختر غرفتك",
+      "intro": "أنواع الغرف هذه متاحة في التواريخ التي اخترتها.",
+      "selectedStay": "الإقامة المختارة",
+      "changeDetails": "تغيير بيانات الحجز",
+      "available": "أنواع الغرف المتاحة",
+      "eyebrow": "الغرف والأجنحة",
+      "upToGuests": "حتى {{ count }} نزلاء",
+      "roomsLeftOne": "تبقّت غرفة واحدة في تواريخك",
+      "roomsLeftMany": "عدد الغرف المتبقية في تواريخك: {{ count }}",
+      "rate": "سعر الغرفة",
+      "from": "ابتداءً من",
+      "rateNote": "يشمل الإجمالي الإقامة والخدمات المختارة.",
+      "select": "اختيار نوع الغرفة",
+      "empty": "لا توجد غرف متاحة لهذه التواريخ وهذا العدد من النزلاء. يرجى تغيير التواريخ أو عدد النزلاء."
+    },
+    "services": {
+      "title": "هل تود إضافة خدمات؟",
+      "filters": "تصفية الخدمات",
+      "available": "الخدمات المتاحة",
+      "selected": "مختارة",
+      "select": "اختيار الخدمة",
+      "emptyCategory": "لا توجد خدمات متاحة في هذه الفئة.",
+      "pages": "صفحات الخدمات",
+      "previousPage": "صفحة الخدمات السابقة",
+      "nextPage": "صفحة الخدمات التالية",
+      "yourSelection": "اختياراتك",
+      "cart": "سلة الخدمات",
+      "cartEmpty": "لم تختر أي خدمات بعد.",
+      "remove": "إزالة {{ name }}",
+      "clearCart": "إفراغ السلة",
+      "skip": "تخطّي الخدمات",
+      "addSelected": "إضافة الخدمات المختارة"
+    },
+    "checkout": {
+      "eyebrow": "خيار أخير",
+      "title": "كيف تود المتابعة؟",
+      "reserveNow": "احجز الآن",
+      "payLater": "احجز وادفع لاحقًا",
+      "payLaterText": "سيبقى حجزك في حسابك، ويمكنك دفعه على عدة دفعات متى شئت.",
+      "booking": "جارٍ الحجز…",
+      "payToday": "ادفع اليوم",
+      "payNow": "ادفع الآن",
+      "payNowText": "يمكنك دفع المبلغ كله أو جزء منه اليوم. يبقى الرصيد المتبقي في حسابك ويمكن دفعه على عدة دفعات.",
+      "accommodation": "الإقامة",
+      "totalStay": "إجمالي الإقامة:"
+    },
+    "summary": {
+      "nights": "الليالي"
+    },
+    "payment": {
+      "orPayLater": "أو احجز وادفع لاحقًا",
+      "intro": "راجع إقامتك وأدخل بيانات الدفع.",
+      "introAdditional": "ادفع بالبطاقة رصيدك المستحق كله أو جزءًا منه.",
+      "choose": "اختر دفعتك",
+      "amountToday": "المبلغ المراد دفعه اليوم",
+      "amountHint": "(يمكنك تعديل هذا المبلغ ودفع الباقي لاحقًا)",
+      "partialTotal": "يمكنك اليوم دفع إجمالي إقامتك كله أو جزء منه، ابتداءً من {{ minimum }}.",
+      "partialBalance": "يمكنك اليوم دفع رصيدك المستحق كله أو جزء منه، ابتداءً من {{ minimum }}.",
+      "cardDetails": "بيانات البطاقة",
+      "cardholderName": "الاسم على البطاقة",
+      "cardNumber": "رقم البطاقة",
+      "expiryDate": "تاريخ الانتهاء",
+      "expiryPlaceholder": "MM/YY",
+      "securityCode": "رمز الأمان",
+      "securityPlaceholder": "CVV",
+      "processing": "جارٍ المعالجة…",
+      "confirm": "تأكيد ودفع",
+      "checkDetails": "يرجى مراجعة بيانات الدفع المحددة.",
+      "amountRange": "يجب ألا تقل الدفعة عن {{ minimum }} وألا تتجاوز الإجمالي البالغ {{ total }}."
+    }
+  },
+  "frontDesk": {
+    "eyebrow": "Atlan Suites · الاستقبال",
+    "intro": "وصول اليوم والنزلاء المقيمون والمغادرات المعلّقة والغرف قيد التنظيف أو الصيانة.",
+    "loading": "جارٍ تحميل الاستقبال…",
+    "loadError": "تعذّر تحميل الاستقبال. يرجى المحاولة مرة أخرى.",
+    "summaryLabel": "اليوم في الاستقبال",
+    "tiles": {
+      "arrivals": "وصول اليوم",
+      "readyArrivals": "جاهزة لتسجيل الوصول: {{ count }}",
+      "occupiedOne": "غرفة واحدة مشغولة",
+      "occupiedMany": "عدد الغرف المشغولة: {{ count }}",
+      "withBalance": "عليها رصيد مستحق: {{ count }}",
+      "roomsToPrepare": "غرف للتجهيز",
+      "cleaningMaintenance": "تنظيف: {{ cleaning }} · صيانة: {{ maintenance }}"
+    },
+    "arrivals": {
+      "title": "الوصول",
+      "description": "الإقامات المعلّقة والمؤكدة التي تبدأ اليوم، إضافة إلى حالات الوصول المتأخر التي لم تنتهِ إقامتها."
+    },
+    "inHouse": {
+      "title": "النزلاء المقيمون",
+      "description": "الإقامات التي تم تسجيل وصولها، بدءًا بأقرب موعد مغادرة."
+    },
+    "departures": {
+      "title": "المغادرات المعلّقة",
+      "description": "النزلاء المغادرون اليوم أو المتأخرون عن المغادرة. يتطلب تسجيل المغادرة رصيدًا صفريًا ويحوّل الغرفة إلى التنظيف."
+    },
+    "rooms": {
+      "title": "غرف قيد التنظيف أو الصيانة",
+      "description": "تظهر أولًا الغرف التي يُنتظر وصول نزيل إليها.",
+      "floor": "الطابق {{ floor }}",
+      "guestArriving": "نزيل قادم",
+      "markClean": "وضع علامة نظيفة",
+      "endMaintenance": "إنهاء الصيانة",
+      "forRoom": "للغرفة {{ number }}",
+      "empty": "جميع الغرف جاهزة. لا شيء بانتظار التنظيف أو الصيانة."
+    },
+    "stays": {
+      "arrival": {
+        "caption": "حالات الوصول المتوقعة اليوم",
+        "empty": "لا توجد حالات وصول معلّقة اليوم."
+      },
+      "in-house": {
+        "caption": "النزلاء المقيمون حاليًا",
+        "empty": "لا يوجد نزلاء مقيمون."
+      },
+      "departure": {
+        "caption": "مغادرات اليوم أو المتأخرة",
+        "empty": "لا توجد مغادرات معلّقة."
+      },
+      "action": "الإجراء",
+      "pendingConfirmation": "بانتظار التأكيد",
+      "collectPayment": "تحصيل الدفعة",
+      "reviewBooking": "مراجعة الحجز",
+      "forCode": "للحجز {{ code }}",
+      "checkIn": "تسجيل الوصول",
+      "checkOut": "تسجيل المغادرة",
+      "waitingRoom": "بانتظار الغرفة",
+      "collectBalance": "تحصيل الرصيد"
+    },
+    "tags": {
+      "lateArrival": "وصول متأخر",
+      "overdueDeparture": "مغادرة متأخرة",
+      "departsToday": "يغادر اليوم",
+      "roomReady": "الغرفة جاهزة",
+      "beingCleaned": "قيد التنظيف",
+      "underMaintenance": "قيد الصيانة",
+      "stillOccupied": "لا تزال مشغولة",
+      "noRoom": "لا توجد غرفة مخصّصة"
+    },
+    "notice": {
+      "updated": "تم تحديث الاستقبال",
+      "failed": "لم يكتمل الإجراء",
+      "checkedIn": "تم تسجيل وصول {{ label }}. الغرفة الآن مشغولة.",
+      "checkedOut": "تم تسجيل مغادرة {{ label }}. تظهر الغرفة الآن ضمن الغرف المطلوب تجهيزها.",
+      "ready": "{{ label }} جاهزة.",
+      "error": "تعذّر إتمام الإجراء. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "accounting": {
+    "title": "المحاسبة والإحصاءات",
+    "period": "فترة التقرير",
+    "from": "من",
+    "to": "إلى",
+    "apply": "تطبيق الفترة",
+    "loading": "جارٍ تحميل المحاسبة وإحصاءات الحجوزات…",
+    "loadError": "تعذّر تحميل البيانات المحاسبية. يرجى المحاولة مرة أخرى.",
+    "unavailable": "البيانات غير متاحة",
+    "periodCaption": "فترة التقرير:",
+    "noBookings": "لم تُنشأ حجوزات خلال هذه الفترة. تعتمد الإجماليات المالية على تواريخ المدفوعات والمبالغ المستردة.",
+    "inProgress": "جارية",
+    "overview": {
+      "label": "ملخص مالي بالبيزو الكولومبي",
+      "payments": "المدفوعات المقبولة",
+      "refunds": "المبالغ المستردة المقبولة",
+      "net": "صافي التحصيل",
+      "outstanding": "الرصيد المستحق"
+    },
+    "stays": {
+      "title": "إحصاءات الإقامة",
+      "averageStay": "متوسط مدة الإقامة",
+      "nights": "ليالٍ",
+      "averageGuests": "متوسط عدد النزلاء لكل حجز"
+    },
+    "status": {
+      "title": "حالة الحجوزات",
+      "chartLabel": "عدد الحجوزات حسب حالتها الحالية. استخدم مفتاح الرسم لإظهار أي حالة أو إخفائها.",
+      "details": "عرض الأعداد والنسب",
+      "caption": "توزيع الحجوزات حسب الحالة",
+      "share": "النسبة"
+    },
+    "trend": {
+      "title": "اتجاه الحجوزات",
+      "chartLabel": "الحجوزات المنشأة عبر الزمن، مع التكبير وشريط تحديد النطاق.",
+      "details": "عرض إجماليات الفترات",
+      "caption": "إجماليات الحجوزات المنشأة",
+      "periodStarts": "بداية الفترة"
+    },
+    "roomTypes": {
+      "title": "أكثر أنواع الغرف حجزًا",
+      "chartLabel": "أنواع الغرف مرتبة حسب الحجوزات والليالي المتعاقد عليها. استخدم مفتاح الرسم لإظهار أي سلسلة أو إخفائها.",
+      "details": "عرض ترتيب أنواع الغرف",
+      "caption": "ترتيب أنواع الغرف",
+      "bookings": "الحجوزات",
+      "empty": "لا توجد حجوزات غير ملغاة في هذه الفترة."
+    },
+    "services": {
+      "title": "أكثر الخدمات طلبًا",
+      "chartLabel": "الخدمات مرتبة حسب الوحدات المتعاقد عليها.",
+      "details": "عرض الوحدات والقيمة المتعاقد عليها",
+      "caption": "كميات الخدمات والقيمة التاريخية للرسوم",
+      "concept": "الخدمة",
+      "units": "الوحدات",
+      "value": "قيمة الرسوم",
+      "empty": "لا توجد رسوم خدمات متعاقد عليها في هذه الفترة."
+    },
+    "charts": {
+      "resetView": "إعادة ضبط العرض",
+      "download": "تنزيل الرسم البياني",
+      "reservations": "الحجوزات",
+      "reservationsUnit": "حجوزات",
+      "created": "الحجوزات المنشأة",
+      "bookedNights": "الليالي المحجوزة",
+      "unitsContracted": "الوحدات المتعاقد عليها"
+    }
+  },
+  "adminPanel": {
+    "eyebrow": "Atlan Suites · الإدارة",
+    "greeting": "مرحبًا،",
+    "intro": "أنشئ وعدّل وأدِر المعلومات المعروضة في Atlan Suites من مكان واحد.",
+    "loadError": "تعذّر تحميل الإجماليات. تأكد من تشغيل خادم Spring Boot على localhost:8080.",
+    "sectionsLabel": "الأقسام القابلة للإدارة",
+    "loadingTotal": "جارٍ تحميل الإجمالي…",
+    "manage": "إدارة {{ section }}",
+    "cards": {
+      "reservations": "جميع حجوزات النزلاء وتواريخها وتخصيص الغرف وتفاصيلها.",
+      "services": "خدمات المطاعم والعافية والكونسيرج المعروضة في دليل النزلاء.",
+      "roomTypes": "فئات الأجنحة وأسعار الليلة والسعة ومعارض الصور.",
+      "rooms": "الغرف الفعلية وطوابقها وحالتها ونوعها.",
+      "clients": "حسابات النزلاء المسجّلة ومعلومات الاتصال بهم.",
+      "administrators": "حسابات الموظفين ذات الصلاحية الكاملة على هذه اللوحة.",
+      "operators": "موظفو الاستقبال والمسؤول عن كل منهم."
+    },
+    "create": {
+      "service": "خدمة جديدة",
+      "roomType": "نوع غرفة جديد",
+      "room": "غرفة جديدة",
+      "client": "عميل جديد",
+      "administrator": "مسؤول جديد",
+      "operator": "مشغّل جديد"
+    }
+  },
+  "errorPage": {
+    "eyebrow": "الخطأ {{ code }} · {{ label }}",
+    "address": "العنوان",
+    "goBack": "رجوع",
+    "goToFrontDesk": "الذهاب إلى الاستقبال",
+    "goToAdminPanel": "الذهاب إلى لوحة الإدارة",
+    "goToHome": "الذهاب إلى الصفحة الرئيسية",
+    "labels": {
+      "400": "طلب غير صالح",
+      "404": "غير موجود",
+      "500": "خطأ في الخادم",
+      "503": "الخادم غير متاح"
+    },
+    "titles": {
+      "400": "هذا العنوان غير صالح",
+      "404": "لم نعثر على هذه الصفحة",
+      "500": "حدث خطأ من جانبنا",
+      "503": "لا يمكننا الوصول إلى الخادم"
+    },
+    "messages": {
+      "400": "يحتوي الرابط على قيمة لا يستطيع الفندق قراءتها، مثل معرّف ليس رقمًا. تحقق من العنوان أو ارجع.",
+      "404": "الصفحة أو السجل الذي تبحث عنه غير موجود أو تمت إزالته.",
+      "500": "تعذّر على الخادم إتمام الطلب. يرجى المحاولة مرة أخرى بعد قليل.",
+      "503": "خادم الفندق لا يستجيب. تحقق من اتصالك وحاول مرة أخرى بعد قليل."
+    }
+  },
+  "validation": {
+    "password": {
+      "required": "أدخل كلمة مرور.",
+      "length": "يجب أن تتكون كلمة المرور من 8 إلى 255 حرفًا.",
+      "invalid": "أدخل كلمة مرور من 8 إلى 255 حرفًا."
+    },
+    "staffEmail": {
+      "required": "أدخل عنوان البريد الإلكتروني.",
+      "maxlength": "لا يمكن أن يتجاوز عنوان البريد الإلكتروني 100 حرف.",
+      "email": "أدخل بريدًا إلكترونيًا صالحًا، مثل name@atlansuites.com."
+    },
+    "photoUrl": {
+      "maxlength": "لا يمكن أن يتجاوز رابط الصورة 500 حرف.",
+      "format": "أدخل رابط صورة يبدأ بـ http:// أو https://."
+    },
+    "price": {
+      "format": "أدخل سعرًا لا يتجاوز 99,999,999.99 بحد أقصى منزلتين عشريتين."
+    },
+    "login": {
+      "email": {
+        "required": "أدخل بريدك الإلكتروني.",
+        "email": "أدخل بريدًا إلكترونيًا صالحًا.",
+        "maxlength": "لا يمكن أن يتجاوز عنوان البريد الإلكتروني 100 حرف."
+      },
+      "password": {
+        "required": "أدخل كلمة المرور."
+      }
+    },
+    "client": {
+      "name": {
+        "required": "أدخل الاسم الأول.",
+        "maxlength": "لا يمكن أن يتجاوز الاسم الأول 60 حرفًا."
+      },
+      "lastName": {
+        "required": "أدخل اسم العائلة.",
+        "maxlength": "لا يمكن أن يتجاوز اسم العائلة 60 حرفًا."
+      },
+      "nationalId": {
+        "required": "أدخل رقم الهوية.",
+        "format": "يجب أن يتكون رقم الهوية من 5 إلى 20 حرفًا أو رقمًا، دون مسافات أو رموز."
+      },
+      "phone": {
+        "required": "أدخل رقم الهاتف.",
+        "format": "أدخل رقم هاتف من 7 إلى 15 رقمًا دون مسافات؛ يمكن أن يبدأ بـ +."
+      },
+      "email": {
+        "required": "أدخل عنوان البريد الإلكتروني.",
+        "maxlength": "لا يمكن أن يتجاوز عنوان البريد الإلكتروني 100 حرف.",
+        "email": "أدخل بريدًا إلكترونيًا صالحًا، مثل name@example.com."
+      }
+    },
+    "administrator": {
+      "name": {
+        "required": "أدخل اسم المسؤول.",
+        "maxlength": "لا يمكن أن يتجاوز الاسم 60 حرفًا."
+      }
+    },
+    "operator": {
+      "name": {
+        "required": "أدخل الاسم الأول للمشغّل.",
+        "maxlength": "لا يمكن أن يتجاوز الاسم الأول 60 حرفًا."
+      },
+      "lastName": {
+        "required": "أدخل اسم عائلة المشغّل.",
+        "maxlength": "لا يمكن أن يتجاوز اسم العائلة 60 حرفًا."
+      },
+      "adminId": {
+        "required": "اختر المسؤول عن هذا المشغّل."
+      }
+    },
+    "roomType": {
+      "name": {
+        "required": "أدخل اسم نوع الغرفة.",
+        "maxlength": "لا يمكن أن يتجاوز الاسم 50 حرفًا."
+      },
+      "description": {
+        "required": "أدخل وصفًا.",
+        "maxlength": "لا يمكن أن يتجاوز الوصف 500 حرف."
+      },
+      "nightlyPrice": {
+        "required": "أدخل سعر الليلة.",
+        "positive": "يجب أن يكون سعر الليلة أكبر من صفر."
+      },
+      "maxCapacity": {
+        "required": "أدخل السعة القصوى.",
+        "min": "يجب ألا تقل السعة عن نزيل واحد.",
+        "max": "لا يمكن أن تتجاوز السعة 10 نزلاء.",
+        "integer": "أدخل عددًا صحيحًا من النزلاء."
+      }
+    },
+    "photo": {
+      "mainRequired": "أدخل رابط الصورة الرئيسية."
+    },
+    "room": {
+      "number": {
+        "required": "أدخل رقم الغرفة.",
+        "min": "يجب ألا يقل رقم الغرفة عن 1.",
+        "max": "لا يمكن أن يتجاوز رقم الغرفة 9999.",
+        "integer": "أدخل رقم غرفة صحيحًا."
+      },
+      "floor": {
+        "required": "أدخل الطابق.",
+        "min": "لا يمكن أن يكون الطابق سالبًا.",
+        "max": "لا يمكن أن يتجاوز الطابق 200.",
+        "integer": "أدخل رقم طابق صحيحًا."
+      },
+      "status": {
+        "required": "اختر حالة الغرفة."
+      },
+      "roomTypeId": {
+        "required": "اختر نوع الغرفة."
+      }
+    },
+    "service": {
+      "name": {
+        "required": "أدخل اسم الخدمة.",
+        "maxlength": "لا يمكن أن يتجاوز الاسم 100 حرف."
+      },
+      "category": {
+        "required": "أدخل الفئة.",
+        "maxlength": "لا يمكن أن تتجاوز الفئة 50 حرفًا."
+      },
+      "summary": {
+        "maxlength": "لا يمكن أن يتجاوز الملخص 255 حرفًا."
+      },
+      "duration": {
+        "maxlength": "لا يمكن أن تتجاوز المدة 50 حرفًا."
+      },
+      "availability": {
+        "maxlength": "لا يمكن أن تتجاوز المواعيد 100 حرف."
+      },
+      "location": {
+        "maxlength": "لا يمكن أن يتجاوز المكان 100 حرف."
+      },
+      "description": {
+        "required": "أدخل وصفًا.",
+        "maxlength": "لا يمكن أن يتجاوز الوصف 5,000 حرف."
+      },
+      "price": {
+        "required": "أدخل السعر.",
+        "min": "لا يمكن أن يكون السعر سالبًا."
+      }
+    },
+    "reservation": {
+      "checkIn": {
+        "required": "اختر تاريخ الوصول.",
+        "past": "لا يمكن أن يكون تاريخ الوصول في الماضي. يرجى اختيار تواريخ جديدة.",
+        "tooFar": "يمكن الحجز مسبقًا لمدة أقصاها {{ years }} سنوات."
+      },
+      "checkOut": {
+        "required": "اختر تاريخ المغادرة.",
+        "order": "يجب أن يكون تاريخ المغادرة بعد تاريخ الوصول.",
+        "tooLong": "لا يمكن أن تتجاوز الإقامة {{ nights }} ليلة."
+      },
+      "guests": {
+        "required": "أدخل عدد النزلاء.",
+        "min": "أدخل نزيلًا واحدًا على الأقل.",
+        "integer": "أدخل عددًا صحيحًا من النزلاء.",
+        "capacity": "يتسع هذا النوع من الغرف لـ {{ capacity }} نزلاء كحد أقصى. يرجى تقليل عدد النزلاء أو اختيار نوع غرفة آخر."
+      },
+      "roomTypeId": {
+        "min": "اختر نوع الغرفة."
+      },
+      "status": {
+        "required": "اختر حالة الحجز.",
+        "pending": "لا يُسمح بتسجيل الوصول ما دام الحجز قيد الانتظار. أكّد الحجز أولًا.",
+        "unpaid": "لا يُسمح بتسجيل المغادرة ما دام هناك رصيد مستحق. سدّد الرصيد أولًا."
+      }
+    },
+    "payment": {
+      "amount": {
+        "required": "أدخل المبلغ المراد دفعه.",
+        "decimals": "يمكن أن يحتوي المبلغ على منزلتين عشريتين كحد أقصى.",
+        "max": "لا يمكن أن تتجاوز الدفعة الواحدة COP 99,999,999.99."
+      },
+      "cardholderName": {
+        "required": "أدخل الاسم المدوّن على البطاقة.",
+        "letters": "أدخل الاسم كما يظهر على البطاقة، بالأحرف فقط (حتى 100 حرف)."
+      },
+      "cardNumber": {
+        "required": "أدخل رقم البطاقة.",
+        "length": "يجب أن يتكون رقم البطاقة من 13 إلى 19 رقمًا."
+      },
+      "expiryDate": {
+        "required": "أدخل تاريخ الانتهاء.",
+        "format": "أدخل تاريخ الانتهاء بصيغة MM/YY، مع شهر من 01 إلى 12.",
+        "expired": "انتهت صلاحية البطاقة.",
+        "tooFar": "أدخل تاريخ انتهاء صالحًا."
+      },
+      "securityCode": {
+        "required": "أدخل رمز الأمان.",
+        "length": "يجب أن يتكون رمز الأمان من 3 أو 4 أرقام."
+      }
+    }
+  },
+  "api": {
+    "default": "تعذّر إتمام الطلب. يرجى المحاولة مرة أخرى.",
+    "offline": "تعذّر الوصول إلى الخادم. تحقق من اتصالك ومن تشغيل الخادم الخلفي، ثم حاول مرة أخرى.",
+    "serverError": "تعذّر على الخادم معالجة الطلب. يرجى المحاولة مرة أخرى بعد قليل.",
+    "badRequest": "بعض المعلومات غير صالحة. يرجى مراجعتها والمحاولة مرة أخرى.",
+    "unauthorized": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+    "notFound": "السجل المطلوب غير موجود أو تم حذفه.",
+    "conflict": "يتعارض التغيير مع معلومات موجودة بالفعل.",
+    "createdNotFound": "تم حفظ السجل، لكن تعذّرت إعادة تحميله. حدّث القائمة لرؤيته."
+  }
+}

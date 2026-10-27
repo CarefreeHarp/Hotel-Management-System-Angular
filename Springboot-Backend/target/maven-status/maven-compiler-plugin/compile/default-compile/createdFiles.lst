@@ -19,6 +19,7 @@ com/example/demo/entities/Refund.class
 com/example/demo/entities/Reservation.class
 com/example/demo/dto/AccountingDashboard$ServiceRanking.class
 com/example/demo/entities/Folio.class
+com/example/demo/dto/FrontDeskBoard$Stay.class
 com/example/demo/entities/Administrator$AdministratorBuilder.class
 com/example/demo/service/interfaces/RoomService.class
 com/example/demo/entities/Operator$OperatorBuilder.class
@@ -62,6 +63,8 @@ com/example/demo/service/interfaces/RoomTypeService.class
 com/example/demo/service/ReservationBillingService.class
 com/example/demo/repository/AdministratorRepository.class
 com/example/demo/dto/ReservationDetailDTO$RefundView.class
+com/example/demo/dto/FrontDeskBoard$RoomToPrepare.class
+com/example/demo/service/interfaces/FrontDeskService.class
 com/example/demo/dto/ClientDetailDTO.class
 com/example/demo/repository/FolioItemRepository.class
 com/example/demo/dto/AdministratorDTO.class
@@ -69,10 +72,12 @@ com/example/demo/service/interfaces/ClientService.class
 com/example/demo/controller/OperatorController.class
 com/example/demo/dto/RoomListDTO.class
 com/example/demo/service/AdministratorServiceImpl.class
+com/example/demo/dto/FrontDeskBoard.class
 com/example/demo/exception/ApiError.class
 com/example/demo/repository/PaymentRepository.class
 com/example/demo/controller/ReservationController.class
 com/example/demo/entities/enums/ActivationStatus.class
+com/example/demo/controller/FrontDeskController.class
 com/example/demo/repository/ReservationRepository.class
 com/example/demo/dto/OperatorDTO.class
 com/example/demo/entities/Folio$FolioBuilder.class
@@ -82,6 +87,7 @@ com/example/demo/repository/OperatorRepository.class
 com/example/demo/service/interfaces/PanelService.class
 com/example/demo/controller/RoomTypeController.class
 com/example/demo/dto/RoomTypeListDTO.class
+com/example/demo/service/FrontDeskServiceImpl.class
 com/example/demo/repository/RoomTypeRepository.class
 com/example/demo/repository/AccountingRepository$RoomRow.class
 com/example/demo/service/ReservationRules.class

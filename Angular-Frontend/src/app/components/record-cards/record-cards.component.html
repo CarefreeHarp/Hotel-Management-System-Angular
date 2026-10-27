@@ -1,4 +1,4 @@
-<section class="record-grid" aria-label="Records grid">
+<section class="record-grid" [attr.aria-label]="'list.cardsLabel' | transloco">
   @for (card of cards; track card.id) {
     <article>
       @if (card.image) {
@@ -18,16 +18,16 @@
         </h2>
       </header>
       <dl>
-        @for (field of card.details; track field.label) {
+        @for (field of card.details; track field.labelKey) {
           <div>
-            <dt>{{ field.label }}</dt>
+            <dt>{{ field.labelKey | transloco }}</dt>
             <dd>{{ field.value }}</dd>
           </div>
         }
       </dl>
       <footer>
-        <a [routerLink]="card.detailUrl">View</a
-        ><a [routerLink]="card.editUrl">Edit</a>
+        <a [routerLink]="card.detailUrl">{{ 'common.actions.view' | transloco }}</a
+        ><a [routerLink]="card.editUrl">{{ 'common.actions.edit' | transloco }}</a>
         @if (card.activationStatus) {
           <button
             class="toggle-action"
@@ -35,7 +35,11 @@
             type="button"
             (click)="toggleActivationSubject.next(card.id)"
           >
-            {{ card.activationStatus === "ACTIVE" ? "Deactivate" : "Activate"
+            {{
+              (card.activationStatus === 'ACTIVE'
+                ? 'common.actions.deactivate'
+                : 'common.actions.activate'
+              ) | transloco
             }}<span class="sr-only"> {{ card.title }}</span>
           </button>
         }
@@ -45,12 +49,12 @@
             type="button"
             (click)="deleteRecordSubject.next(card.id)"
           >
-            Delete<span class="sr-only"> {{ card.title }}</span>
+            {{ 'common.actions.delete' | transloco }}<span class="sr-only"> {{ card.title }}</span>
           </button>
         }
       </footer>
     </article>
   } @empty {
-    <p>No records match your search.</p>
+    <p>{{ 'list.noMatches' | transloco }}</p>
   }
 </section>

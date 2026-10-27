@@ -65,7 +65,7 @@ entity "ROOM" as room {
   --
   * room_number : INT [NOT NULL, UNIQUE]
   * floor : INT [NOT NULL]
-  * status : VARCHAR(20) [NOT NULL] -- AVAILABLE, OCCUPIED, MAINTENANCE
+  * status : VARCHAR(20) [NOT NULL] -- AVAILABLE, OCCUPIED, CLEANING, MAINTENANCE
   * activation_status : VARCHAR(8) [NOT NULL] -- ACTIVE, INACTIVE
   * room_type_id : INT <<FK>> [NOT NULL] -- [ON DELETE RESTRICT]
 }

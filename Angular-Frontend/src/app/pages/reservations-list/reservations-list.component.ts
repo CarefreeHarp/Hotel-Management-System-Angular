@@ -1,8 +1,9 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, inject, LOCALE_ID } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { BehaviorSubject, catchError, combineLatest, EMPTY, exhaustMap, map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ListControlsComponent } from '../../components/list-controls/list-controls.component';
@@ -36,6 +37,7 @@ import { ReservationTableComponent } from './components/reservation-table/reserv
     RecordCardsComponent,
     ReservationTableComponent,
     ReservationDeleteDialogComponent,
+    TranslocoPipe,
   ],
   templateUrl: './reservations-list.component.html',
   styleUrl: './reservations-list.component.scss',
@@ -46,11 +48,11 @@ export class ReservationsListComponent {
   private readonly service = inject(ReservationService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly reloadSubject = new Subject<void>();
   // BehaviorSubject conserva el valor actual. next publica un cambio a quienes lo observan.
   private readonly listSubject = new BehaviorSubject(initialListState());
-  private readonly dates = new DatePipe('en-US');
+  // Formatea las fechas de las tarjetas con el idioma elegido (LOCALE_ID).
+  private readonly dates = new DatePipe(inject(LOCALE_ID));
   message = '';
   actionError = '';
   deleting = false;
@@ -59,14 +61,14 @@ export class ReservationsListComponent {
     return basePath(this.route);
   }
   readonly sortOptions = [
-    { value: 'id-asc', label: 'ID: low to high' },
-    { value: 'id-desc', label: 'ID: high to low' },
-    { value: 'guest-asc', label: 'Guest: A–Z' },
-    { value: 'guest-desc', label: 'Guest: Z–A' },
-    { value: 'checkIn-asc', label: 'Check-in: earliest first' },
-    { value: 'checkIn-desc', label: 'Check-in: latest first' },
-    { value: 'created-asc', label: 'Booking date: earliest first' },
-    { value: 'created-desc', label: 'Booking date: latest first' },
+    { value: 'id-asc', labelKey: 'list.sort.idAsc' },
+    { value: 'id-desc', labelKey: 'list.sort.idDesc' },
+    { value: 'guest-asc', labelKey: 'reservations.sort.guestAsc' },
+    { value: 'guest-desc', labelKey: 'reservations.sort.guestDesc' },
+    { value: 'checkIn-asc', labelKey: 'reservations.sort.checkInAsc' },
+    { value: 'checkIn-desc', labelKey: 'reservations.sort.checkInDesc' },
+    { value: 'created-asc', labelKey: 'reservations.sort.createdAsc' },
+    { value: 'created-desc', labelKey: 'reservations.sort.createdDesc' },
   ];
   private readonly records$ = this.reloadSubject.pipe(
     startWith(undefined),
@@ -102,7 +104,9 @@ export class ReservationsListComponent {
   }
   /** Abre la confirmación compartida por las vistas de tabla y tarjetas sin iniciar el borrado. */
   remove(id: number): void {
-    if (this.deleting || this.pendingDeletionId !== undefined) return;
+    if (this.deleting || this.pendingDeletionId !== undefined) {
+      return;
+    }
     this.pendingDeletionId = id;
   }
 
@@ -112,13 +116,17 @@ export class ReservationsListComponent {
 
   confirmDeletion(): void {
     const id = this.pendingDeletionId;
-    if (id === undefined || this.deleting) return;
+    if (id === undefined || this.deleting) {
+      return;
+    }
     this.pendingDeletionId = undefined;
     this.actionSubject.next(id);
   }
 
   private performAction(id: number): Observable<unknown> {
-    if (this.deleting) return EMPTY;
+    if (this.deleting) {
+      return EMPTY;
+    }
     this.deleting = true;
     this.actionError = '';
     this.message = '';
@@ -127,15 +135,12 @@ export class ReservationsListComponent {
       .pipe(
         tap(() => {
           this.deleting = false;
-          this.message = 'Reservation permanently deleted.';
+          this.message = translate('reservations.list.deleted');
           this.reload();
         }),
         catchError((error: HttpErrorResponse) => {
           this.deleting = false;
-          this.actionError = apiErrorMessage(
-            error,
-            'Unable to delete the reservation. Please try again.',
-          );
+          this.actionError = apiErrorMessage(error, 'reservations.list.deleteError');
 
           return EMPTY;
         }),
@@ -146,33 +151,35 @@ export class ReservationsListComponent {
   }
   private filters(items: ReservationDTO[]): ListFilter[] {
     const types = new Map<number, string>();
-    for (const item of items)
-      if (item.roomTypeId !== undefined)
-        types.set(item.roomTypeId, item.roomTypeName ?? 'Unassigned');
+    for (const item of items) {
+      if (item.roomTypeId !== undefined) {
+        types.set(item.roomTypeId, item.roomTypeName ?? translate('common.unassigned'));
+      }
+    }
     return [
       {
         key: 'status',
-        label: 'Status',
+        labelKey: 'common.fields.status',
         options: Object.values(ReservationStatus).map((value) => ({
           value,
-          label: value.replace('_', ' ').toLowerCase(),
+          label: translate(`enums.reservationStatus.${value}`),
         })),
       },
       {
         key: 'roomType',
-        label: 'Room type',
+        labelKey: 'rooms.fields.roomType',
         options: [...types].map(([id, label]) => ({
           value: String(id),
           label,
         })),
       },
-      { key: 'from', label: 'Check-in from', type: 'date' },
-      { key: 'to', label: 'Check-in to', type: 'date' },
-      { key: 'guests', label: 'Minimum guests', type: 'number' },
+      { key: 'from', labelKey: 'reservations.fields.checkInFrom', type: 'date' },
+      { key: 'to', labelKey: 'reservations.fields.checkInTo', type: 'date' },
+      { key: 'guests', labelKey: 'reservations.fields.minGuests', type: 'number' },
     ];
   }
   private filter(items: ReservationDTO[], state: ListState): ReservationDTO[] {
-    const f = state.filters;
+    const filters = state.filters;
     return items
       .filter(
         (item) =>
@@ -184,24 +191,27 @@ export class ReservationsListComponent {
             item.roomNumber,
             item.roomTypeName,
           ]) &&
-          (!f['status'] || item.status === f['status']) &&
-          (!f['roomType'] || String(item.roomTypeId) === f['roomType']) &&
-          (!f['from'] || item.checkInDate >= f['from']) &&
-          (!f['to'] || item.checkInDate <= f['to']) &&
-          (!f['guests'] || item.guestCount >= Number(f['guests'])),
+          (!filters['status'] || item.status === filters['status']) &&
+          (!filters['roomType'] || String(item.roomTypeId) === filters['roomType']) &&
+          (!filters['from'] || item.checkInDate >= filters['from']) &&
+          (!filters['to'] || item.checkInDate <= filters['to']) &&
+          (!filters['guests'] || item.guestCount >= Number(filters['guests'])),
       )
       .sort((a, b) => {
         const direction = state.sort.endsWith('-desc') ? -1 : 1;
-        if (state.sort.startsWith('guest-'))
+        if (state.sort.startsWith('guest-')) {
           return (
             direction * (a.clientName ?? '').localeCompare(b.clientName ?? '')
           );
-        if (state.sort.startsWith('checkIn-'))
+        }
+        if (state.sort.startsWith('checkIn-')) {
           return direction * a.checkInDate.localeCompare(b.checkInDate);
-        if (state.sort.startsWith('created-'))
+        }
+        if (state.sort.startsWith('created-')) {
           return (
             direction * (a.createdAt ?? '').localeCompare(b.createdAt ?? '')
           );
+        }
         return direction * (a.reservationId - b.reservationId);
       });
   }
@@ -211,17 +221,23 @@ export class ReservationsListComponent {
       title: item.reservationCode,
       ...(item.roomTypeMainPhoto ? { image: item.roomTypeMainPhoto } : {}),
       details: [
-        { label: 'Guest', value: item.clientName?.trim() || 'Deleted guest' },
         {
-          label: 'Stay',
+          labelKey: 'reservations.fields.guest',
+          value: item.clientName?.trim() || translate('common.deletedGuest'),
+        },
+        {
+          labelKey: 'reservations.fields.stay',
           value: `${this.dates.transform(item.checkInDate, 'MMM d, y')} – ${this.dates.transform(item.checkOutDate, 'MMM d, y')}`,
         },
         {
-          label: 'Room',
-          value: `${item.roomTypeName ?? 'Unassigned'} · ${item.roomNumber ?? '—'}`,
+          labelKey: 'reservations.fields.room',
+          value: `${item.roomTypeName ?? translate('common.unassigned')} · ${item.roomNumber ?? '—'}`,
         },
-        { label: 'Guests', value: String(item.guestCount) },
-        { label: 'Status', value: item.status.replace('_', ' ').toLowerCase() },
+        { labelKey: 'reservations.fields.guests', value: String(item.guestCount) },
+        {
+          labelKey: 'common.fields.status',
+          value: translate(`enums.reservationStatus.${item.status}`),
+        },
       ],
       detailUrl: `${this.base}/reservations/${item.reservationId}`,
       editUrl: `${this.base}/reservations/${item.reservationId}/edit`,

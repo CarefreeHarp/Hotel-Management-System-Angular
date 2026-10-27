@@ -67,4 +67,11 @@ public class RoomController {
             @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
         service.activate(id);
     }
+
+    @PutMapping("/{id}/ready")
+    @Operation(summary = "Marcar una habitación como lista", description = "Termina la limpieza o el mantenimiento desde el tablero del operario. La habitación vuelve a AVAILABLE, u OCCUPIED si tiene un huésped alojado.")
+    public void markRoomReady(
+            @Parameter(description = "Generated resource ID", example = "1") @PathVariable Integer id) {
+        service.markReady(id);
+    }
 }

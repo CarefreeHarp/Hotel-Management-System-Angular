@@ -3,27 +3,33 @@
     <section class="booking-calendar-card" aria-labelledby="dates-title">
       <header class="dates-summary">
         <div>
-          <p class="eyebrow">Your stay</p>
-          <h2 id="dates-title">Dates of stay</h2>
+          <p class="eyebrow">{{ 'reservationContent.stay' | transloco }}</p>
+          <h2 id="dates-title">{{ 'booking.dates.datesOfStay' | transloco }}</h2>
         </div>
         <dl class="dates-summary__values" aria-live="polite">
           <div>
-            <dt>Check-in</dt>
+            <dt>{{ 'reservationContent.checkIn' | transloco }}</dt>
             <dd>
-              {{ checkIn ? (checkIn | date: "MMM d, yyyy") : "Choose a date" }}
+              {{ checkIn ? (checkIn | date: "mediumDate") : ('booking.dates.chooseDate' | transloco) }}
             </dd>
           </div>
           <div>
-            <dt>Check-out</dt>
+            <dt>{{ 'reservationContent.checkOut' | transloco }}</dt>
             <dd>
               {{
-                checkOut ? (checkOut | date: "MMM d, yyyy") : "Choose a date"
+                checkOut ? (checkOut | date: "mediumDate") : ('booking.dates.chooseDate' | transloco)
               }}
             </dd>
           </div>
           <div>
-            <dt>Duration</dt>
-            <dd>{{ nights ? nights + " night(s)" : "—" }}</dd>
+            <dt>{{ 'reservationContent.duration' | transloco }}</dt>
+            <dd>
+              {{
+                nights
+                  ? ((nights === 1 ? 'common.nightsOne' : 'common.nightsMany') | transloco: { count: nights })
+                  : "—"
+              }}
+            </dd>
           </div>
         </dl>
       </header>
@@ -31,7 +37,7 @@
         <button
           class="calendar-arrow"
           type="button"
-          aria-label="Show previous month"
+          [attr.aria-label]="'booking.dates.previousMonth' | transloco"
           (click)="changeMonth(-1)"
         >
           ←
@@ -42,7 +48,7 @@
         <button
           class="calendar-arrow"
           type="button"
-          aria-label="Show next month"
+          [attr.aria-label]="'booking.dates.nextMonth' | transloco"
           (click)="changeMonth(1)"
         >
           →
@@ -53,10 +59,7 @@
           <section class="calendar-month" [attr.aria-label]="month.title">
             <h3>{{ month.title }}</h3>
             <div class="calendar-weekdays">
-              @for (
-                day of ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-                track day
-              ) {
+              @for (day of weekdays; track day) {
                 <span>{{ day }}</span>
               }
             </div>
@@ -89,24 +92,23 @@
         }
       </div>
       <p class="calendar-hint">
-        Choose a check-in date, then a check-out date. Stays last up to
-        {{ maxNights }} nights and can start up to two years from today.
+        {{ 'booking.dates.hint' | transloco: { nights: maxNights, years: maxYears } }}
       </p>
     </section>
     <aside class="guests-panel" aria-labelledby="guests-title">
       <div>
-        <p class="eyebrow">Reservation details</p>
-        <h2 id="guests-title">Guests</h2>
+        <p class="eyebrow">{{ 'booking.dates.detailsEyebrow' | transloco }}</p>
+        <h2 id="guests-title">{{ 'reservationContent.guests' | transloco }}</h2>
       </div>
       <div class="guest-stepper">
         <div>
-          <p>Guests</p>
-          <span>How many people will stay? Up to {{ maxGuests }}.</span>
+          <p>{{ 'reservationContent.guests' | transloco }}</p>
+          <span>{{ 'booking.dates.guestsHint' | transloco: { max: maxGuests } }}</span>
         </div>
-        <div class="guest-stepper__controls" aria-label="Guest quantity">
+        <div class="guest-stepper__controls" [attr.aria-label]="'booking.dates.guestQuantity' | transloco">
           <button
             type="button"
-            aria-label="Decrease guests"
+            [attr.aria-label]="'booking.dates.decreaseGuests' | transloco"
             [disabled]="guests <= 1"
             (click)="guests = guests - 1"
           >
@@ -114,7 +116,7 @@
           ><output aria-live="polite">{{ guests }}</output
           ><button
             type="button"
-            aria-label="Increase guests"
+            [attr.aria-label]="'booking.dates.increaseGuests' | transloco"
             [disabled]="guests >= maxGuests"
             (click)="guests = guests + 1"
           >
@@ -123,7 +125,7 @@
         </div>
       </div>
       <button class="booking-submit" type="submit" [disabled]="!valid()">
-        Check availability <span aria-hidden="true">→</span>
+        {{ 'roomTypes.detail.checkAvailability' | transloco }} <span aria-hidden="true">→</span>
       </button>
       <ng-content select="[bookingError]" />
     </aside>

@@ -4,8 +4,8 @@ import com.example.demo.dto.BookingQuote;
 import com.example.demo.dto.ReservationDTO;
 import com.example.demo.dto.ReservationDetailDTO;
 import com.example.demo.dto.RoomTypeAvailability;
-import com.example.demo.entities.Reservation;
 import com.example.demo.entities.Payment;
+import com.example.demo.entities.Reservation;
 import com.example.demo.service.BookingService;
 import com.example.demo.service.interfaces.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -99,6 +99,18 @@ public class ReservationController {
     @PutMapping("/{id}/cancel")
     public void cancelReservation(@PathVariable Integer id) {
         reservationService.cancelReservation(id);
+    }
+
+    /** Check-in del tablero del operario: también marca la habitación como ocupada. */
+    @PutMapping("/{id}/check-in")
+    public void checkIn(@PathVariable Integer id) {
+        reservationService.checkIn(id);
+    }
+
+    /** Check-out con saldo cero: la habitación pasa a limpieza. */
+    @PutMapping("/{id}/check-out")
+    public void checkOut(@PathVariable Integer id) {
+        reservationService.checkOut(id);
     }
 
     @DeleteMapping("/{id}")

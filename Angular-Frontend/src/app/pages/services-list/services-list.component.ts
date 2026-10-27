@@ -1,7 +1,9 @@
+import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { Component, inject, LOCALE_ID } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { catchError, EMPTY, exhaustMap, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -36,6 +38,7 @@ import { ServiceTableComponent } from './components/service-table/service-table.
     ListControlsComponent,
     RecordCardsComponent,
     ServiceTableComponent,
+    TranslocoPipe,
   ],
   templateUrl: './services-list.component.html',
   styleUrl: './services-list.component.scss',
@@ -46,6 +49,8 @@ export class ServicesListComponent {
   private readonly service = inject(ServiceService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  // Formatea los precios de las tarjetas con el idioma elegido (LOCALE_ID).
+  private readonly currency = new CurrencyPipe(inject(LOCALE_ID));
   get base(): string {
     return basePath(this.route);
   }
@@ -54,8 +59,8 @@ export class ServicesListComponent {
   readonly sortOptions = [
     ...defaultSortOptions,
     ...[
-      { value: 'price-asc', label: 'Price: low to high' },
-      { value: 'price-desc', label: 'Price: high to low' },
+      { value: 'price-asc', labelKey: 'list.sort.priceAsc' },
+      { value: 'price-desc', labelKey: 'list.sort.priceDesc' },
     ],
   ];
   loading = true;
@@ -89,7 +94,7 @@ export class ServicesListComponent {
     return [
       {
         key: 'category',
-        label: 'Category',
+        labelKey: 'services.fields.category',
         options: [...new Set(this.items.map((item) => item.category))]
           .sort()
           .map((value) => ({ value, label: value })),
@@ -112,7 +117,9 @@ export class ServicesListComponent {
       .sort((a, b) => {
         const sort = this.listState.sort;
         const direction = sort.endsWith('-desc') ? -1 : 1;
-        if (sort.startsWith('price-')) return direction * (a.price - b.price);
+        if (sort.startsWith('price-')) {
+          return direction * (a.price - b.price);
+        }
         return compareRecords(sort, a.serviceId, b.serviceId, a.name, b.name);
       });
   }
@@ -138,9 +145,15 @@ export class ServicesListComponent {
       title: item.name,
       image: item.mainImageUrl,
       details: [
-        { label: 'Category', value: item.category },
-        { label: 'Price', value: 'COP ' + item.price.toLocaleString('en-US') },
-        { label: 'Activation', value: item.activationStatus },
+        { labelKey: 'services.fields.category', value: item.category },
+        {
+          labelKey: 'services.fields.price',
+          value: this.currency.transform(item.price, 'COP', 'symbol', '1.0-2') ?? '',
+        },
+        {
+          labelKey: 'common.fields.activation',
+          value: translate(`enums.activationStatus.${item.activationStatus}`),
+        },
       ],
       activationStatus: item.activationStatus,
       detailUrl: `${this.base}/services/${item.serviceId}`,
@@ -166,7 +179,9 @@ export class ServicesListComponent {
   }
   toggleById(id: number): void {
     const item = this.items.find((item) => item.serviceId === id);
-    if (item) this.toggle(item);
+    if (item) {
+      this.toggle(item);
+    }
   }
   toggle(item: ServiceListDTO): void {
     this.actionSubject.next(item);
@@ -181,14 +196,11 @@ export class ServicesListComponent {
         : this.service.activate(item.serviceId);
     return request.pipe(
       tap(() => {
-        this.message = 'Activation status updated.';
+        this.message = translate('common.activation.updated');
         this.load();
       }),
       catchError((error: HttpErrorResponse) => {
-        (this.error = apiErrorMessage(
-          error,
-          'The activation status could not be changed.',
-        )); return EMPTY;
+        (this.error = apiErrorMessage(error, 'common.activation.error')); return EMPTY;
       }),
     );
   }

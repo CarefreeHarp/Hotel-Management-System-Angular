@@ -1,15 +1,15 @@
 <app-admin-header />
 <main class="room-types-page-main">
-  <span class="page-watermark" aria-hidden="true">Clients</span>
+  <span class="page-watermark" aria-hidden="true">{{ 'clients.list.title' | transloco }}</span>
   <div class="page-container">
     <header class="catalog-heading">
       <div>
-        <p class="eyebrow">Atlan Suites · Client management</p>
-        <h1>Clients</h1>
-        <p>View and manage the clients registered at Atlan Suites.</p>
+        <p class="eyebrow">{{ 'clients.list.eyebrow' | transloco }}</p>
+        <h1>{{ 'clients.list.title' | transloco }}</h1>
+        <p>{{ 'clients.list.description' | transloco }}</p>
       </div>
       <a appButton [create]="true" [routerLink]="[base, 'clients', 'new']"
-        >Create client</a
+        >{{ 'clients.list.create' | transloco }}</a
       >
     </header>
     @if (message) {
@@ -19,7 +19,7 @@
       <p class="notice is-error" role="alert">{{ errorMessage }}</p>
     }
     @if (isLoading) {
-      <app-skeleton [variant]="listState.view === 'table' ? 'table' : 'cards'" label="Loading clients…" />
+      <app-skeleton [variant]="listState.view === 'table' ? 'table' : 'cards'" [label]="'clients.list.loading' | transloco" />
     } @else {
       <app-list-controls
         [state]="listState"

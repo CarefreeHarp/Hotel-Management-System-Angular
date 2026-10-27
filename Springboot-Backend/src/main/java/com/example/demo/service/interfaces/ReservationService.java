@@ -2,8 +2,8 @@ package com.example.demo.service.interfaces;
 
 import com.example.demo.dto.ReservationDTO;
 import com.example.demo.dto.ReservationDetailDTO;
-import com.example.demo.entities.Reservation;
 import com.example.demo.entities.Payment;
+import com.example.demo.entities.Reservation;
 import java.util.List;
 
 /**
@@ -37,6 +37,12 @@ public interface ReservationService {
 
     /** Cancela reserva y folio, reembolsa el pagado neto y conserva estancia, cargos y pagos. */
     void cancelReservation(Integer reservationId);
+
+    /** Check-in del tablero: la reserva confirmada queda CHECKED_IN y su habitación OCCUPIED. */
+    void checkIn(Integer reservationId);
+
+    /** Check-out del tablero con saldo cero: la reserva queda CHECKED_OUT y su habitación en limpieza. */
+    void checkOut(Integer reservationId);
 
     /** Elimina una reserva después de retirar pagos, cargos y folio. */
     void deleteReservation(Integer reservationId);

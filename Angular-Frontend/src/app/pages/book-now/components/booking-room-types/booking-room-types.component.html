@@ -1,24 +1,24 @@
-<dl class="stay-summary" aria-label="Selected stay">
+<dl class="stay-summary" [attr.aria-label]="'booking.roomTypes.selectedStay' | transloco">
   <div>
-    <dt>Check-in</dt>
-    <dd>{{ stay.checkIn | date: "MMM d, yyyy" }}</dd>
+    <dt>{{ 'reservationContent.checkIn' | transloco }}</dt>
+    <dd>{{ stay.checkIn | date: "mediumDate" }}</dd>
   </div>
   <div>
-    <dt>Check-out</dt>
-    <dd>{{ stay.checkOut | date: "MMM d, yyyy" }}</dd>
+    <dt>{{ 'reservationContent.checkOut' | transloco }}</dt>
+    <dd>{{ stay.checkOut | date: "mediumDate" }}</dd>
   </div>
   <div>
-    <dt>Guests</dt>
+    <dt>{{ 'reservationContent.guests' | transloco }}</dt>
     <dd>{{ stay.guests }}</dd>
   </div>
   <div>
     <button class="change-dates" type="button" (click)="changeDatesSubject.next()">
-      Change booking details
+      {{ 'booking.roomTypes.changeDetails' | transloco }}
     </button>
   </div>
 </dl>
 <section class="rooms-section" aria-labelledby="available-rooms-title">
-  <h2 id="available-rooms-title">Available room types</h2>
+  <h2 id="available-rooms-title">{{ 'booking.roomTypes.available' | transloco }}</h2>
   <div class="rooms-grid">
     @for (availability of types; track availability.roomType.roomTypeId) {
       @let type = availability.roomType;
@@ -35,47 +35,48 @@
           <figcaption>{{ type.name }}</figcaption>
         </figure>
         <section class="room-card__details">
-          <p class="eyebrow">Rooms &amp; suites</p>
+          <p class="eyebrow">{{ 'booking.roomTypes.eyebrow' | transloco }}</p>
           <h3>{{ type.name }}</h3>
           <p class="room-description">{{ type.description }}</p>
           <dl class="room-features">
             <div>
-              <dt>Capacity</dt>
-              <dd>Up to {{ type.maxCapacity }} guests</dd>
+              <dt>{{ 'roomTypes.fields.capacity' | transloco }}</dt>
+              <dd>{{ 'booking.roomTypes.upToGuests' | transloco: { count: type.maxCapacity } }}</dd>
             </div>
             <div>
-              <dt>Stay</dt>
+              <dt>{{ 'reservations.fields.stay' | transloco }}</dt>
               <dd class="availability-notice">
-                {{ availability.availableRooms }}
-                {{ availability.availableRooms === 1 ? "room" : "rooms" }} left for your dates
+                {{
+                  (availability.availableRooms === 1 ? 'booking.roomTypes.roomsLeftOne' : 'booking.roomTypes.roomsLeftMany')
+                    | transloco: { count: availability.availableRooms }
+                }}
               </dd>
             </div>
           </dl>
         </section>
-        <aside class="room-card__rate" aria-label="Room rate">
-          <p>From</p>
+        <aside class="room-card__rate" [attr.aria-label]="'booking.roomTypes.rate' | transloco">
+          <p>{{ 'booking.roomTypes.from' | transloco }}</p>
           <p class="rate-value">
             <span class="rate-amount">{{
               type.nightlyPrice | currency: "COP" : "symbol" : "1.0-0"
             }}</span
-            ><span class="rate-period">/ night</span>
+            ><span class="rate-period">{{ 'roomTypes.table.perNight' | transloco }}</span>
           </p>
           <p class="rate-note">
-            Your total includes accommodation and selected services.
+            {{ 'booking.roomTypes.rateNote' | transloco }}
           </p>
           <button
             class="choose-room"
             type="button"
             (click)="selectedSubject.next(type.roomTypeId)"
           >
-            Select room type <span aria-hidden="true">→</span>
+            {{ 'booking.roomTypes.select' | transloco }} <span aria-hidden="true">→</span>
           </button>
         </aside>
       </article>
     } @empty {
       <p class="empty-rooms" role="status">
-        No rooms are available for these dates and guest count. Please change
-        the dates or the number of guests.
+        {{ 'booking.roomTypes.empty' | transloco }}
       </p>
     }
   </div>

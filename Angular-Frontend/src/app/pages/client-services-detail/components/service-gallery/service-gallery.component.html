@@ -1,10 +1,10 @@
 <section class="gallery-section" aria-labelledby="service-gallery-title">
   <header class="gallery-heading">
     <div>
-      <p class="eyebrow">Visual tour</p>
-      <h2 id="service-gallery-title">Service gallery</h2>
+      <p class="eyebrow">{{ 'catalog.gallery.eyebrow' | transloco }}</p>
+      <h2 id="service-gallery-title">{{ 'catalog.gallery.title' | transloco }}</h2>
     </div>
-    <p>Images associated with {{ name }}.</p>
+    <p>{{ 'catalog.gallery.description' | transloco: { name: name } }}</p>
   </header>
   <ul class="gallery-grid">
     @for (photo of images; track $index) {
@@ -12,7 +12,7 @@
         <button
           type="button"
           (click)="open(photo)"
-          [attr.aria-label]="'Enlarge ' + name + ' image ' + ($index + 1)"
+          [attr.aria-label]="'catalog.gallery.enlarge' | transloco: { name: name, number: $index + 1 }"
         >
           <figure>
             <img
@@ -20,8 +20,9 @@
               imageWidth="1280"
               [src]="photo"
               [alt]="
-                name +
-                ($index === 0 ? ' — main image' : ' — gallery image ' + $index)
+                $index === 0
+                  ? ('catalog.gallery.mainAlt' | transloco: { name: name })
+                  : ('catalog.gallery.imageAlt' | transloco: { name: name, number: $index })
               "
               loading="lazy"
             />
@@ -35,13 +36,13 @@
 <dialog
   #lightbox
   class="gallery-lightbox"
-  [attr.aria-label]="name + ' image preview'"
+  [attr.aria-label]="'catalog.gallery.preview' | transloco: { name: name }"
   (click)="backdrop($event)"
 >
   <button
     type="button"
     class="lightbox-close"
-    aria-label="Close image preview"
+    [attr.aria-label]="'catalog.gallery.closePreview' | transloco"
     (click)="close()"
   >
     ×

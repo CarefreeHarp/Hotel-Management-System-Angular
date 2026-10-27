@@ -3,31 +3,28 @@
 <main class="auth-page">
   <div class="auth-container">
     <div class="auth-back-nav">
-      <a routerLink="/" class="back-home-link">← Back to home</a>
+      <a routerLink="/" class="back-home-link">← {{ 'auth.backHome' | transloco }}</a>
     </div>
     <div class="auth-card">
       <header class="auth-card__header">
-        <p class="eyebrow">Atlan Suites · Access Portal</p>
+        <p class="eyebrow">{{ 'auth.eyebrow' | transloco }}</p>
         <h1 class="auth-title">
           {{
-            activePortal === "client"
+            (activePortal === "client"
               ? clientMode === "login"
-                ? "Guest Sign In"
-                : "Guest Registration"
-              : "Staff Portal"
+                ? 'auth.titles.guestSignIn'
+                : 'auth.titles.guestRegistration'
+              : 'auth.titles.staff'
+            ) | transloco
           }}
         </h1>
         <p class="auth-subtitle">
-          {{
-            activePortal === "client"
-              ? "Welcome to an unforgettable experience. Sign in to manage your stay and services."
-              : "Restricted access for hotel administrators and operators."
-          }}
+          {{ (activePortal === "client" ? 'auth.subtitles.guest' : 'auth.subtitles.staff') | transloco }}
         </p>
       </header>
 
       <!-- Selector principal de portal: Clientes vs Staff -->
-      <nav class="portal-nav" aria-label="Select portal">
+      <nav class="portal-nav" [attr.aria-label]="'auth.selectPortal' | transloco">
         <button
           type="button"
           class="portal-nav-btn"
@@ -49,7 +46,7 @@
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
           </svg>
-          Guests
+          {{ 'auth.portals.guests' | transloco }}
         </button>
         <button
           type="button"
@@ -73,7 +70,7 @@
             <path d="M21 2l-9.6 9.6"></path>
             <path d="M15.5 7.5l3 3L22 7l-3-3"></path>
           </svg>
-          Hotel Staff
+          {{ 'auth.portals.staff' | transloco }}
         </button>
       </nav>
 
@@ -102,7 +99,7 @@
             <span>{{ errorMessage }}</span>
           </div>
         } @else if (invalid) {
-          <p class="auth-alert error" role="alert">Please check the highlighted fields before continuing.</p>
+          <p class="auth-alert error" role="alert">{{ 'auth.errors.checkFieldsContinue' | transloco }}</p>
         }
       </ng-template>
       @if (successMessage) {
@@ -125,7 +122,7 @@
               role="tab"
               [attr.aria-selected]="clientMode === 'login'"
             >
-              Sign In
+              {{ 'auth.signIn' | transloco }}
             </button>
             <button
               type="button"
@@ -135,7 +132,7 @@
               role="tab"
               [attr.aria-selected]="clientMode === 'register'"
             >
-              Register
+              {{ 'auth.register' | transloco }}
             </button>
           </div>
 
@@ -149,7 +146,7 @@
             >
               <app-form-field
                 fieldId="client-login-email"
-                label="Email"
+                [label]="'common.fields.email' | transloco"
                 type="email"
                 placeholder="example@email.com"
                 [control]="$any(clientLoginForm.controls['email'])"
@@ -160,12 +157,12 @@
 
               <app-form-field
                 fieldId="client-login-password"
-                label="Password"
+                [label]="'common.fields.password' | transloco"
                 type="password"
                 placeholder="••••••••"
                 [control]="$any(clientLoginForm.controls['password'])"
                 [submitted]="clientLoginSubmitted"
-                error="Enter your password."
+                [error]="'validation.login.password.required' | transloco"
               />
 
               <div class="auth-actions">
@@ -175,7 +172,7 @@
                   class="btn-full"
                   [disabled]="isLoading"
                 >
-                  {{ isLoading ? "Signing in..." : "Sign In" }}
+                  {{ (isLoading ? 'auth.signingIn' : 'auth.signIn') | transloco }}
                 </button>
               </div>
               <ng-container
@@ -184,25 +181,25 @@
               />
 
               <div class="auth-switch-prompt">
-                <span>Don't have an account yet?</span>
+                <span>{{ 'auth.noAccount' | transloco }}</span>
                 <button
                   type="button"
                   class="link-btn"
                   (click)="setClientMode('register')"
                 >
-                  Register here
+                  {{ 'auth.registerHere' | transloco }}
                 </button>
               </div>
 
               <!-- Quick demo fill -->
               <div class="demo-helpers">
-                <p class="demo-title">Demo credentials:</p>
+                <p class="demo-title">{{ 'auth.demo.title' | transloco }}</p>
                 <button
                   type="button"
                   class="demo-chip"
                   (click)="fillDemoClient()"
                 >
-                  Fill in Emma Thompson (Guest)
+                  {{ 'auth.demo.fillClient' | transloco }}
                 </button>
               </div>
             </form>
@@ -219,9 +216,9 @@
               <div class="form-row">
                 <app-form-field
                   fieldId="client-reg-name"
-                  label="First name"
+                  [label]="'common.fields.firstName' | transloco"
                   type="text"
-                  placeholder="John"
+                  [placeholder]="'auth.placeholders.firstName' | transloco"
                   [control]="$any(clientRegisterForm.controls['name'])"
                   [submitted]="clientRegisterSubmitted"
                   [maxlength]="60"
@@ -229,9 +226,9 @@
                 />
                 <app-form-field
                   fieldId="client-reg-lastname"
-                  label="Last name"
+                  [label]="'common.fields.lastName' | transloco"
                   type="text"
-                  placeholder="Smith"
+                  [placeholder]="'auth.placeholders.lastName' | transloco"
                   [control]="$any(clientRegisterForm.controls['lastName'])"
                   [submitted]="clientRegisterSubmitted"
                   [maxlength]="60"
@@ -242,18 +239,18 @@
               <div class="form-row">
                 <app-form-field
                   fieldId="client-reg-nationalid"
-                  label="National ID (ID card/Passport)"
+                  [label]="'auth.fields.nationalId' | transloco"
                   type="text"
                   placeholder="1001001001"
                   [control]="$any(clientRegisterForm.controls['nationalId'])"
                   [submitted]="clientRegisterSubmitted"
                   [maxlength]="20"
-                  hint="5 to 20 letters or numbers"
+                  [hint]="'auth.hints.nationalId' | transloco"
                   [messages]="clientMessages.nationalId"
                 />
                 <app-form-field
                   fieldId="client-reg-phone"
-                  label="Phone"
+                  [label]="'common.fields.phone' | transloco"
                   type="tel"
                   placeholder="3001234567"
                   [control]="$any(clientRegisterForm.controls['phone'])"
@@ -261,14 +258,14 @@
                   restrict="phone"
                   inputmode="tel"
                   [maxlength]="16"
-                  hint="7 to 15 digits, + optional"
+                  [hint]="'auth.hints.phone' | transloco"
                   [messages]="clientMessages.phone"
                 />
               </div>
 
               <app-form-field
                 fieldId="client-reg-email"
-                label="Email"
+                [label]="'common.fields.email' | transloco"
                 type="email"
                 placeholder="name@example.com"
                 [control]="$any(clientRegisterForm.controls['email'])"
@@ -279,25 +276,25 @@
 
               <app-form-field
                 fieldId="client-reg-password"
-                label="Password"
+                [label]="'common.fields.password' | transloco"
                 type="password"
-                placeholder="At least 8 characters"
+                [placeholder]="'auth.hints.password' | transloco"
                 [control]="$any(clientRegisterForm.controls['password'])"
                 [submitted]="clientRegisterSubmitted"
-                hint="At least 8 characters"
-                error="Enter a secure password of at least 8 characters."
+                [hint]="'auth.hints.password' | transloco"
+                [error]="'auth.errors.securePassword' | transloco"
               />
 
               <app-form-field
                 fieldId="client-reg-photo"
-                label="Profile Photo URL (Optional)"
+                [label]="'auth.fields.profilePhoto' | transloco"
                 type="url"
                 placeholder="https://..."
                 [control]="$any(clientRegisterForm.controls['profilePhoto'])"
                 [submitted]="clientRegisterSubmitted"
                 [required]="false"
                 [maxlength]="500"
-                hint="Web link to an image (optional)"
+                [hint]="'auth.hints.profilePhoto' | transloco"
                 [messages]="clientMessages.profilePhoto"
               />
 
@@ -308,7 +305,7 @@
                   class="btn-full"
                   [disabled]="isLoading"
                 >
-                  {{ isLoading ? "Registering..." : "Complete Registration" }}
+                  {{ (isLoading ? 'auth.registering' : 'auth.completeRegistration') | transloco }}
                 </button>
               </div>
               <ng-container
@@ -317,13 +314,13 @@
               />
 
               <div class="auth-switch-prompt">
-                <span>Already have a guest account?</span>
+                <span>{{ 'auth.haveAccount' | transloco }}</span>
                 <button
                   type="button"
                   class="link-btn"
                   (click)="setClientMode('login')"
                 >
-                  Sign in
+                  {{ 'auth.signIn' | transloco }}
                 </button>
               </div>
             </form>
@@ -350,7 +347,7 @@
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
             <div>
-              <strong>Exclusive access for hotel staff</strong>
+              <strong>{{ 'auth.staffNotice' | transloco }}</strong>
             </div>
           </div>
 
@@ -362,9 +359,9 @@
           >
             <app-form-field
               fieldId="staff-login-email"
-              label="Staff work email"
+              [label]="'auth.fields.staffEmail' | transloco"
               type="email"
-              placeholder="admin@atlansuites.com or operator@atlansuites.com"
+              [placeholder]="'auth.placeholders.staffEmail' | transloco"
               [control]="$any(staffLoginForm.controls['email'])"
               [submitted]="staffLoginSubmitted"
               [maxlength]="100"
@@ -373,12 +370,12 @@
 
             <app-form-field
               fieldId="staff-login-password"
-              label="Staff password"
+              [label]="'auth.fields.staffPassword' | transloco"
               type="password"
               placeholder="••••••••"
               [control]="$any(staffLoginForm.controls['password'])"
               [submitted]="staffLoginSubmitted"
-              error="Enter your staff password."
+              [error]="'auth.errors.staffPassword' | transloco"
             />
 
             <div class="auth-actions">
@@ -388,11 +385,7 @@
                 class="btn-full"
                 [disabled]="isLoading"
               >
-                {{
-                  isLoading
-                    ? "Verifying credentials..."
-                    : "Enter Hotel Management"
-                }}
+                {{ (isLoading ? 'auth.verifying' : 'auth.enterStaff') | transloco }}
               </button>
             </div>
             <ng-container
@@ -402,21 +395,21 @@
 
             <!-- Quick demo helpers -->
             <div class="demo-helpers">
-              <p class="demo-title">Quick demo credentials:</p>
+              <p class="demo-title">{{ 'auth.demo.quickTitle' | transloco }}</p>
               <div class="demo-chips-group">
                 <button
                   type="button"
                   class="demo-chip"
                   (click)="fillDemoAdmin()"
                 >
-                  Fill in Admin 1 (Admin2026!)
+                  {{ 'auth.demo.fillAdmin' | transloco }}
                 </button>
                 <button
                   type="button"
                   class="demo-chip"
                   (click)="fillDemoOperator()"
                 >
-                  Fill in Operator 1 (Operator2026!)
+                  {{ 'auth.demo.fillOperator' | transloco }}
                 </button>
               </div>
             </div>

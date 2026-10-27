@@ -147,6 +147,83 @@
     }
   }
 }
+// Selector de idioma: último elemento del menú, separado de la navegación.
+.language {
+  margin-top: 0.6rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+.language-toggle,
+.language-option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid transparent;
+  color: inherit;
+  background: none;
+  text-shadow: inherit;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+
+  &:hover,
+  &:focus-visible {
+    color: #f1d7b5;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.13),
+      rgba(184, 140, 90, 0.1)
+    );
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+}
+.language-toggle {
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.8rem;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: left;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+.language-current {
+  margin-left: auto;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+.language-list {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0.4rem 0 0;
+  padding: 0 0 0 2.75rem;
+  list-style: none;
+}
+.language-option {
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 1rem;
+  border-radius: 0.6rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+
+  &.is-current {
+    color: #f1d7b5;
+    border-color: rgba(184, 140, 90, 0.55);
+    background: rgba(184, 140, 90, 0.16);
+  }
+}
 @supports not (
   (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
 ) {

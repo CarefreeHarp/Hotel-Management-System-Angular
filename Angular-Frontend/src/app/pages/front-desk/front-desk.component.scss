@@ -1,0 +1,147 @@
+@use "../../../styles/catalog-list";
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(3rem, 6vw, 5rem);
+  line-height: 1;
+  margin: 0.6rem 0;
+}
+
+.catalog-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.catalog-heading p {
+  max-width: 60ch;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.desk-date {
+  margin: 0 0 -1rem;
+  color: #59616b;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+// Mismas tarjetas que el panel del administrador. cada una lleva a su sección.
+.desk-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.desk-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.35rem 1.5rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(46, 52, 59, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(46, 52, 59, 0.06);
+  transition:
+    transform 0.25s var(--ease),
+    box-shadow 0.25s var(--ease);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(46, 52, 59, 0.1);
+  }
+
+  strong {
+    font-family: var(--font-display);
+    font-size: 2.75rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--color-gold);
+  }
+
+  small {
+    color: rgba(46, 52, 59, 0.75);
+    font-size: 0.78rem;
+  }
+}
+
+.desk-tile__label {
+  color: #59616b;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.desk-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  // La barra de administración es fija: el ancla deja visible el título de la sección.
+  scroll-margin-top: 6.5rem;
+}
+
+.desk-section__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 500;
+  }
+
+  p {
+    max-width: 60ch;
+    margin: 0;
+    color: #59616b;
+    font-size: 0.82rem;
+  }
+}
+
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  color: #8b2f2f;
+  background: #fbe5e2;
+
+  p {
+    margin: 0;
+  }
+}
+
+.toast-notification.is-error {
+  .toast-indicator {
+    background: #e57373;
+  }
+
+  .toast-title {
+    color: #f1a3a3;
+  }
+}
+
+@media (max-width: 1100px) {
+  .desk-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .desk-summary {
+    grid-template-columns: 1fr;
+  }
+}

@@ -50,6 +50,8 @@ export interface ReservationCharge {
   subtotal: number;
   chargedAt?: string;
 }
+// El backend envía este nombre cuando el cliente pagó o pidió el reembolso sin un operario.
+export const CLIENT_SELF_SERVICE = 'Client self-service';
 export interface ReservationPayment {
   paymentId: number;
   amount: number;
@@ -90,6 +92,8 @@ export interface ReservationDetails {
   payments: ReservationPayment[];
   refunds: ReservationRefund[];
 }
+export const MILLISECONDS_PER_DAY = 86_400_000;
+
 // Límites de una reserva y del pago simulado: los mismos que BookingService en el backend.
 export const MAX_NIGHTS = 90;
 export const MAX_YEARS_AHEAD = 2;
@@ -100,13 +104,17 @@ export const MAX_PAYMENT = 99999999.99;
 // Las mismas reglas se comprueban en el servidor antes de modificar o cobrar.
 export function canModifyReservation(detail: ReservationDetails): boolean {
   const reservation = detail.reservation;
-  return (reservation.status === 'PENDING' || reservation.status === 'CONFIRMED') &&
-    reservation.checkInDate >= localDate() && reservation.roomTypeId !== undefined;
+  return reservation.roomTypeId !== undefined &&
+    (reservation.status === 'CHECKED_IN' ||
+      ((reservation.status === 'PENDING' || reservation.status === 'CONFIRMED') &&
+        reservation.checkInDate >= localDate()));
 }
+// Un huésped alojado puede saldar su cuenta hasta el check-out, también el día de salida.
 export function canPayReservation(detail: ReservationDetails): boolean {
   const reservation = detail.reservation;
-  return detail.balance > 0 && reservation.status !== 'CANCELLED' &&
-    reservation.status !== 'CHECKED_OUT' && reservation.checkOutDate > localDate();
+  const upcoming = (reservation.status === 'PENDING' || reservation.status === 'CONFIRMED') &&
+    reservation.checkOutDate > localDate();
+  return detail.balance > 0 && (reservation.status === 'CHECKED_IN' || upcoming);
 }
 // El calendario usa la fecha local. Convertirla a UTC podría desplazar el día.
 export function localDate(date = new Date()): string {
@@ -125,11 +133,13 @@ export function latestCheckIn(): string {
 }
 // Las fechas ISO sin hora se comparan como días completos, independientemente del horario local.
 export function stayNights(checkIn: string, checkOut: string): number {
-  return Math.round((Date.parse(checkOut) - Date.parse(checkIn)) / 86400000);
+  return Math.round((Date.parse(checkOut) - Date.parse(checkIn)) / MILLISECONDS_PER_DAY);
 }
 export function validStay(stay: BookingStay): boolean {
   const validDate = (value: string): boolean => {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return false;
+    }
     const date = new Date(`${value}T12:00:00`);
     return !Number.isNaN(date.getTime()) && localDate(date) === value;
   };

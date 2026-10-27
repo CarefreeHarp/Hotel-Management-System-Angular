@@ -2,18 +2,19 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <app-skeleton variant="form" label="Loading form…" />
+      <app-skeleton variant="form" [label]="'common.loadingForm' | transloco" />
     } @else {
       <app-page-heading
-        eyebrow="Staff management"
-        [title]="isCreateMode ? 'Create administrator' : 'Edit administrator'"
+        [eyebrow]="'common.staffManagement' | transloco"
+        [title]="(isCreateMode ? 'administrators.form.createTitle' : 'administrators.form.editTitle') | transloco"
         [description]="
-          isCreateMode
-            ? 'Enter the details of the new administrator account.'
-            : 'Update the account details. The current password is kept.'
+          (isCreateMode
+            ? 'administrators.form.createDescription'
+            : 'account.editDescription'
+          ) | transloco
         "
         ><a appButton variant="secondary" [routerLink]="[base, 'administrators']"
-          >Back to list</a
+          >{{ 'common.actions.backToList' | transloco }}</a
         ></app-page-heading
       >
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
@@ -26,11 +27,12 @@
         <div class="form-actions">
           <button appButton type="submit" [disabled]="isSaving">
             {{
-              isSaving
-                ? "Saving…"
+              (isSaving
+                ? 'common.saving'
                 : isCreateMode
-                  ? "Create administrator"
-                  : "Save administrator"
+                  ? 'administrators.form.create'
+                  : 'administrators.form.save'
+              ) | transloco
             }}</button
           ><a
             appButton
@@ -40,12 +42,12 @@
                 ? [base, 'administrators']
                 : [base, 'administrators', item?.adminId]
             "
-            >Cancel</a
+            >{{ 'common.actions.cancel' | transloco }}</a
           >
         </div>
         @if (submitted && form.invalid) {
           <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
+            {{ 'common.checkFields' | transloco }}
           </p>
         }
         @if (saveError) {

@@ -1,63 +1,60 @@
-import { MAX_NIGHTS, MAX_YEARS_AHEAD } from '../models/booking';
-
 /**
- * Mensaje de cada regla, por la clave del error de Angular (required,
- * maxlength, email…). Es el mismo texto que envía el backend para ese campo:
- * el usuario lee lo mismo si el error lo detecta Angular o Spring Boot.
+ * Clave de traducción del mensaje de cada regla, por la clave del error de Angular
+ * (required, maxlength, email…). En inglés es el mismo texto que envía el backend
+ * para ese campo. FormFieldComponent traduce la clave. Los mensajes que llegan del
+ * servidor se muestran tal cual.
  */
 export type FieldMessages = Partial<Record<string, string>>;
 
 const password: FieldMessages = {
-  required: 'Enter a password.',
-  minlength: 'The password must have between 8 and 255 characters.',
-  maxlength: 'The password must have between 8 and 255 characters.',
+  required: 'validation.password.required',
+  minlength: 'validation.password.length',
+  maxlength: 'validation.password.length',
 };
 const staffEmail: FieldMessages = {
-  required: 'Enter the email address.',
-  maxlength: 'The email address cannot exceed 100 characters.',
-  email: 'Enter a valid email address, for example name@atlansuites.com.',
+  required: 'validation.staffEmail.required',
+  maxlength: 'validation.staffEmail.maxlength',
+  email: 'validation.staffEmail.email',
 };
 const photoUrl: FieldMessages = {
-  maxlength: 'The photo URL cannot exceed 500 characters.',
-  photoUrl: 'Enter a photo URL that starts with http:// or https://.',
+  maxlength: 'validation.photoUrl.maxlength',
+  photoUrl: 'validation.photoUrl.format',
 };
 const price: FieldMessages = {
-  max: 'Enter a price of up to 99,999,999.99 with at most two decimals.',
-  decimals: 'Enter a price of up to 99,999,999.99 with at most two decimals.',
+  max: 'validation.price.format',
+  decimals: 'validation.price.format',
 };
 
 export const LOGIN_MESSAGES = {
   email: {
-    required: 'Enter your email address.',
-    email: 'Enter a valid email address.',
-    maxlength: 'The email address cannot exceed 100 characters.',
+    required: 'validation.login.email.required',
+    email: 'validation.login.email.email',
+    maxlength: 'validation.login.email.maxlength',
   },
-  password: { required: 'Enter your password.' },
+  password: { required: 'validation.login.password.required' },
 } satisfies Record<string, FieldMessages>;
 
 export const CLIENT_MESSAGES = {
   name: {
-    required: 'Enter the first name.',
-    maxlength: 'The first name cannot exceed 60 characters.',
+    required: 'validation.client.name.required',
+    maxlength: 'validation.client.name.maxlength',
   },
   lastName: {
-    required: 'Enter the last name.',
-    maxlength: 'The last name cannot exceed 60 characters.',
+    required: 'validation.client.lastName.required',
+    maxlength: 'validation.client.lastName.maxlength',
   },
   nationalId: {
-    required: 'Enter the national ID.',
-    nationalId:
-      'The national ID must have 5 to 20 letters or numbers, without spaces or symbols.',
+    required: 'validation.client.nationalId.required',
+    nationalId: 'validation.client.nationalId.format',
   },
   phone: {
-    required: 'Enter the phone number.',
-    phone:
-      'Enter a phone number with 7 to 15 digits, without spaces; it may start with +.',
+    required: 'validation.client.phone.required',
+    phone: 'validation.client.phone.format',
   },
   email: {
-    required: 'Enter the email address.',
-    maxlength: 'The email address cannot exceed 100 characters.',
-    email: 'Enter a valid email address, for example name@example.com.',
+    required: 'validation.client.email.required',
+    maxlength: 'validation.client.email.maxlength',
+    email: 'validation.client.email.email',
   },
   password,
   profilePhoto: photoUrl,
@@ -65,8 +62,8 @@ export const CLIENT_MESSAGES = {
 
 export const ADMINISTRATOR_MESSAGES = {
   name: {
-    required: "Enter the administrator's name.",
-    maxlength: 'The name cannot exceed 60 characters.',
+    required: 'validation.administrator.name.required',
+    maxlength: 'validation.administrator.name.maxlength',
   },
   email: staffEmail,
   password,
@@ -74,135 +71,135 @@ export const ADMINISTRATOR_MESSAGES = {
 
 export const OPERATOR_MESSAGES = {
   name: {
-    required: "Enter the operator's first name.",
-    maxlength: 'The first name cannot exceed 60 characters.',
+    required: 'validation.operator.name.required',
+    maxlength: 'validation.operator.name.maxlength',
   },
   lastName: {
-    required: "Enter the operator's last name.",
-    maxlength: 'The last name cannot exceed 60 characters.',
+    required: 'validation.operator.lastName.required',
+    maxlength: 'validation.operator.lastName.maxlength',
   },
   email: staffEmail,
   password,
-  adminId: { required: 'Select the administrator in charge of this operator.' },
+  adminId: { required: 'validation.operator.adminId.required' },
 } satisfies Record<string, FieldMessages>;
 
 export const ROOM_TYPE_MESSAGES = {
   name: {
-    required: 'Enter the room type name.',
-    maxlength: 'The name cannot exceed 50 characters.',
+    required: 'validation.roomType.name.required',
+    maxlength: 'validation.roomType.name.maxlength',
   },
   description: {
-    required: 'Enter a description.',
-    maxlength: 'The description cannot exceed 500 characters.',
+    required: 'validation.roomType.description.required',
+    maxlength: 'validation.roomType.description.maxlength',
   },
   nightlyPrice: {
-    required: 'Enter the price per night.',
-    positive: 'The price per night must be greater than zero.',
+    required: 'validation.roomType.nightlyPrice.required',
+    positive: 'validation.roomType.nightlyPrice.positive',
     ...price,
   },
   maxCapacity: {
-    required: 'Enter the maximum capacity.',
-    min: 'The capacity must be at least 1 guest.',
-    max: 'The capacity cannot exceed 10 guests.',
-    integer: 'Enter a whole number of guests.',
+    required: 'validation.roomType.maxCapacity.required',
+    min: 'validation.roomType.maxCapacity.min',
+    max: 'validation.roomType.maxCapacity.max',
+    integer: 'validation.roomType.maxCapacity.integer',
   },
 } satisfies Record<string, FieldMessages>;
 
 export const PHOTO_MESSAGES = {
-  main: { required: 'Enter the main photo URL.', ...photoUrl },
+  main: { required: 'validation.photo.mainRequired', ...photoUrl },
   additional: photoUrl,
 } satisfies Record<string, FieldMessages>;
 
 export const ROOM_MESSAGES = {
   number: {
-    required: 'Enter the room number.',
-    min: 'The room number must be at least 1.',
-    max: 'The room number cannot exceed 9999.',
-    integer: 'Enter a whole room number.',
+    required: 'validation.room.number.required',
+    min: 'validation.room.number.min',
+    max: 'validation.room.number.max',
+    integer: 'validation.room.number.integer',
   },
   floor: {
-    required: 'Enter the floor.',
-    min: 'The floor cannot be negative.',
-    max: 'The floor cannot exceed 200.',
-    integer: 'Enter a whole floor number.',
+    required: 'validation.room.floor.required',
+    min: 'validation.room.floor.min',
+    max: 'validation.room.floor.max',
+    integer: 'validation.room.floor.integer',
   },
-  status: { required: 'Select the room status.' },
-  roomTypeId: { required: 'Select a room type.' },
+  status: { required: 'validation.room.status.required' },
+  roomTypeId: { required: 'validation.room.roomTypeId.required' },
 } satisfies Record<string, FieldMessages>;
 
 export const SERVICE_MESSAGES = {
   name: {
-    required: 'Enter the service name.',
-    maxlength: 'The name cannot exceed 100 characters.',
+    required: 'validation.service.name.required',
+    maxlength: 'validation.service.name.maxlength',
   },
   category: {
-    required: 'Enter the category.',
-    maxlength: 'The category cannot exceed 50 characters.',
+    required: 'validation.service.category.required',
+    maxlength: 'validation.service.category.maxlength',
   },
-  summary: { maxlength: 'The summary cannot exceed 255 characters.' },
-  duration: { maxlength: 'The duration cannot exceed 50 characters.' },
-  availability: { maxlength: 'The schedule cannot exceed 100 characters.' },
-  location: { maxlength: 'The location cannot exceed 100 characters.' },
+  summary: { maxlength: 'validation.service.summary.maxlength' },
+  duration: { maxlength: 'validation.service.duration.maxlength' },
+  availability: { maxlength: 'validation.service.availability.maxlength' },
+  location: { maxlength: 'validation.service.location.maxlength' },
   description: {
-    required: 'Enter a description.',
-    maxlength: 'The description cannot exceed 5,000 characters.',
+    required: 'validation.service.description.required',
+    maxlength: 'validation.service.description.maxlength',
   },
   price: {
-    required: 'Enter the price.',
-    min: 'The price cannot be negative.',
+    required: 'validation.service.price.required',
+    min: 'validation.service.price.min',
     ...price,
   },
 } satisfies Record<string, FieldMessages>;
 
+// tooFar, tooLong y capacity llevan los parámetros years, nights y capacity (messageParams de FormFieldComponent).
 export const RESERVATION_MESSAGES = {
   checkIn: {
-    required: 'Choose a check-in date.',
-    past: 'The check-in date cannot be in the past. Please choose new dates.',
-    tooFar: `Reservations can be made at most ${MAX_YEARS_AHEAD} years in advance.`,
+    required: 'validation.reservation.checkIn.required',
+    past: 'validation.reservation.checkIn.past',
+    tooFar: 'validation.reservation.checkIn.tooFar',
   },
   checkOut: {
-    required: 'Choose a check-out date.',
-    order: 'The check-out date must be after the check-in date.',
-    tooLong: `A stay cannot exceed ${MAX_NIGHTS} nights.`,
+    required: 'validation.reservation.checkOut.required',
+    order: 'validation.reservation.checkOut.order',
+    tooLong: 'validation.reservation.checkOut.tooLong',
   },
   guests: {
-    required: 'Enter the number of guests.',
-    min: 'Enter at least one guest.',
-    integer: 'Enter a whole number of guests.',
+    required: 'validation.reservation.guests.required',
+    min: 'validation.reservation.guests.min',
+    integer: 'validation.reservation.guests.integer',
+    capacity: 'validation.reservation.guests.capacity',
   },
-  roomTypeId: { min: 'Select a room type.' },
+  roomTypeId: { min: 'validation.reservation.roomTypeId.min' },
   status: {
-    required: 'Choose a reservation status.',
-    pending: 'Check-in is not allowed while the reservation is pending. Confirm the reservation first.',
-    unpaid:
-      'Check-out is not allowed while the reservation has an outstanding balance. Settle the balance first.',
+    required: 'validation.reservation.status.required',
+    pending: 'validation.reservation.status.pending',
+    unpaid: 'validation.reservation.status.unpaid',
   },
 } satisfies Record<string, FieldMessages>;
 
 // El pago de la reserva no es un formulario reactivo: sus reglas se revisan en BookingPaymentComponent.
 export const PAYMENT_MESSAGES = {
   amount: {
-    required: 'Enter the amount to pay.',
-    decimals: 'The amount can have at most two decimals.',
-    max: 'A single payment cannot exceed COP 99,999,999.99.',
+    required: 'validation.payment.amount.required',
+    decimals: 'validation.payment.amount.decimals',
+    max: 'validation.payment.amount.max',
   },
   cardholderName: {
-    required: 'Enter the name on the card.',
-    letters:
-      'Enter the name as it appears on the card, using letters only (up to 100 characters).',
+    required: 'validation.payment.cardholderName.required',
+    letters: 'validation.payment.cardholderName.letters',
   },
   cardNumber: {
-    required: 'Enter the card number.',
-    length: 'The card number must have between 13 and 19 digits.',
+    required: 'validation.payment.cardNumber.required',
+    length: 'validation.payment.cardNumber.length',
   },
   expiryDate: {
-    required: 'Enter the expiry date.',
-    format: 'Enter the expiry date as MM/YY, with a month from 01 to 12.',
-    expired: 'The card has expired.',
-    tooFar: 'Enter a valid expiry date.',
+    required: 'validation.payment.expiryDate.required',
+    format: 'validation.payment.expiryDate.format',
+    expired: 'validation.payment.expiryDate.expired',
+    tooFar: 'validation.payment.expiryDate.tooFar',
   },
   securityCode: {
-    required: 'Enter the security code.',
-    length: 'The security code must have 3 or 4 digits.',
+    required: 'validation.payment.securityCode.required',
+    length: 'validation.payment.securityCode.length',
   },
 } satisfies Record<string, FieldMessages>;

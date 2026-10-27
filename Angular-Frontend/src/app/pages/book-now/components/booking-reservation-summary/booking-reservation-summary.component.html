@@ -1,6 +1,6 @@
 @if (quote; as quote) {
   <aside class="reservation-summary" aria-labelledby="summary-title">
-    <h2 id="summary-title">Your reservation</h2>
+    <h2 id="summary-title">{{ 'reservationContent.eyebrow' | transloco }}</h2>
     <figure>
       <img
         appImage
@@ -14,19 +14,19 @@
     </figure>
     <dl class="summary-stay">
       <div>
-        <dt>Check-in</dt>
-        <dd>{{ quote.checkInDate | date: "MMM d, yyyy" }}</dd>
+        <dt>{{ 'reservationContent.checkIn' | transloco }}</dt>
+        <dd>{{ quote.checkInDate | date: "mediumDate" }}</dd>
       </div>
       <div>
-        <dt>Check-out</dt>
-        <dd>{{ quote.checkOutDate | date: "MMM d, yyyy" }}</dd>
+        <dt>{{ 'reservationContent.checkOut' | transloco }}</dt>
+        <dd>{{ quote.checkOutDate | date: "mediumDate" }}</dd>
       </div>
       <div>
-        <dt>Guests</dt>
+        <dt>{{ 'reservationContent.guests' | transloco }}</dt>
         <dd>{{ quote.guestCount }}</dd>
       </div>
       <div>
-        <dt>Nights</dt>
+        <dt>{{ 'booking.summary.nights' | transloco }}</dt>
         <dd>{{ quote.nights }}</dd>
       </div>
     </dl>
@@ -36,7 +36,7 @@
           {{
             quote.roomType.nightlyPrice | currency: "COP" : "symbol" : "1.0-0"
           }}
-          × {{ quote.nights }} night(s)
+          × {{ (quote.nights === 1 ? 'common.nightsOne' : 'common.nightsMany') | transloco: { count: quote.nights } }}
         </dt>
         <dd>{{ quote.stayTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
       </div>
@@ -47,7 +47,7 @@
         </div>
       }
       <div class="summary-total">
-        <dt>Total</dt>
+        <dt>{{ 'reservationFinance.total' | transloco }}</dt>
         <dd>{{ quote.total | currency: "COP" : "symbol" : "1.0-2" }}</dd>
       </div>
     </dl>

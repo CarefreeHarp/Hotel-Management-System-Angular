@@ -1,6 +1,5 @@
 package com.example.demo.entities;
 
-import java.time.LocalDateTime;
 import com.example.demo.entities.enums.FolioStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,7 +40,7 @@ public class Folio {
     private Reservation reservation;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    // Estado obligatorio PENDING o PAID. Lo determina el pago inicial.
+    // Estado obligatorio PENDING, PAID o CANCELLED. Lo actualizan los pagos y las cancelaciones.
     private FolioStatus status;
     @Column(name = "issued_at", nullable = false)
     // Fecha de emisión obligatoria, asignada al crear el folio.

@@ -1,27 +1,29 @@
-<section class="catalog-table" aria-label="Hotel rooms">
+<section class="catalog-table" [attr.aria-label]="'rooms.table.label' | transloco">
   @if (rooms.length) {
     <div
       class="table-scroll"
       role="region"
-      aria-label="Rooms table"
+      [attr.aria-label]="'rooms.table.tableLabel' | transloco"
       tabindex="0"
     >
       <table>
         <thead>
           <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Room</th>
-            <th scope="col">Floor</th>
-            <th scope="col">Room type</th>
-            <th scope="col">Physical status</th>
-            <th scope="col">Activation</th>
-            <th scope="col">Actions</th>
+            <th scope="col">{{ 'common.fields.id' | transloco }}</th>
+            <th scope="col">{{ 'rooms.fields.room' | transloco }}</th>
+            <th scope="col">{{ 'rooms.fields.floor' | transloco }}</th>
+            <th scope="col">{{ 'rooms.fields.roomType' | transloco }}</th>
+            <th scope="col">{{ 'rooms.fields.physicalStatus' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.activation' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.actions' | transloco }}</th>
           </tr>
         </thead>
         <tbody>
           @for (item of rooms; track item.roomId) {
             <tr>
-              <td class="service-id" data-label="ID">#{{ item.roomId }}</td>
+              <td class="service-id" [attr.data-label]="'common.fields.id' | transloco">
+                #{{ item.roomId }}
+              </td>
               <th scope="row" class="item-heading">
                 <div class="service-cell">
                   <img
@@ -34,43 +36,44 @@
                   <a
                     class="service-name"
                     [routerLink]="[base, 'rooms', item.roomId]"
-                    >Room {{ item.number }}</a
+                    >{{ 'rooms.roomNumber' | transloco: { number: item.number } }}</a
                   >
                 </div>
               </th>
-              <td data-label="Floor">{{ item.floor }}</td>
-              <td data-label="Room type">{{ item.roomTypeName }}</td>
-              <td data-label="Status">
+              <td [attr.data-label]="'rooms.fields.floor' | transloco">{{ item.floor }}</td>
+              <td [attr.data-label]="'rooms.fields.roomType' | transloco">
+                {{ item.roomTypeName }}
+              </td>
+              <td [attr.data-label]="'common.fields.status' | transloco">
                 <span
                   class="status"
                   [class.occupied]="item.status === 'OCCUPIED'"
+                  [class.cleaning]="item.status === 'CLEANING'"
                   [class.maintenance]="item.status === 'MAINTENANCE'"
-                  >{{
-                    item.status === "AVAILABLE"
-                      ? "Available"
-                      : item.status === "OCCUPIED"
-                        ? "Occupied"
-                        : "Maintenance"
-                  }}</span
+                  >{{ 'enums.roomStatus.' + item.status | transloco }}</span
                 >
               </td>
-              <td data-label="Activation">
-                {{ item.activationStatus === "ACTIVE" ? "Active" : "Inactive" }}
+              <td [attr.data-label]="'common.fields.activation' | transloco">
+                {{ 'enums.activationStatus.' + item.activationStatus | transloco }}
               </td>
-              <td data-label="Actions">
+              <td [attr.data-label]="'common.fields.actions' | transloco">
                 <div class="actions">
-                  <a [routerLink]="[base, 'rooms', item.roomId]">View</a
-                  ><a [routerLink]="[base, 'rooms', item.roomId, 'edit']"
-                    >Edit</a
+                  <a [routerLink]="[base, 'rooms', item.roomId]">{{
+                    'common.actions.view' | transloco
+                  }}</a
+                  ><a [routerLink]="[base, 'rooms', item.roomId, 'edit']">{{
+                    'common.actions.edit' | transloco
+                  }}</a
                   ><button
                     type="button"
                     class="toggle-action"
                     (click)="toggleActivationSubject.next(item)"
                   >
                     {{
-                      item.activationStatus === "ACTIVE"
-                        ? "Deactivate"
-                        : "Activate"
+                      (item.activationStatus === 'ACTIVE'
+                        ? 'common.actions.deactivate'
+                        : 'common.actions.activate'
+                      ) | transloco
                     }}
                   </button>
                 </div>
@@ -82,8 +85,8 @@
     </div>
   } @else {
     <div class="empty">
-      <h2>No rooms yet</h2>
-      <p>Create a room to get started.</p>
+      <h2>{{ 'rooms.table.emptyTitle' | transloco }}</h2>
+      <p>{{ 'rooms.table.emptyText' | transloco }}</p>
     </div>
   }
 </section>

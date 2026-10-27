@@ -67,6 +67,22 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     long countByActivationStatus(ActivationStatus activationStatus);
 
     /*
+     * Habitaciones activas que el tablero del operario debe preparar.
+     * 1. Filtra limpieza y mantenimiento y carga el tipo en la misma consulta.
+     * 2. Ordena limpieza antes que mantenimiento y después por número.
+     */
+    @Query("""
+            SELECT room
+            FROM Room room
+            JOIN FETCH room.roomType
+            WHERE room.activationStatus = com.example.demo.entities.enums.ActivationStatus.ACTIVE
+              AND room.status IN (com.example.demo.entities.enums.RoomStatus.CLEANING,
+                                  com.example.demo.entities.enums.RoomStatus.MAINTENANCE)
+            ORDER BY room.status, room.number
+            """)
+    List<Room> findToPrepare();
+
+    /*
      * 1. Une habitaciones activas e inactivas con su tipo.
      * 2. Arma los DTO y los ordena por número de habitación.
      */

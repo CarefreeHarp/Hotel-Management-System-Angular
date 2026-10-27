@@ -1,5 +1,13 @@
 @use "../../../styles/reservation-page";
 
+.reservation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
 .cash-payment-panel {
   display: grid;
   gap: 0.75rem;

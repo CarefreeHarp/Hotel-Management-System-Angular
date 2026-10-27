@@ -42,7 +42,7 @@ public class RoomType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_type_id")
-    // Identificador del tipo de habitación. Restricciones: Clave primaria única y autogenerada. Se conserva el identificador de la ruta al actualizar.
+    // Identificador del tipo de habitación. Restricciones: Clave primaria única y autogenerada. Se conserva el id de la ruta al editar.
     private Integer roomTypeId;
     @Column(nullable = false, unique = true, length = 50)
     @NotBlank(message = "Enter the room type name.")

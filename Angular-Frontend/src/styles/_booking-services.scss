@@ -373,6 +373,10 @@
 
   /* VISTA TABLA & SWITCHER DE VISTAS */
   .view-mode-switcher {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.25rem;
     border: 1px solid rgba(184, 140, 90, 0.3);
     border-radius: 999px;
     overflow: hidden;

@@ -69,7 +69,7 @@ public class OperatorController {
 
     @GetMapping("/login")
     @Operation(summary = "Iniciar sesión como operador", description = "Recibe el correo y la contraseña como parámetros de la URL (?email=&password=) y devuelve el operador.")
-    public OperatorDTO login(@RequestParam @NotBlank(message = "Enter your email address.") String email,
+    public OperatorDTO loginOperator(@RequestParam @NotBlank(message = "Enter your email address.") String email,
             @RequestParam @NotBlank(message = "Enter your password.") String password) {
         return service.login(email, password);
     }

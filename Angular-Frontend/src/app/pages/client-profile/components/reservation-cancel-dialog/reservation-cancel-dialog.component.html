@@ -6,14 +6,14 @@
   (cancel)="dismiss($event)"
 >
   <header>
-    <p class="eyebrow">My reservations</p>
-    <h2 id="cancel-reservation-title">Cancel reservation {{ reservationCode }}?</h2>
+    <p class="eyebrow">{{ 'reservationHistory.clientTitle' | transloco }}</p>
+    <h2 id="cancel-reservation-title">{{ 'profile.cancel.title' | transloco: { code: reservationCode } }}</h2>
   </header>
   <p id="cancel-reservation-description">
-    Your reservation will be marked as cancelled. All payments for your stay and associated services will be fully refunded to your card, excluding amounts already refunded. Your reservation and financial history will be kept.
+    {{ 'profile.cancel.description' | transloco }}
   </p>
   <form (ngSubmit)="confirmCancellation()">
-    <label for="cancellation-confirmation">Type <strong class="confirmation-phrase">&quot;{{ confirmationPhrase }}&quot;</strong> to confirm.</label>
+    <label for="cancellation-confirmation">{{ 'profile.cancel.typeBefore' | transloco }} <strong class="confirmation-phrase">&quot;{{ confirmationPhrase }}&quot;</strong> {{ 'profile.cancel.typeAfter' | transloco }}</label>
     <input
       id="cancellation-confirmation"
       name="confirmation"
@@ -27,8 +27,8 @@
       <p class="warning" role="alert">{{ errorMessage }}</p>
     }
     <footer>
-      <button appButton type="button" variant="secondary" autofocus [disabled]="busy" (click)="dismiss()">Keep reservation</button>
-      <button appButton type="submit" variant="danger" [disabled]="busy || confirmationText !== confirmationPhrase">{{ busy ? 'Cancelling…' : 'Cancel' }}</button>
+      <button appButton type="button" variant="secondary" autofocus [disabled]="busy" (click)="dismiss()">{{ 'profile.cancel.keep' | transloco }}</button>
+      <button appButton type="submit" variant="danger" [disabled]="busy || confirmationText !== confirmationPhrase">{{ (busy ? 'profile.cancel.cancelling' : 'common.actions.cancel') | transloco }}</button>
     </footer>
   </form>
 </dialog>

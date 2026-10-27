@@ -9,32 +9,32 @@
     @if (roomType$ | async; as type) {
       <app-page-heading
         [title]="type.name"
-        description="Shared gallery and commercial information for rooms in this category."
+        [description]="'roomTypes.detail.description' | transloco"
       >
         @if (adminArea) {
           <a
             appButton
             [routerLink]="[base, 'room-types', type.roomTypeId, 'edit']"
-            >Edit room type</a
+            >{{ 'roomTypes.detail.edit' | transloco }}</a
           >
         } @else {
           <a
             appButton
             routerLink="/book-now"
             [queryParams]="{ auth: authParams.auth, step: 'dates' }"
-            >Check availability</a
+            >{{ 'roomTypes.detail.checkAvailability' | transloco }}</a
           >
         }
       </app-page-heading>
       @if (saved$ | async) {
-        <p class="saved-alert" role="status">Room type saved successfully.</p>
+        <p class="saved-alert" role="status">{{ 'roomTypes.detail.saved' | transloco }}</p>
       }
       <app-room-type-info [roomType]="type" />
       @if (type.secondaryPhotos.length) {
         <app-gallery [name]="type.name" [photos]="type.secondaryPhotos" />
       }
     } @else {
-      <app-skeleton variant="detail" label="Loading room type..." />
+      <app-skeleton variant="detail" [label]="'roomTypes.detail.loading' | transloco" />
     }
   </div>
 </main>

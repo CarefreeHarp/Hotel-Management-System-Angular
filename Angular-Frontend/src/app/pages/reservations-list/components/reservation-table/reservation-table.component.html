@@ -1,18 +1,18 @@
-<section class="catalog-table" aria-label="Reservations table">
+<section class="catalog-table" [attr.aria-label]="'reservations.list.title' | transloco">
   <div class="table-scroll">
     <table>
       <caption class="sr-only">
-        All guest reservations
+        {{ 'reservations.table.caption' | transloco }}
       </caption>
       <thead>
         <tr>
-          <th scope="col">Booking</th>
-          <th scope="col">Guest</th>
-          <th scope="col">Stay</th>
-          <th scope="col">Room</th>
-          <th scope="col">Guests</th>
-          <th scope="col">Status</th>
-          <th scope="col">Actions</th>
+          <th scope="col">{{ 'reservations.fields.booking' | transloco }}</th>
+          <th scope="col">{{ 'reservations.fields.guest' | transloco }}</th>
+          <th scope="col">{{ 'reservations.fields.stay' | transloco }}</th>
+          <th scope="col">{{ 'reservations.fields.room' | transloco }}</th>
+          <th scope="col">{{ 'reservations.fields.guests' | transloco }}</th>
+          <th scope="col">{{ 'common.fields.status' | transloco }}</th>
+          <th scope="col">{{ 'common.fields.actions' | transloco }}</th>
         </tr>
       </thead>
       <tbody>
@@ -28,10 +28,10 @@
                 {{ item.createdAt | date: "MMM d, y" }}</small
               >
             </th>
-            <td data-label="Guest">
-              {{ item.clientName?.trim() || "Deleted guest" }}
+            <td [attr.data-label]="'reservations.fields.guest' | transloco">
+              {{ item.clientName?.trim() || ('common.deletedGuest' | transloco) }}
             </td>
-            <td data-label="Stay">
+            <td [attr.data-label]="'reservations.fields.stay' | transloco">
               <time [attr.datetime]="item.checkInDate">{{
                 item.checkInDate | date: "MMM d, y"
               }}</time>
@@ -39,22 +39,29 @@
               <time [attr.datetime]="item.checkOutDate">{{
                 item.checkOutDate | date: "MMM d, y"
               }}</time
-              ><small>{{ nights(item) }} night(s)</small>
+              ><small>{{
+                (nights(item) === 1 ? 'common.nightsOne' : 'common.nightsMany')
+                  | transloco: { count: nights(item) }
+              }}</small>
             </td>
-            <td data-label="Room">
-              {{ item.roomTypeName ?? "Unassigned"
-              }}<small>Room {{ item.roomNumber ?? "—" }}</small>
+            <td [attr.data-label]="'reservations.fields.room' | transloco">
+              {{ item.roomTypeName ?? ('common.unassigned' | transloco)
+              }}<small>{{
+                'rooms.roomNumber' | transloco: { number: item.roomNumber ?? '—' }
+              }}</small>
             </td>
-            <td data-label="Guests">{{ item.guestCount }}</td>
-            <td data-label="Status">
+            <td [attr.data-label]="'reservations.fields.guests' | transloco">
+              {{ item.guestCount }}
+            </td>
+            <td [attr.data-label]="'common.fields.status' | transloco">
               <span class="status-badge">{{
-                item.status.replace("_", " ").toLowerCase()
+                'enums.reservationStatus.' + item.status | transloco
               }}</span>
             </td>
             <td class="actions-cell">
               <div class="actions">
                 <a [routerLink]="[base, 'reservations', item.reservationId]"
-                  >View<span class="sr-only">
+                  >{{ 'common.actions.view' | transloco }}<span class="sr-only">
                     {{ item.reservationCode }}</span
                   ></a
                 ><a
@@ -64,7 +71,7 @@
                     item.reservationId,
                     'edit',
                   ]"
-                  >Edit<span class="sr-only">
+                  >{{ 'common.actions.edit' | transloco }}<span class="sr-only">
                     {{ item.reservationCode }}</span
                   ></a
                 ><button
@@ -72,7 +79,8 @@
                   [disabled]="busy"
                   (click)="deleteRecordSubject.next(item.reservationId)"
                 >
-                  Delete<span class="sr-only"> {{ item.reservationCode }}</span>
+                  {{ 'common.actions.delete' | transloco
+                  }}<span class="sr-only"> {{ item.reservationCode }}</span>
                 </button>
               </div>
             </td>
@@ -80,7 +88,7 @@
         } @empty {
           <tr>
             <td class="empty" colspan="7">
-              No reservations match your search.
+              {{ 'reservations.table.empty' | transloco }}
             </td>
           </tr>
         }

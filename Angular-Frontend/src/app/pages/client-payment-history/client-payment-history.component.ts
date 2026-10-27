@@ -2,12 +2,13 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { forkJoin, of, switchMap } from 'rxjs';
 import { ButtonComponent } from '../../components/button/button.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { PageHeadingComponent } from '../../components/page-heading/page-heading.component';
 import { SkeletonComponent } from '../../components/skeleton/skeleton.component';
-import { ReservationDetails } from '../../models/booking';
+import { CLIENT_SELF_SERVICE, ReservationDetails } from '../../models/booking';
 import { ClientDetailDTO } from '../../models/dto/client-detail-dto';
 import { ClientService } from '../../services/client.service';
 import { ReservationService } from '../../services/reservation.service';
@@ -41,6 +42,7 @@ interface MoneyMovement {
     PageHeadingComponent,
     RouterLink,
     SkeletonComponent,
+    TranslocoPipe,
   ],
   templateUrl: './client-payment-history.component.html',
   styleUrl: './client-payment-history.component.scss',
@@ -56,15 +58,11 @@ export class ClientPaymentHistoryComponent implements OnInit {
   movements: MoneyMovement[] = [];
   selectedFilter: MovementFilter = 'all';
   isLoading = true;
-  totalPaid = 0;
-  totalRefunded = 0;
+  // Texto fijo que envía el backend cuando el pago lo hizo el propio cliente.
+  readonly selfService = CLIENT_SELF_SERVICE;
 
   get authParams(): { auth?: number } {
     return clientQuery(this.route);
-  }
-
-  get netPaid(): number {
-    return this.totalPaid - this.totalRefunded;
   }
 
   get filteredMovements(): MoneyMovement[] {
@@ -98,16 +96,8 @@ export class ClientPaymentHistoryComponent implements OnInit {
     });
   }
 
-  reasonLabel(reason: string): string {
-    if (reason === 'MODIFICATION') return 'Reservation change';
-    if (reason === 'CANCELLATION') return 'Cancellation';
-    return reason.replaceAll('_', ' ').toLowerCase();
-  }
-
   private buildHistory(history: ReservationDetails[]): void {
     const movements: MoneyMovement[] = [];
-    let paidCents = 0;
-    let refundedCents = 0;
 
     for (const detail of history) {
       const reservationId = detail.reservation.reservationId;
@@ -125,7 +115,6 @@ export class ClientPaymentHistoryComponent implements OnInit {
           status: payment.status,
           operatorName: payment.operatorName,
         });
-        if (payment.status === 'APPROVED') paidCents += Math.round(payment.amount * 100);
       }
       for (const refund of detail.refunds) {
         movements.push({
@@ -141,16 +130,12 @@ export class ClientPaymentHistoryComponent implements OnInit {
           operatorName: refund.operatorName,
           reason: refund.reason,
         });
-        if (refund.status === 'APPROVED') refundedCents += Math.round(refund.amount * 100);
       }
     }
 
-    // Las fechas del backend son ISO locales; ordenarlas como texto deja primero la más reciente.
+    // Las fechas del backend son ISO locales. ordenarlas como texto deja primero la más reciente.
     this.movements = movements.sort((first, second) =>
       second.date.localeCompare(first.date) || second.id - first.id,
     );
-    // Se suman centavos para evitar pequeñas diferencias al sumar decimales de JavaScript.
-    this.totalPaid = paidCents / 100;
-    this.totalRefunded = refundedCents / 100;
   }
 }

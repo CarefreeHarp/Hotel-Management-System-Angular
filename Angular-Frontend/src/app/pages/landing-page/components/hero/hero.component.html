@@ -4,7 +4,7 @@
     appImage
     imageWidth="1600"
     src="/images/landing-page/hero_lobby-1600.webp"
-    [alt]="'Main lobby of ' + hotelName"
+    [alt]="'landing.hero.imageAlt' | transloco: { hotel: hotelName }"
     class="hero-image"
   />
   <div class="hero-veil" aria-hidden="true"></div>
@@ -13,16 +13,18 @@
 
   <aside
     class="hero-card fade-in"
-    [attr.aria-label]="'Welcome to ' + hotelName"
+    [attr.aria-label]="'landing.hero.cardLabel' | transloco: { hotel: hotelName }"
   >
-    <p class="eyebrow">Welcome</p>
-    <p class="hero-card-headline">Welcome<br />to Atlan</p>
+    <p class="eyebrow">{{ 'landing.hero.eyebrow' | transloco }}</p>
+    <p class="hero-card-headline">
+      {{ 'landing.hero.headlineStart' | transloco }}<br />{{ 'landing.hero.headlineEnd' | transloco }}
+    </p>
     <button type="button" class="btn btn-gold" (click)="scrollToHotel()">
-      Explore hotel
+      {{ 'landing.hero.explore' | transloco }}
     </button>
   </aside>
 
   <p class="hero-meta">
-    <span>{{ location }}</span>
+    <span>{{ 'app.city' | transloco }}</span>
   </p>
 </section>

@@ -37,7 +37,7 @@ public class ServiceController {
 
     @GetMapping("/catalog")
     @Operation(summary = "Catálogo de servicios", description = "Devuelve solo los servicios activos, con los datos que ven los huéspedes.")
-    public List<ServiceCatalogDTO> listCatalog() {
+    public List<ServiceCatalogDTO> listServiceCatalog() {
         return service.listCatalog();
     }
 

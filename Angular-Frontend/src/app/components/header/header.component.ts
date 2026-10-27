@@ -2,6 +2,7 @@ import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { catchError, fromEvent, of, switchMap } from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { ClientService } from '../../services/client.service';
@@ -16,6 +17,7 @@ import { HeaderMenuComponent } from './components/header-menu/header-menu.compon
     AsyncPipe,
     NgTemplateOutlet,
     HeaderMenuComponent,
+    TranslocoPipe,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -45,7 +47,6 @@ export class HeaderComponent {
   isScrolled = false;
 
   constructor() {
-    // fromEvent convierte los eventos del navegador en un flujo que termina al destruir el componente.
     fromEvent(window, 'scroll').pipe(takeUntilDestroyed()).subscribe(() => this.updateScroll());
     fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => this.updateHeaderLayout());
   }

@@ -1,49 +1,47 @@
 <app-admin-header />
 <main class="room-types-page-main">
-  <span class="page-watermark" aria-hidden="true">Admin</span>
+  <span class="page-watermark" aria-hidden="true">{{ 'administrators.detail.watermark' | transloco }}</span>
   <div class="page-container">
     <header class="catalog-heading">
       <div>
-        <p class="eyebrow">Atlan Suites · Administration</p>
-        <h1>Admin Panel</h1>
+        <p class="eyebrow">{{ 'adminPanel.eyebrow' | transloco }}</p>
+        <h1>{{ 'adminHeader.adminPanel' | transloco }}</h1>
         <p>
-          Welcome, <strong>{{ administratorName }}</strong
-          >. Create, edit and manage the information shown across Atlan Suites
-          from one place.
+          {{ 'adminPanel.greeting' | transloco }} <strong>{{ administratorName }}</strong
+          >. {{ 'adminPanel.intro' | transloco }}
         </p>
       </div>
     </header>
 
     @if (loadError) {
       <p class="notice" role="alert">
-        The totals could not be loaded. Check that the Spring Boot backend is
-        running at localhost:8080.
+        {{ 'adminPanel.loadError' | transloco }}
       </p>
     }
 
-    <section class="panel-grid" aria-label="Manageable sections">
+    <section class="panel-grid" [attr.aria-label]="'adminPanel.sectionsLabel' | transloco">
       @for (card of cards; track card.key) {
         <article class="panel-card">
           <div class="panel-card__top">
-            <h2 class="panel-card__title">{{ card.title }}</h2>
+            <h2 class="panel-card__title">{{ card.titleKey | transloco }}</h2>
             <span class="panel-card__count">
               @if (loading) {
-                <app-skeleton variant="stat" label="Loading total..." />
+                <app-skeleton variant="stat" [label]="'adminPanel.loadingTotal' | transloco" />
               } @else {
                 {{ counts?.[card.key] ?? "–" }}
               }
             </span>
           </div>
-          <p class="panel-card__desc">{{ card.description }}</p>
+          <p class="panel-card__desc">{{ card.descriptionKey | transloco }}</p>
           <div class="panel-card__actions">
             <a appButton [routerLink]="[base, card.path]"
-              >Manage {{ card.title.toLowerCase() }}</a
+              >{{ 'adminPanel.manage' | transloco: { section: (card.titleKey | transloco).toLowerCase() } }}</a
             >
-            @if (card.createLabel) {
+            @if (card.createLabelKey) {
               <a
                 class="panel-card__create"
                 [routerLink]="[base, card.path, 'new']"
-                >+ {{ card.createLabel }}</a
+                >+ {{ card.createLabelKey | transloco }}</a
               >
             }
           </div>

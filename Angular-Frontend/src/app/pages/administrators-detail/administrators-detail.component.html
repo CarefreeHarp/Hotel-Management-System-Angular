@@ -2,22 +2,22 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <app-skeleton variant="detail" label="Loading administrator…" />
+      <app-skeleton variant="detail" [label]="'administrators.detail.loading' | transloco" />
     } @else {
       @if (item; as administrator) {
         <app-page-heading
-          eyebrow="Administrator profile"
+          [eyebrow]="'administrators.detail.eyebrow' | transloco"
           [title]="administrator.name"
-          description="Account details registered in the administration portal."
+          [description]="'administrators.detail.description' | transloco"
           ><a
             appButton
             [routerLink]="[base, 'administrators', administrator.adminId, 'edit']"
-            >Edit administrator</a
+            >{{ 'administrators.detail.edit' | transloco }}</a
           ></app-page-heading
         >
         @if (saved) {
           <p class="saved-alert" role="status">
-            Administrator saved successfully.
+            {{ 'administrators.detail.saved' | transloco }}
           </p>
         }
         <app-administrator-info

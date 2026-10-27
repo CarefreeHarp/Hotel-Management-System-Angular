@@ -6,25 +6,26 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <app-skeleton variant="form" label="Loading form…" />
+      <app-skeleton variant="form" [label]="'common.loadingForm' | transloco" />
     } @else {
       <app-page-heading
-        [eyebrow]="isProfile ? 'My profile' : 'Client management'"
+        [eyebrow]="(isProfile ? 'clients.form.profileEyebrow' : 'clients.detail.eyebrow') | transloco"
         [title]="
-          isProfile
-            ? 'Edit profile'
+          (isProfile
+            ? 'clients.form.editProfile'
             : isCreateMode
-              ? 'Create client'
-              : 'Edit client'
+              ? 'clients.form.createTitle'
+              : 'clients.form.editTitle'
+          ) | transloco
         "
-        description="Enter the client profile and contact information."
+        [description]="'clients.form.description' | transloco"
       >
         <a
           appButton
           variant="secondary"
           [queryParams]="isProfile ? authParams : {}"
           [routerLink]="isProfile ? ['/profile'] : [base, 'clients']"
-          >{{ isProfile ? "Back to profile" : "Back to list" }}</a
+          >{{ (isProfile ? 'clients.form.backToProfile' : 'common.actions.backToList') | transloco }}</a
         >
       </app-page-heading>
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
@@ -36,13 +37,14 @@
         <div class="form-actions">
           <button appButton type="submit" [disabled]="isSaving">
             {{
-              isSaving
-                ? "Saving…"
+              (isSaving
+                ? 'common.saving'
                 : isCreateMode
-                  ? "Create client"
+                  ? 'clients.form.create'
                   : isProfile
-                    ? "Save profile"
-                    : "Save client"
+                    ? 'clients.form.saveProfile'
+                    : 'clients.form.save'
+              ) | transloco
             }}
           </button>
           <a
@@ -56,12 +58,12 @@
                   ? [base, 'clients']
                   : [base, 'clients', clientId]
             "
-            >Cancel</a
+            >{{ 'common.actions.cancel' | transloco }}</a
           >
         </div>
         @if (submitted && form.invalid) {
           <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
+            {{ 'common.checkFields' | transloco }}
           </p>
         }
         @if (saveError) {

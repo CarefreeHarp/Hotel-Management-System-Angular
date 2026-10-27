@@ -1,6 +1,5 @@
 package com.example.demo.entities;
 
-import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +12,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,12 +21,7 @@ import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-/**
- * Calificación de una estadía pasada, una por reserva. El cliente y el tipo de
- * habitación se obtienen de la reserva, así que la calificación se conserva aunque
- * el cliente borre su cuenta. Que la reserva esté CHECKED_OUT y sea del propio
- * cliente lo revisa el servicio al calificar.
- */
+/** Calificación persistida de una reserva. DataLoader crea ejemplos. La selección de estrellas en la interfaz es local y no expone un endpoint de guardado. */
 @Data
 @Entity
 @Table(name = "rating")

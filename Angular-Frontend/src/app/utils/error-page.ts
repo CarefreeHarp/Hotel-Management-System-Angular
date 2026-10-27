@@ -11,9 +11,15 @@ export type ErrorPageCode = 400 | 404 | 500 | 503;
 
 /** Pantalla que corresponde a un fallo al cargar la información principal de una página. */
 export function errorPageCode(error: unknown): ErrorPageCode {
-  if (!(error instanceof HttpErrorResponse)) return 500;
-  if (error.status === 0) return 503;
-  if (error.status >= 500) return 500;
+  if (!(error instanceof HttpErrorResponse)) {
+    return 500;
+  }
+  if (error.status === 0) {
+    return 503;
+  }
+  if (error.status >= 500) {
+    return 500;
+  }
   return error.status === 404 ? 404 : 400;
 }
 

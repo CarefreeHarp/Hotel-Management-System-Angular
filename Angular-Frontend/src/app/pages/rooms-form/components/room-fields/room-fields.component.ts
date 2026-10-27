@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
 import { RoomTypeOptionDTO } from '../../../../models/dto/room-type-option-dto';
 import { ActivationStatus } from '../../../../models/enums/activation-status';
@@ -8,7 +9,7 @@ import { ROOM_MESSAGES } from '../../../../utils/form-messages';
 
 @Component({
   selector: 'app-room-fields',
-  imports: [ReactiveFormsModule, FormFieldComponent],
+  imports: [ReactiveFormsModule, FormFieldComponent, TranslocoPipe],
   templateUrl: './room-fields.component.html',
   styleUrl: './room-fields.component.scss',
 })
@@ -23,11 +24,7 @@ export class RoomFieldsComponent {
   }>;
   @Input({ required: true }) roomTypes: RoomTypeOptionDTO[] = [];
   @Input() submitted = false;
-  readonly statuses = [
-    RoomStatus.AVAILABLE,
-    RoomStatus.OCCUPIED,
-    RoomStatus.MAINTENANCE,
-  ];
+  readonly statuses = Object.values(RoomStatus);
   protected readonly messages = ROOM_MESSAGES;
   invalid(control: FormControl): boolean {
     return control.invalid && (control.touched || this.submitted);

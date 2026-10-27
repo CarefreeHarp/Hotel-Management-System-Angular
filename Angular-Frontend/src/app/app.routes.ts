@@ -23,8 +23,8 @@ import { RoomsListComponent } from './pages/rooms-list/rooms-list.component';
 
 import { AdminPanelComponent } from './pages/admin-panel/admin-panel.component';
 import { AuthPageComponent } from './pages/auth-page/auth-page.component';
-import { ClientProfileComponent } from './pages/client-profile/client-profile.component';
 import { ClientPaymentHistoryComponent } from './pages/client-payment-history/client-payment-history.component';
+import { ClientProfileComponent } from './pages/client-profile/client-profile.component';
 import { ClientServicesDetailComponent } from './pages/client-services-detail/client-services-detail.component';
 import { ClientServicesListComponent } from './pages/client-services-list/client-services-list.component';
 
@@ -32,6 +32,7 @@ import { BookNowComponent } from './pages/book-now/book-now.component';
 import { ReservationDetailComponent } from './pages/reservation-detail/reservation-detail.component';
 
 import { ErrorPageComponent } from './pages/error-page/error-page.component';
+import { FrontDeskComponent } from './pages/front-desk/front-desk.component';
 import { ReservationFormComponent } from './pages/reservation-form/reservation-form.component';
 import { ReservationsListComponent } from './pages/reservations-list/reservations-list.component';
 
@@ -100,7 +101,9 @@ export const routes: Routes = [
   {
     path: 'operator/:operatorId',
     children: [
-      { path: '', component: OperatorsDetailComponent },
+      // El tablero es el inicio del operario, como el panel del administrador.
+      { path: '', component: FrontDeskComponent },
+      { path: 'profile', component: OperatorsDetailComponent },
       { path: 'reservations', component: ReservationsListComponent },
       { path: 'reservations/:id/edit', component: ReservationFormComponent },
       { path: 'reservations/:id', component: ReservationDetailComponent },

@@ -37,7 +37,7 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id")
-    // Identificador interno de la habitación. Restricciones: Clave primaria única y autogenerada. Se conserva el identificador de la ruta al actualizar.
+    // Identificador interno de la habitación. Restricciones: Clave primaria única y autogenerada. Se conserva el id de la ruta al editar.
     private Integer roomId;
     @Column(name = "room_number", nullable = false, unique = true)
     @NotNull(message = "Enter the room number.")
@@ -54,7 +54,7 @@ public class Room {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @NotNull(message = "Select the room status.")
-    // Estado actual del registro. Restricciones: Obligatorio. Enum AVAILABLE, OCCUPIED o MAINTENANCE.
+    // Estado actual del registro. Restricciones: Obligatorio. Enum AVAILABLE, OCCUPIED, CLEANING o MAINTENANCE.
     private RoomStatus status;
     @ManyToOne(optional = false)
     @JoinColumn(name = "room_type_id", nullable = false)

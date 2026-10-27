@@ -1,0 +1,91 @@
+// Tablas del tablero del operario: mismas filas y tarjetas móviles que las tablas del personal.
+@use "staff-table";
+
+.booking-code,
+.room-number {
+  color: #654a32;
+  font-weight: 700;
+}
+
+.booking-code:hover {
+  color: var(--color-gold);
+}
+
+small {
+  display: block;
+  margin-top: 0.3rem;
+  font-weight: 400;
+  color: #59616b;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+
+.chip {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 2rem;
+  color: #2e343b;
+  background: #afcfe345;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+// Mismos colores que los estados de la tabla de habitaciones.
+.chip--ready {
+  color: #276144;
+  background: #e2efe7;
+}
+
+.chip--cleaning {
+  color: #1f5670;
+  background: #dcebf4;
+}
+
+.chip--warning,
+.chip--maintenance {
+  color: #806015;
+  background: #fff3cd;
+}
+
+.chip--alert {
+  color: #a42c2c;
+  background: #fbe5e2;
+}
+
+.balance {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.actions .desk-action {
+  color: #0c1218;
+  background: #d3ae7b;
+  border-color: #d3ae7b;
+  font-weight: 700;
+}
+
+.actions .desk-action:hover:not(:disabled) {
+  background: #e0bd8c;
+}
+
+.actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.waiting {
+  color: #59616b;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 720px) {
+  td.empty {
+    grid-column: 1 / -1;
+  }
+}

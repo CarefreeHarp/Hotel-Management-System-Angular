@@ -2,14 +2,16 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (loading) {
-      <app-skeleton variant="form" label="Loading room information..." />
+      <app-skeleton variant="form" [label]="'rooms.form.loading' | transloco" />
     } @else {
       <app-page-heading
-        eyebrow="Room catalog"
-        [title]="isCreateMode ? 'Create room' : 'Edit room'"
-        description="Define the room number, floor, status and room type."
+        [eyebrow]="'rooms.detail.eyebrow' | transloco"
+        [title]="(isCreateMode ? 'rooms.form.createTitle' : 'rooms.form.editTitle') | transloco"
+        [description]="'rooms.form.description' | transloco"
       >
-        <a appButton variant="secondary" [routerLink]="[base, 'rooms']">Back to list</a>
+        <a appButton variant="secondary" [routerLink]="[base, 'rooms']">{{
+          'common.actions.backToList' | transloco
+        }}</a>
       </app-page-heading>
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
         <app-room-fields
@@ -25,14 +27,19 @@
             [disabled]="saving || !roomTypes.length"
           >
             {{
-              saving ? "Saving..." : isCreateMode ? "Create room" : "Save room"
+              (saving
+                ? 'common.saving'
+                : isCreateMode
+                  ? 'rooms.form.create'
+                  : 'rooms.form.save'
+              ) | transloco
             }}
           </button>
           <a
             appButton
             variant="secondary"
             [routerLink]="isCreateMode ? [base, 'rooms'] : [base, 'rooms', item?.roomId]"
-            >Cancel</a
+            >{{ 'common.actions.cancel' | transloco }}</a
           >
         </div>
         @if (error) {
@@ -40,15 +47,15 @@
         }
         @if (submitted && form.invalid) {
           <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
+            {{ 'common.checkFields' | transloco }}
           </p>
         }
         @if (!roomTypes.length) {
           <p class="form-alert" role="alert">
-            A room type must exist before a room can be saved.
+            {{ 'rooms.form.needsRoomType' | transloco }}
           </p>
           <a appButton variant="secondary" [routerLink]="[base, 'room-types', 'new']"
-            >Create room type</a
+            >{{ 'rooms.form.createRoomType' | transloco }}</a
           >
         }
       </form>

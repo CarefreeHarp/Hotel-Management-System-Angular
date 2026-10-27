@@ -2,7 +2,7 @@
 
 ![Atlan Suites logo](readme-assets/atlan-suites-logo.jpeg)
 
-Hotel management application built with Angular and Spring Boot. It supports public accommodation and service catalogs, reservations with optional services, simulated card payments and refunds, client reservation history, staff management and administrator reporting.
+Hotel management application built with Angular and Spring Boot. It supports public accommodation and service catalogs, reservations with optional services, simulated card payments and refunds, client reservation history, staff management, an operator front desk board and administrator reporting.
 
 ## Technology stack
 
@@ -10,6 +10,7 @@ Hotel management application built with Angular and Spring Boot. It supports pub
 | --- | --- |
 | Frontend | Angular 19 standalone components, Angular Router, TypeScript 5.7 and SCSS. Client-side rendering, with SSR disabled. |
 | Reactive state | RxJS 7.8 for HTTP composition, route-driven reads and local component events. |
+| Translations | Transloco 8.4 with JSON dictionaries per language; Angular locale data formats dates, numbers and currency. |
 | Charts | Apache ECharts 6.1.0, imported directly without an Angular wrapper. |
 | Backend | Spring Boot 4.1.0, Java 17+, Spring MVC and constructor-based dependency injection. |
 | Persistence | Spring Data JPA, Hibernate and H2. Lombok generates entity accessors. |
@@ -29,8 +30,10 @@ Angular-Frontend/
     utils/                          Shared form and navigation helpers
     app.routes.ts                   Route definitions and lazy loading
   public/                           Static runtime assets
+    i18n/                           Translation dictionaries (en.json, es.json)
     icons/                          Dashboard metric icons
     images/                         Application images
+  scripts/check-i18n.mjs            Translation checker run by make i18n
 Springboot-Backend/
   src/main/java/com/example/demo/
     controller/                     REST endpoints
@@ -69,7 +72,7 @@ The application currently uses route identifiers as user context rather than aut
 
 ## Angular composition and reactive state
 
-`AppComponent` contains `RouterOutlet`. Routed pages coordinate data loading and navigation, shared components live under `components/`, and components used by only one page live under that page. Templates and SCSS remain in external files. Only the landing page composes the public header and footer.
+`AppComponent` contains `RouterOutlet`. Routed pages coordinate data loading and navigation, shared components live under `components/`, and components used by only one page live under that page. Templates and SCSS remain in external files. Public pages compose the shared header and footer where their implemented design uses them. Staff pages use the administration header.
 
 ```mermaid
 flowchart TD
@@ -94,6 +97,36 @@ Inputs use `@Input`. Component outputs expose read-only Observables backed by lo
 
 Booking navigation uses an explicit `step` query parameter. The draft persists across steps, and date changes invalidate dependent selections. Card data is sent in the request body and never placed in the URL, stored or returned. Static files under `public/` are served from the frontend root, for example `/icons/wallet.png`.
 
+## Translations
+
+The interface is available in English, Spanish, French, Portuguese, Simplified Chinese, Russian, Arabic and Hebrew. **Language** at the end of the public header menu lists the available languages and marks the current one. Choosing another language saves its code in `localStorage` (`atlan-language`) and reloads the page; the saved choice applies to every page, including the staff area. This is the only value the application keeps in browser storage.
+
+`app.config.ts` reads the saved language before Angular starts. It configures Transloco, sets `LOCALE_ID` (for example `en-US`, `es-CO` or `ar`) and, before the first render, loads the dictionary and that language's Angular locale data, so the date, number and currency pipes follow the language. Locale data is downloaded only for the chosen language, keeping it out of the initial bundle. Arabic and Hebrew also set `dir="rtl"` on the page, and flex and grid layouts mirror automatically. English is the fallback: a key missing from another dictionary shows its English text.
+
+| Piece | Location |
+| --- | --- |
+| Available languages and the saved choice | `src/app/utils/language.ts` |
+| Dictionaries, one per language with the same keys | `public/i18n/<code>.json` |
+| HTTP loader for the dictionaries | `src/app/transloco-loader.ts` |
+| Checker for keys and hardcoded template text | `scripts/check-i18n.mjs` (`make -C Angular-Frontend i18n`) |
+
+Every visible text goes through a key. Templates use the `transloco` pipe:
+
+```html
+<h1>{{ 'rooms.list.title' | transloco }}</h1>
+<app-skeleton [label]="'rooms.list.loading' | transloco" />
+<button [attr.aria-label]="'common.closeNotification' | transloco">✕</button>
+<p>{{ 'rooms.roomNumber' | transloco: { number: room.number } }}</p>
+<span>{{ 'enums.roomStatus.' + room.status | transloco }}</span>
+<p>{{ (saving ? 'common.saving' : 'rooms.form.save') | transloco }}</p>
+```
+
+TypeScript uses `translate('key', params)` from `@jsverse/transloco` inside methods, getters, callbacks or component fields, never in module-level constants, which run before the dictionary loads. Constants and models store keys instead, and properties that hold keys end in `Key` (`labelKey`, `titleKey`). Form messages in `form-messages.ts` are keys that `FormFieldComponent` translates; its `messageParams` input fills placeholders such as `{{ years }}`.
+
+Plurals use two keys (`nightsOne`, `nightsMany`). Each enum value needs an `enums.<enumName>.<VALUE>` key. Data from the database (names, descriptions, categories) and messages written by the backend are shown as received, in English.
+
+To add a language, copy `en.json` to `public/i18n/<code>.json`, translate its values, add the language to `LANGUAGES` in `language.ts` (with its locale and writing direction), and add a loader for its Angular locale data to `LOCALE_DATA` in `app.config.ts`. ECharts writes its own accessible chart descriptions; if ECharts ships that language, declare `echarts/i18n/lang<CODE>-obj.js` in `echarts-locales.d.ts`, register it in `analytics-chart.component.ts` and list it in `allowedCommonJsDependencies` in `angular.json`. Languages ECharts does not ship (Hebrew) fall back to its English texts. `make -C Angular-Frontend i18n` reports dictionaries with missing or extra keys, keys used in code that do not exist, enum values without translation and visible text written directly in templates.
+
 ## Reservation consistency and billing
 
 | Collaborator | Responsibility |
@@ -114,21 +147,44 @@ The client profile links to **Payments & refunds**, a chronological view of paym
 
 When an edit reduces the total below net paid, the difference is recorded as an approved `MODIFICATION` refund. Existing `PAYMENT` rows remain unchanged. Previous approved refunds are deducted before calculating a new refund, including a later cancellation. Equal totals do not generate refunds. Fully covered pending reservations become confirmed; a price increase on a fully paid reservation creates an outstanding balance and returns it to pending.
 
-**Add card payment** in the client reservation detail reuses the booking card form. `POST /reservations/{id}/payments?clientId=...` accepts an amount and transient card details, validates the owner and the current balance under the reservation lock, and inserts a new approved `CARD` payment. Cancelled, checked-out and ended reservations cannot receive payments. The usual minimum is COP 100,000; if the remaining balance is smaller, it must be paid in full. Overpayments are rejected. Paying the full balance marks the folio paid and confirms a pending reservation. Card data is neither persisted nor returned. These are simulated operations under the existing URL-based user context, not a payment gateway or authenticated session.
+**Add card payment** in the client reservation detail reuses the booking card form. `POST /reservations/{id}/payments?clientId=...` accepts an amount and transient card details, validates the owner and the current balance under the reservation lock, and inserts a new approved `CARD` payment. Cancelled and checked-out reservations cannot receive payments, nor can pending or confirmed stays whose departure date has arrived. Checked-in guests can pay until check-out, including on the departure day or after an overdue departure. The usual minimum is COP 100,000; if the remaining balance is smaller, it must be paid in full. Overpayments are rejected. Paying the full balance marks the folio paid and confirms a pending reservation. Card data is neither persisted nor returned. These are simulated operations under the existing URL-based user context, not a payment gateway or authenticated session.
 
 An operator can choose **Receive cash payment** on a reservation's detail page. `POST /reservations/{id}/cash-payments?operatorId=...` validates the operator and the current balance under the same reservation lock, then records an approved `CASH` payment with that operator. It applies the same amount limits and accepts the exact remaining balance when below COP 100,000. The API sets the method, status and operator from server-side data; values supplied for those fields in the request body are ignored. Card and cash payments share the folio and reduce one balance. If a later edit or cancellation requires a refund, cash paid is returned as `CASH` first and any remainder as `CARD`, with both methods recorded in `REFUND`.
 
-Backend regression tests run with `./mvnw test` (Windows: `mvnw.cmd test`) against H2 in memory, independently of the local database file.
+Verification uses strict frontend type and template checks, translation checks, builds and focused runtime checks. No automated test sources or test-only dependencies are retained.
 
-Cancellation preserves the reservation, folio, prices, charges and payments. In the same locked transaction, approved payments minus existing approved refunds determine the amount to refund. Client cancellation and staff edits that set the status to `CANCELLED` share the same refund operation. It records an approved `CANCELLATION` refund with no operator, method `CARD` and empty notes. Staff edits retain their existing charge reconciliation before refunding. Repeated cancellation does not create duplicate refunds. Permanent staff deletion is a separate operation that removes the associated financial records.
+Cancellation preserves the reservation, folio, prices, charges and payments. In the same locked transaction, approved payments minus existing approved refunds determine the amount to refund. Client cancellation and staff edits that set the status to `CANCELLED` share the same refund operation. It records approved `CANCELLATION` refunds with no operator and empty notes, returning cash first and then card payments as described above. Staff edits retain their existing charge reconciliation before refunding. Repeated cancellation does not create duplicate refunds. Permanent staff deletion is a separate operation that removes the associated financial records.
 
 Net paid is approved payments minus approved refunds. Active reservation balances use contracted totals minus net paid; cancelled reservations retain their historical totals but have no outstanding balance. Billing calculations use Java decimal values, while frontend numeric values are for presentation.
+
+## Operator front desk
+
+After signing in, operators land on the front desk at `/operator/:operatorId`; their profile is at `/operator/:operatorId/profile`. `GET /front-desk` follows `FrontDeskController → FrontDeskServiceImpl → repositories` and returns four lists for the server date in one read-only, repeatable-read transaction:
+
+| List | Contents |
+| --- | --- |
+| Arrivals | Pending and confirmed reservations whose check-in is today or earlier and whose check-out has not arrived. Late arrivals are flagged. |
+| In-house guests | Checked-in reservations, nearest departure first. |
+| Pending departures | Checked-in reservations whose check-out date is today or has passed. |
+| Rooms to prepare | Active rooms in `CLEANING` or `MAINTENANCE`. Rooms assigned to a pending arrival come first. |
+
+Each stay includes its balance, computed like the reservation detail: contracted total minus net paid. The board shows an action only when it should succeed, and the server validates it again:
+
+| Action | Rule | Effect |
+| --- | --- | --- |
+| `PUT /reservations/{id}/check-in` | Confirmed reservation whose stay includes today, with its room `AVAILABLE`. | Reservation `CHECKED_IN`, room `OCCUPIED`. |
+| `PUT /reservations/{id}/check-out` | Checked-in reservation with a zero balance. | Reservation `CHECKED_OUT`, room `CLEANING`. A room in `MAINTENANCE` keeps that status. |
+| `PUT /rooms/{id}/ready` | Room in `CLEANING` or `MAINTENANCE`. | `AVAILABLE`, or `OCCUPIED` while a guest is still checked in. |
+
+Check-in and check-out lock the reservation like the other reservation changes. Rooms being cleaned remain bookable; only `MAINTENANCE` excludes a room from availability. Pending arrivals and departures with a balance link to the reservation detail with `?from=front-desk`, where the operator can receive a cash payment and return to the board. The board reloads after every action, so changes made by other operators appear and stale actions show the server's reason.
+
+The staff reservation form still changes the status manually without touching the room status; administrators adjust rooms from **Rooms** when needed. `DataLoader` adds reservations ATL-2026-0014 to ATL-2026-0019 with dates relative to the startup day, so the board always shows arrivals, in-house guests, departures with and without a balance and a room being cleaned before an arrival. `FrontDeskTest` covers the lists and the three actions.
 
 ## Reporting and Apache ECharts
 
 Accounting uses **[Apache ECharts 6.1.0](https://echarts.apache.org/handbook/en/basics/import/)** directly. The accounting route is lazy-loaded, keeping its chart code outside the initial application bundle. Only the required pie, line and bar charts, SVG renderer, grid, graphic, tooltip, legend, zoom, toolbox and accessibility modules are registered.
 
-`accounting-chart-options.ts` converts aggregate DTOs into chart options. `AnalyticsChartComponent` owns the ECharts instance and its lifecycle. It initializes rendering outside Angular's zone, resizes through `ResizeObserver`, honors reduced-motion preferences and disposes the instance and observer on destruction. Tooltips use `richText` rather than HTML. Legends, segment selection and timeline zoom provide interaction; the toolbox restores the view and exports SVG images. Semantic tables expose the same aggregate values without relying on charts.
+`accounting-chart-options.ts` converts aggregate DTOs into chart options. `AnalyticsChartComponent` owns the ECharts instance and its lifecycle. It initializes rendering outside Angular's zone, resizes through `ResizeObserver`, honors reduced-motion preferences and disposes the instance and observer on destruction. Tooltips use `richText` rather than HTML. Legends, segment selection and timeline zoom provide interaction; the toolbox restores the view and exports SVG images. Chart texts come from the translation dictionaries, and each chart starts with the ECharts locale of the current language, which writes its generated accessible description. Semantic tables expose the same aggregate values without relying on charts.
 
 `GET /accounting?from=2026-01-01&to=2027-12-31` follows `AccountingController → AccountingServiceImpl → AccountingRepository`. `AccountingDashboard` contains only financial totals, status counts, monthly trend points, rankings and stay averages. Database-side aggregation avoids transferring individual reservations or financial movements to Angular.
 
@@ -176,10 +232,10 @@ The frontend Makefile installs locked dependencies with `npm ci` when needed. Th
 
 | Command | Verification |
 | --- | --- |
-| `make -C Angular-Frontend check` | TypeScript checking and production build. |
+| `make -C Angular-Frontend check` | TypeScript checking, translation check and production build. |
 | `make -C Springboot-Backend check` | Maven clean verification lifecycle, including compilation and packaging. |
 
-The backend has JUnit/H2 regression tests; the frontend has no automated test script yet. The frontend defaults to port `4200` and the backend to `8080`; `SERVER_PORT` overrides the backend port, while frontend HTTP service URLs currently target `http://localhost:8080`.
+Neither application retains automated test sources or test-only dependencies. The frontend defaults to port `4200` and the backend to `8080`; `SERVER_PORT` overrides the backend port, while frontend HTTP service URLs currently target `http://localhost:8080`.
 
 - [Application](http://localhost:4200)
 - [Swagger UI](http://localhost:8080/swagger-ui/index.html)

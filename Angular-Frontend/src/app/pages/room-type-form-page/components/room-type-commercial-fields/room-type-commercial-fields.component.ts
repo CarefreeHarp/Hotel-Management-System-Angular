@@ -1,11 +1,12 @@
 import { Component, Input } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
 import { ROOM_TYPE_MESSAGES } from '../../../../utils/form-messages';
 import type { RoomTypeForm } from '../../room-type-form-page.component';
 
 @Component({
   selector: 'app-room-type-commercial-fields',
-  imports: [FormFieldComponent],
+  imports: [FormFieldComponent, TranslocoPipe],
   templateUrl: './room-type-commercial-fields.component.html',
   styleUrl: './room-type-commercial-fields.component.scss',
 })

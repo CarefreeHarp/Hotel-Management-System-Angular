@@ -1,8 +1,7 @@
 package com.example.demo.dto;
 
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /** Un record transporta estos datos sin setters. Spring lo convierte a JSON para Angular. */

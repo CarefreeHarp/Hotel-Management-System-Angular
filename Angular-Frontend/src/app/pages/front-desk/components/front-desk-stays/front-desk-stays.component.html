@@ -1,0 +1,136 @@
+<section class="catalog-table" [attr.aria-label]="captionKey | transloco">
+  <div class="table-scroll">
+    <table>
+      <caption class="sr-only">
+        {{ captionKey | transloco }}
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">{{ 'reservations.fields.booking' | transloco }}</th>
+          <th scope="col">{{ 'reservations.fields.room' | transloco }}</th>
+          <th scope="col">{{ 'reservations.fields.stay' | transloco }}</th>
+          <th scope="col">{{ 'reservations.fields.guests' | transloco }}</th>
+          <th scope="col">{{ 'reservationFinance.balance' | transloco }}</th>
+          @if (kind !== "in-house") {
+            <th scope="col">{{ 'frontDesk.stays.action' | transloco }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (stay of stays; track stay.reservationId) {
+          <tr>
+            <th scope="row" class="staff-person">
+              <a
+                class="booking-code"
+                [routerLink]="[base, 'reservations', stay.reservationId]"
+                [queryParams]="detailParams"
+                >{{ stay.reservationCode }}</a
+              ><small>{{ stay.guestName ?? ('common.deletedGuest' | transloco) }}</small>
+            </th>
+            <td [attr.data-label]="'reservations.fields.room' | transloco">
+              <div>
+                {{
+                  stay.roomNumber !== undefined
+                    ? ('rooms.roomNumber' | transloco: { number: stay.roomNumber })
+                    : ('common.unassigned' | transloco)
+                }}<small>{{ stay.roomTypeName ?? "—" }}</small>
+                @if (kind === "arrival") {
+                  @let room = roomTag(stay);
+                  <span class="chips"
+                    ><span class="chip {{ room.css }}">{{ room.labelKey | transloco }}</span></span
+                  >
+                }
+              </div>
+            </td>
+            <td [attr.data-label]="'reservations.fields.stay' | transloco">
+              <div>
+                <time [attr.datetime]="stay.checkInDate">{{
+                  stay.checkInDate | date: "MMM d"
+                }}</time>
+                –
+                <time [attr.datetime]="stay.checkOutDate">{{
+                  stay.checkOutDate | date: "mediumDate"
+                }}</time
+                ><small>{{
+                  (nights(stay) === 1 ? 'common.nightsOne' : 'common.nightsMany')
+                    | transloco: { count: nights(stay) }
+                }}</small>
+                @if (dateTag(stay); as tag) {
+                  <span class="chips"
+                    ><span class="chip {{ tag.css }}">{{ tag.labelKey | transloco }}</span></span
+                  >
+                }
+              </div>
+            </td>
+            <td [attr.data-label]="'reservations.fields.guests' | transloco">{{ stay.guestCount }}</td>
+            <td [attr.data-label]="'reservationFinance.balance' | transloco">
+              <div>
+                <span class="balance">{{
+                  stay.balance > 0
+                    ? (stay.balance | currency: "COP" : "symbol" : "1.0-2")
+                    : ('enums.folioStatus.PAID' | transloco)
+                }}</span>
+                @if (kind === "arrival") {
+                  <small>{{
+                    (stay.status === "PENDING" ? 'frontDesk.stays.pendingConfirmation' : 'enums.reservationStatus.CONFIRMED')
+                      | transloco
+                  }}</small>
+                }
+              </div>
+            </td>
+            @if (kind !== "in-house") {
+              <td class="actions-cell">
+                <div class="actions">
+                  @if (kind === "arrival") {
+                    @if (stay.status === "PENDING") {
+                      <a
+                        [routerLink]="[base, 'reservations', stay.reservationId]"
+                        [queryParams]="detailParams"
+                        >{{ (stay.balance > 0 ? 'frontDesk.stays.collectPayment' : 'frontDesk.stays.reviewBooking') | transloco
+                        }}<span class="sr-only"> {{ 'frontDesk.stays.forCode' | transloco: { code: stay.reservationCode } }}</span></a
+                      >
+                    } @else if (stay.roomStatus === "AVAILABLE") {
+                      <button
+                        type="button"
+                        class="desk-action"
+                        [disabled]="busy"
+                        (click)="checkInSubject.next(stay)"
+                      >
+                        {{ 'frontDesk.stays.checkIn' | transloco }}<span class="sr-only"> {{ stay.reservationCode }}</span>
+                      </button>
+                    } @else {
+                      <span class="waiting">{{ 'frontDesk.stays.waitingRoom' | transloco }}</span>
+                    }
+                  } @else if (stay.balance > 0) {
+                    <a
+                      [routerLink]="[base, 'reservations', stay.reservationId]"
+                      [queryParams]="detailParams"
+                      >{{ 'frontDesk.stays.collectBalance' | transloco }}<span class="sr-only">
+                        {{ 'frontDesk.stays.forCode' | transloco: { code: stay.reservationCode } }}</span
+                      ></a
+                    >
+                  } @else {
+                    <button
+                      type="button"
+                      class="desk-action"
+                      [disabled]="busy"
+                      (click)="checkOutSubject.next(stay)"
+                    >
+                      {{ 'frontDesk.stays.checkOut' | transloco }}<span class="sr-only"> {{ stay.reservationCode }}</span>
+                    </button>
+                  }
+                </div>
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td class="empty" [attr.colspan]="kind === 'in-house' ? 5 : 6">
+              {{ emptyMessageKey | transloco }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

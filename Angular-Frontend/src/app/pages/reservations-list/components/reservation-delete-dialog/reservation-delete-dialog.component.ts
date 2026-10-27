@@ -1,10 +1,11 @@
 import { AfterViewInit, Component, ElementRef, input, output, viewChild } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { ButtonComponent } from '../../../../components/button/button.component';
 
 /** Pide confirmación antes del borrado. El diálogo nativo limita el foco y permite cancelar con Escape. */
 @Component({
   selector: 'app-reservation-delete-dialog',
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, TranslocoPipe],
   templateUrl: './reservation-delete-dialog.component.html',
   styleUrl: './reservation-delete-dialog.component.scss',
 })

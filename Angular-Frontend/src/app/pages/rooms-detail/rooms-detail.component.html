@@ -3,25 +3,25 @@
   <div class="catalog-page__container">
     @if (state$ | async; as state) {
       @if (state.loading) {
-        <app-skeleton variant="detail" label="Loading room..." />
+        <app-skeleton variant="detail" [label]="'rooms.detail.loading' | transloco" />
       } @else {
         @if (state.room; as room) {
           <app-page-heading
-            eyebrow="Room catalog"
-            [title]="'Room ' + room.number"
+            [eyebrow]="'rooms.detail.eyebrow' | transloco"
+            [title]="'rooms.roomNumber' | transloco: { number: room.number }"
             [description]="room.roomType.name"
           >
             <a appButton [routerLink]="[base, 'rooms', room.roomId, 'edit']"
-              >Edit room</a
+              >{{ 'rooms.detail.edit' | transloco }}</a
             >
           </app-page-heading>
           @if (saved$ | async) {
-            <p class="saved-alert" role="status">Room saved successfully.</p>
+            <p class="saved-alert" role="status">{{ 'rooms.detail.saved' | transloco }}</p>
           }
           <app-room-info [room]="room" />
           @if (room.roomType.secondaryPhotos.length) {
             <app-gallery
-              [name]="'Room ' + room.number"
+              [name]="'rooms.roomNumber' | transloco: { number: room.number }"
               [photos]="room.roomType.secondaryPhotos"
             />
           }

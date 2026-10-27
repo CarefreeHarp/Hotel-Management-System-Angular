@@ -1,0 +1,1420 @@
+{
+  "app": {
+    "title": "Atlan Suites — יוקרה שקטה על המים",
+    "city": "סינגפור"
+  },
+  "common": {
+    "loading": "טוען תוכן…",
+    "actions": {
+      "view": "צפייה",
+      "edit": "עריכה",
+      "delete": "מחיקה",
+      "activate": "הפעלה",
+      "deactivate": "השבתה",
+      "cancel": "ביטול",
+      "close": "סגירה",
+      "tryAgain": "ניסיון חוזר",
+      "refresh": "רענון",
+      "backToList": "חזרה לרשימה"
+    },
+    "closeNotification": "סגירת ההתראה",
+    "fields": {
+      "email": "דוא״ל",
+      "phone": "טלפון",
+      "nationalId": "מספר תעודה מזהה",
+      "id": "מזהה",
+      "actions": "פעולות",
+      "status": "סטטוס",
+      "activation": "הפעלה",
+      "name": "שם",
+      "firstName": "שם פרטי",
+      "lastName": "שם משפחה",
+      "emailAddress": "כתובת דוא״ל",
+      "password": "סיסמה",
+      "role": "תפקיד"
+    },
+    "inactiveCount": "רשומות לא פעילות שתואמות לסינון: {{ count }}.",
+    "activation": {
+      "updated": "סטטוס ההפעלה עודכן.",
+      "error": "לא ניתן היה לשנות את סטטוס ההפעלה."
+    },
+    "deletedGuest": "אורח שנמחק",
+    "unassigned": "לא הוקצה",
+    "nightsOne": "לילה אחד",
+    "nightsMany": "{{ count }} לילות",
+    "guestsOne": "אורח אחד",
+    "guestsMany": "{{ count }} אורחים",
+    "hotelBranch": "Atlan Suites, סניף סינגפור",
+    "staffEyebrow": "Atlan Suites · ניהול צוות",
+    "managementEyebrow": "Atlan Suites · ניהול",
+    "idNumber": "מזהה #{{ id }}",
+    "saving": "שומר…",
+    "checkFields": "יש לבדוק את השדות המסומנים לפני השמירה.",
+    "notSpecified": "לא צוין",
+    "loadingForm": "טוען טופס…",
+    "staffManagement": "ניהול צוות",
+    "registeredDetails": "פרטים רשומים",
+    "upToChars": "עד {{ max }} תווים."
+  },
+  "account": {
+    "information": "פרטי החשבון",
+    "editDescription": "עדכנו את פרטי החשבון. הסיסמה הנוכחית נשמרת.",
+    "passwordTitle": "סיסמת החשבון",
+    "newPassword": "סיסמה לחשבון החדש",
+    "passwordHint": "בין 8 ל־255 תווים.",
+    "passwordKept": "בעריכה הסיסמה הנוכחית נשמרת.",
+    "passwordSetOnCreate": "הסיסמה נקבעת ביצירת החשבון ונשמרת בעריכה.",
+    "staffEmailUnique": "לכל חשבון צוות יש כתובת דוא״ל ייחודית.",
+    "staffEmailHint": "אסור שתהיה בשימוש בחשבון צוות אחר."
+  },
+  "enums": {
+    "reservationStatus": {
+      "PENDING": "ממתינה",
+      "CONFIRMED": "מאושרת",
+      "CHECKED_IN": "בוצעה כניסה",
+      "CHECKED_OUT": "בוצעה עזיבה",
+      "CANCELLED": "בוטלה"
+    },
+    "roomStatus": {
+      "AVAILABLE": "פנוי",
+      "OCCUPIED": "תפוס",
+      "CLEANING": "בניקיון",
+      "MAINTENANCE": "בתחזוקה"
+    },
+    "activationStatus": {
+      "ACTIVE": "פעיל",
+      "INACTIVE": "לא פעיל"
+    },
+    "folioStatus": {
+      "PENDING": "ממתין לתשלום",
+      "PAID": "שולם",
+      "CANCELLED": "בוטל"
+    },
+    "paymentStatus": {
+      "APPROVED": "אושר",
+      "PENDING": "בטיפול",
+      "REJECTED": "נדחה"
+    },
+    "paymentMethod": {
+      "CARD": "כרטיס",
+      "CASH": "מזומן"
+    },
+    "refundReason": {
+      "CANCELLATION": "ביטול",
+      "MODIFICATION": "שינוי"
+    }
+  },
+  "header": {
+    "menu": "תפריט",
+    "closeMenu": "סגירת התפריט",
+    "mainNavigation": "ניווט ראשי",
+    "nav": {
+      "home": "דף הבית",
+      "hotel": "המלון",
+      "suites": "סוויטות",
+      "services": "שירותים",
+      "catalog": "קטלוג השירותים"
+    },
+    "language": {
+      "button": "שפה",
+      "list": "שפות זמינות",
+      "current": "השפה הנוכחית"
+    },
+    "myProfile": "הפרופיל שלי",
+    "guestBadge": "אורח",
+    "login": "כניסה",
+    "bookNow": "להזמנה",
+    "logout": "יציאה"
+  },
+  "footer": {
+    "reserve": "הזמנה",
+    "bookTitleStart": "הזמינו את",
+    "bookTitleEnd": "השהות שלכם",
+    "bookNow": "להזמנה",
+    "contact": "יצירת קשר",
+    "location": "מיקום המלון",
+    "discover": {
+      "title": "גלו את Atlan",
+      "about": "אודותינו",
+      "rooms": "סוגי חדרים וסוויטות",
+      "services": "שירותים",
+      "contact": "צרו קשר"
+    },
+    "information": {
+      "title": "מידע שימושי",
+      "reservations": "הזמנות",
+      "travelGuide": "מדריך טיולים",
+      "amenities": "מתקנים",
+      "faq": "שאלות נפוצות"
+    },
+    "social": {
+      "title": "עקבו אחרינו",
+      "label": "רשתות חברתיות",
+      "instagram": "Atlan Suites באינסטגרם",
+      "facebook": "Atlan Suites בפייסבוק",
+      "youtube": "Atlan Suites ביוטיוב",
+      "x": "Atlan Suites ב־X"
+    },
+    "newsletter": {
+      "title": "קבלו השראה",
+      "text": "הירשמו לניוזלטר שלנו לסיפורים ולמבצעים העדכניים."
+    },
+    "legal": {
+      "privacy": "הודעת פרטיות",
+      "terms": "תנאי שימוש",
+      "accessibility": "נגישות"
+    },
+    "copyright": "© 2026 Atlan Suites. כל הזכויות שמורות."
+  },
+  "landing": {
+    "scrollProgress": "התקדמות הגלילה בדף",
+    "hero": {
+      "imageAlt": "הלובי הראשי של {{ hotel }}",
+      "cardLabel": "ברוכים הבאים ל־{{ hotel }}",
+      "eyebrow": "ברוכים הבאים",
+      "headlineStart": "ברוכים הבאים",
+      "headlineEnd": "ל־Atlan",
+      "explore": "גלו את המלון"
+    },
+    "video": {
+      "eyebrow": "המלון",
+      "title": "המלון ממבט רחפן",
+      "label": "מבט אווירי על Atlan Suites בסינגפור"
+    },
+    "suites": {
+      "watermarkLine1": "חדרים",
+      "watermarkLine2": "ו",
+      "watermarkLine3": "סוויטות",
+      "eyebrow": "חדרים וסוויטות",
+      "titleStart": "חדרים",
+      "titleEnd": "וסוויטות",
+      "descriptionLabel": "תיאור החדרים והסוויטות",
+      "description": "החדרים והסוויטות שלנו מעוצבים כמפלטים פרטיים ושלווים, המשלבים מרחבים נדיבים, פרטים בעבודת יד ונוחות מעודנת עם שלוות החוף. כל שהות נועדה למנוחה עמוקה, לבקרים שקטים ולפינוק ללא מאמץ.",
+      "carousel": "קרוסלת סוויטות",
+      "loading": "טוען סוויטות…",
+      "guests": "{{ count }} אורחים",
+      "fromPrice": "החל מ־{{ price }} ללילה",
+      "viewDetails": "לפרטים",
+      "loadError": "לא ניתן היה לטעון את הסוויטות.",
+      "empty": "אין כרגע סוויטות זמינות.",
+      "previous": "הסוויטה הקודמת",
+      "next": "הסוויטה הבאה"
+    },
+    "services": {
+      "title": "שירותים",
+      "featured": "שירות מומלץ",
+      "eyebrow": "מסעדות, רווחה ועוד",
+      "text": "גלו את השירותים שהופכים את השהות שלכם ב־Atlan Suites לחוויה אישית.",
+      "viewAll": "לכל השירותים",
+      "carousel": "קרוסלת שירותי המלון",
+      "loading": "טוען שירותים…",
+      "loadError": "לא ניתן היה לטעון את השירותים.",
+      "empty": "אין כרגע שירותים זמינים.",
+      "controls": "פקדי קרוסלת השירותים",
+      "previous": "השירות הקודם",
+      "next": "השירות הבא"
+    }
+  },
+  "clientInfo": {
+    "label": "פרטי הלקוח",
+    "number": "לקוח #{{ id }}"
+  },
+  "gallery": {
+    "eyebrow": "גלריה",
+    "title": "תמונות נוספות",
+    "photoAlt": "{{ name }} — תמונה נוספת {{ number }}"
+  },
+  "list": {
+    "controls": "חיפוש ותצוגה",
+    "search": "חיפוש",
+    "searchPlaceholder": "חיפוש רשומות…",
+    "all": "הכול",
+    "orderBy": "מיון לפי",
+    "clear": "ניקוי",
+    "results": "{{ count }} מתוך {{ total }} תוצאות",
+    "displayMode": "מצב תצוגה",
+    "tableView": "תצוגת טבלה",
+    "gridView": "תצוגת רשת",
+    "cardsLabel": "רשת רשומות",
+    "noMatches": "אין רשומות שתואמות לחיפוש.",
+    "sort": {
+      "idAsc": "מזהה: מהנמוך לגבוה",
+      "idDesc": "מזהה: מהגבוה לנמוך",
+      "nameAsc": "שם: א–ת",
+      "nameDesc": "שם: ת–א",
+      "priceAsc": "מחיר: מהנמוך לגבוה",
+      "priceDesc": "מחיר: מהגבוה לנמוך",
+      "capacityAsc": "תפוסה: מהנמוכה לגבוהה",
+      "capacityDesc": "תפוסה: מהגבוהה לנמוכה"
+    }
+  },
+  "pageHeading": {
+    "eyebrow": "קטלוג האירוח"
+  },
+  "photos": {
+    "title": "גלריה",
+    "description": "הוסיפו תמונה ראשית ותמונות לגלריה לפי הצורך.",
+    "mainLabel": "קישור לתמונה הראשית",
+    "additionalLabel": "קישור לתמונה נוספת {{ number }}",
+    "remove": "הסרת תמונה נוספת {{ number }}",
+    "add": "＋ הוספת תמונה",
+    "count": "{{ count }} מתוך {{ max }} תמונות נוספות"
+  },
+  "priceRange": {
+    "legend": "מחיר (COP)",
+    "minimum": "מחיר מינימלי (COP)",
+    "maximum": "מחיר מקסימלי (COP)"
+  },
+  "reservationCard": {
+    "label": "הזמנה {{ code }}",
+    "bookingNumber": "מס׳ הזמנה",
+    "bookingDate": "תאריך ההזמנה:",
+    "roomTypeAlt": "סוג החדר שהוזמן",
+    "noPhoto": "תמונת החדר אינה זמינה",
+    "totalPrice": "מחיר כולל",
+    "paid": "שולם:",
+    "refunded": "הוחזר:",
+    "dates": "תאריכי השהות",
+    "roomAndServices": "סוג חדר ושירותים",
+    "unassignedRoomType": "לא הוקצה סוג חדר",
+    "noServices": "ללא שירותים נוספים",
+    "guests": "אורחים",
+    "rateTitle": "דרגו את החוויה",
+    "rateLabel": "דרגו את החוויה",
+    "rateOne": "דירוג של כוכב אחד",
+    "rateMany": "דירוג של {{ count }} כוכבים",
+    "details": "פרטים",
+    "modify": "שינוי",
+    "cancel": "ביטול",
+    "countdown": {
+      "inProgress": "בשהות",
+      "awaitingPayment": "ממתינה לתשלום",
+      "cancelled": "בוטלה",
+      "checkOutToday": "עזיבה היום",
+      "checkOutAgoOne": "העזיבה הייתה לפני יום",
+      "checkOutAgoMany": "העזיבה הייתה לפני {{ days }} ימים",
+      "inOne": "בעוד יום",
+      "inMany": "בעוד {{ days }} ימים",
+      "checkInToday": "כניסה היום",
+      "checkInAgoOne": "הכניסה הייתה לפני יום",
+      "checkInAgoMany": "הכניסה הייתה לפני {{ days }} ימים"
+    }
+  },
+  "reservationHistory": {
+    "clientTitle": "ההזמנות שלי",
+    "staffTitle": "היסטוריית הזמנות",
+    "filtersLabel": "סינון הזמנות",
+    "filters": {
+      "all": "הכול",
+      "upcoming": "קרובות",
+      "inProgress": "בשהות",
+      "awaitingReview": "ממתינות לדירוג",
+      "awaitingPayment": "ממתינות לתשלום",
+      "cancelled": "בוטלו"
+    },
+    "guest": "אורח",
+    "empty": "לא נמצאו הזמנות.",
+    "emptyForStatus": "לא נמצאו הזמנות בסטטוס הזה.",
+    "loading": "טוען הזמנות…",
+    "loadError": "לא ניתן היה לטעון את היסטוריית ההזמנות."
+  },
+  "reservationContent": {
+    "editEyebrow": "עריכת הזמנה",
+    "eyebrow": "ההזמנה שלכם",
+    "bookingNumber": "מספר הזמנה",
+    "reservationId": "מזהה הזמנה",
+    "bookingDate": "תאריך ההזמנה",
+    "photoAlt": "מקום האירוח שהוזמן",
+    "accommodation": "מקום האירוח שלכם",
+    "stay": "השהות שלכם",
+    "checkIn": "כניסה",
+    "duration": "משך",
+    "checkOut": "עזיבה",
+    "roomDetails": "פרטי החדר",
+    "roomNumber": "מספר חדר",
+    "notAssigned": "לא הוקצה",
+    "floor": "קומה",
+    "guests": "אורחים",
+    "maxCapacity": "תפוסה מרבית",
+    "nightlyRate": "מחיר ללילה",
+    "guestInfo": "פרטי האורח",
+    "guestUnavailable": "פרטי הקשר של האורח אינם זמינים.",
+    "pricingLabel": "תמחור ההזמנה והיסטוריית התשלומים"
+  },
+  "reservationFinance": {
+    "priceDetails": "פירוט המחיר",
+    "roomNightsOne": "חדר אחד × לילה אחד",
+    "roomNightsMany": "חדר אחד × {{ count }} לילות",
+    "each": "{{ price }} ליחידה",
+    "additionalServices": "שירותים נוספים",
+    "none": "אין",
+    "total": "סה״כ",
+    "netPaid": "שולם נטו",
+    "refunded": "הוחזר",
+    "balance": "יתרה",
+    "folioTitle": "חשבון ושירותים",
+    "folio": "חשבון #{{ id }}",
+    "issued": "הונפק ב־{{ date }}",
+    "noFolio": "טרם הונפק חשבון.",
+    "quantity": "כמות: {{ quantity }}",
+    "charge": "חיוב #{{ id }}",
+    "noServices": "לא הוזמנו שירותים נוספים.",
+    "paymentsTitle": "היסטוריית תשלומים",
+    "payment": "תשלום #{{ id }}",
+    "date": "תאריך",
+    "method": "אמצעי",
+    "processedBy": "טופל על ידי",
+    "selfService": "בוצע על ידי הלקוח",
+    "noPayments": "לא נרשמו תשלומים.",
+    "refundsTitle": "היסטוריית החזרים",
+    "refund": "החזר #{{ id }}",
+    "reason": "סיבה",
+    "notes": "הערות"
+  },
+  "adminHeader": {
+    "frontDesk": "קבלה",
+    "adminPanel": "לוח ניהול",
+    "openMenu": "פתיחת התפריט",
+    "closeMenu": "סגירת התפריט",
+    "navigation": "ניווט ניהולי",
+    "myProfile": "הפרופיל שלי",
+    "logout": "יציאה",
+    "goToHotel": "מעבר לאתר המלון",
+    "sections": {
+      "clients": "לקוחות",
+      "reservations": "הזמנות",
+      "accounting": "הנהלת חשבונות",
+      "roomTypes": "סוגי חדרים",
+      "rooms": "חדרים",
+      "services": "שירותים",
+      "administrators": "מנהלים",
+      "operators": "מפעילים"
+    }
+  },
+  "clients": {
+    "list": {
+      "title": "לקוחות",
+      "eyebrow": "Atlan Suites · ניהול לקוחות",
+      "description": "צפייה בלקוחות הרשומים ב־Atlan Suites וניהולם.",
+      "create": "יצירת לקוח",
+      "loading": "טוען לקוחות…",
+      "created": "הלקוח נוצר בהצלחה.",
+      "confirmDelete": "למחוק את הלקוח \"{{ name }}\"? לא ניתן לבטל פעולה זו.",
+      "deleted": "הלקוח נמחק בהצלחה.",
+      "deleteError": "לא ניתן היה למחוק את הלקוח. נסו שוב."
+    },
+    "table": {
+      "label": "טבלת לקוחות",
+      "client": "לקוח",
+      "emptyTitle": "עדיין אין לקוחות",
+      "emptyText": "צרו לקוח כדי להתחיל."
+    },
+    "detail": {
+      "loading": "טוען לקוח…",
+      "eyebrow": "ניהול לקוחות",
+      "description": "פרופיל הלקוח ופרטי הקשר.",
+      "edit": "עריכת לקוח",
+      "saved": "הלקוח נשמר בהצלחה."
+    },
+    "form": {
+      "profileEyebrow": "הפרופיל שלי",
+      "editProfile": "עריכת פרופיל",
+      "createTitle": "יצירת לקוח",
+      "editTitle": "עריכת לקוח",
+      "description": "הזינו את פרופיל הלקוח ואת פרטי הקשר.",
+      "backToProfile": "חזרה לפרופיל",
+      "create": "יצירת הלקוח",
+      "save": "שמירת הלקוח",
+      "saveProfile": "שמירת הפרופיל",
+      "fieldsDescription": "הדוא״ל ומספר התעודה המזהה חייבים להיות ייחודיים. תמונת פרופיל היא אופציונלית.",
+      "nationalIdHint": "5 עד 20 אותיות או ספרות, ללא רווחים.",
+      "phoneHint": "7 עד 15 ספרות; אפשר להתחיל ב־+.",
+      "profilePhoto": "קישור לתמונת הפרופיל"
+    }
+  },
+  "administrators": {
+    "list": {
+      "watermark": "Admins",
+      "title": "מנהלים",
+      "description": "צפייה בחשבונות שמנהלים את Atlan Suites ובמפעילים שבאחריותם.",
+      "create": "יצירת מנהל",
+      "loading": "טוען מנהלים…",
+      "countOne": "מנהל רשום אחד",
+      "countMany": "{{ count }} מנהלים רשומים",
+      "viewOperators": "צפייה במפעילים",
+      "created": "המנהל נוצר בהצלחה.",
+      "confirmDelete": "למחוק את המנהל \"{{ name }}\"? לא ניתן לבטל פעולה זו.",
+      "deleted": "המנהל \"{{ name }}\" נמחק בהצלחה.",
+      "deleteError": "לא ניתן היה למחוק את המנהל \"{{ name }}\". נסו שוב."
+    },
+    "fields": {
+      "operators": "מפעילים",
+      "operatorsInCharge": "מפעילים באחריותו"
+    },
+    "table": {
+      "label": "טבלת מנהלים",
+      "administrator": "מנהל",
+      "emptyTitle": "עדיין אין מנהלים",
+      "emptyText": "צרו מנהל כדי להתחיל."
+    },
+    "detail": {
+      "loading": "טוען מנהל…",
+      "eyebrow": "פרופיל המנהל",
+      "description": "פרטי החשבון הרשומים בפורטל הניהול.",
+      "edit": "עריכת מנהל",
+      "saved": "המנהל נשמר בהצלחה.",
+      "information": "פרטי המנהל",
+      "watermark": "Admin",
+      "reportingLine": "כפיפות",
+      "addOperator": "הוספת מפעיל",
+      "noOperators": "עדיין אין מפעילים הכפופים למנהל הזה."
+    },
+    "form": {
+      "createTitle": "יצירת מנהל",
+      "editTitle": "עריכת מנהל",
+      "createDescription": "הזינו את פרטי חשבון המנהל החדש.",
+      "create": "יצירת המנהל",
+      "save": "שמירת המנהל",
+      "namePlaceholder": "שם המנהל"
+    }
+  },
+  "operators": {
+    "list": {
+      "title": "מפעילים",
+      "description": "צפייה במפעילים הרשומים ובמנהל האחראי על כל אחד מהם.",
+      "create": "יצירת מפעיל",
+      "loading": "טוען מפעילים…",
+      "countOne": "מפעיל רשום אחד",
+      "countMany": "{{ count }} מפעילים רשומים",
+      "viewAdministrators": "צפייה במנהלים",
+      "created": "המפעיל נוצר בהצלחה.",
+      "confirmDelete": "למחוק את המפעיל \"{{ name }}\"? לא ניתן לבטל פעולה זו.",
+      "deleted": "המפעיל \"{{ name }}\" נמחק בהצלחה.",
+      "deleteError": "לא ניתן היה למחוק את המפעיל \"{{ name }}\". נסו שוב."
+    },
+    "fields": {
+      "administrator": "מנהל",
+      "administratorInCharge": "המנהל האחראי"
+    },
+    "table": {
+      "label": "טבלת מפעילים",
+      "operator": "מפעיל",
+      "emptyTitle": "עדיין אין מפעילים",
+      "emptyText": "צרו מפעיל כדי להתחיל."
+    },
+    "detail": {
+      "loading": "טוען מפעיל…",
+      "eyebrow": "פרופיל המפעיל",
+      "description": "פרטי החשבון והכפיפות הרשומים בפורטל.",
+      "edit": "עריכת מפעיל",
+      "saved": "המפעיל נשמר בהצלחה.",
+      "information": "פרטי המפעיל"
+    },
+    "form": {
+      "createTitle": "יצירת מפעיל",
+      "editTitle": "עריכת מפעיל",
+      "createDescription": "הזינו את פרטי חשבון המפעיל החדש.",
+      "create": "יצירת המפעיל",
+      "save": "שמירת המפעיל",
+      "personalTitle": "פרטים אישיים",
+      "personalDescription": "הפרטים הדרושים לזיהוי המפעיל.",
+      "firstNamePlaceholder": "השם הפרטי של המפעיל",
+      "lastNamePlaceholder": "שם המשפחה של המפעיל",
+      "contactTitle": "פרטי קשר וכפיפות",
+      "selectAdministrator": "בחרו מנהל",
+      "reportsTo": "כל מפעיל כפוף למנהל אחד.",
+      "noAdministrators": "עדיין אין מנהלים.",
+      "createAdministratorFirst": "צרו מנהל קודם"
+    }
+  },
+  "rooms": {
+    "roomNumber": "חדר {{ number }}",
+    "list": {
+      "title": "חדרים",
+      "create": "+ הוספת חדר",
+      "loading": "טוען חדרים…",
+      "active": "חדרים פעילים",
+      "inactive": "חדרים לא פעילים"
+    },
+    "sort": {
+      "numberAsc": "חדר: מהנמוך לגבוה",
+      "numberDesc": "חדר: מהגבוה לנמוך",
+      "floorAsc": "קומה: מהנמוכה לגבוהה",
+      "floorDesc": "קומה: מהגבוהה לנמוכה"
+    },
+    "fields": {
+      "room": "חדר",
+      "type": "סוג",
+      "roomType": "סוג חדר",
+      "floor": "קומה",
+      "physicalStatus": "מצב החדר",
+      "number": "מספר",
+      "roomNumber": "מספר חדר",
+      "description": "תיאור",
+      "nightlyPrice": "מחיר ללילה",
+      "maxCapacity": "תפוסה מרבית"
+    },
+    "table": {
+      "label": "חדרי המלון",
+      "tableLabel": "טבלת חדרים",
+      "emptyTitle": "עדיין אין חדרים",
+      "emptyText": "צרו חדר כדי להתחיל."
+    },
+    "detail": {
+      "loading": "טוען חדר…",
+      "eyebrow": "קטלוג החדרים",
+      "edit": "עריכת חדר",
+      "saved": "החדר נשמר בהצלחה.",
+      "information": "פרטי החדר"
+    },
+    "form": {
+      "loading": "טוען את פרטי החדר…",
+      "createTitle": "יצירת חדר",
+      "editTitle": "עריכת חדר",
+      "description": "הגדירו את מספר החדר, הקומה, המצב וסוג החדר.",
+      "create": "יצירת החדר",
+      "save": "שמירת החדר",
+      "needsRoomType": "לפני שמירת חדר צריך להיות קיים סוג חדר.",
+      "createRoomType": "יצירת סוג חדר",
+      "selectExistingType": "בחרו סוג חדר קיים.",
+      "fieldsDescription": "כל השדות חובה. מספר החדר חייב להיות ייחודי.",
+      "numberHint": "מ־1 עד 9999.",
+      "floorHint": "מ־0 עד 200.",
+      "selectRoomType": "בחרו סוג חדר"
+    }
+  },
+  "services": {
+    "included": "כלול",
+    "list": {
+      "title": "שירותים",
+      "create": "+ הוספת שירות",
+      "loading": "טוען שירותים…",
+      "active": "שירותים פעילים",
+      "inactive": "שירותים לא פעילים"
+    },
+    "fields": {
+      "service": "שירות",
+      "category": "קטגוריה",
+      "price": "מחיר",
+      "priceCop": "מחיר (COP)",
+      "name": "שם",
+      "summary": "תקציר",
+      "description": "תיאור",
+      "duration": "משך",
+      "schedule": "שעות",
+      "location": "מיקום"
+    },
+    "table": {
+      "label": "שירותי המלון",
+      "tableLabel": "טבלת שירותים",
+      "emptyTitle": "עדיין אין שירותים",
+      "emptyText": "צרו שירות כדי להתחיל."
+    },
+    "detail": {
+      "loading": "טוען שירות…",
+      "edit": "עריכת שירות",
+      "saved": "השירות נשמר בהצלחה.",
+      "information": "פרטי השירות"
+    },
+    "form": {
+      "loading": "טוען שירות…",
+      "eyebrow": "קטלוג השירותים",
+      "createTitle": "יצירת שירות",
+      "editTitle": "עריכת שירות",
+      "description": "הגדירו את פרטי השירות, המחיר והתמונות.",
+      "photos": "תמונות השירות",
+      "create": "יצירת השירות",
+      "save": "שמירת השירות",
+      "requiredFields": "שדות חובה: שם, קטגוריה, תיאור, מחיר ותמונה ראשית.",
+      "priceHint": "מ־0 עד 99,999,999.99, עם עד שתי ספרות אחרי הנקודה.",
+      "descriptionHint": "עד 5,000 תווים."
+    }
+  },
+  "roomTypes": {
+    "list": {
+      "watermarkLine1": "סוגי",
+      "watermarkLine2": "חדרים",
+      "title": "סוגי חדרים",
+      "create": "+ הוספת סוג חדר",
+      "loading": "טוען סוגי חדרים…",
+      "toastTitle": "הקטלוג עודכן",
+      "confirmDelete": "למחוק את סוג החדר \"{{ name }}\"? לא ניתן לבטל פעולה זו.",
+      "deleted": "סוג החדר \"{{ name }}\" נמחק בהצלחה.",
+      "deleteError": "לא ניתן היה למחוק את סוג החדר \"{{ name }}\". נסו שוב."
+    },
+    "fields": {
+      "capacity": "תפוסה",
+      "nightlyRate": "מחיר ללילה",
+      "name": "שם",
+      "description": "תיאור",
+      "pricePerNight": "מחיר ללילה",
+      "pricePerNightCop": "מחיר ללילה (COP)",
+      "maxCapacity": "תפוסה מרבית"
+    },
+    "detail": {
+      "loading": "טוען סוג חדר…",
+      "description": "גלריה ומידע מסחרי משותפים לחדרים בקטגוריה הזו.",
+      "edit": "עריכת סוג חדר",
+      "checkAvailability": "בדיקת זמינות",
+      "saved": "סוג החדר נשמר בהצלחה.",
+      "information": "פרטי סוג החדר",
+      "commercial": "מידע מסחרי",
+      "mainPhotoAlt": "התמונה הראשית של {{ name }}"
+    },
+    "form": {
+      "createTitle": "יצירת סוג חדר",
+      "editTitle": "עריכת סוג חדר",
+      "createDescription": "הוסיפו אפשרות אירוח חדשה למלאי המלון.",
+      "editDescription": "הגדירו כיצד {{ name }} יופיע במלאי המלון.",
+      "photosDescription": "התמונות האלה מייצגות את כל החדרים מהסוג הזה.",
+      "create": "יצירת סוג החדר",
+      "save": "שמירת סוג החדר",
+      "commercialDescription": "שם תצוגה, תיאור, מחיר בסיס ותפוסה מותרת.",
+      "capacityHint": "מ־1 עד 10 אורחים.",
+      "descriptionHint": "עד 500 תווים.",
+      "priceHint": "גדול מאפס, עם עד שתי ספרות אחרי הנקודה."
+    },
+    "capacityFilter": {
+      "small": "1–2 אורחים",
+      "medium": "3–4 אורחים",
+      "large": "5+ אורחים"
+    },
+    "table": {
+      "preview": "תצוגה מקדימה",
+      "nameDetails": "סוג חדר ופרטים",
+      "maxGuests": "מקס׳ אורחים",
+      "guestsOne": "אורח אחד",
+      "guestsMany": "{{ count }} אורחים",
+      "perNight": "/ לילה",
+      "emptyTitle": "לא נמצאו סוגי חדרים",
+      "emptyText": "אין סוגי חדרים שתואמים לחיפוש או לסינון. נסו לאפס את הסינון.",
+      "emptyTextAdmin": "אין סוגי חדרים שתואמים לחיפוש או לסינון. נסו לאפס את הסינון או ליצור סוג חדר חדש.",
+      "clearFilters": "ניקוי כל המסננים",
+      "addNew": "+ הוספת סוג חדר חדש"
+    }
+  },
+  "reservations": {
+    "list": {
+      "title": "הזמנות",
+      "description": "שהיות האורחים, הקצאת חדרים והיסטוריית הזמנות.",
+      "loading": "טוען הזמנות…",
+      "deleted": "ההזמנה נמחקה לצמיתות.",
+      "deleteError": "לא ניתן היה למחוק את ההזמנה. נסו שוב."
+    },
+    "sort": {
+      "guestAsc": "אורח: א–ת",
+      "guestDesc": "אורח: ת–א",
+      "checkInAsc": "כניסה: הקרובה תחילה",
+      "checkInDesc": "כניסה: הרחוקה תחילה",
+      "createdAsc": "תאריך הזמנה: הישן תחילה",
+      "createdDesc": "תאריך הזמנה: החדש תחילה"
+    },
+    "fields": {
+      "booking": "הזמנה",
+      "guest": "אורח",
+      "stay": "שהות",
+      "room": "חדר",
+      "guests": "אורחים",
+      "checkInFrom": "כניסה מתאריך",
+      "checkInTo": "כניסה עד תאריך",
+      "minGuests": "מינימום אורחים"
+    },
+    "table": {
+      "caption": "כל הזמנות האורחים",
+      "empty": "אין הזמנות שתואמות לחיפוש."
+    },
+    "deleteDialog": {
+      "eyebrow": "ניהול הזמנות",
+      "title": "למחוק את הזמנה #{{ id }}?",
+      "description": "מחיקה לצמיתות מיועדת למקרים מיוחדים בלבד. בדרך כלל מספיק לשנות את הסטטוס ל״בוטלה״.",
+      "warning": "הפעולה תמחק את ההזמנה, את החשבון שלה, את החיובים ואת התשלומים.",
+      "irreversible": "לא ניתן לבטל פעולה זו.",
+      "confirm": "מחיקה לצמיתות"
+    },
+    "detail": {
+      "loading": "טוען הזמנה…",
+      "saved": "ההזמנה עודכנה בהצלחה.",
+      "paymentSaved": "התשלום אושר. היתרה שלכם עודכנה.",
+      "addCardPayment": "הוספת תשלום בכרטיס",
+      "closePayment": "סגירת טופס התשלום",
+      "adminView": "תצוגת מנהל",
+      "operatorView": "תצוגת מפעיל",
+      "backToClient": "חזרה ללקוח",
+      "backToFrontDesk": "חזרה לקבלה",
+      "backToReservations": "חזרה להזמנות",
+      "backToMyReservations": "חזרה להזמנות שלי"
+    },
+    "cash": {
+      "title": "קבלת תשלום במזומן",
+      "close": "סגירת תשלום במזומן",
+      "balance": "יתרה לתשלום: {{ balance }}",
+      "amount": "הסכום שהתקבל",
+      "hint": "מינימום {{ minimum }}. אפשר לשלם את מלוא היתרה כשהיא נמוכה מ־{{ threshold }}.",
+      "record": "רישום תשלום במזומן",
+      "recording": "רושם…",
+      "required": "הזינו את הסכום שהתקבל.",
+      "range": "הזינו סכום בין המינימום לבין היתרה לתשלום."
+    },
+    "form": {
+      "legend": "עריכת השהות והשירותים",
+      "legendStaff": "עריכת השהות, השירותים והסטטוס",
+      "save": "שמירת ההזמנה",
+      "preview": "תצוגה מקדימה של המחיר",
+      "recalculatedTotal": "סה״כ מחושב מחדש",
+      "alreadyPaid": "שולם כבר (אחרי החזרים)",
+      "refundAfterSaving": "החזר לאחר השמירה",
+      "refundNote": "אם הסכום החדש נמוך מהסכום ששולם, ההפרש יוחזר אוטומטית. העלאה עלולה ליצור יתרה חדשה לתשלום.",
+      "savedNote": "פירוט המחירים שלמטה מציג את ההזמנה השמורה עד לשמירת השינויים.",
+      "stayAndStatus": "שהות וסטטוס",
+      "roomAssigned": "חדר פיזי מוקצה אוטומטית לפי סוג החדר והתאריכים שנבחרו.",
+      "maxNightsHint": "שהות יכולה להימשך עד {{ nights }} לילות.",
+      "upToGuests": "עד {{ count }} אורחים",
+      "servicesOnlyHint": "במהלך השהייה ניתן רק להוסיף שירותים. לא ניתן להסיר שירותים קיימים או לשנות תאריכים או את מספר האורחים.",
+      "servicesDescription": "שירותים שהוזמנו בעבר שומרים על מחירם המקורי. שירותים לא פעילים נשמרים רק אם כבר נכללו.",
+      "inactiveContracted": "לא פעיל · הוזמן בעבר",
+      "contractedPrice": "המחיר שהוזמן",
+      "noServices": "אין שירותים זמינים."
+    }
+  },
+  "auth": {
+    "backHome": "חזרה לדף הבית",
+    "eyebrow": "Atlan Suites · פורטל כניסה",
+    "titles": {
+      "guestSignIn": "כניסת אורחים",
+      "guestRegistration": "הרשמת אורחים",
+      "staff": "פורטל הצוות"
+    },
+    "subtitles": {
+      "guest": "ברוכים הבאים לחוויה בלתי נשכחת. התחברו כדי לנהל את השהות והשירותים שלכם.",
+      "staff": "גישה מוגבלת למנהלי המלון ולמפעילים בלבד."
+    },
+    "selectPortal": "בחירת פורטל",
+    "portals": {
+      "guests": "אורחים",
+      "staff": "צוות המלון"
+    },
+    "signIn": "כניסה",
+    "signingIn": "מתחבר…",
+    "register": "הרשמה",
+    "registering": "נרשם…",
+    "completeRegistration": "השלמת ההרשמה",
+    "noAccount": "עדיין אין לכם חשבון?",
+    "registerHere": "הירשמו כאן",
+    "haveAccount": "כבר יש לכם חשבון אורח?",
+    "staffNotice": "גישה בלעדית לצוות המלון",
+    "verifying": "מאמת פרטי התחברות…",
+    "enterStaff": "כניסה לניהול המלון",
+    "fields": {
+      "nationalId": "מספר תעודה מזהה (ת״ז/דרכון)",
+      "profilePhoto": "קישור לתמונת פרופיל (אופציונלי)",
+      "staffEmail": "דוא״ל עבודה",
+      "staffPassword": "סיסמת צוות"
+    },
+    "placeholders": {
+      "firstName": "יוסי",
+      "lastName": "כהן",
+      "staffEmail": "admin@atlansuites.com או operator@atlansuites.com"
+    },
+    "hints": {
+      "nationalId": "5 עד 20 אותיות או ספרות",
+      "phone": "7 עד 15 ספרות, + אופציונלי",
+      "password": "לפחות 8 תווים",
+      "profilePhoto": "קישור לתמונה (אופציונלי)"
+    },
+    "demo": {
+      "title": "פרטי כניסה להדגמה:",
+      "quickTitle": "פרטי כניסה מהירים להדגמה:",
+      "fillClient": "מילוי עם Emma Thompson (אורחת)",
+      "fillAdmin": "מילוי עם Admin 1 (Admin2026!)",
+      "fillOperator": "מילוי עם Operator 1 (Operator2026!)"
+    },
+    "success": {
+      "client": "ברוכים הבאים, {{ name }}!",
+      "registered": "החשבון נוצר בהצלחה! ברוכים הבאים, {{ name }}.",
+      "staff": "הגישה אושרה בתפקיד {{ role }}: {{ name }}."
+    },
+    "errors": {
+      "checkFieldsContinue": "יש לבדוק את השדות המסומנים לפני שממשיכים.",
+      "checkFields": "יש לבדוק את השדות המסומנים.",
+      "securePassword": "הזינו סיסמה מאובטחת של 8 תווים לפחות.",
+      "staffPassword": "הזינו את סיסמת הצוות.",
+      "signInFailed": "ההתחברות נכשלה. נסו שוב.",
+      "registrationFailed": "הרשמת האורח נכשלה.",
+      "invalidClient": "הדוא״ל או הסיסמה שגויים.",
+      "invalidStaff": "פרטי ההתחברות של הצוות שגויים."
+    }
+  },
+  "profile": {
+    "loading": "טוען את הפרופיל שלכם…",
+    "description": "פרטי החשבון וההזמנות שלכם ב־Atlan Suites.",
+    "saved": "הפרופיל נשמר בהצלחה.",
+    "paymentsLink": "תשלומים והחזרים",
+    "deleteAccount": "מחיקת החשבון",
+    "deleting": "מוחק…",
+    "confirmDelete": "למחוק את חשבון Atlan Suites שלכם? לא ניתן לבטל פעולה זו.",
+    "deleteError": "לא ניתן היה למחוק את החשבון שלכם.",
+    "cancel": {
+      "title": "לבטל את הזמנה {{ code }}?",
+      "description": "ההזמנה שלכם תבוטל. כל התשלומים על השהות והשירותים הנלווים יוחזרו במלואם לכרטיס שלכם, למעט סכומים שכבר הוחזרו. ההזמנה וההיסטוריה הפיננסית שלכם יישמרו.",
+      "typeBefore": "הקלידו",
+      "typeAfter": "לאישור.",
+      "phrase": "כן, אני רוצה לבטל",
+      "keep": "השארת ההזמנה",
+      "cancelling": "מבטל…",
+      "error": "לא ניתן היה לבטל את ההזמנה. נסו שוב."
+    }
+  },
+  "paymentHistory": {
+    "loading": "טוען תשלומים והחזרים…",
+    "eyebrow": "החשבון שלי",
+    "description": "התשלומים וההחזרים שלכם.",
+    "title": "היסטוריית עסקאות",
+    "recordsOne": "רשומה אחת",
+    "recordsMany": "{{ count }} רשומות",
+    "filtersLabel": "סינון עסקאות",
+    "payments": "תשלומים",
+    "refunds": "החזרים",
+    "payment": "תשלום",
+    "refund": "החזר",
+    "processedBy": "טופל על ידי {{ name }}",
+    "empty": "עדיין אין תשלומים או החזרים.",
+    "noPayments": "לא נמצאו תשלומים.",
+    "noRefunds": "לא נמצאו החזרים."
+  },
+  "catalog": {
+    "eyebrow": "Atlan Suites · חוויות ואירוח",
+    "title": "שירותי המלון",
+    "description": "גלו את המבחר שלנו: קולינריה ייחודית, רווחה הוליסטית, פנאי וסיוע אישי. כל שירות נועד להעשיר כל רגע בשהות שלכם.",
+    "searchPlaceholder": "חיפוש שירותים (לדוגמה: ספא, ארוחת בוקר, אופניים…)",
+    "search": "חיפוש שירותים",
+    "clearSearch": "ניקוי החיפוש",
+    "filterByCategory": "סינון לפי קטגוריה",
+    "loading": "טוען את קטלוג השירותים…",
+    "viewDetails": "לפרטים",
+    "emptyTitle": "לא נמצאו שירותים",
+    "emptyText": "אין שירותים שתואמים לקריטריוני החיפוש.",
+    "resetFilters": "איפוס המסננים",
+    "detail": {
+      "loading": "טוען את פרטי השירות…",
+      "available": "זמין לאורחים",
+      "pricePerService": "מחיר לשירות",
+      "quickFacts": "השירות בקצרה",
+      "about": "על השירות",
+      "enjoy": "תיהנו ממנו במהלך השהות",
+      "bookRoom": "הזמינו חדר אצלנו כדי לנסות!"
+    },
+    "gallery": {
+      "eyebrow": "סיור חזותי",
+      "title": "גלריית השירות",
+      "description": "תמונות של {{ name }}.",
+      "enlarge": "הגדלת תמונה {{ number }} של {{ name }}",
+      "mainAlt": "{{ name }} — תמונה ראשית",
+      "imageAlt": "{{ name }} — תמונה {{ number }} בגלריה",
+      "preview": "תצוגה מקדימה של תמונת {{ name }}",
+      "closePreview": "סגירת התצוגה המקדימה"
+    }
+  },
+  "booking": {
+    "loading": "טוען את השהות שלכם…",
+    "error": "לא ניתן היה להשלים את בקשת ההזמנה. נסו שוב.",
+    "stepOf": "שלב {{ step }} מתוך {{ total }}",
+    "progress": "התקדמות ההזמנה",
+    "navigation": "ניווט בהזמנה",
+    "previousStep": "השלב הקודם",
+    "changeDates": "שינוי תאריכים",
+    "steps": {
+      "dates": "תאריכים",
+      "room": "בחירת חדר",
+      "services": "שירותים",
+      "payment": "תשלום"
+    },
+    "dates": {
+      "title": "בחרו תאריכים",
+      "intro": "בחרו מתי תרצו לשהות וכמה אורחים יצטרפו אליכם.",
+      "datesOfStay": "תאריכי השהות",
+      "chooseDate": "בחרו תאריך",
+      "previousMonth": "הצגת החודש הקודם",
+      "nextMonth": "הצגת החודש הבא",
+      "hint": "בחרו תאריך כניסה ואחריו תאריך עזיבה. שהות נמשכת עד {{ nights }} לילות ויכולה להתחיל עד {{ years }} שנים מהיום.",
+      "detailsEyebrow": "פרטי ההזמנה",
+      "guestsHint": "כמה אנשים ישהו? עד {{ max }}.",
+      "guestQuantity": "מספר אורחים",
+      "decreaseGuests": "הפחתת אורחים",
+      "increaseGuests": "הוספת אורחים"
+    },
+    "roomTypes": {
+      "title": "בחרו חדר",
+      "intro": "סוגי החדרים האלה זמינים בתאריכים שבחרתם.",
+      "selectedStay": "השהות שנבחרה",
+      "changeDetails": "שינוי פרטי ההזמנה",
+      "available": "סוגי חדרים זמינים",
+      "eyebrow": "חדרים וסוויטות",
+      "upToGuests": "עד {{ count }} אורחים",
+      "roomsLeftOne": "נותר חדר אחד בתאריכים שלכם",
+      "roomsLeftMany": "נותרו {{ count }} חדרים בתאריכים שלכם",
+      "rate": "מחיר החדר",
+      "from": "החל מ־",
+      "rateNote": "הסכום כולל את האירוח ואת השירותים שנבחרו.",
+      "select": "בחירת סוג החדר",
+      "empty": "אין חדרים זמינים לתאריכים ולמספר האורחים האלה. שנו את התאריכים או את מספר האורחים."
+    },
+    "services": {
+      "title": "תרצו להוסיף שירותים?",
+      "filters": "סינון שירותים",
+      "available": "שירותים זמינים",
+      "selected": "נבחר",
+      "select": "בחירת השירות",
+      "emptyCategory": "אין שירותים זמינים בקטגוריה הזו.",
+      "pages": "דפי השירותים",
+      "previousPage": "דף השירותים הקודם",
+      "nextPage": "דף השירותים הבא",
+      "yourSelection": "הבחירה שלכם",
+      "cart": "סל השירותים",
+      "cartEmpty": "עדיין לא נבחרו שירותים.",
+      "remove": "הסרת {{ name }}",
+      "clearCart": "ריקון הסל",
+      "skip": "דילוג על השירותים",
+      "addSelected": "הוספת השירותים שנבחרו"
+    },
+    "checkout": {
+      "eyebrow": "בחירה אחרונה",
+      "title": "איך תרצו להמשיך?",
+      "reserveNow": "הזמינו עכשיו",
+      "payLater": "הזמנה ותשלום מאוחר יותר",
+      "payLaterText": "ההזמנה תישמר בחשבון שלכם. אפשר לשלם אותה בכמה תשלומים מתי שתרצו.",
+      "booking": "מזמין…",
+      "payToday": "תשלום היום",
+      "payNow": "תשלום עכשיו",
+      "payNowText": "אפשר לשלם היום את כל הסכום או חלק ממנו. היתרה נשארת בחשבון שלכם וניתן לשלם אותה בכמה תשלומים.",
+      "accommodation": "אירוח",
+      "totalStay": "סה״כ לשהות:"
+    },
+    "summary": {
+      "nights": "לילות"
+    },
+    "payment": {
+      "orPayLater": "או הזמנה ותשלום מאוחר יותר",
+      "intro": "בדקו את השהות שלכם והזינו את פרטי התשלום.",
+      "introAdditional": "שלמו בכרטיס את כל היתרה או חלק ממנה.",
+      "choose": "בחרו את התשלום",
+      "amountToday": "הסכום לתשלום היום",
+      "amountHint": "(אפשר לשנות את הסכום ולשלם את השאר מאוחר יותר)",
+      "partialTotal": "היום אפשר לשלם את כל עלות השהות או חלק ממנה, החל מ־{{ minimum }}.",
+      "partialBalance": "היום אפשר לשלם את כל היתרה או חלק ממנה, החל מ־{{ minimum }}.",
+      "cardDetails": "פרטי הכרטיס",
+      "cardholderName": "השם על הכרטיס",
+      "cardNumber": "מספר הכרטיס",
+      "expiryDate": "תוקף",
+      "expiryPlaceholder": "MM/YY",
+      "securityCode": "קוד אבטחה",
+      "securityPlaceholder": "CVV",
+      "processing": "מעבד…",
+      "confirm": "אישור ותשלום",
+      "checkDetails": "יש לבדוק את פרטי התשלום המסומנים.",
+      "amountRange": "התשלום חייב להיות לפחות {{ minimum }} ולא יותר מהסכום הכולל של {{ total }}."
+    }
+  },
+  "frontDesk": {
+    "eyebrow": "Atlan Suites · קבלה",
+    "intro": "הגעות היום, אורחים שוהים, עזיבות ממתינות וחדרים בניקיון או בתחזוקה.",
+    "loading": "טוען את הקבלה…",
+    "loadError": "לא ניתן היה לטעון את הקבלה. נסו שוב.",
+    "summaryLabel": "היום בקבלה",
+    "tiles": {
+      "arrivals": "הגעות היום",
+      "readyArrivals": "מוכנות לכניסה: {{ count }}",
+      "occupiedOne": "חדר תפוס אחד",
+      "occupiedMany": "{{ count }} חדרים תפוסים",
+      "withBalance": "עם יתרה לתשלום: {{ count }}",
+      "roomsToPrepare": "חדרים להכנה",
+      "cleaningMaintenance": "בניקיון: {{ cleaning }} · בתחזוקה: {{ maintenance }}"
+    },
+    "arrivals": {
+      "title": "הגעות",
+      "description": "שהיות ממתינות ומאושרות שמתחילות היום, וגם הגעות מאוחרות שהשהות שלהן עוד לא הסתיימה."
+    },
+    "inHouse": {
+      "title": "אורחים שוהים",
+      "description": "שהיות שבוצעה בהן כניסה, העזיבות הקרובות תחילה."
+    },
+    "departures": {
+      "title": "עזיבות ממתינות",
+      "description": "אורחים שעוזבים היום או שהעזיבה שלהם באיחור. עזיבה מחייבת יתרה אפס ומעבירה את החדר לניקיון."
+    },
+    "rooms": {
+      "title": "חדרים בניקיון או בתחזוקה",
+      "description": "חדרים שאורח אמור להגיע אליהם מופיעים תחילה.",
+      "floor": "קומה {{ floor }}",
+      "guestArriving": "אורח בדרך",
+      "markClean": "סימון כנקי",
+      "endMaintenance": "סיום התחזוקה",
+      "forRoom": "לחדר {{ number }}",
+      "empty": "כל החדרים מוכנים. אין חדרים שממתינים לניקיון או לתחזוקה."
+    },
+    "stays": {
+      "arrival": {
+        "caption": "הגעות צפויות היום",
+        "empty": "אין הגעות ממתינות היום."
+      },
+      "in-house": {
+        "caption": "אורחים שוהים כעת",
+        "empty": "אין אורחים שוהים."
+      },
+      "departure": {
+        "caption": "עזיבות היום או באיחור",
+        "empty": "אין עזיבות ממתינות."
+      },
+      "action": "פעולה",
+      "pendingConfirmation": "ממתינה לאישור",
+      "collectPayment": "גביית תשלום",
+      "reviewBooking": "צפייה בהזמנה",
+      "forCode": "עבור {{ code }}",
+      "checkIn": "ביצוע כניסה",
+      "checkOut": "ביצוע עזיבה",
+      "waitingRoom": "ממתין לחדר",
+      "collectBalance": "גביית היתרה"
+    },
+    "tags": {
+      "lateArrival": "הגעה מאוחרת",
+      "overdueDeparture": "עזיבה באיחור",
+      "departsToday": "עוזב היום",
+      "roomReady": "החדר מוכן",
+      "beingCleaned": "בניקיון",
+      "underMaintenance": "בתחזוקה",
+      "stillOccupied": "עדיין תפוס",
+      "noRoom": "לא הוקצה חדר"
+    },
+    "notice": {
+      "updated": "הקבלה עודכנה",
+      "failed": "הפעולה לא הושלמה",
+      "checkedIn": "בוצעה כניסה עבור {{ label }}. החדר תפוס כעת.",
+      "checkedOut": "בוצעה עזיבה עבור {{ label }}. החדר מופיע כעת בחדרים להכנה.",
+      "ready": "{{ label }} מוכן.",
+      "error": "לא ניתן היה להשלים את הפעולה. נסו שוב."
+    }
+  },
+  "accounting": {
+    "title": "הנהלת חשבונות ותובנות",
+    "period": "תקופת הדוח",
+    "from": "מתאריך",
+    "to": "עד תאריך",
+    "apply": "החלת התקופה",
+    "loading": "טוען הנהלת חשבונות וסטטיסטיקות הזמנות…",
+    "loadError": "לא ניתן היה לטעון את נתוני הנהלת החשבונות. נסו שוב.",
+    "unavailable": "הנתונים אינם זמינים",
+    "periodCaption": "תקופת הדוח:",
+    "noBookings": "לא נוצרו הזמנות בתקופה הזו. הסכומים הפיננסיים מחושבים לפי תאריכי התשלומים וההחזרים.",
+    "inProgress": "בשהות",
+    "overview": {
+      "label": "סיכום פיננסי בפסו קולומביאני",
+      "payments": "תשלומים שאושרו",
+      "refunds": "החזרים שאושרו",
+      "net": "גבייה נטו",
+      "outstanding": "יתרה לתשלום"
+    },
+    "stays": {
+      "title": "סטטיסטיקות שהייה",
+      "averageStay": "משך שהייה ממוצע",
+      "nights": "לילות",
+      "averageGuests": "ממוצע אורחים להזמנה"
+    },
+    "status": {
+      "title": "סטטוס הזמנות",
+      "chartLabel": "מספר ההזמנות לפי הסטטוס הנוכחי. השתמשו במקרא כדי להציג או להסתיר סטטוס.",
+      "details": "הצגת כמויות ואחוזים",
+      "caption": "התפלגות ההזמנות לפי סטטוס",
+      "share": "חלק יחסי"
+    },
+    "trend": {
+      "title": "מגמת הזמנות",
+      "chartLabel": "הזמנות שנוצרו לאורך זמן, עם זום ומחוון טווח.",
+      "details": "הצגת סיכומים לפי תקופה",
+      "caption": "סיכומי ההזמנות שנוצרו",
+      "periodStarts": "תחילת התקופה"
+    },
+    "roomTypes": {
+      "title": "סוגי החדרים המוזמנים ביותר",
+      "chartLabel": "סוגי חדרים מדורגים לפי הזמנות ולילות שהוזמנו. אפשר להציג או להסתיר כל סדרה דרך המקרא.",
+      "details": "הצגת דירוג סוגי החדרים",
+      "caption": "דירוג סוגי החדרים",
+      "bookings": "הזמנות",
+      "empty": "אין הזמנות שלא בוטלו בתקופה הזו."
+    },
+    "services": {
+      "title": "השירותים המוזמנים ביותר",
+      "chartLabel": "שירותים מדורגים לפי יחידות שהוזמנו.",
+      "details": "הצגת יחידות ושווי שהוזמן",
+      "caption": "כמויות שירותים ושווי חיובים היסטורי",
+      "concept": "שירות",
+      "units": "יחידות",
+      "value": "שווי החיובים",
+      "empty": "אין חיובי שירותים בתקופה הזו."
+    },
+    "charts": {
+      "resetView": "איפוס התצוגה",
+      "download": "הורדת התרשים",
+      "reservations": "הזמנות",
+      "reservationsUnit": "הזמנות",
+      "created": "הזמנות שנוצרו",
+      "bookedNights": "לילות שהוזמנו",
+      "unitsContracted": "יחידות שהוזמנו"
+    }
+  },
+  "adminPanel": {
+    "eyebrow": "Atlan Suites · ניהול",
+    "greeting": "ברוכים הבאים,",
+    "intro": "צרו, ערכו ונהלו ממקום אחד את המידע שמוצג ב־Atlan Suites.",
+    "loadError": "לא ניתן היה לטעון את הסיכומים. ודאו ששרת Spring Boot פועל בכתובת localhost:8080.",
+    "sectionsLabel": "אזורים לניהול",
+    "loadingTotal": "טוען סיכום…",
+    "manage": "ניהול {{ section }}",
+    "cards": {
+      "reservations": "כל הזמנות האורחים: תאריכים, הקצאת חדרים ופרטי ההזמנה.",
+      "services": "שירותי מסעדה, רווחה וקונסיירז׳ שמוצגים בקטלוג האורחים.",
+      "roomTypes": "קטגוריות סוויטות, מחירים ללילה, תפוסה וגלריות תמונות.",
+      "rooms": "החדרים הפיזיים, הקומה, המצב וסוג החדר שלהם.",
+      "clients": "חשבונות אורחים רשומים ופרטי הקשר שלהם.",
+      "administrators": "חשבונות צוות עם גישה מלאה ללוח הניהול.",
+      "operators": "צוות הקבלה והמנהל האחראי על כל אחד מהם."
+    },
+    "create": {
+      "service": "שירות חדש",
+      "roomType": "סוג חדר חדש",
+      "room": "חדר חדש",
+      "client": "לקוח חדש",
+      "administrator": "מנהל חדש",
+      "operator": "מפעיל חדש"
+    }
+  },
+  "errorPage": {
+    "eyebrow": "שגיאה {{ code }} · {{ label }}",
+    "address": "כתובת",
+    "goBack": "חזרה",
+    "goToFrontDesk": "מעבר לקבלה",
+    "goToAdminPanel": "מעבר ללוח הניהול",
+    "goToHome": "מעבר לדף הבית",
+    "labels": {
+      "400": "בקשה לא תקינה",
+      "404": "לא נמצא",
+      "500": "שגיאת שרת",
+      "503": "השרת אינו זמין"
+    },
+    "titles": {
+      "400": "הכתובת הזו אינה תקינה",
+      "404": "לא מצאנו את הדף הזה",
+      "500": "משהו השתבש אצלנו",
+      "503": "אין לנו גישה לשרת"
+    },
+    "messages": {
+      "400": "הקישור מכיל ערך שהמלון לא יכול לקרוא, למשל מזהה שאינו מספר. בדקו את הכתובת או חזרו אחורה.",
+      "404": "הדף או הרשומה שחיפשתם לא קיימים או שהוסרו.",
+      "500": "השרת לא הצליח להשלים את הבקשה. נסו שוב בעוד כמה רגעים.",
+      "503": "שרת המלון אינו מגיב. בדקו את החיבור ונסו שוב בעוד רגע."
+    }
+  },
+  "validation": {
+    "password": {
+      "required": "הזינו סיסמה.",
+      "length": "הסיסמה חייבת להכיל בין 8 ל־255 תווים.",
+      "invalid": "הזינו סיסמה של 8 עד 255 תווים."
+    },
+    "staffEmail": {
+      "required": "הזינו כתובת דוא״ל.",
+      "maxlength": "כתובת הדוא״ל לא יכולה לעלות על 100 תווים.",
+      "email": "הזינו כתובת דוא״ל תקינה, לדוגמה name@atlansuites.com."
+    },
+    "photoUrl": {
+      "maxlength": "קישור התמונה לא יכול לעלות על 500 תווים.",
+      "format": "הזינו קישור לתמונה שמתחיל ב־http:// או ב־https://."
+    },
+    "price": {
+      "format": "הזינו מחיר של עד 99,999,999.99 עם עד שתי ספרות אחרי הנקודה."
+    },
+    "login": {
+      "email": {
+        "required": "הזינו את כתובת הדוא״ל שלכם.",
+        "email": "הזינו כתובת דוא״ל תקינה.",
+        "maxlength": "כתובת הדוא״ל לא יכולה לעלות על 100 תווים."
+      },
+      "password": {
+        "required": "הזינו את הסיסמה שלכם."
+      }
+    },
+    "client": {
+      "name": {
+        "required": "הזינו שם פרטי.",
+        "maxlength": "השם הפרטי לא יכול לעלות על 60 תווים."
+      },
+      "lastName": {
+        "required": "הזינו שם משפחה.",
+        "maxlength": "שם המשפחה לא יכול לעלות על 60 תווים."
+      },
+      "nationalId": {
+        "required": "הזינו מספר תעודה מזהה.",
+        "format": "מספר התעודה המזהה חייב להכיל 5 עד 20 אותיות או ספרות, ללא רווחים או סימנים."
+      },
+      "phone": {
+        "required": "הזינו מספר טלפון.",
+        "format": "הזינו מספר טלפון של 7 עד 15 ספרות ללא רווחים; אפשר להתחיל ב־+."
+      },
+      "email": {
+        "required": "הזינו כתובת דוא״ל.",
+        "maxlength": "כתובת הדוא״ל לא יכולה לעלות על 100 תווים.",
+        "email": "הזינו כתובת דוא״ל תקינה, לדוגמה name@example.com."
+      }
+    },
+    "administrator": {
+      "name": {
+        "required": "הזינו את שם המנהל.",
+        "maxlength": "השם לא יכול לעלות על 60 תווים."
+      }
+    },
+    "operator": {
+      "name": {
+        "required": "הזינו את השם הפרטי של המפעיל.",
+        "maxlength": "השם הפרטי לא יכול לעלות על 60 תווים."
+      },
+      "lastName": {
+        "required": "הזינו את שם המשפחה של המפעיל.",
+        "maxlength": "שם המשפחה לא יכול לעלות על 60 תווים."
+      },
+      "adminId": {
+        "required": "בחרו את המנהל האחראי על המפעיל."
+      }
+    },
+    "roomType": {
+      "name": {
+        "required": "הזינו את שם סוג החדר.",
+        "maxlength": "השם לא יכול לעלות על 50 תווים."
+      },
+      "description": {
+        "required": "הזינו תיאור.",
+        "maxlength": "התיאור לא יכול לעלות על 500 תווים."
+      },
+      "nightlyPrice": {
+        "required": "הזינו מחיר ללילה.",
+        "positive": "המחיר ללילה חייב להיות גדול מאפס."
+      },
+      "maxCapacity": {
+        "required": "הזינו תפוסה מרבית.",
+        "min": "התפוסה חייבת להיות לפחות אורח אחד.",
+        "max": "התפוסה לא יכולה לעלות על 10 אורחים.",
+        "integer": "הזינו מספר שלם של אורחים."
+      }
+    },
+    "photo": {
+      "mainRequired": "הזינו קישור לתמונה הראשית."
+    },
+    "room": {
+      "number": {
+        "required": "הזינו מספר חדר.",
+        "min": "מספר החדר חייב להיות לפחות 1.",
+        "max": "מספר החדר לא יכול לעלות על 9999.",
+        "integer": "הזינו מספר חדר שלם."
+      },
+      "floor": {
+        "required": "הזינו קומה.",
+        "min": "הקומה לא יכולה להיות שלילית.",
+        "max": "הקומה לא יכולה לעלות על 200.",
+        "integer": "הזינו מספר קומה שלם."
+      },
+      "status": {
+        "required": "בחרו את מצב החדר."
+      },
+      "roomTypeId": {
+        "required": "בחרו סוג חדר."
+      }
+    },
+    "service": {
+      "name": {
+        "required": "הזינו את שם השירות.",
+        "maxlength": "השם לא יכול לעלות על 100 תווים."
+      },
+      "category": {
+        "required": "הזינו קטגוריה.",
+        "maxlength": "הקטגוריה לא יכולה לעלות על 50 תווים."
+      },
+      "summary": {
+        "maxlength": "התקציר לא יכול לעלות על 255 תווים."
+      },
+      "duration": {
+        "maxlength": "המשך לא יכול לעלות על 50 תווים."
+      },
+      "availability": {
+        "maxlength": "השעות לא יכולות לעלות על 100 תווים."
+      },
+      "location": {
+        "maxlength": "המיקום לא יכול לעלות על 100 תווים."
+      },
+      "description": {
+        "required": "הזינו תיאור.",
+        "maxlength": "התיאור לא יכול לעלות על 5,000 תווים."
+      },
+      "price": {
+        "required": "הזינו מחיר.",
+        "min": "המחיר לא יכול להיות שלילי."
+      }
+    },
+    "reservation": {
+      "checkIn": {
+        "required": "בחרו תאריך כניסה.",
+        "past": "תאריך הכניסה לא יכול להיות בעבר. בחרו תאריכים חדשים.",
+        "tooFar": "אפשר להזמין עד {{ years }} שנים מראש."
+      },
+      "checkOut": {
+        "required": "בחרו תאריך עזיבה.",
+        "order": "תאריך העזיבה חייב להיות אחרי תאריך הכניסה.",
+        "tooLong": "שהות לא יכולה לעלות על {{ nights }} לילות."
+      },
+      "guests": {
+        "required": "הזינו את מספר האורחים.",
+        "min": "הזינו לפחות אורח אחד.",
+        "integer": "הזינו מספר שלם של אורחים.",
+        "capacity": "סוג החדר הזה מתאים לעד {{ capacity }} אורחים. הפחיתו את מספר האורחים או בחרו סוג חדר אחר."
+      },
+      "roomTypeId": {
+        "min": "בחרו סוג חדר."
+      },
+      "status": {
+        "required": "בחרו סטטוס להזמנה.",
+        "pending": "לא ניתן לבצע כניסה כל עוד ההזמנה ממתינה. אשרו את ההזמנה קודם.",
+        "unpaid": "לא ניתן לבצע עזיבה כל עוד יש יתרה לתשלום. סגרו את היתרה קודם."
+      }
+    },
+    "payment": {
+      "amount": {
+        "required": "הזינו את הסכום לתשלום.",
+        "decimals": "הסכום יכול לכלול עד שתי ספרות אחרי הנקודה.",
+        "max": "תשלום בודד לא יכול לעלות על COP 99,999,999.99."
+      },
+      "cardholderName": {
+        "required": "הזינו את השם שמופיע על הכרטיס.",
+        "letters": "הזינו את השם כפי שהוא מופיע על הכרטיס, באותיות בלבד (עד 100 תווים)."
+      },
+      "cardNumber": {
+        "required": "הזינו את מספר הכרטיס.",
+        "length": "מספר הכרטיס חייב להכיל בין 13 ל־19 ספרות."
+      },
+      "expiryDate": {
+        "required": "הזינו את תוקף הכרטיס.",
+        "format": "הזינו תוקף בפורמט MM/YY, עם חודש בין 01 ל־12.",
+        "expired": "תוקף הכרטיס פג.",
+        "tooFar": "הזינו תוקף תקין."
+      },
+      "securityCode": {
+        "required": "הזינו את קוד האבטחה.",
+        "length": "קוד האבטחה חייב להכיל 3 או 4 ספרות."
+      }
+    }
+  },
+  "api": {
+    "default": "לא ניתן היה להשלים את הבקשה. נסו שוב.",
+    "offline": "לא ניתן היה להתחבר לשרת. בדקו את החיבור ושהשרת פועל, ואז נסו שוב.",
+    "serverError": "השרת לא הצליח לעבד את הבקשה. נסו שוב בעוד כמה רגעים.",
+    "badRequest": "חלק מהמידע אינו תקין. בדקו אותו ונסו שוב.",
+    "unauthorized": "הדוא״ל או הסיסמה שגויים.",
+    "notFound": "הרשומה המבוקשת לא קיימת או שנמחקה.",
+    "conflict": "השינוי מתנגש במידע שכבר קיים.",
+    "createdNotFound": "הרשומה נשמרה, אבל לא ניתן היה לטעון אותה מחדש. רעננו את הרשימה כדי לראות אותה."
+  }
+}

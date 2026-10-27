@@ -79,7 +79,7 @@ public class OperatorServiceImpl implements OperatorService {
 
     @Override
     public OperatorDTO login(String email, String password) {
-        // orElse(null) extrae el resultado de Optional y devuelve null cuando el correo no existe.
+        // Un correo inexistente o una contraseña incorrecta producen el mismo rechazo de acceso.
         Operator account = operatorRepository.findByEmailIgnoreCase(email == null ? "" : email.trim()).orElse(null);
         if (account == null || !account.getPassword().equals(password)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password.");

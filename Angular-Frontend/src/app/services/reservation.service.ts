@@ -95,7 +95,7 @@ export class ReservationService {
       params: { clientId },
     });
   }
-  /** El operador envía solo el importe; el backend registra CASH y su identificador. */
+  /** El operador envía solo el importe. El backend registra CASH y su identificador. */
   addCashPayment(id: number, operatorId: number, amount: number): Observable<ReservationDetails> {
     return this.http.post<ReservationDetails>(`${this.apiUrl}/${id}/cash-payments`, { amount }, {
       params: { operatorId },
@@ -104,6 +104,14 @@ export class ReservationService {
   /** Cancela sin reenviar la estancia ni recalcular sus precios históricos. */
   cancel(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/cancel`, null);
+  }
+  /** El backend también marca la habitación como ocupada. */
+  checkIn(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/check-in`, null);
+  }
+  /** Exige saldo cero y deja la habitación en limpieza. */
+  checkOut(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/check-out`, null);
   }
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);

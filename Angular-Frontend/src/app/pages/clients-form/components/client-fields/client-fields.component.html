@@ -1,13 +1,13 @@
 @if (form; as form) {
   <section class="fields-group" aria-labelledby="profile-title">
-    <h2 id="profile-title">Client information</h2>
+    <h2 id="profile-title">{{ 'clientInfo.label' | transloco }}</h2>
     <p class="section-description">
-      Email and national ID must be unique. Profile photo is optional.
+      {{ 'clients.form.fieldsDescription' | transloco }}
     </p>
     <div class="form-grid">
       <app-form-field
         fieldId="name"
-        label="First name"
+        [label]="'common.fields.firstName' | transloco"
         type="text"
         [control]="form.controls.name"
         [maxlength]="60"
@@ -16,7 +16,7 @@
       />
       <app-form-field
         fieldId="lastName"
-        label="Last name"
+        [label]="'common.fields.lastName' | transloco"
         type="text"
         [control]="form.controls.lastName"
         [maxlength]="60"
@@ -25,29 +25,29 @@
       />
       <app-form-field
         fieldId="nationalId"
-        label="National ID"
+        [label]="'common.fields.nationalId' | transloco"
         type="text"
         [control]="form.controls.nationalId"
         [maxlength]="20"
         [submitted]="submitted"
-        hint="5 to 20 letters or numbers, without spaces."
+        [hint]="'clients.form.nationalIdHint' | transloco"
         [messages]="messages.nationalId"
       />
       <app-form-field
         fieldId="phone"
-        label="Phone"
+        [label]="'common.fields.phone' | transloco"
         type="tel"
         [control]="form.controls.phone"
         restrict="phone"
         inputmode="tel"
         [maxlength]="16"
         [submitted]="submitted"
-        hint="7 to 15 digits; it may start with +."
+        [hint]="'clients.form.phoneHint' | transloco"
         [messages]="messages.phone"
       />
       <app-form-field
         fieldId="email"
-        label="Email address"
+        [label]="'common.fields.emailAddress' | transloco"
         type="email"
         [control]="form.controls.email"
         [maxlength]="100"
@@ -56,7 +56,7 @@
       />
       <app-form-field
         fieldId="profilePhoto"
-        label="Profile photo URL"
+        [label]="'clients.form.profilePhoto' | transloco"
         type="url"
         [control]="form.controls.profilePhoto"
         [maxlength]="500"
@@ -68,19 +68,19 @@
   </section>
   @if (isCreateMode) {
     <section class="fields-group" aria-labelledby="password-title">
-      <h2 id="password-title">Account password</h2>
+      <h2 id="password-title">{{ 'account.passwordTitle' | transloco }}</h2>
       <app-form-field
         fieldId="password"
-        label="Password"
+        [label]="'common.fields.password' | transloco"
         type="password"
         [control]="form.controls.password"
         [maxlength]="255"
         [submitted]="submitted"
-        hint="Between 8 and 255 characters."
-        error="Enter a password with 8 to 255 characters."
+        [hint]="'account.passwordHint' | transloco"
+        [error]="'validation.password.invalid' | transloco"
       />
     </section>
   } @else {
-    <p class="section-description">Editing keeps the current password.</p>
+    <p class="section-description">{{ 'account.passwordKept' | transloco }}</p>
   }
 }

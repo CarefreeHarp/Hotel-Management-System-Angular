@@ -60,7 +60,14 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "echarts/i18n/langAR-obj.js",
+              "echarts/i18n/langES-obj.js",
+              "echarts/i18n/langFR-obj.js",
+              "echarts/i18n/langPT-br-obj.js",
+              "echarts/i18n/langRU-obj.js"
+            ]
           },
           "configurations": {
             "production": {

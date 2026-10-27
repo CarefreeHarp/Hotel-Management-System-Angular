@@ -1,19 +1,19 @@
-<section class="catalog-table" aria-label="Operators">
+<section class="catalog-table" [attr.aria-label]="'operators.list.title' | transloco">
   @if (operators.length) {
     <div
       class="table-scroll"
       role="region"
-      aria-label="Operators table"
+      [attr.aria-label]="'operators.table.label' | transloco"
       tabindex="0"
     >
       <table>
         <thead>
           <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Operator</th>
-            <th scope="col">Email</th>
-            <th scope="col">Administrator in charge</th>
-            <th scope="col">Actions</th>
+            <th scope="col">{{ 'common.fields.id' | transloco }}</th>
+            <th scope="col">{{ 'operators.table.operator' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.email' | transloco }}</th>
+            <th scope="col">{{ 'operators.fields.administratorInCharge' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.actions' | transloco }}</th>
           </tr>
         </thead>
         <tbody>
@@ -30,8 +30,10 @@
                   >
                 </div>
               </th>
-              <td class="staff-email" data-label="Email">{{ item.email }}</td>
-              <td data-label="Administrator in charge">
+              <td class="staff-email" [attr.data-label]="'common.fields.email' | transloco">
+                {{ item.email }}
+              </td>
+              <td [attr.data-label]="'operators.fields.administratorInCharge' | transloco">
                 <a
                   class="admin-link"
                   [routerLink]="[base, 'administrators', item.adminId]"
@@ -41,16 +43,16 @@
               <td class="actions-cell">
                 <div class="actions">
                   <a [routerLink]="[base, 'operators', item.operatorId]"
-                    >View<span class="sr-only">
+                    >{{ 'common.actions.view' | transloco }}<span class="sr-only">
                       {{ item.name }} {{ item.lastName }}</span
                     ></a
                   ><a
                     [routerLink]="[base, 'operators', item.operatorId, 'edit']"
-                    >Edit<span class="sr-only">
+                    >{{ 'common.actions.edit' | transloco }}<span class="sr-only">
                       {{ item.name }} {{ item.lastName }}</span
                     ></a
                   ><button type="button" (click)="deleteSubject.next(item)">
-                    Delete<span class="sr-only">
+                    {{ 'common.actions.delete' | transloco }}<span class="sr-only">
                       {{ item.name }} {{ item.lastName }}</span
                     >
                   </button>
@@ -63,8 +65,8 @@
     </div>
   } @else {
     <div class="empty">
-      <h2>No operators yet</h2>
-      <p>Create an operator to get started.</p>
+      <h2>{{ 'operators.table.emptyTitle' | transloco }}</h2>
+      <p>{{ 'operators.table.emptyText' | transloco }}</p>
     </div>
   }
 </section>
