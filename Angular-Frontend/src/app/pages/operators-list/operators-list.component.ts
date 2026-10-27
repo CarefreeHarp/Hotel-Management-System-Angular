@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { catchError, EMPTY, exhaustMap, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -35,6 +36,7 @@ import { OperatorTableComponent } from './components/operator-table/operator-tab
     RouterLink,
     ButtonComponent,
     OperatorTableComponent,
+    TranslocoPipe,
   ],
   templateUrl: './operators-list.component.html',
   styleUrl: './operators-list.component.scss',
@@ -48,7 +50,7 @@ export class OperatorsListComponent implements OnInit {
     return [
       {
         key: 'adminId',
-        label: 'Administrator',
+        labelKey: 'operators.fields.administrator',
         options: Array.from(
           new Map(
             this.operators.map((item) => [
@@ -88,8 +90,8 @@ export class OperatorsListComponent implements OnInit {
       id: item.operatorId,
       title: item.name + ' ' + item.lastName,
       details: [
-        { label: 'Email', value: item.email },
-        { label: 'Administrator', value: item.adminName },
+        { labelKey: 'common.fields.email', value: item.email },
+        { labelKey: 'operators.fields.administrator', value: item.adminName },
       ],
       detailUrl: `${this.base}/operators/${item.operatorId}`,
       editUrl: `${this.base}/operators/${item.operatorId}/edit`,
@@ -127,7 +129,7 @@ export class OperatorsListComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.route.snapshot.queryParamMap.get('created') === 'true') {
-      this.message = 'Operator created successfully.';
+      this.message = translate('operators.list.created');
     }
     this.loadOperators();
   }
@@ -157,18 +159,17 @@ export class OperatorsListComponent implements OnInit {
     this.message = '';
     this.errorMessage = '';
     const fullName = `${item.name} ${item.lastName}`;
-    if (!confirm(`Delete operator "${fullName}"? This cannot be undone.`))
+    if (!confirm(translate('operators.list.confirmDelete', { name: fullName })))
       return EMPTY;
     return this.operatorService.delete(item.operatorId).pipe(
       tap(() => {
-        this.message = `Operator "${fullName}" deleted successfully.`;
+        this.message = translate('operators.list.deleted', { name: fullName });
         this.loadOperators();
       }),
       catchError((error: HttpErrorResponse) => {
-        this.errorMessage = apiErrorMessage(
-          error,
-          `Operator "${fullName}" could not be deleted. Please try again.`,
-        );
+        this.errorMessage = apiErrorMessage(error, 'operators.list.deleteError', {
+          name: fullName,
+        });
 
         return EMPTY;
       }),

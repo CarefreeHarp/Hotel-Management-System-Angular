@@ -9,11 +9,13 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subject, switchMap, takeUntil, timer } from 'rxjs';
+import { AppLanguage, changeLanguage, LANGUAGES, savedLanguage } from '../../../../utils/language';
 
 @Component({
   selector: 'app-header-menu',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, TranslocoPipe],
   templateUrl: './header-menu.component.html',
   styleUrl: './header-menu.component.scss',
 })
@@ -24,6 +26,10 @@ export class HeaderMenuComponent implements OnDestroy {
   private previousOverflow: string | undefined;
   isOpen = false;
   isClosing = false;
+  readonly languages = LANGUAGES;
+  // Idioma con el que arrancó la aplicación: es el que se marca como actual en la lista.
+  readonly currentLanguage = savedLanguage();
+  languagesOpen = false;
   private readonly closeSubject = new Subject<void>();
   private readonly cancelCloseSubject = new Subject<void>();
 
@@ -70,10 +76,20 @@ export class HeaderMenuComponent implements OnDestroy {
     this.resetState();
   }
 
+  // Elegir otro idioma lo guarda y recarga la página; el idioma actual solo cierra la lista.
+  selectLanguage(language: AppLanguage): void {
+    if (language.code === this.currentLanguage.code) {
+      this.languagesOpen = false;
+      return;
+    }
+    changeLanguage(language.code);
+  }
+
   resetState(): void {
     this.cancelCloseSubject.next();
     this.isClosing = false;
     this.isOpen = false;
+    this.languagesOpen = false;
     if (this.previousOverflow !== undefined) {
       this.document.body.style.overflow = this.previousOverflow;
       this.previousOverflow = undefined;

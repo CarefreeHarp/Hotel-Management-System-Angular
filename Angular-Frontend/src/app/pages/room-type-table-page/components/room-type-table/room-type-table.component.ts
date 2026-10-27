@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import { ButtonComponent } from '../../../../components/button/button.component';
 import { ListControlsComponent } from '../../../../components/list-controls/list-controls.component';
@@ -25,6 +26,7 @@ import {
     RouterLink,
     ListControlsComponent,
     ButtonComponent,
+    TranslocoPipe,
   ],
   templateUrl: './room-type-table.component.html',
   styleUrl: './room-type-table.component.scss',
@@ -42,23 +44,24 @@ export class RoomTypeTableComponent {
   @Output('delete') readonly delete$ = this.deleteSubject.asObservable();
 
   listState = initialListState();
+  // Las opciones se traducen al crear el componente: la traducción ya está cargada.
   readonly filters: ListFilter[] = [
     {
       key: 'capacity',
-      label: 'Capacity',
+      labelKey: 'roomTypes.fields.capacity',
       options: [
-        { value: '1-2', label: '1–2 guests' },
-        { value: '3-4', label: '3–4 guests' },
-        { value: '5+', label: '5+ guests' },
+        { value: '1-2', label: translate('roomTypes.capacityFilter.small') },
+        { value: '3-4', label: translate('roomTypes.capacityFilter.medium') },
+        { value: '5+', label: translate('roomTypes.capacityFilter.large') },
       ],
     },
   ];
   readonly sortOptions = [
     ...defaultSortOptions,
-    { value: 'price-asc', label: 'Price: low to high' },
-    { value: 'price-desc', label: 'Price: high to low' },
-    { value: 'capacity-asc', label: 'Capacity: low to high' },
-    { value: 'capacity-desc', label: 'Capacity: high to low' },
+    { value: 'price-asc', labelKey: 'list.sort.priceAsc' },
+    { value: 'price-desc', labelKey: 'list.sort.priceDesc' },
+    { value: 'capacity-asc', labelKey: 'list.sort.capacityAsc' },
+    { value: 'capacity-desc', labelKey: 'list.sort.capacityDesc' },
   ];
   get priceFloor(): number {
     return this.roomTypes.length

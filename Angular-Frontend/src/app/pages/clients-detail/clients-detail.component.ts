@@ -1,6 +1,7 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import {
   EMPTY,
   catchError,
@@ -33,6 +34,7 @@ import { catchErrorPage, showErrorPage } from '../../utils/error-page';
     ButtonComponent,
     ClientInfoComponent,
     ReservationHistoryComponent,
+    TranslocoPipe,
   ],
   templateUrl: './clients-detail.component.html',
   styleUrl: './clients-detail.component.scss',
@@ -76,7 +78,7 @@ export class ClientsDetailComponent implements OnInit {
             // El historial es secundario: si falla, se avisa en la página y el cliente se muestra igual.
             reservations: this.reservationsService.history(id).pipe(
               catchError(() => {
-                this.historyError = 'Reservation history could not be loaded.';
+                this.historyError = translate('reservationHistory.loadError');
                 return of(new Array<ReservationDetails>());
               }),
             ),

@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { catchError, EMPTY, exhaustMap, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -35,6 +36,7 @@ import { ClientTableComponent } from './components/client-table/client-table.com
     RouterLink,
     ButtonComponent,
     ClientTableComponent,
+    TranslocoPipe,
   ],
   templateUrl: './clients-list.component.html',
   styleUrl: './clients-list.component.scss',
@@ -72,9 +74,9 @@ export class ClientsListComponent implements OnInit {
       id: item.clientId,
       title: item.name + ' ' + item.lastName,
       details: [
-        { label: 'Email', value: item.email },
-        { label: 'Phone', value: item.phone },
-        { label: 'National ID', value: item.nationalId },
+        { labelKey: 'common.fields.email', value: item.email },
+        { labelKey: 'common.fields.phone', value: item.phone },
+        { labelKey: 'common.fields.nationalId', value: item.nationalId },
       ],
       detailUrl: `${this.base}/clients/${item.clientId}`,
       editUrl: `${this.base}/clients/${item.clientId}/edit`,
@@ -112,7 +114,7 @@ export class ClientsListComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.route.snapshot.queryParamMap.get('created') === 'true') {
-      this.message = 'Client created successfully.';
+      this.message = translate('clients.list.created');
     }
     this.loadClients();
   }
@@ -143,17 +145,14 @@ export class ClientsListComponent implements OnInit {
     this.message = '';
     this.errorMessage = '';
     const name = `${client.name} ${client.lastName}`;
-    if (!confirm(`Delete client "${name}"? This cannot be undone.`)) return EMPTY;
+    if (!confirm(translate('clients.list.confirmDelete', { name }))) return EMPTY;
     return this.service.delete(client.clientId).pipe(
       tap(() => {
-        this.message = 'Client deleted successfully.';
+        this.message = translate('clients.list.deleted');
         this.loadClients();
       }),
       catchError((error: HttpErrorResponse) => {
-        this.errorMessage = apiErrorMessage(
-          error,
-          'The client could not be deleted. Please try again.',
-        );
+        this.errorMessage = apiErrorMessage(error, 'clients.list.deleteError');
 
         return EMPTY;
       }),

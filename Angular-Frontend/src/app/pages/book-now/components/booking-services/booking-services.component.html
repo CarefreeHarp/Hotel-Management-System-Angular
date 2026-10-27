@@ -6,20 +6,21 @@
         aria-labelledby="services-title"
       >
         <div class="container text-center">
-          <p class="eyebrow">Step 3 of 4</p>
+          <p class="eyebrow">{{ 'booking.stepOf' | transloco: { step: 3, total: 4 } }}</p>
           <h1 class="services-hero-title" id="services-title">
-            Would you like to add any services?
+            {{ 'booking.services.title' | transloco }}
           </h1>
           <p class="services-hero-text">
-            {{ quote.roomType.name }} · {{ quote.checkInDate }} —
-            {{ quote.checkOutDate }} · {{ quote.guestCount }} guest(s)
+            {{ quote.roomType.name }} · {{ quote.checkInDate | date: "mediumDate" }} —
+            {{ quote.checkOutDate | date: "mediumDate" }} ·
+            {{ (quote.guestCount === 1 ? 'common.guestsOne' : 'common.guestsMany') | transloco: { count: quote.guestCount } }}
           </p>
         </div>
       </section>
       <div class="services-selection-layout container-fluid">
         <section class="services-section" aria-labelledby="services-grid-title">
           <div class="services-container">
-            <nav class="category-filters" aria-label="Service filters">
+            <nav class="category-filters" [attr.aria-label]="'booking.services.filters' | transloco">
               @for (cat of state.categories; track cat) {
                 <button
                   class="filter-btn"
@@ -27,11 +28,11 @@
                   type="button"
                   (click)="filter(cat)"
                 >
-                  {{ cat === "all" ? "All" : cat }}
+                  {{ cat === "all" ? ('list.all' | transloco) : cat }}
                 </button>
               }
             </nav>
-            <h2 id="services-grid-title" class="sr-only">Available services</h2>
+            <h2 id="services-grid-title" class="sr-only">{{ 'booking.services.available' | transloco }}</h2>
             <div class="services-grid">
               @for (service of state.visible; track service.serviceId) {
                 <article
@@ -67,21 +68,22 @@
                     (click)="add(service.serviceId)"
                   >
                     {{
-                      state.ids.includes(service.serviceId)
-                        ? "Selected"
-                        : "Select service"
+                      (state.ids.includes(service.serviceId)
+                        ? 'booking.services.selected'
+                        : 'booking.services.select'
+                      ) | transloco
                     }}
                   </button>
                 </article>
               } @empty {
-                <p role="status">No services are available in this category.</p>
+                <p role="status">{{ 'booking.services.emptyCategory' | transloco }}</p>
               }
             </div>
-            <nav class="service-pagination" aria-label="Service pages">
+            <nav class="service-pagination" [attr.aria-label]="'booking.services.pages' | transloco">
               <button
                 class="service-pagination__button"
                 type="button"
-                aria-label="Previous service page"
+                [attr.aria-label]="'booking.services.previousPage' | transloco"
                 [disabled]="state.page === 0"
                 (click)="changePage(0)"
               >
@@ -104,7 +106,7 @@
               ><button
                 class="service-pagination__button"
                 type="button"
-                aria-label="Next service page"
+                [attr.aria-label]="'booking.services.nextPage' | transloco"
                 [disabled]="
                   state.page === 1 || state.filtered.length <= state.pageSize
                 "
@@ -116,10 +118,10 @@
           </div>
         </section>
         <aside class="service-cart" aria-labelledby="cart-title">
-          <p class="eyebrow">Your selection</p>
-          <h2 id="cart-title">Service cart</h2>
+          <p class="eyebrow">{{ 'booking.services.yourSelection' | transloco }}</p>
+          <h2 id="cart-title">{{ 'booking.services.cart' | transloco }}</h2>
           @if (!state.cart.length) {
-            <p class="service-cart__empty">No services selected yet.</p>
+            <p class="service-cart__empty">{{ 'booking.services.cartEmpty' | transloco }}</p>
           }
           <ul class="service-cart__items" aria-live="polite">
             @for (service of state.cart; track service.serviceId) {
@@ -131,7 +133,7 @@
                 ><button
                   class="service-cart__remove"
                   type="button"
-                  [attr.aria-label]="'Remove ' + service.name"
+                  [attr.aria-label]="'booking.services.remove' | transloco: { name: service.name }"
                   (click)="remove(service.serviceId)"
                 >
                   ×
@@ -140,7 +142,7 @@
             }
           </ul>
           <p class="service-cart__total">
-            Total {{ state.total | currency: "COP" : "symbol" : "1.0-0" }}
+            {{ 'reservationFinance.total' | transloco }} {{ state.total | currency: "COP" : "symbol" : "1.0-0" }}
           </p>
           <button
             class="service-cart__clear"
@@ -148,20 +150,20 @@
             [disabled]="!state.cart.length"
             (click)="clear()"
           >
-            Clear cart</button
+            {{ 'booking.services.clearCart' | transloco }}</button
           ><button
             class="service-cart__skip"
             type="button"
             (click)="selectedSubject.next([])"
           >
-            Skip services →</button
+            {{ 'booking.services.skip' | transloco }} →</button
           ><button
             class="service-cart__submit"
             type="button"
             [disabled]="!state.cart.length"
             (click)="selectedSubject.next(state.ids)"
           >
-            Add selected services →
+            {{ 'booking.services.addSelected' | transloco }} →
           </button>
           <ng-content select="[bookingError]" />
         </aside>

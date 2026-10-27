@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import {
   Observable,
   catchError,
@@ -34,6 +35,7 @@ import { ServiceGalleryComponent } from './components/service-gallery/service-ga
     FooterComponent,
     ButtonComponent,
     ServiceGalleryComponent,
+    TranslocoPipe,
   ],
   templateUrl: './client-services-detail.component.html',
   styleUrl: './client-services-detail.component.scss',
@@ -79,11 +81,4 @@ export class ClientServicesDetailComponent {
       );
     }),
   );
-
-  formatPrice(price: number): string {
-    return Number(price).toLocaleString('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-  }
 }

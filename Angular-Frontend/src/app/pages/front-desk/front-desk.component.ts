@@ -2,6 +2,7 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import {
   EMPTY,
   Observable,
@@ -89,6 +90,7 @@ function summarize(board: FrontDeskBoard): DeskSummary {
     SkeletonComponent,
     FrontDeskStaysComponent,
     FrontDeskRoomsComponent,
+    TranslocoPipe,
   ],
   templateUrl: './front-desk.component.html',
   styleUrl: './front-desk.component.scss',
@@ -130,7 +132,7 @@ export class FrontDeskComponent {
         map((board) => ({ loading: false, board, summary: summarize(board), error: '' })),
         // El error queda dentro de la lectura: "Try again" y las acciones siguen funcionando.
         catchError(() =>
-          of({ loading: false, error: 'The front desk could not be loaded. Please try again.' }),
+          of({ loading: false, error: translate('frontDesk.loadError') }),
         ),
       ),
     ),
@@ -159,7 +161,11 @@ export class FrontDeskComponent {
   }
 
   markReady(room: FrontDeskRoom): void {
-    this.actionSubject.next({ kind: 'ready', id: room.roomId, label: `Room ${room.number}` });
+    this.actionSubject.next({
+      kind: 'ready',
+      id: room.roomId,
+      label: translate('rooms.roomNumber', { number: room.number }),
+    });
   }
 
   refresh(): void {
@@ -180,21 +186,25 @@ export class FrontDeskComponent {
         : action.kind === 'check-out'
           ? this.reservations.checkOut(action.id)
           : this.rooms.markReady(action.id);
-    const done =
+    const doneKey =
       action.kind === 'check-in'
-        ? `${action.label} checked in. Its room is now occupied.`
+        ? 'frontDesk.notice.checkedIn'
         : action.kind === 'check-out'
-          ? `${action.label} checked out. Its room now appears in rooms to prepare.`
-          : `${action.label} is ready.`;
+          ? 'frontDesk.notice.checkedOut'
+          : 'frontDesk.notice.ready';
     return request.pipe(
       tap(() => {
-        this.notice = { title: 'Front desk updated', message: done, error: false };
+        this.notice = {
+          title: translate('frontDesk.notice.updated'),
+          message: translate(doneKey, { label: action.label }),
+          error: false,
+        };
         this.toastSubject.next();
       }),
       catchError((error: unknown) => {
         this.notice = {
-          title: 'Action not completed',
-          message: apiErrorMessage(error, 'The action could not be completed. Please try again.'),
+          title: translate('frontDesk.notice.failed'),
+          message: apiErrorMessage(error, 'frontDesk.notice.error'),
           error: true,
         };
         return EMPTY;

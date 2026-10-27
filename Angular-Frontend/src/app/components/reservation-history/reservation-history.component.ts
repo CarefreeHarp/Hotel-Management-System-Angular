@@ -1,4 +1,5 @@
 import { Component, Input, Output } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import { ReservationDetails } from '../../models/booking';
 import { ReservationStatus } from '../../models/enums/reservation-status';
@@ -8,7 +9,7 @@ import { ReservationCardComponent } from '../reservation-card/reservation-card.c
 /** Comparte las tarjetas y filtros del historial entre cliente y personal. */
 @Component({
   selector: 'app-reservation-history',
-  imports: [ButtonComponent, ReservationCardComponent],
+  imports: [ButtonComponent, ReservationCardComponent, TranslocoPipe],
   templateUrl: './reservation-history.component.html',
   styleUrl: './reservation-history.component.scss',
 })
@@ -24,24 +25,25 @@ export class ReservationHistoryComponent {
   }
 
   selectedFilter: 'all' | ReservationStatus = 'all';
+  // labelKey es la clave de traducción de cada filtro.
   private readonly clientFilters: {
-    label: string;
+    labelKey: string;
     status: 'all' | ReservationStatus;
   }[] = [
-    { label: 'All', status: 'all' },
-    { label: 'Upcoming', status: ReservationStatus.CONFIRMED },
-    { label: 'In progress', status: ReservationStatus.CHECKED_IN },
-    { label: 'Awaiting review', status: ReservationStatus.CHECKED_OUT },
-    { label: 'Awaiting payment', status: ReservationStatus.PENDING },
-    { label: 'Cancelled', status: ReservationStatus.CANCELLED },
+    { labelKey: 'reservationHistory.filters.all', status: 'all' },
+    { labelKey: 'reservationHistory.filters.upcoming', status: ReservationStatus.CONFIRMED },
+    { labelKey: 'reservationHistory.filters.inProgress', status: ReservationStatus.CHECKED_IN },
+    { labelKey: 'reservationHistory.filters.awaitingReview', status: ReservationStatus.CHECKED_OUT },
+    { labelKey: 'reservationHistory.filters.awaitingPayment', status: ReservationStatus.PENDING },
+    { labelKey: 'reservationHistory.filters.cancelled', status: ReservationStatus.CANCELLED },
   ];
   // Cliente y personal comparten las reservas. Cambian únicamente las etiquetas de sus filtros.
-  get filters(): { label: string; status: 'all' | ReservationStatus }[] {
+  get filters(): { labelKey: string; status: 'all' | ReservationStatus }[] {
     return this.staff
       ? [
-          { label: 'All', status: 'all' },
+          { labelKey: 'reservationHistory.filters.all', status: 'all' },
           ...Object.values(ReservationStatus).map((status) => ({
-            label: status.replace('_', ' '),
+            labelKey: `enums.reservationStatus.${status}`,
             status,
           })),
         ]

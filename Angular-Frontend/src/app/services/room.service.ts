@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { translate } from '@jsverse/transloco';
 import { Observable, concatMap, map } from 'rxjs';
 import { RoomDetailDTO } from '../models/dto/room-detail-dto';
 import { RoomListDTO } from '../models/dto/room-list-dto';
@@ -27,7 +28,7 @@ export class RoomService {
       concatMap(() => this.getAll()),
       map((rooms) => {
         const created = rooms.find((item) => item.number === room.number);
-        if (!created) throw new Error('Created room could not be retrieved.');
+        if (!created) throw new Error(translate('api.createdNotFound'));
         return created;
       }),
     );

@@ -1,15 +1,15 @@
 <section class="assigned" aria-labelledby="assigned-title">
   <header class="assigned-heading">
     <div>
-      <p class="card-eyebrow">Reporting line</p>
-      <h2 id="assigned-title">Operators in charge</h2>
+      <p class="card-eyebrow">{{ 'administrators.detail.reportingLine' | transloco }}</p>
+      <h2 id="assigned-title">{{ 'administrators.fields.operatorsInCharge' | transloco }}</h2>
     </div>
     <a
       appButton
       variant="secondary"
       [routerLink]="[base, 'operators', 'new']"
       [queryParams]="{ adminId: adminId }"
-      >Add operator</a
+      >{{ 'administrators.detail.addOperator' | transloco }}</a
     >
   </header>
   @if (operators.length) {
@@ -32,6 +32,6 @@
       }
     </ul>
   } @else {
-    <p class="empty-text">No operators report to this administrator yet.</p>
+    <p class="empty-text">{{ 'administrators.detail.noOperators' | transloco }}</p>
   }
 </section>

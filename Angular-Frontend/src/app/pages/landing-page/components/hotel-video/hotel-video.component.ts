@@ -8,11 +8,12 @@ import {
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subject, fromEvent } from 'rxjs';
 
 @Component({
   selector: 'app-hotel-video',
-  imports: [],
+  imports: [TranslocoPipe],
   templateUrl: './hotel-video.component.html',
   styleUrl: './hotel-video.component.scss',
 })
@@ -22,10 +23,6 @@ export class HotelVideoComponent implements AfterViewInit, OnDestroy {
   // El Subject emite desde este componente. El Observable expuesto permite al padre escuchar.
   protected readonly fullscreenChangeSubject = new Subject<boolean>();
   @Output('fullscreenChange') readonly fullscreenChange$ = this.fullscreenChangeSubject.asObservable();
-
-  eyebrow: string = 'The hotel';
-  title: string = 'Hotel drone view';
-  videoLabel: string = 'Aerial view of Atlan Suites in Singapore';
 
   private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private videoObserver?: IntersectionObserver;

@@ -1,32 +1,32 @@
 @if (operator; as operator) {
-  <section class="detail-grid" aria-label="Operator information">
-    <figure class="staff-visual" data-role="Operator">
+  <section class="detail-grid" [attr.aria-label]="'operators.detail.information' | transloco">
+    <figure class="staff-visual" [attr.data-role]="'operators.table.operator' | transloco">
       <app-staff-avatar
         [name]="operator.name + ' ' + operator.lastName"
         size="large"
       />
-      <figcaption>Operator</figcaption>
+      <figcaption>{{ 'operators.table.operator' | transloco }}</figcaption>
     </figure>
     <article class="detail-content">
       <header class="info-card-heading">
-        <p class="card-eyebrow">Registered details</p>
-        <span class="record-id">ID #{{ operator.operatorId }}</span>
+        <p class="card-eyebrow">{{ 'common.registeredDetails' | transloco }}</p>
+        <span class="record-id">{{ 'common.idNumber' | transloco: { id: operator.operatorId } }}</span>
       </header>
       <dl class="detail-list">
         <div>
-          <dt>First name</dt>
+          <dt>{{ 'common.fields.firstName' | transloco }}</dt>
           <dd>{{ operator.name }}</dd>
         </div>
         <div>
-          <dt>Last name</dt>
+          <dt>{{ 'common.fields.lastName' | transloco }}</dt>
           <dd>{{ operator.lastName }}</dd>
         </div>
         <div>
-          <dt>Email</dt>
+          <dt>{{ 'common.fields.email' | transloco }}</dt>
           <dd>{{ operator.email }}</dd>
         </div>
         <div>
-          <dt>Administrator in charge</dt>
+          <dt>{{ 'operators.fields.administratorInCharge' | transloco }}</dt>
           <dd>
             @if (isOperatorProfile) {
               <span>{{ operator.adminName }}</span>
@@ -43,7 +43,7 @@
       @if (!isOperatorProfile) {
         <div class="detail-actions">
           <a appButton variant="secondary" [routerLink]="[base, 'operators']"
-            >Back to list</a
+            >{{ 'common.actions.backToList' | transloco }}</a
           >
         </div>
       }

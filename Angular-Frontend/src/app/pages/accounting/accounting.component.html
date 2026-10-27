@@ -2,17 +2,17 @@
 <main class="accounting-page">
   <header class="page-heading">
     <div>
-      <h1>Accounting &amp; insights</h1>
+      <h1>{{ 'accounting.title' | transloco }}</h1>
     </div>
   </header>
   <form
     class="filters"
     #filters="ngForm"
     (ngSubmit)="applyFilters()"
-    aria-label="Reporting period"
+    [attr.aria-label]="'accounting.period' | transloco"
   >
     <label
-      >From<input
+      >{{ 'accounting.from' | transloco }}<input
         type="date"
         name="from"
         [(ngModel)]="from"
@@ -20,42 +20,41 @@
         required
     /></label>
     <label
-      >To<input type="date" name="to" [(ngModel)]="to" [min]="from" required
+      >{{ 'accounting.to' | transloco }}<input type="date" name="to" [(ngModel)]="to" [min]="from" required
     /></label>
     <button appButton type="submit" [disabled]="!filters.valid || from > to">
-      Apply period <span aria-hidden="true">↗</span>
+      {{ 'accounting.apply' | transloco }} <span aria-hidden="true">↗</span>
     </button>
   </form>
   @if (state$ | async; as state) {
     @if (state.loading) {
       <app-skeleton
         variant="detail"
-        label="Loading accounting and reservation statistics…"
+        [label]="'accounting.loading' | transloco"
       />
     } @else if (state.error) {
       <section class="error-notice" role="alert">
-        <h2>Data is unavailable</h2>
+        <h2>{{ 'accounting.unavailable' | transloco }}</h2>
         <p>{{ state.error }}</p>
-        <button appButton type="button" (click)="retry()">Try again</button>
+        <button appButton type="button" (click)="retry()">{{ 'common.actions.tryAgain' | transloco }}</button>
       </section>
     } @else {
       @if (state.data; as data) {
         <p class="period-caption">
-          Reporting period:
+          {{ 'accounting.periodCaption' | transloco }}
           <strong
-            >{{ data.from | date: "MMM d, y" }} –
-            {{ data.to | date: "MMM d, y" }}</strong
+            >{{ data.from | date: "mediumDate" }} –
+            {{ data.to | date: "mediumDate" }}</strong
           >
         </p>
         @if (state.reservationCount === 0) {
           <p class="basis-note" role="status">
-            No bookings were created in this period. Financial totals use
-            payment and refund dates.
+            {{ 'accounting.noBookings' | transloco }}
           </p>
         }
         <app-accounting-overview [financial]="data.financial" />
         <section class="stays-panel" aria-labelledby="stays-title">
-          <h2 id="stays-title" class="sr-only">Stay statistics</h2>
+          <h2 id="stays-title" class="sr-only">{{ 'accounting.stays.title' | transloco }}</h2>
           <dl class="stay-metrics">
             <div>
               <dt>
@@ -64,11 +63,11 @@
                   alt=""
                   width="28"
                   height="28"
-                />Average stay
+                />{{ 'accounting.stays.averageStay' | transloco }}
               </dt>
               <dd>
                 {{ data.stays.averageNights | number: "1.0-1" }}
-                <small>nights</small>
+                <small>{{ 'accounting.stays.nights' | transloco }}</small>
               </dd>
             </div>
             <div>
@@ -78,7 +77,7 @@
                   alt=""
                   width="28"
                   height="28"
-                />Average guests per reservation
+                />{{ 'accounting.stays.averageGuests' | transloco }}
               </dt>
               <dd>
                 {{ data.stays.averageGuests | number: "1.0-1" }}
@@ -90,24 +89,24 @@
           <div class="chart-grid">
             <section class="panel status-panel" aria-labelledby="status-title">
               <header>
-                <h2 id="status-title">Reservation status</h2>
+                <h2 id="status-title">{{ 'accounting.status.title' | transloco }}</h2>
               </header>
               <app-analytics-chart
                 [options]="charts.statuses"
-                label="Reservation counts by current status. Use the legend to show or hide a status."
+                [label]="'accounting.status.chartLabel' | transloco"
               />
               <details>
-                <summary>View counts &amp; percentages</summary>
+                <summary>{{ 'accounting.status.details' | transloco }}</summary>
                 <div class="table-scroll">
                   <table>
                     <caption class="sr-only">
-                      Reservation status distribution
+                      {{ 'accounting.status.caption' | transloco }}
                     </caption>
                     <thead>
                       <tr>
-                        <th scope="col">Status</th>
-                        <th scope="col">Reservations</th>
-                        <th scope="col">Share</th>
+                        <th scope="col">{{ 'common.fields.status' | transloco }}</th>
+                        <th scope="col">{{ 'adminHeader.sections.reservations' | transloco }}</th>
+                        <th scope="col">{{ 'accounting.status.share' | transloco }}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -125,30 +124,30 @@
             </section>
             <section class="panel trend-panel" aria-labelledby="trend-title">
               <header>
-                <h2 id="trend-title">Reservation trends</h2>
+                <h2 id="trend-title">{{ 'accounting.trend.title' | transloco }}</h2>
               </header>
               <app-analytics-chart
                 [options]="charts.trend"
-                label="Created reservations over time, with zoom and a range slider."
+                [label]="'accounting.trend.chartLabel' | transloco"
               />
               <details>
-                <summary>View period totals</summary>
+                <summary>{{ 'accounting.trend.details' | transloco }}</summary>
                 <div class="table-scroll">
                   <table>
                     <caption class="sr-only">
-                      Created reservation totals
+                      {{ 'accounting.trend.caption' | transloco }}
                     </caption>
                     <thead>
                       <tr>
-                        <th scope="col">Period starts</th>
-                        <th scope="col">Reservations</th>
+                        <th scope="col">{{ 'accounting.trend.periodStarts' | transloco }}</th>
+                        <th scope="col">{{ 'adminHeader.sections.reservations' | transloco }}</th>
                       </tr>
                     </thead>
                     <tbody>
                       @for (item of data.trend; track item.date) {
                         <tr>
                           <th scope="row">
-                            {{ item.date | date: "MMM d, y" }}
+                            {{ item.date | date: "mediumDate" }}
                           </th>
                           <td>{{ item.reservations }}</td>
                         </tr>
@@ -160,25 +159,25 @@
             </section>
             <section class="panel" aria-labelledby="rooms-title">
               <header>
-                <h2 id="rooms-title">Most booked room types</h2>
+                <h2 id="rooms-title">{{ 'accounting.roomTypes.title' | transloco }}</h2>
               </header>
               @if (data.roomTypes.length > 0) {
                 <app-analytics-chart
                   [options]="charts.roomTypes"
-                  label="Room types ranked by reservations and contracted nights. Toggle either series using the legend."
+                  [label]="'accounting.roomTypes.chartLabel' | transloco"
                 />
                 <details>
-                  <summary>View room type ranking</summary>
+                  <summary>{{ 'accounting.roomTypes.details' | transloco }}</summary>
                   <div class="table-scroll">
                     <table>
                       <caption class="sr-only">
-                        Room type ranking
+                        {{ 'accounting.roomTypes.caption' | transloco }}
                       </caption>
                       <thead>
                         <tr>
-                          <th scope="col">Room type</th>
-                          <th scope="col">Bookings</th>
-                          <th scope="col">Nights</th>
+                          <th scope="col">{{ 'rooms.fields.roomType' | transloco }}</th>
+                          <th scope="col">{{ 'accounting.roomTypes.bookings' | transloco }}</th>
+                          <th scope="col">{{ 'booking.summary.nights' | transloco }}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -195,31 +194,31 @@
                 </details>
               } @else {
                 <p class="empty">
-                  No non-cancelled reservations in this period.
+                  {{ 'accounting.roomTypes.empty' | transloco }}
                 </p>
               }
             </section>
             <section class="panel" aria-labelledby="services-title">
               <header>
-                <h2 id="services-title">Most contracted services</h2>
+                <h2 id="services-title">{{ 'accounting.services.title' | transloco }}</h2>
               </header>
               @if (data.services.length > 0) {
                 <app-analytics-chart
                   [options]="charts.services"
-                  label="Services ranked by units contracted."
+                  [label]="'accounting.services.chartLabel' | transloco"
                 />
                 <details>
-                  <summary>View units &amp; contracted value</summary>
+                  <summary>{{ 'accounting.services.details' | transloco }}</summary>
                   <div class="table-scroll">
                     <table>
                       <caption class="sr-only">
-                        Service quantities and historical charge value
+                        {{ 'accounting.services.caption' | transloco }}
                       </caption>
                       <thead>
                         <tr>
-                          <th scope="col">Service concept</th>
-                          <th scope="col">Units</th>
-                          <th scope="col">Charge value</th>
+                          <th scope="col">{{ 'accounting.services.concept' | transloco }}</th>
+                          <th scope="col">{{ 'accounting.services.units' | transloco }}</th>
+                          <th scope="col">{{ 'accounting.services.value' | transloco }}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -241,7 +240,7 @@
                 </details>
               } @else {
                 <p class="empty">
-                  No contracted service charges in this period.
+                  {{ 'accounting.services.empty' | transloco }}
                 </p>
               }
             </section>

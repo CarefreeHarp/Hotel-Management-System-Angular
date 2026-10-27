@@ -5,19 +5,24 @@
   (cancel)="cancelDeletion($event)"
 >
   <header>
-    <p class="eyebrow">Reservation management</p>
-    <h2 id="delete-reservation-title">Delete reservation #{{ reservationId() }}?</h2>
+    <p class="eyebrow">{{ 'reservations.deleteDialog.eyebrow' | transloco }}</p>
+    <h2 id="delete-reservation-title">
+      {{ 'reservations.deleteDialog.title' | transloco: { id: reservationId() } }}
+    </h2>
   </header>
   <p id="delete-reservation-description">
-    Permanent deletion is only for special cases. In normal cases, changing the
-    status to CANCELLED may be sufficient.
+    {{ 'reservations.deleteDialog.description' | transloco }}
   </p>
   <p id="delete-reservation-warning" class="warning">
-    This will delete the reservation, its folio, charges and payments.
-    <strong>This action is irreversible.</strong>
+    {{ 'reservations.deleteDialog.warning' | transloco }}
+    <strong>{{ 'reservations.deleteDialog.irreversible' | transloco }}</strong>
   </p>
   <footer>
-    <button appButton type="button" variant="secondary" autofocus (click)="cancelDeletion()">Cancel</button>
-    <button appButton type="button" class="delete-button" (click)="confirmDeletion()">Delete permanently</button>
+    <button appButton type="button" variant="secondary" autofocus (click)="cancelDeletion()">
+      {{ 'common.actions.cancel' | transloco }}
+    </button>
+    <button appButton type="button" class="delete-button" (click)="confirmDeletion()">
+      {{ 'reservations.deleteDialog.confirm' | transloco }}
+    </button>
   </footer>
 </dialog>

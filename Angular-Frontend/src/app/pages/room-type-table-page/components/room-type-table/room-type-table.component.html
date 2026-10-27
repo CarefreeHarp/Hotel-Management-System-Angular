@@ -16,12 +16,12 @@
         <table class="luxury-table">
           <thead>
             <tr>
-              <th class="col-id"># ID</th>
-              <th class="col-preview">Preview</th>
-              <th class="col-name">Room Type &amp; Details</th>
-              <th class="col-capacity">Max Guests</th>
-              <th class="col-price">Nightly Rate</th>
-              <th class="col-actions">Actions</th>
+              <th class="col-id"># {{ 'common.fields.id' | transloco }}</th>
+              <th class="col-preview">{{ 'roomTypes.table.preview' | transloco }}</th>
+              <th class="col-name">{{ 'roomTypes.table.nameDetails' | transloco }}</th>
+              <th class="col-capacity">{{ 'roomTypes.table.maxGuests' | transloco }}</th>
+              <th class="col-price">{{ 'roomTypes.fields.nightlyRate' | transloco }}</th>
+              <th class="col-actions">{{ 'common.fields.actions' | transloco }}</th>
             </tr>
           </thead>
           <tbody>
@@ -70,25 +70,28 @@
                       ></path>
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
-                    <span
-                      >{{ item.maxCapacity }}
-                      {{ item.maxCapacity === 1 ? "Guest" : "Guests" }}</span
-                    >
+                    <span>{{
+                      (item.maxCapacity === 1
+                        ? 'roomTypes.table.guestsOne'
+                        : 'roomTypes.table.guestsMany'
+                      ) | transloco: { count: item.maxCapacity }
+                    }}</span>
                   </div>
                 </td>
                 <td class="col-price">
                   <div class="price-wrapper">
                     <span class="currency-tag">COP</span>
-                    <span class="price-num"
-                      >${{ item.nightlyPrice.toLocaleString("en-US") }}</span
-                    >
-                    <span class="price-period">/ night</span>
+                    <span class="price-num">{{
+                      item.nightlyPrice | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+                    }}</span>
+                    <span class="price-period">{{ 'roomTypes.table.perNight' | transloco }}</span>
                   </div>
                 </td>
                 <td class="col-actions">
                   <div class="actions">
                     <a [routerLink]="[base, 'room-types', item.roomTypeId]"
-                      >View<span class="sr-only"> {{ item.name }}</span></a
+                      >{{ 'common.actions.view' | transloco
+                      }}<span class="sr-only"> {{ item.name }}</span></a
                     >
                     @if (adminArea) {
                       <a
@@ -98,13 +101,15 @@
                           item.roomTypeId,
                           'edit',
                         ]"
-                        >Edit<span class="sr-only"> {{ item.name }}</span></a
+                        >{{ 'common.actions.edit' | transloco
+                        }}<span class="sr-only"> {{ item.name }}</span></a
                       >
                       <button
                         type="button"
                         (click)="deleteSubject.next(item.roomTypeId)"
                       >
-                        Delete<span class="sr-only"> {{ item.name }}</span>
+                        {{ 'common.actions.delete' | transloco
+                        }}<span class="sr-only"> {{ item.name }}</span>
                       </button>
                     }
                   </div>
@@ -146,7 +151,12 @@
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
-              <span>{{ item.maxCapacity }} Guests</span>
+              <span>{{
+                (item.maxCapacity === 1
+                  ? 'roomTypes.table.guestsOne'
+                  : 'roomTypes.table.guestsMany'
+                ) | transloco: { count: item.maxCapacity }
+              }}</span>
             </div>
           </div>
 
@@ -162,23 +172,26 @@
 
             <div class="card-footer-row">
               <div class="card-price-block">
-                <span class="card-price-label">Nightly Rate</span>
+                <span class="card-price-label">{{ 'roomTypes.fields.nightlyRate' | transloco }}</span>
                 <div class="card-price-val">
-                  COP ${{ item.nightlyPrice.toLocaleString("en-US") }}
+                  COP {{ item.nightlyPrice | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
                 </div>
               </div>
 
               <div class="actions">
                 <a [routerLink]="[base, 'room-types', item.roomTypeId]"
-                  >View<span class="sr-only"> {{ item.name }}</span></a
+                  >{{ 'common.actions.view' | transloco
+                  }}<span class="sr-only"> {{ item.name }}</span></a
                 >
                 @if (adminArea) {
                   <a
                     [routerLink]="[base, 'room-types', item.roomTypeId, 'edit']"
-                    >Edit<span class="sr-only"> {{ item.name }}</span></a
+                    >{{ 'common.actions.edit' | transloco
+                    }}<span class="sr-only"> {{ item.name }}</span></a
                   >
                   <button type="button" (click)="deleteSubject.next(item.roomTypeId)">
-                    Delete<span class="sr-only"> {{ item.name }}</span>
+                    {{ 'common.actions.delete' | transloco
+                    }}<span class="sr-only"> {{ item.name }}</span>
                   </button>
                 }
               </div>
@@ -207,12 +220,12 @@
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </div>
-      <h3 class="empty-title">No Room Types Found</h3>
+      <h3 class="empty-title">{{ 'roomTypes.table.emptyTitle' | transloco }}</h3>
       <p class="empty-text">
-        No room types matched your current search or filter criteria. Try
-        resetting the filters{{
-          adminArea ? " or creating a new room type" : ""
-        }}.
+        {{
+          (adminArea ? 'roomTypes.table.emptyTextAdmin' : 'roomTypes.table.emptyText')
+            | transloco
+        }}
       </p>
       <div class="empty-actions">
         <button
@@ -220,7 +233,7 @@
           type="button"
           (click)="resetFilters()"
         >
-          Clear All Filters
+          {{ 'roomTypes.table.clearFilters' | transloco }}
         </button>
         @if (adminArea) {
           <a
@@ -228,7 +241,7 @@
             appButton
             [create]="true"
           >
-            + Add New Room Type
+            {{ 'roomTypes.table.addNew' | transloco }}
           </a>
         }
       </div>

@@ -1,12 +1,12 @@
 <app-admin-header />
 <main class="room-types-page-main">
-  <span class="page-watermark" aria-hidden="true">Reservations</span>
+  <span class="page-watermark" aria-hidden="true">{{ 'reservations.list.title' | transloco }}</span>
   <div class="page-container">
     <header class="catalog-heading">
       <div>
-        <p class="eyebrow">Atlan Suites · Management</p>
-        <h1>Reservations</h1>
-        <p>Guest stays, room assignments and booking history.</p>
+        <p class="eyebrow">{{ 'common.managementEyebrow' | transloco }}</p>
+        <h1>{{ 'reservations.list.title' | transloco }}</h1>
+        <p>{{ 'reservations.list.description' | transloco }}</p>
       </div>
     </header>
     @if (message) {
@@ -17,7 +17,10 @@
     }
     @if (state$ | async; as state) {
       @if (state.loading) {
-        <app-skeleton [variant]="state.controls.view === 'table' ? 'table' : 'cards'" label="Loading reservations…" />
+        <app-skeleton
+          [variant]="state.controls.view === 'table' ? 'table' : 'cards'"
+          [label]="'reservations.list.loading' | transloco"
+        />
       } @else {
         <app-list-controls
           [state]="state.controls"

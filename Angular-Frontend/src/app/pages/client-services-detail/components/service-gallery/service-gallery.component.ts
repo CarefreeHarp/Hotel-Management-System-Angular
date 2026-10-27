@@ -1,8 +1,9 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 @Component({
   selector: 'app-service-gallery',
-  imports: [OptimizedImageDirective],
+  imports: [OptimizedImageDirective, TranslocoPipe],
   templateUrl: './service-gallery.component.html',
   styleUrl: './service-gallery.component.scss',
 })

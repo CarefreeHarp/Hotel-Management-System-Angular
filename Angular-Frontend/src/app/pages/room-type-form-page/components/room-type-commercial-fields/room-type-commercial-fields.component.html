@@ -1,13 +1,13 @@
 @if (form; as form) {
   <section aria-labelledby="type-data-title">
-    <h2 class="section-title" id="type-data-title">Commercial information</h2>
+    <h2 class="section-title" id="type-data-title">{{ 'roomTypes.detail.commercial' | transloco }}</h2>
     <p class="section-description">
-      Display name, description, base rate, and permitted occupancy.
+      {{ 'roomTypes.form.commercialDescription' | transloco }}
     </p>
     <div class="form-grid">
       <app-form-field
         fieldId="name"
-        label="Name"
+        [label]="'roomTypes.fields.name' | transloco"
         [control]="form.controls.name"
         [maxlength]="50"
         [submitted]="submitted"
@@ -15,37 +15,37 @@
       />
       <app-form-field
         fieldId="maxCapacity"
-        label="Maximum capacity"
+        [label]="'roomTypes.fields.maxCapacity' | transloco"
         type="number"
         [control]="form.controls.maxCapacity"
         [min]="1"
         [max]="10"
         [step]="1"
-        hint="From 1 to 10 guests."
+        [hint]="'roomTypes.form.capacityHint' | transloco"
         [submitted]="submitted"
         [messages]="messages.maxCapacity"
       />
       <app-form-field
         class="full-width"
         fieldId="description"
-        label="Description"
+        [label]="'roomTypes.fields.description' | transloco"
         [multiline]="true"
         [control]="form.controls.description"
         [maxlength]="500"
-        hint="Maximum 500 characters."
+        [hint]="'roomTypes.form.descriptionHint' | transloco"
         [submitted]="submitted"
         [messages]="messages.description"
       />
       <app-form-field
         fieldId="nightlyPrice"
-        label="Price per night (COP)"
+        [label]="'roomTypes.fields.pricePerNightCop' | transloco"
         type="number"
         prefix="$"
         [control]="form.controls.nightlyPrice"
         [min]="0.01"
         [max]="99999999.99"
         [step]="0.01"
-        hint="Greater than zero, up to two decimals."
+        [hint]="'roomTypes.form.priceHint' | transloco"
         [submitted]="submitted"
         [messages]="messages.nightlyPrice"
       />

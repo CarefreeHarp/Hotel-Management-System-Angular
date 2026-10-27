@@ -3,7 +3,7 @@
 <main class="client-detail-page">
   @if (state$ | async; as state) {
     @if (state.isLoading) {
-      <app-skeleton variant="detail" label="Loading service information..." />
+      <app-skeleton variant="detail" [label]="'catalog.detail.loading' | transloco" />
     } @else {
       @if (state.service; as item) {
         <!-- Ruta de navegación y enlace para volver -->
@@ -14,7 +14,7 @@
               [routerLink]="[base, 'services-catalog']"
               class="back-link"
             >
-              <span aria-hidden="true">←</span> Service catalog
+              <span aria-hidden="true">←</span> {{ 'header.nav.catalog' | transloco }}
             </a>
             <span class="nav-separator">/</span>
             <span class="current-item">{{ item.name }}</span>
@@ -38,7 +38,7 @@
             <div class="hero-meta-badge">
               <span class="category-tag">{{ item.category }}</span>
               @if (item.activationStatus === "ACTIVE") {
-                <span class="status-tag">Available to guests</span>
+                <span class="status-tag">{{ 'catalog.detail.available' | transloco }}</span>
               }
             </div>
 
@@ -49,8 +49,8 @@
             }
 
             <div class="hero-price-badge">
-              <span class="price-eyebrow">Price per service</span>
-              <span class="price-val">COP ${{ formatPrice(item.price) }}</span>
+              <span class="price-eyebrow">{{ 'catalog.detail.pricePerService' | transloco }}</span>
+              <span class="price-val">{{ item.price | currency: 'COP' : 'symbol' : '1.0-0' }}</span>
             </div>
           </div>
         </section>
@@ -61,7 +61,7 @@
             <!-- Descripción y características del servicio -->
             <article class="detail-main">
               <!-- Quick Info Cards -->
-              <section class="quick-info-grid" aria-label="Service quick facts">
+              <section class="quick-info-grid" [attr.aria-label]="'catalog.detail.quickFacts' | transloco">
                 @if (item.duration) {
                   <div class="quick-info-item">
                     <svg
@@ -80,7 +80,7 @@
                       <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
                     <div>
-                      <span class="info-label">Duration</span>
+                      <span class="info-label">{{ 'services.fields.duration' | transloco }}</span>
                       <strong class="info-value">{{ item.duration }}</strong>
                     </div>
                   </div>
@@ -105,7 +105,7 @@
                       <circle cx="12" cy="10" r="3"></circle>
                     </svg>
                     <div>
-                      <span class="info-label">Location</span>
+                      <span class="info-label">{{ 'services.fields.location' | transloco }}</span>
                       <strong class="info-value">{{ item.location }}</strong>
                     </div>
                   </div>
@@ -137,7 +137,7 @@
                       <line x1="3" y1="10" x2="21" y2="10"></line>
                     </svg>
                     <div>
-                      <span class="info-label">Schedule</span>
+                      <span class="info-label">{{ 'services.fields.schedule' | transloco }}</span>
                       <strong class="info-value">{{
                         item.availability
                       }}</strong>
@@ -148,7 +148,7 @@
 
               <!-- Full Description -->
               <section class="description-section">
-                <h2 class="section-heading">About this service</h2>
+                <h2 class="section-heading">{{ 'catalog.detail.about' | transloco }}</h2>
                 <div class="description-text">
                   @for (
                     paragraph of item.description.split("\n\n");
@@ -170,14 +170,14 @@
               <div class="booking-card">
                 <div class="booking-card__header">
                   <p class="eyebrow">Atlan Suites</p>
-                  <h2 class="booking-card__title">Enjoy it during your stay</h2>
+                  <h2 class="booking-card__title">{{ 'catalog.detail.enjoy' | transloco }}</h2>
                 </div>
                 <div class="booking-card__body">
                   <a
                     appButton
                     routerLink="/book-now"
                     [queryParams]="{ auth: authParams.auth, step: 'dates' }"
-                    >Book a room with us to try it out!</a
+                    >{{ 'catalog.detail.bookRoom' | transloco }}</a
                   >
                 </div>
               </div>

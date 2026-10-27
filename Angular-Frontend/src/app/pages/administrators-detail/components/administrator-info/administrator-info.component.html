@@ -1,35 +1,35 @@
 @if (administrator; as administrator) {
-  <section class="detail-grid" aria-label="Administrator information">
-    <figure class="staff-visual" data-role="Admin">
+  <section class="detail-grid" [attr.aria-label]="'administrators.detail.information' | transloco">
+    <figure class="staff-visual" [attr.data-role]="'administrators.detail.watermark' | transloco">
       <app-staff-avatar [name]="administrator.name" tone="gold" size="large" />
-      <figcaption>Administrator</figcaption>
+      <figcaption>{{ 'administrators.table.administrator' | transloco }}</figcaption>
     </figure>
     <article class="detail-content">
       <header class="info-card-heading">
-        <p class="card-eyebrow">Registered details</p>
-        <span class="record-id">ID #{{ administrator.adminId }}</span>
+        <p class="card-eyebrow">{{ 'common.registeredDetails' | transloco }}</p>
+        <span class="record-id">{{ 'common.idNumber' | transloco: { id: administrator.adminId } }}</span>
       </header>
       <dl class="detail-list">
         <div>
-          <dt>Name</dt>
+          <dt>{{ 'common.fields.name' | transloco }}</dt>
           <dd>{{ administrator.name }}</dd>
         </div>
         <div>
-          <dt>Email</dt>
+          <dt>{{ 'common.fields.email' | transloco }}</dt>
           <dd>{{ administrator.email }}</dd>
         </div>
         <div>
-          <dt>Role</dt>
-          <dd>Administrator</dd>
+          <dt>{{ 'common.fields.role' | transloco }}</dt>
+          <dd>{{ 'administrators.table.administrator' | transloco }}</dd>
         </div>
         <div>
-          <dt>Operators in charge</dt>
+          <dt>{{ 'administrators.fields.operatorsInCharge' | transloco }}</dt>
           <dd>{{ operatorCount }}</dd>
         </div>
       </dl>
       <div class="detail-actions">
         <a appButton variant="secondary" [routerLink]="[base, 'administrators']"
-          >Back to list</a
+          >{{ 'common.actions.backToList' | transloco }}</a
         >
       </div>
     </article>

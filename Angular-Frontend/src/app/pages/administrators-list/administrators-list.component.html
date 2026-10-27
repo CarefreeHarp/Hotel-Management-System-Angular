@@ -1,21 +1,18 @@
 <app-admin-header />
 <main class="room-types-page-main">
-  <span class="page-watermark" aria-hidden="true">Admins</span>
+  <span class="page-watermark" aria-hidden="true">{{ 'administrators.list.watermark' | transloco }}</span>
   <div class="page-container">
     <header class="catalog-heading">
       <div>
-        <p class="eyebrow">Atlan Suites · Staff management</p>
-        <h1>Administrators</h1>
-        <p>
-          View the accounts that manage Atlan Suites and the operators in their
-          charge.
-        </p>
+        <p class="eyebrow">{{ 'common.staffEyebrow' | transloco }}</p>
+        <h1>{{ 'administrators.list.title' | transloco }}</h1>
+        <p>{{ 'administrators.list.description' | transloco }}</p>
       </div>
       <a
         appButton
         [create]="true"
         [routerLink]="[base, 'administrators', 'new']"
-        >Create administrator</a
+        >{{ 'administrators.list.create' | transloco }}</a
       >
     </header>
     @if (message) {
@@ -25,7 +22,7 @@
       <p class="notice is-error" role="alert">{{ errorMessage }}</p>
     }
     @if (isLoading) {
-      <app-skeleton [variant]="listState.view === 'table' ? 'table' : 'cards'" label="Loading administrators…" />
+      <app-skeleton [variant]="listState.view === 'table' ? 'table' : 'cards'" [label]="'administrators.list.loading' | transloco" />
     } @else {
       <app-list-controls
         [state]="listState"
@@ -44,9 +41,13 @@
       }
       @if (administrators.length) {
         <p class="staff-count">
-          {{ administrators.length }} registered
-          {{ administrators.length === 1 ? "administrator" : "administrators" }}
-          · <a [routerLink]="[base, 'operators']">View operators</a>
+          {{
+            (administrators.length === 1
+              ? 'administrators.list.countOne'
+              : 'administrators.list.countMany'
+            ) | transloco: { count: administrators.length }
+          }}
+          · <a [routerLink]="[base, 'operators']">{{ 'administrators.list.viewOperators' | transloco }}</a>
         </p>
       }
     }

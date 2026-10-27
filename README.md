@@ -10,6 +10,7 @@ Hotel management application built with Angular and Spring Boot. It supports pub
 | --- | --- |
 | Frontend | Angular 19 standalone components, Angular Router, TypeScript 5.7 and SCSS. Client-side rendering, with SSR disabled. |
 | Reactive state | RxJS 7.8 for HTTP composition, route-driven reads and local component events. |
+| Translations | Transloco 8.4 with JSON dictionaries per language; Angular locale data formats dates, numbers and currency. |
 | Charts | Apache ECharts 6.1.0, imported directly without an Angular wrapper. |
 | Backend | Spring Boot 4.1.0, Java 17+, Spring MVC and constructor-based dependency injection. |
 | Persistence | Spring Data JPA, Hibernate and H2. Lombok generates entity accessors. |
@@ -29,8 +30,10 @@ Angular-Frontend/
     utils/                          Shared form and navigation helpers
     app.routes.ts                   Route definitions and lazy loading
   public/                           Static runtime assets
+    i18n/                           Translation dictionaries (en.json, es.json)
     icons/                          Dashboard metric icons
     images/                         Application images
+  scripts/check-i18n.mjs            Translation checker run by make i18n
 Springboot-Backend/
   src/main/java/com/example/demo/
     controller/                     REST endpoints
@@ -94,6 +97,36 @@ Inputs use `@Input`. Component outputs expose read-only Observables backed by lo
 
 Booking navigation uses an explicit `step` query parameter. The draft persists across steps, and date changes invalidate dependent selections. Card data is sent in the request body and never placed in the URL, stored or returned. Static files under `public/` are served from the frontend root, for example `/icons/wallet.png`.
 
+## Translations
+
+The interface is available in English, Spanish, French, Portuguese, Simplified Chinese, Russian, Arabic and Hebrew. **Language** at the end of the public header menu lists the available languages and marks the current one. Choosing another language saves its code in `localStorage` (`atlan-language`) and reloads the page; the saved choice applies to every page, including the staff area. This is the only value the application keeps in browser storage.
+
+`app.config.ts` reads the saved language before Angular starts. It configures Transloco, sets `LOCALE_ID` (for example `en-US`, `es-CO` or `ar`) and, before the first render, loads the dictionary and that language's Angular locale data, so the date, number and currency pipes follow the language. Locale data is downloaded only for the chosen language, keeping it out of the initial bundle. Arabic and Hebrew also set `dir="rtl"` on the page, and flex and grid layouts mirror automatically. English is the fallback: a key missing from another dictionary shows its English text.
+
+| Piece | Location |
+| --- | --- |
+| Available languages and the saved choice | `src/app/utils/language.ts` |
+| Dictionaries, one per language with the same keys | `public/i18n/<code>.json` |
+| HTTP loader for the dictionaries | `src/app/transloco-loader.ts` |
+| Checker for keys and hardcoded template text | `scripts/check-i18n.mjs` (`make -C Angular-Frontend i18n`) |
+
+Every visible text goes through a key. Templates use the `transloco` pipe:
+
+```html
+<h1>{{ 'rooms.list.title' | transloco }}</h1>
+<app-skeleton [label]="'rooms.list.loading' | transloco" />
+<button [attr.aria-label]="'common.closeNotification' | transloco">✕</button>
+<p>{{ 'rooms.roomNumber' | transloco: { number: room.number } }}</p>
+<span>{{ 'enums.roomStatus.' + room.status | transloco }}</span>
+<p>{{ (saving ? 'common.saving' : 'rooms.form.save') | transloco }}</p>
+```
+
+TypeScript uses `translate('key', params)` from `@jsverse/transloco` inside methods, getters, callbacks or component fields, never in module-level constants, which run before the dictionary loads. Constants and models store keys instead, and properties that hold keys end in `Key` (`labelKey`, `titleKey`). Form messages in `form-messages.ts` are keys that `FormFieldComponent` translates; its `messageParams` input fills placeholders such as `{{ years }}`.
+
+Plurals use two keys (`nightsOne`, `nightsMany`). Each enum value needs an `enums.<enumName>.<VALUE>` key. Data from the database (names, descriptions, categories) and messages written by the backend are shown as received, in English.
+
+To add a language, copy `en.json` to `public/i18n/<code>.json`, translate its values, add the language to `LANGUAGES` in `language.ts` (with its locale and writing direction), and add a loader for its Angular locale data to `LOCALE_DATA` in `app.config.ts`. ECharts writes its own accessible chart descriptions; if ECharts ships that language, declare `echarts/i18n/lang<CODE>-obj.js` in `echarts-locales.d.ts`, register it in `analytics-chart.component.ts` and list it in `allowedCommonJsDependencies` in `angular.json`. Languages ECharts does not ship (Hebrew) fall back to its English texts. `make -C Angular-Frontend i18n` reports dictionaries with missing or extra keys, keys used in code that do not exist, enum values without translation and visible text written directly in templates.
+
 ## Reservation consistency and billing
 
 | Collaborator | Responsibility |
@@ -151,7 +184,7 @@ The staff reservation form still changes the status manually without touching th
 
 Accounting uses **[Apache ECharts 6.1.0](https://echarts.apache.org/handbook/en/basics/import/)** directly. The accounting route is lazy-loaded, keeping its chart code outside the initial application bundle. Only the required pie, line and bar charts, SVG renderer, grid, graphic, tooltip, legend, zoom, toolbox and accessibility modules are registered.
 
-`accounting-chart-options.ts` converts aggregate DTOs into chart options. `AnalyticsChartComponent` owns the ECharts instance and its lifecycle. It initializes rendering outside Angular's zone, resizes through `ResizeObserver`, honors reduced-motion preferences and disposes the instance and observer on destruction. Tooltips use `richText` rather than HTML. Legends, segment selection and timeline zoom provide interaction; the toolbox restores the view and exports SVG images. Semantic tables expose the same aggregate values without relying on charts.
+`accounting-chart-options.ts` converts aggregate DTOs into chart options. `AnalyticsChartComponent` owns the ECharts instance and its lifecycle. It initializes rendering outside Angular's zone, resizes through `ResizeObserver`, honors reduced-motion preferences and disposes the instance and observer on destruction. Tooltips use `richText` rather than HTML. Legends, segment selection and timeline zoom provide interaction; the toolbox restores the view and exports SVG images. Chart texts come from the translation dictionaries, and each chart starts with the ECharts locale of the current language, which writes its generated accessible description. Semantic tables expose the same aggregate values without relying on charts.
 
 `GET /accounting?from=2026-01-01&to=2027-12-31` follows `AccountingController → AccountingServiceImpl → AccountingRepository`. `AccountingDashboard` contains only financial totals, status counts, monthly trend points, rankings and stay averages. Database-side aggregation avoids transferring individual reservations or financial movements to Angular.
 
@@ -199,7 +232,7 @@ The frontend Makefile installs locked dependencies with `npm ci` when needed. Th
 
 | Command | Verification |
 | --- | --- |
-| `make -C Angular-Frontend check` | TypeScript checking and production build. |
+| `make -C Angular-Frontend check` | TypeScript checking, translation check and production build. |
 | `make -C Springboot-Backend check` | Maven clean verification lifecycle, including compilation and packaging. |
 
 The backend has JUnit/H2 regression tests; the frontend has no automated test script yet. The frontend defaults to port `4200` and the backend to `8080`; `SERVER_PORT` overrides the backend port, while frontend HTTP service URLs currently target `http://localhost:8080`.

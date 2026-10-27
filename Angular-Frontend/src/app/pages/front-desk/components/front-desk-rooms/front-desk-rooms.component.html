@@ -1,35 +1,35 @@
-<section class="catalog-table" aria-label="Rooms in cleaning or maintenance">
+<section class="catalog-table" [attr.aria-label]="'frontDesk.rooms.title' | transloco">
   <div class="table-scroll">
     <table>
       <caption class="sr-only">
-        Rooms in cleaning or maintenance
+        {{ 'frontDesk.rooms.title' | transloco }}
       </caption>
       <thead>
         <tr>
-          <th scope="col">Room</th>
-          <th scope="col">Room type</th>
-          <th scope="col">Status</th>
-          <th scope="col">Action</th>
+          <th scope="col">{{ 'rooms.fields.room' | transloco }}</th>
+          <th scope="col">{{ 'rooms.fields.roomType' | transloco }}</th>
+          <th scope="col">{{ 'common.fields.status' | transloco }}</th>
+          <th scope="col">{{ 'frontDesk.stays.action' | transloco }}</th>
         </tr>
       </thead>
       <tbody>
         @for (room of rooms; track room.roomId) {
           <tr>
             <th scope="row" class="staff-person">
-              <span class="room-number">Room {{ room.number }}</span
-              ><small>Floor {{ room.floor }}</small>
+              <span class="room-number">{{ 'rooms.roomNumber' | transloco: { number: room.number } }}</span
+              ><small>{{ 'frontDesk.rooms.floor' | transloco: { floor: room.floor } }}</small>
             </th>
-            <td data-label="Room type">{{ room.roomTypeName }}</td>
-            <td data-label="Status">
+            <td [attr.data-label]="'rooms.fields.roomType' | transloco">{{ room.roomTypeName }}</td>
+            <td [attr.data-label]="'common.fields.status' | transloco">
               <span class="chips">
                 <span
                   class="chip"
                   [class.chip--cleaning]="room.status === 'CLEANING'"
                   [class.chip--maintenance]="room.status === 'MAINTENANCE'"
-                  >{{ statusLabels[room.status] }}</span
+                  >{{ 'enums.roomStatus.' + room.status | transloco }}</span
                 >
                 @if (room.arrivalExpected) {
-                  <span class="chip chip--alert">Guest arriving</span>
+                  <span class="chip chip--alert">{{ 'frontDesk.rooms.guestArriving' | transloco }}</span>
                 }
               </span>
             </td>
@@ -41,8 +41,8 @@
                   [disabled]="busy"
                   (click)="markReadySubject.next(room)"
                 >
-                  {{ room.status === "CLEANING" ? "Mark as clean" : "End maintenance"
-                  }}<span class="sr-only"> for room {{ room.number }}</span>
+                  {{ (room.status === "CLEANING" ? 'frontDesk.rooms.markClean' : 'frontDesk.rooms.endMaintenance') | transloco
+                  }}<span class="sr-only"> {{ 'frontDesk.rooms.forRoom' | transloco: { number: room.number } }}</span>
                 </button>
               </div>
             </td>
@@ -50,7 +50,7 @@
         } @empty {
           <tr>
             <td class="empty" colspan="4">
-              Every room is ready. Nothing is waiting for cleaning or maintenance.
+              {{ 'frontDesk.rooms.empty' | transloco }}
             </td>
           </tr>
         }

@@ -5,6 +5,7 @@ import {
   FormControl,
   FormGroup,
 } from '@angular/forms';
+import { translate } from '@jsverse/transloco';
 
 /** Cuerpo de error que devuelve ApiExceptionHandler en Spring Boot. */
 export interface ApiError {
@@ -36,31 +37,32 @@ function apiBody(error: unknown): Partial<ApiError> {
 /**
  * Mensaje de una petición fallida según su código HTTP: sin conexión y los
  * errores 5xx tienen su propio texto, sin detalles técnicos. Los demás
- * muestran el motivo que explica el backend.
+ * muestran el motivo que explica el backend, que llega en inglés.
+ * fallbackKey es la clave de traducción del mensaje cuando no hay otro mejor;
+ * params completa sus marcadores, por ejemplo { name: 'Ana' }.
  */
 export function apiErrorMessage(
   error: unknown,
-  fallback = 'The request could not be completed. Please try again.',
+  fallbackKey = 'api.default',
+  params: Record<string, unknown> = {},
 ): string {
   if (!(error instanceof HttpErrorResponse))
-    return error instanceof Error && error.message ? error.message : fallback;
-  if (error.status === 0)
-    return 'The server could not be reached. Check your connection and that the backend is running, then try again.';
-  if (error.status >= 500)
-    return 'The server could not process the request. Please try again in a few moments.';
+    return error instanceof Error && error.message ? error.message : translate(fallbackKey, params);
+  if (error.status === 0) return translate('api.offline');
+  if (error.status >= 500) return translate('api.serverError');
   const message = apiBody(error).message?.trim();
   if (message) return message;
   switch (error.status) {
     case 400:
-      return 'Some of the information is not valid. Please review it and try again.';
+      return translate('api.badRequest');
     case 401:
-      return 'Incorrect email or password.';
+      return translate('api.unauthorized');
     case 404:
-      return 'The requested record does not exist or was deleted.';
+      return translate('api.notFound');
     case 409:
-      return 'The change conflicts with information that already exists.';
+      return translate('api.conflict');
     default:
-      return fallback;
+      return translate(fallbackKey, params);
   }
 }
 

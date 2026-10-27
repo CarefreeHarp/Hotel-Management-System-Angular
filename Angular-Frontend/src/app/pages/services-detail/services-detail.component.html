@@ -3,7 +3,7 @@
   <div class="catalog-page__container">
     @if (state$ | async; as state) {
       @if (state.loading) {
-        <app-skeleton variant="detail" label="Loading service..." />
+        <app-skeleton variant="detail" [label]="'services.detail.loading' | transloco" />
       } @else {
         @if (state.service; as service) {
           <app-page-heading
@@ -13,11 +13,11 @@
             ><a
               appButton
               [routerLink]="[base, 'services', service.serviceId, 'edit']"
-              >Edit service</a
+              >{{ 'services.detail.edit' | transloco }}</a
             ></app-page-heading
           >
           @if (saved$ | async) {
-            <p class="saved-alert" role="status">Service saved successfully.</p>
+            <p class="saved-alert" role="status">{{ 'services.detail.saved' | transloco }}</p>
           }
           <app-service-info [service]="service" />
           @if (service.secondaryImageUrls.length) {

@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, Observable, Subject, catchError, exhaustMap, finalize, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -36,6 +37,7 @@ import { RoomFieldsComponent } from './components/room-fields/room-fields.compon
     PageHeadingComponent,
     ButtonComponent,
     RoomFieldsComponent,
+    TranslocoPipe,
   ],
   templateUrl: './rooms-form.component.html',
   styleUrl: './rooms-form.component.scss',
@@ -156,7 +158,7 @@ export class RoomsFormComponent {
     )
       return EMPTY;
     if (!this.roomTypes.some((type) => type.roomTypeId === value.roomTypeId)) {
-      this.error = 'Select an existing room type.';
+      this.error = translate('rooms.form.selectExistingType');
       return EMPTY;
     }
     const item = this.item;

@@ -1,6 +1,7 @@
-import { AsyncPipe, DatePipe } from '@angular/common';
-import { Component, Input, Output } from '@angular/core';
+import { AsyncPipe, DatePipe, formatDate } from '@angular/common';
+import { Component, Input, LOCALE_ID, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BehaviorSubject, map, Subject } from 'rxjs';
 import {
   addDays,
@@ -9,6 +10,7 @@ import {
   localDate,
   MAX_GUESTS,
   MAX_NIGHTS,
+  MAX_YEARS_AHEAD,
   stayNights,
   validStay,
 } from '../../../../models/booking';
@@ -26,7 +28,7 @@ interface CalendarMonth {
 /** Construye el calendario y emite la estancia elegida. La disponibilidad la consulta el padre. */
 @Component({
   selector: 'app-booking-dates',
-  imports: [AsyncPipe, FormsModule, DatePipe],
+  imports: [AsyncPipe, FormsModule, DatePipe, TranslocoPipe],
   templateUrl: './booking-dates.component.html',
   styleUrl: './booking-dates.component.scss',
 })
@@ -47,6 +49,13 @@ export class BookingDatesComponent {
   readonly lastCheckIn = latestCheckIn();
   readonly maxNights = MAX_NIGHTS;
   readonly maxGuests = MAX_GUESTS;
+  readonly maxYears = MAX_YEARS_AHEAD;
+  // Meses y días de la semana se escriben en el idioma elegido (LOCALE_ID).
+  private readonly locale = inject(LOCALE_ID);
+  // El 4 de enero de 2026 fue domingo: de ahí salen los siete nombres cortos en orden.
+  readonly weekdays = Array.from({ length: 7 }, (_, index) =>
+    formatDate(new Date(2026, 0, 4 + index), 'EEE', this.locale),
+  );
   // BehaviorSubject conserva el valor actual. next publica un cambio a quienes lo observan.
   private readonly monthSubject = new BehaviorSubject(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -70,7 +79,7 @@ export class BookingDatesComponent {
       });
     }
     return {
-      title: first.toLocaleDateString('en', { month: 'long', year: 'numeric' }),
+      title: formatDate(first, 'LLLL y', this.locale),
       days,
     };
   }

@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { translate } from '@jsverse/transloco';
 import { Observable, catchError, concatMap, map, throwError } from 'rxjs';
 import { Client } from '../models/client';
 import { AdministratorDTO } from '../models/dto/administrator-dto';
@@ -30,11 +31,12 @@ function adminToStaff(admin: AdministratorDTO): StaffUser {
 }
 
 // Un 401 son credenciales incorrectas. Sin conexión o con el servidor caído se explica el motivo real.
-function loginError(error: unknown, invalidCredentials: string): Error {
+// invalidCredentialsKey es la clave de traducción del mensaje para el 401.
+function loginError(error: unknown, invalidCredentialsKey: string): Error {
   return new Error(
     error instanceof HttpErrorResponse && error.status === 401
-      ? invalidCredentials
-      : apiErrorMessage(error, 'Sign-in failed. Please try again.'),
+      ? translate(invalidCredentialsKey)
+      : apiErrorMessage(error, 'auth.errors.signInFailed'),
   );
 }
 
@@ -65,7 +67,7 @@ export class AuthService {
       .login(email.trim(), password)
       .pipe(
         catchError((error: unknown) =>
-          throwError(() => loginError(error, 'Incorrect email or password.')),
+          throwError(() => loginError(error, 'auth.errors.invalidClient')),
         ),
       );
   }
@@ -104,7 +106,7 @@ export class AuthService {
         return throwError(() => error);
       }),
       catchError((error: unknown) =>
-        throwError(() => loginError(error, 'Incorrect staff credentials.')),
+        throwError(() => loginError(error, 'auth.errors.invalidStaff')),
       ),
     );
   }

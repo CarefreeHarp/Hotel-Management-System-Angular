@@ -2,7 +2,7 @@
   <article
     class="client-card"
     [class.staff-card]="staff"
-    aria-label="Client information"
+    [attr.aria-label]="'clientInfo.label' | transloco"
   >
     <header class="client-identity">
       @if (item.profilePhoto) {
@@ -17,21 +17,21 @@
       <div>
         <h2>{{ item.name }} {{ item.lastName }}</h2>
         @if (staff) {
-          <p>Client #{{ item.clientId }}</p>
+          <p>{{ 'clientInfo.number' | transloco: { id: item.clientId } }}</p>
         }
       </div>
     </header>
     <dl class="contact-details">
       <div>
-        <dt>Email</dt>
+        <dt>{{ 'common.fields.email' | transloco }}</dt>
         <dd>{{ item.email }}</dd>
       </div>
       <div>
-        <dt>Phone</dt>
+        <dt>{{ 'common.fields.phone' | transloco }}</dt>
         <dd>{{ item.phone }}</dd>
       </div>
       <div>
-        <dt>National ID</dt>
+        <dt>{{ 'common.fields.nationalId' | transloco }}</dt>
         <dd>{{ item.nationalId }}</dd>
       </div>
     </dl>

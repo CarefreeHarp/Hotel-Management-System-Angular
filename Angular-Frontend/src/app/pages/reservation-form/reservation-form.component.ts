@@ -4,6 +4,7 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import {
   catchError,
   combineLatest,
@@ -53,6 +54,7 @@ import {
     ButtonComponent,
     ReservationContentComponent,
     ReservationFieldsComponent,
+    TranslocoPipe,
   ],
   templateUrl: './reservation-form.component.html',
   styleUrl: './reservation-form.component.scss',
@@ -88,9 +90,11 @@ export class ReservationFormComponent {
   get base(): string {
     return basePath(this.route);
   }
-  get staffViewTitle(): string {
+  get staffViewTitleKey(): string {
     if (!this.staff) return '';
-    return this.route.snapshot.paramMap.has('adminId') ? 'Admin view' : 'Operator view';
+    return this.route.snapshot.paramMap.has('adminId')
+      ? 'reservations.detail.adminView'
+      : 'reservations.detail.operatorView';
   }
   get staff(): boolean {
     return this.route.snapshot.paramMap.has('adminId') || this.route.snapshot.paramMap.has('operatorId');

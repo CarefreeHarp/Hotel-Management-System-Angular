@@ -1,10 +1,11 @@
 import { Component, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import {
   ListFilter,
-  ListOption,
   ListState,
+  SortOption,
   defaultSortOptions,
   initialListState,
 } from '../../utils/list-state';
@@ -12,14 +13,14 @@ import { PriceRangeComponent } from '../price-range/price-range.component';
 /** Recibe los filtros y emite el estado elegido. La página decide cómo aplicarlo a sus registros. */
 @Component({
   selector: 'app-list-controls',
-  imports: [FormsModule, PriceRangeComponent],
+  imports: [FormsModule, PriceRangeComponent, TranslocoPipe],
   templateUrl: './list-controls.component.html',
   styleUrl: './list-controls.component.scss',
 })
 export class ListControlsComponent {
   @Input() state: ListState = initialListState();
   @Input() filters: ListFilter[] = [];
-  @Input() sortOptions: ListOption[] = defaultSortOptions;
+  @Input() sortOptions: SortOption[] = defaultSortOptions;
   @Input() priceFloor = 0;
   @Input() priceLimit = 0;
   @Input() count = 0;

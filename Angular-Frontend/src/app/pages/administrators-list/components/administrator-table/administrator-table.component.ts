@@ -1,5 +1,6 @@
 import { Component, Input, Output, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import { StaffAvatarComponent } from '../../../../components/staff-avatar/staff-avatar.component';
 import { AdministratorListDTO } from '../../../../models/dto/administrator-list-dto';
@@ -7,7 +8,7 @@ import { basePath } from '../../../../utils/base-path';
 
 @Component({
   selector: 'app-administrator-table',
-  imports: [RouterLink, StaffAvatarComponent],
+  imports: [RouterLink, StaffAvatarComponent, TranslocoPipe],
   templateUrl: './administrator-table.component.html',
   styleUrl: './administrator-table.component.scss',
 })

@@ -1,20 +1,20 @@
-<section class="catalog-table" aria-label="Clients">
+<section class="catalog-table" [attr.aria-label]="'clients.list.title' | transloco">
   @if (clients.length) {
     <div
       class="table-scroll"
       role="region"
-      aria-label="Clients table"
+      [attr.aria-label]="'clients.table.label' | transloco"
       tabindex="0"
     >
       <table>
         <thead>
           <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Client</th>
-            <th scope="col">National ID</th>
-            <th scope="col">Email</th>
-            <th scope="col">Phone</th>
-            <th scope="col">Actions</th>
+            <th scope="col">{{ 'common.fields.id' | transloco }}</th>
+            <th scope="col">{{ 'clients.table.client' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.nationalId' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.email' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.phone' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.actions' | transloco }}</th>
           </tr>
         </thead>
         <tbody>
@@ -28,23 +28,27 @@
                   >{{ client.name }} {{ client.lastName }}</a
                 >
               </th>
-              <td data-label="National ID">{{ client.nationalId }}</td>
-              <td class="staff-email" data-label="Email">{{ client.email }}</td>
-              <td data-label="Phone">{{ client.phone }}</td>
+              <td [attr.data-label]="'common.fields.nationalId' | transloco">
+                {{ client.nationalId }}
+              </td>
+              <td class="staff-email" [attr.data-label]="'common.fields.email' | transloco">
+                {{ client.email }}
+              </td>
+              <td [attr.data-label]="'common.fields.phone' | transloco">{{ client.phone }}</td>
               <td class="actions-cell">
                 <div class="actions">
                   <a [routerLink]="[base, 'clients', client.clientId]"
-                    >View<span class="sr-only">
+                    >{{ 'common.actions.view' | transloco }}<span class="sr-only">
                       {{ client.name }} {{ client.lastName }}</span
                     ></a
                   >
                   <a [routerLink]="[base, 'clients', client.clientId, 'edit']"
-                    >Edit<span class="sr-only">
+                    >{{ 'common.actions.edit' | transloco }}<span class="sr-only">
                       {{ client.name }} {{ client.lastName }}</span
                     ></a
                   >
                   <button type="button" (click)="deleteSubject.next(client)">
-                    Delete<span class="sr-only">
+                    {{ 'common.actions.delete' | transloco }}<span class="sr-only">
                       {{ client.name }} {{ client.lastName }}</span
                     >
                   </button>
@@ -57,8 +61,8 @@
     </div>
   } @else {
     <div class="empty">
-      <h2>No clients yet</h2>
-      <p>Create a client to get started.</p>
+      <h2>{{ 'clients.table.emptyTitle' | transloco }}</h2>
+      <p>{{ 'clients.table.emptyText' | transloco }}</p>
     </div>
   }
 </section>

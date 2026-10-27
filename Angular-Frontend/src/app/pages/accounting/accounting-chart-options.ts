@@ -1,3 +1,4 @@
+import { translate } from '@jsverse/transloco';
 import type { EChartsOption } from 'echarts';
 import { AccountingDashboard } from '../../models/accounting';
 
@@ -8,39 +9,37 @@ export interface AccountingCharts {
   services: EChartsOption;
 }
 
+// Una reserva con check-in se presenta como estancia en curso.
 export function statusLabel(status: string): string {
-  switch (status) {
-    case 'PENDING':
-      return 'Pending';
-    case 'CONFIRMED':
-      return 'Confirmed';
-    case 'CHECKED_IN':
-      return 'In progress';
-    default:
-      return status;
-  }
+  return translate(
+    status === 'CHECKED_IN' ? 'accounting.inProgress' : `enums.reservationStatus.${status}`,
+  );
 }
 
 const colors = ['#c39858', '#467e88', '#42765b', '#8780a0', '#be6c67'];
-const base: EChartsOption = {
-  color: colors,
-  textStyle: { fontFamily: 'Inter, Arial, sans-serif', color: '#40545c' },
-  aria: { enabled: true, decal: { show: true } },
-  // richText dibuja la ayuda en el gráfico. Los conceptos del catálogo no se interpretan como HTML.
-  tooltip: { trigger: 'axis', renderMode: 'richText', confine: true },
-  toolbox: {
-    right: 0,
-    feature: {
-      restore: { title: 'Reset view' },
-      saveAsImage: { title: 'Download chart' },
+// Es una función para traducir los títulos de la barra de herramientas al construir cada gráfico.
+function baseOptions(): EChartsOption {
+  return {
+    color: colors,
+    textStyle: { fontFamily: 'Inter, Arial, sans-serif', color: '#40545c' },
+    aria: { enabled: true, decal: { show: true } },
+    // richText dibuja la ayuda en el gráfico. Los conceptos del catálogo no se interpretan como HTML.
+    tooltip: { trigger: 'axis', renderMode: 'richText', confine: true },
+    toolbox: {
+      right: 0,
+      feature: {
+        restore: { title: translate('accounting.charts.resetView') },
+        saveAsImage: { title: translate('accounting.charts.download') },
+      },
     },
-  },
-};
+  };
+}
 
 /** Convierte los agregados en opciones de presentación. No calcula estadísticas de negocio. */
 export function buildAccountingCharts(
   data: AccountingDashboard,
 ): AccountingCharts {
+  const base = baseOptions();
   const total = data.statuses.reduce((sum, item) => sum + item.reservations, 0);
   return {
     statuses: {
@@ -67,12 +66,12 @@ export function buildAccountingCharts(
           type: 'text',
           left: 'center',
           top: '51%',
-          style: { text: 'reservations', fill: '#677b81', font: '12px Inter' },
+          style: { text: translate('accounting.charts.reservationsUnit'), fill: '#677b81', font: '12px Inter' },
         },
       ],
       series: [
         {
-          name: 'Reservations',
+          name: translate('accounting.charts.reservations'),
           type: 'pie',
           radius: ['50%', '72%'],
           center: ['50%', '44%'],
@@ -120,7 +119,7 @@ export function buildAccountingCharts(
       ],
       series: [
         {
-          name: 'Created reservations',
+          name: translate('accounting.charts.created'),
           type: 'line',
           smooth: 0.2,
           symbolSize: 7,
@@ -146,13 +145,13 @@ export function buildAccountingCharts(
       },
       series: [
         {
-          name: 'Reservations',
+          name: translate('accounting.charts.reservations'),
           type: 'bar',
           data: data.roomTypes.map((item) => item.reservations),
           barMaxWidth: 16,
         },
         {
-          name: 'Booked nights',
+          name: translate('accounting.charts.bookedNights'),
           type: 'bar',
           data: data.roomTypes.map((item) => item.nights),
           barMaxWidth: 16,
@@ -174,7 +173,7 @@ export function buildAccountingCharts(
       },
       series: [
         {
-          name: 'Units contracted',
+          name: translate('accounting.charts.unitsContracted'),
           type: 'bar',
           barMaxWidth: 20,
           itemStyle: { color: '#467e88', borderRadius: [0, 4, 4, 0] },

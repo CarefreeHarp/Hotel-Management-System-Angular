@@ -10,24 +10,26 @@
       variant="secondary"
       [routerLink]="backUrl"
       [queryParams]="authParams"
-      >{{ backLabel }}</a
+      >{{ backLabelKey | transloco }}</a
     >
     @if (isLoading) {
-      <app-skeleton variant="detail" label="Loading reservation…" />
+      <app-skeleton variant="detail" [label]="'reservations.detail.loading' | transloco" />
     } @else if (detail) {
       @let item = detail;
       @if (saved) {
-        <p role="status">Reservation updated successfully.</p>
+        <p role="status">{{ 'reservations.detail.saved' | transloco }}</p>
       }
       @if ((staff && clientHistoryId === undefined) || canModify) {
-        <a appButton [routerLink]="editUrl" [queryParams]="authParams">Edit reservation</a>
+        <a appButton [routerLink]="editUrl" [queryParams]="authParams">{{
+          'reservationContent.editEyebrow' | transloco
+        }}</a>
       }
       @if (paymentSaved) {
-        <p role="status">Payment approved. Your balance has been updated.</p>
+        <p role="status">{{ 'reservations.detail.paymentSaved' | transloco }}</p>
       }
       @if (canPay) {
         <button appButton type="button" [disabled]="paying" (click)="togglePayment()">
-          {{ showPayment ? 'Close payment form' : 'Add card payment' }}
+          {{ (showPayment ? 'reservations.detail.closePayment' : 'reservations.detail.addCardPayment') | transloco }}
         </button>
         @if (showPayment) {
           <app-booking-payment [additionalPayment]="true" [balance]="item.balance" [busy]="paying"
@@ -40,19 +42,29 @@
       }
       @if (canTakeCash) {
         <button appButton type="button" [disabled]="paying" (click)="toggleCashPayment()">
-          {{ showCashPayment ? 'Close cash payment' : 'Receive cash payment' }}
+          {{ (showCashPayment ? 'reservations.cash.close' : 'reservations.cash.title') | transloco }}
         </button>
         @if (showCashPayment) {
           <form class="cash-payment-panel" (ngSubmit)="payCash()" novalidate>
-            <h2>Receive cash payment</h2>
-            <p>Outstanding balance: {{ item.balance | currency: "COP" : "symbol" : "1.0-2" }}</p>
-            <label for="cash-amount">Amount received</label>
+            <h2>{{ 'reservations.cash.title' | transloco }}</h2>
+            <p>
+              {{
+                'reservations.cash.balance'
+                  | transloco: { balance: (item.balance | currency: 'COP' : 'symbol' : '1.0-2') }
+              }}
+            </p>
+            <label for="cash-amount">{{ 'reservations.cash.amount' | transloco }}</label>
             <input id="cash-amount" type="number" name="amount" [(ngModel)]="cashAmount"
               (ngModelChange)="cashAmountError = ''" [min]="minimumCashPayment"
               [max]="item.balance" step="0.01" required
               [attr.aria-invalid]="!!cashErrorForAmount" aria-describedby="cash-hint cash-error" />
-            <small id="cash-hint">Minimum {{ minimumCashPayment | currency: "COP" : "symbol" : "1.0-2" }}.
-              You can pay the full balance when it is lower than COP 100,000.</small>
+            <small id="cash-hint">{{
+              'reservations.cash.hint'
+                | transloco: {
+                    minimum: (minimumCashPayment | currency: 'COP' : 'symbol' : '1.0-2'),
+                    threshold: (minPayment | currency: 'COP' : 'symbol' : '1.0-0')
+                  }
+            }}</small>
             @if (cashErrorForAmount) {
               <p id="cash-error" class="cash-error" role="alert">{{ cashErrorForAmount }}</p>
             }
@@ -60,12 +72,12 @@
               <p class="cash-error" role="alert">{{ paymentError }}</p>
             }
             <button appButton type="submit" [disabled]="paying">
-              {{ paying ? 'Recording…' : 'Record cash payment' }}
+              {{ (paying ? 'reservations.cash.recording' : 'reservations.cash.record') | transloco }}
             </button>
           </form>
         }
       }
-      <app-reservation-content [detail]="item" [client]="client" [staffViewTitle]="staffViewTitle" />
+      <app-reservation-content [detail]="item" [client]="client" [staffViewTitleKey]="staffViewTitleKey" />
     }
   </div>
 </main>

@@ -50,6 +50,8 @@ export interface ReservationCharge {
   subtotal: number;
   chargedAt?: string;
 }
+// El backend envía este nombre cuando el cliente pagó o pidió el reembolso sin un operario.
+export const CLIENT_SELF_SERVICE = 'Client self-service';
 export interface ReservationPayment {
   paymentId: number;
   amount: number;

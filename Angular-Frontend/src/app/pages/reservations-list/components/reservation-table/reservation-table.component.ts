@@ -1,11 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import { ReservationDTO } from '../../../../models/dto/reservation-dto';
 @Component({
   selector: 'app-reservation-table',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, TranslocoPipe],
   templateUrl: './reservation-table.component.html',
   styleUrl: './reservation-table.component.scss',
 })

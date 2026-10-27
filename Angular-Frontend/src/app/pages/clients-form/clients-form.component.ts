@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, Observable, Subject, catchError, exhaustMap, of, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -53,6 +54,7 @@ export type ClientForm = FormGroup<{
     PageHeadingComponent,
     ButtonComponent,
     ClientFieldsComponent,
+    TranslocoPipe,
   ],
   templateUrl: './clients-form.component.html',
   styleUrl: './clients-form.component.scss',

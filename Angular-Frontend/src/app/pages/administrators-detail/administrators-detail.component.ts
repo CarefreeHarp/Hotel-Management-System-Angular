@@ -1,6 +1,7 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, Observable, catchError, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -25,6 +26,7 @@ import { AssignedOperatorsComponent } from './components/assigned-operators/assi
     ButtonComponent,
     AdministratorInfoComponent,
     AssignedOperatorsComponent,
+    TranslocoPipe,
   ],
   templateUrl: './administrators-detail.component.html',
   styleUrl: './administrators-detail.component.scss',

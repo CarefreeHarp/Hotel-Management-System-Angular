@@ -1,5 +1,5 @@
 @if (financial; as summary) {
-  <section class="metrics" aria-label="Financial summary in Colombian pesos">
+  <section class="metrics" [attr.aria-label]="'accounting.overview.label' | transloco">
     <article>
       <p>
         <img
@@ -7,7 +7,7 @@
           alt=""
           width="28"
           height="28"
-        />Approved payments
+        />{{ 'accounting.overview.payments' | transloco }}
       </p>
       <strong>{{
         summary.payments | currency: "COP" : "symbol" : "1.0-2"
@@ -15,8 +15,7 @@
     </article>
     <article>
       <p>
-        <img src="/icons/refund.png" alt="" width="28" height="28" />Approved
-        refunds
+        <img src="/icons/refund.png" alt="" width="28" height="28" />{{ 'accounting.overview.refunds' | transloco }}
       </p>
       <strong>{{
         summary.refunds | currency: "COP" : "symbol" : "1.0-2"
@@ -24,8 +23,7 @@
     </article>
     <article class="net">
       <p>
-        <img src="/icons/wallet.png" alt="" width="28" height="28" />Net
-        collected
+        <img src="/icons/wallet.png" alt="" width="28" height="28" />{{ 'accounting.overview.net' | transloco }}
       </p>
       <strong>{{
         summary.netCollected | currency: "COP" : "symbol" : "1.0-2"
@@ -38,7 +36,7 @@
           alt=""
           width="28"
           height="28"
-        />Outstanding balance
+        />{{ 'accounting.overview.outstanding' | transloco }}
       </p>
       <strong>{{
         summary.outstanding | currency: "COP" : "symbol" : "1.0-2"

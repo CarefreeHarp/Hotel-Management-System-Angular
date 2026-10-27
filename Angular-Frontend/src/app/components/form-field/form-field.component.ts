@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { translate } from '@jsverse/transloco';
 import { FieldMessages } from '../../utils/form-messages';
 
 /** Caracteres que admite un campo mientras se escribe. */
@@ -11,7 +12,10 @@ const keepAllowed: Record<InputRestriction, (value: string) => string> = {
   phone: (value) => value.replace(/[^\d+]/g, '').replace(/(?!^)\+/g, ''),
 };
 
-/** Presenta un FormControl recibido y sus errores. El formulario padre define las reglas y el envío. */
+/**
+ * Presenta un FormControl recibido y sus errores. El formulario padre define las reglas y el envío.
+ * label, hint, placeholder y error llegan ya traducidos; messages trae claves de traducción.
+ */
 @Component({
   selector: 'app-form-field',
   imports: [ReactiveFormsModule],
@@ -39,22 +43,25 @@ export class FormFieldComponent {
   @Input() restrict: InputRestriction | null = null;
   @Input() hint = '';
   @Input() error = '';
-  // Mensaje por regla, por ejemplo { required: '…', maxlength: '…' }.
+  // Clave de traducción por regla, por ejemplo { required: 'validation.client.name.required' }.
   @Input() messages: FieldMessages = {};
+  // Valores para los marcadores {{ }} de esos mensajes, por ejemplo { capacity: 4 }.
+  @Input() messageParams: Record<string, unknown> = {};
   @Input() submitted = false;
 
   get invalid(): boolean {
     return this.control.invalid && (this.control.touched || this.submitted);
   }
 
-  // El mensaje del backend para este campo tiene prioridad. Luego, el de la regla local que falla.
+  // El mensaje del backend para este campo tiene prioridad y se muestra tal cual. Luego, el de la regla local que falla.
   get errorMessage(): string {
     const server = this.control.getError('server');
     if (typeof server === 'string' && server) return server;
     const rule = Object.keys(this.control.errors ?? {}).find(
       (key) => this.messages[key],
     );
-    return (rule && this.messages[rule]) || this.error;
+    const key = rule && this.messages[rule];
+    return key ? translate(key, this.messageParams) : this.error;
   }
 
   get describedBy(): string {

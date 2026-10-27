@@ -3,16 +3,14 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (loading) {
-      <app-skeleton variant="form" label="Loading room type…" />
+      <app-skeleton variant="form" [label]="'roomTypes.detail.loading' | transloco" />
     } @else {
       <app-page-heading
-        [title]="isCreateMode ? 'Create room type' : 'Edit room type'"
+        [title]="(isCreateMode ? 'roomTypes.form.createTitle' : 'roomTypes.form.editTitle') | transloco"
         [description]="
           isCreateMode
-            ? 'Add a new accommodation option to the hotel inventory.'
-            : 'Define how ' +
-              roomType?.name +
-              ' will appear in the hotel inventory.'
+            ? ('roomTypes.form.createDescription' | transloco)
+            : ('roomTypes.form.editDescription' | transloco: { name: roomType?.name })
         "
       />
       <form class="form-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
@@ -25,18 +23,19 @@
           class="form-section"
           [mainPhoto]="form.controls.mainPhoto"
           [photos]="form.controls.secondaryPhotos"
-          description="These photos represent every room assigned to this type."
+          [description]="'roomTypes.form.photosDescription' | transloco"
           [submitted]="submitted"
           (addPhoto)="addPhoto()"
         />
         <div class="form-actions">
           <button appButton type="submit" [disabled]="saving">
             {{
-              saving
-                ? "Saving…"
+              (saving
+                ? 'common.saving'
                 : isCreateMode
-                  ? "Create room type"
-                  : "Save room type"
+                  ? 'roomTypes.form.create'
+                  : 'roomTypes.form.save'
+              ) | transloco
             }}
             <span aria-hidden="true">→</span>
           </button>
@@ -48,12 +47,12 @@
                 ? [base, 'room-types']
                 : [base, 'room-types', roomType?.roomTypeId]
             "
-            >Cancel</a
+            >{{ 'common.actions.cancel' | transloco }}</a
           >
         </div>
         @if (submitted && form.invalid) {
           <p class="form-alert" role="alert">
-            Please check the highlighted fields before saving.
+            {{ 'common.checkFields' | transloco }}
           </p>
         }
         @if (error) {

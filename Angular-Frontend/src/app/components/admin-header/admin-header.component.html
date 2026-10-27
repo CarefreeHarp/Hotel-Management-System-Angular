@@ -2,7 +2,9 @@
   <a
     class="admin-brand"
     [routerLink]="base"
-    [attr.aria-label]="isOperator ? 'Front desk' : 'Admin panel'"
+    [attr.aria-label]="
+      (isOperator ? 'adminHeader.frontDesk' : 'adminHeader.adminPanel') | transloco
+    "
   >
     <img
       loading="eager"
@@ -16,7 +18,9 @@
   <button
     class="admin-menu-button"
     type="button"
-    [attr.aria-label]="menuOpen ? 'Close menu' : 'Open menu'"
+    [attr.aria-label]="
+      (menuOpen ? 'adminHeader.closeMenu' : 'adminHeader.openMenu') | transloco
+    "
     [attr.aria-expanded]="menuOpen"
     aria-controls="admin-menu"
     (click)="toggleMenu()"
@@ -26,14 +30,14 @@
   </button>
 
   <div id="admin-menu" class="admin-menu" [class.is-open]="menuOpen">
-    <nav class="admin-nav" aria-label="Administrative navigation">
+    <nav class="admin-nav" [attr.aria-label]="'adminHeader.navigation' | transloco">
       @if (isOperator) {
         <a
           [routerLink]="base"
           routerLinkActive="is-active"
           [routerLinkActiveOptions]="{ exact: true }"
           (click)="closeMenu()"
-          >Front desk</a
+          >{{ 'adminHeader.frontDesk' | transloco }}</a
         >
       } @else {
         <a
@@ -41,7 +45,7 @@
           routerLinkActive="is-active"
           [routerLinkActiveOptions]="{ exact: true }"
           (click)="closeMenu()"
-          >Admin panel</a
+          >{{ 'adminHeader.adminPanel' | transloco }}</a
         >
       }
       @for (section of sections; track section.path) {
@@ -49,7 +53,7 @@
           [routerLink]="[base, section.path]"
           routerLinkActive="is-active"
           (click)="closeMenu()"
-          >{{ section.label }}</a
+          >{{ section.labelKey | transloco }}</a
         >
       }
     </nav>
@@ -69,7 +73,7 @@
       >
         <circle cx="12" cy="8" r="4" />
         <path d="M4 22v-3a8 8 0 0 1 16 0v3" /></svg
-      >My profile</a
+      >{{ 'adminHeader.myProfile' | transloco }}</a
     >
     <button class="admin-link admin-logout" type="button" (click)="logout()">
       <svg
@@ -82,8 +86,8 @@
         stroke-width="1.7"
       >
         <path d="M9 4H4v16h5M14 7l5 5-5 5M8 12h11" /></svg
-      >Log out
+      >{{ 'adminHeader.logout' | transloco }}
     </button>
-    <a class="admin-exit" routerLink="/" (click)="closeMenu()">Go to hotel </a>
+    <a class="admin-exit" routerLink="/" (click)="closeMenu()">{{ 'adminHeader.goToHotel' | transloco }}</a>
   </div>
 </header>

@@ -6,18 +6,22 @@
 
 <main class="room-types-page-main">
   <!-- Subtle decorative watermark in background matching landing page style -->
-  <span class="page-watermark" aria-hidden="true">Room<br />Types</span>
+  <span class="page-watermark" aria-hidden="true"
+    >{{ 'roomTypes.list.watermarkLine1' | transloco }}<br />{{
+      'roomTypes.list.watermarkLine2' | transloco
+    }}</span
+  >
 
   <div class="page-container">
     <header class="catalog-heading">
-      <h1>Room types</h1>
+      <h1>{{ 'roomTypes.list.title' | transloco }}</h1>
       <a appButton [create]="true" [routerLink]="[base, 'room-types', 'new']"
-        >+ Add Room Type</a
+        >{{ 'roomTypes.list.create' | transloco }}</a
       >
     </header>
 
     @if (isLoading) {
-      <app-skeleton variant="table" label="Loading room types..." />
+      <app-skeleton variant="table" [label]="'roomTypes.list.loading' | transloco" />
     }
     <app-room-type-table
       [style.display]="isLoading ? 'none' : null"
@@ -31,14 +35,14 @@
   <aside class="toast-notification" role="status" aria-live="polite">
     <div class="toast-indicator"></div>
     <div class="toast-text-content">
-      <span class="toast-title">Catalog Updated</span>
+      <span class="toast-title">{{ 'roomTypes.list.toastTitle' | transloco }}</span>
       <span class="toast-message">{{ toastMessage }}</span>
     </div>
     <button
       type="button"
       class="btn-dismiss-toast"
       (click)="dismissToast()"
-      aria-label="Close notification"
+      [attr.aria-label]="'common.closeNotification' | transloco"
     >
       ✕
     </button>

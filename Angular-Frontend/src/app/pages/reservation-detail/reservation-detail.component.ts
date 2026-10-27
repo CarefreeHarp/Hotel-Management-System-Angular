@@ -3,6 +3,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { catchError, combineLatest, EMPTY, exhaustMap, finalize, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -33,6 +34,7 @@ import { hasMaxDecimals } from '../../utils/form-validators';
     BookingPaymentComponent,
     CurrencyPipe,
     FormsModule,
+    TranslocoPipe,
   ],
   templateUrl: './reservation-detail.component.html',
   styleUrl: './reservation-detail.component.scss',
@@ -57,6 +59,7 @@ export class ReservationDetailComponent implements OnInit {
   cashAmount: number | null = null;
   cashSubmitted = false;
   cashAmountError = '';
+  readonly minPayment = MIN_PAYMENT;
   get operatorId(): number | undefined {
     const id = Number(this.route.snapshot.paramMap.get('operatorId'));
     return Number.isSafeInteger(id) && id > 0 ? id : undefined;
@@ -71,12 +74,12 @@ export class ReservationDetailComponent implements OnInit {
     if (this.cashAmountError) return this.cashAmountError;
     if (!this.cashSubmitted) return '';
     const amount = this.cashAmount;
-    if (amount === null || !Number.isFinite(amount)) return 'Enter the amount received.';
-    if (!hasMaxDecimals(amount, 2)) return 'The amount can have at most two decimals.';
+    if (amount === null || !Number.isFinite(amount)) return translate('reservations.cash.required');
+    if (!hasMaxDecimals(amount, 2)) return translate('validation.payment.amount.decimals');
     if (amount < this.minimumCashPayment || amount > (this.detail?.balance ?? 0)) {
-      return 'Enter an amount between the minimum and the outstanding balance.';
+      return translate('reservations.cash.range');
     }
-    if (amount > MAX_PAYMENT) return 'A single payment cannot exceed COP 99,999,999.99.';
+    if (amount > MAX_PAYMENT) return translate('validation.payment.amount.max');
     return '';
   }
   get ownsReservation(): boolean {
@@ -97,9 +100,9 @@ export class ReservationDetailComponent implements OnInit {
       this.route.snapshot.paramMap.has('operatorId')
     );
   }
-  get staffViewTitle(): string {
-    if (this.route.snapshot.paramMap.has('adminId')) return 'Admin view';
-    if (this.route.snapshot.paramMap.has('operatorId')) return 'Operator view';
+  get staffViewTitleKey(): string {
+    if (this.route.snapshot.paramMap.has('adminId')) return 'reservations.detail.adminView';
+    if (this.route.snapshot.paramMap.has('operatorId')) return 'reservations.detail.operatorView';
     return '';
   }
   get clientHistoryId(): number | undefined {
@@ -116,10 +119,10 @@ export class ReservationDetailComponent implements OnInit {
     if (this.fromFrontDesk) return basePath(this.route);
     return this.staff ? `${basePath(this.route)}/reservations` : '/profile';
   }
-  get backLabel(): string {
-    if (this.clientHistoryId !== undefined) return 'Back to client';
-    if (this.fromFrontDesk) return 'Back to front desk';
-    return this.staff ? 'Back to reservations' : 'Back to my reservations';
+  get backLabelKey(): string {
+    if (this.clientHistoryId !== undefined) return 'reservations.detail.backToClient';
+    if (this.fromFrontDesk) return 'reservations.detail.backToFrontDesk';
+    return this.staff ? 'reservations.detail.backToReservations' : 'reservations.detail.backToMyReservations';
   }
   get editUrl(): string {
     if (!this.staff) return `/reservation/${this.detail?.reservation.reservationId}/edit`;

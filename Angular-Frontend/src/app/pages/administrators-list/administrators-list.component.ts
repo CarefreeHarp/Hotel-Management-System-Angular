@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { catchError, EMPTY, exhaustMap, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -35,6 +36,7 @@ import { AdministratorTableComponent } from './components/administrator-table/ad
     RouterLink,
     ButtonComponent,
     AdministratorTableComponent,
+    TranslocoPipe,
   ],
   templateUrl: './administrators-list.component.html',
   styleUrl: './administrators-list.component.scss',
@@ -69,8 +71,8 @@ export class AdministratorsListComponent implements OnInit {
       id: item.adminId,
       title: item.name,
       details: [
-        { label: 'Email', value: item.email },
-        { label: 'Operators', value: String(item.operatorCount) },
+        { labelKey: 'common.fields.email', value: item.email },
+        { labelKey: 'administrators.fields.operators', value: String(item.operatorCount) },
       ],
       detailUrl: `${this.base}/administrators/${item.adminId}`,
       editUrl: `${this.base}/administrators/${item.adminId}/edit`,
@@ -108,7 +110,7 @@ export class AdministratorsListComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.route.snapshot.queryParamMap.get('created') === 'true') {
-      this.message = 'Administrator created successfully.';
+      this.message = translate('administrators.list.created');
     }
     this.loadAdministrators();
   }
@@ -139,18 +141,17 @@ export class AdministratorsListComponent implements OnInit {
   private performAction(item: AdministratorListDTO): Observable<unknown> {
     this.message = '';
     this.errorMessage = '';
-    if (!confirm(`Delete administrator "${item.name}"? This cannot be undone.`))
+    if (!confirm(translate('administrators.list.confirmDelete', { name: item.name })))
       return EMPTY;
     return this.administratorService.delete(item.adminId).pipe(
       tap(() => {
-        this.message = `Administrator "${item.name}" deleted successfully.`;
+        this.message = translate('administrators.list.deleted', { name: item.name });
         this.loadAdministrators();
       }),
       catchError((error: HttpErrorResponse) => {
-        this.errorMessage = apiErrorMessage(
-          error,
-          `Administrator "${item.name}" could not be deleted. Please try again.`,
-        );
+        this.errorMessage = apiErrorMessage(error, 'administrators.list.deleteError', {
+          name: item.name,
+        });
 
         return EMPTY;
       }),

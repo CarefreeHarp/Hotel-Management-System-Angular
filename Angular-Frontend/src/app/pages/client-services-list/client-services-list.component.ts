@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
 import { ButtonComponent } from '../../components/button/button.component';
 import { FooterComponent } from '../../components/footer/footer.component';
@@ -26,6 +27,7 @@ import { catchErrorPage } from '../../utils/error-page';
     HeaderComponent,
     FooterComponent,
     ButtonComponent,
+    TranslocoPipe,
   ],
   templateUrl: './client-services-list.component.html',
   styleUrl: './client-services-list.component.scss',
@@ -93,12 +95,5 @@ export class ClientServicesListComponent {
   }
   onSearchChange(value: string): void {
     this.searchQuerySubject.next(value);
-  }
-
-  formatPrice(price: number): string {
-    return Number(price).toLocaleString('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
   }
 }

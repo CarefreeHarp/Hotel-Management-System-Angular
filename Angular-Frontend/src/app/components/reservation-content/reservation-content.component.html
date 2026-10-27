@@ -1,6 +1,6 @@
 @if (detail; as item) {
-  @if (staffViewTitle) {
-    <h1 class="staff-view-title">{{ staffViewTitle }}</h1>
+  @if (staffViewTitleKey) {
+    <h1 class="staff-view-title">{{ staffViewTitleKey | transloco }}</h1>
   }
   <div class="reservation-layout">
     <div class="reservation-main">
@@ -8,27 +8,34 @@
         class="panel status-panel"
         aria-labelledby="reservation-title"
       >
-        <p class="eyebrow">{{ editing ? "Edit reservation" : "Your reservation" }}</p>
-        @if (staffViewTitle) {
+        <p class="eyebrow">
+          {{
+            (editing
+              ? 'reservationContent.editEyebrow'
+              : 'reservationContent.eyebrow'
+            ) | transloco
+          }}
+        </p>
+        @if (staffViewTitleKey) {
           <h2 id="reservation-title" class="reservation-status">
-            {{ item.reservation.status.replace("_", " ").toLowerCase() }}
+            {{ 'enums.reservationStatus.' + item.reservation.status | transloco }}
           </h2>
         } @else {
           <h1 id="reservation-title" class="reservation-status">
-            {{ item.reservation.status.replace("_", " ").toLowerCase() }}
+            {{ 'enums.reservationStatus.' + item.reservation.status | transloco }}
           </h1>
         }
         <dl class="facts">
           <div>
-            <dt>Booking number</dt>
+            <dt>{{ 'reservationContent.bookingNumber' | transloco }}</dt>
             <dd>{{ item.reservation.reservationCode }}</dd>
           </div>
           <div>
-            <dt>Reservation ID</dt>
+            <dt>{{ 'reservationContent.reservationId' | transloco }}</dt>
             <dd>#{{ item.reservation.reservationId }}</dd>
           </div>
           <div>
-            <dt>Booking date</dt>
+            <dt>{{ 'reservationContent.bookingDate' | transloco }}</dt>
             <dd>{{ item.createdAt | date: "medium" }}</dd>
           </div>
         </dl>
@@ -40,13 +47,14 @@
             imageWidth="640"
             [src]="photo"
             [alt]="
-              item.reservation.roomTypeName ?? 'Reserved accommodation'
+              item.reservation.roomTypeName ??
+                ('reservationContent.photoAlt' | transloco)
             "
           />
         }
         <div>
-          <p class="eyebrow">Your accommodation</p>
-          <h2 id="hotel-title">Singapore's Atlan Suites branch</h2>
+          <p class="eyebrow">{{ 'reservationContent.accommodation' | transloco }}</p>
+          <h2 id="hotel-title">{{ 'common.hotelBranch' | transloco }}</h2>
           <p>{{ item.reservation.roomTypeName }}</p>
         </div>
       </section>
@@ -54,10 +62,10 @@
         <ng-content select="[reservationEditor]" />
       } @else {
         <section class="panel" aria-labelledby="stay-title">
-          <h2 id="stay-title">Your stay</h2>
+          <h2 id="stay-title">{{ 'reservationContent.stay' | transloco }}</h2>
           <dl class="stay-dates">
             <div>
-              <dt>Check-in</dt>
+              <dt>{{ 'reservationContent.checkIn' | transloco }}</dt>
               <dd>
                 <time [attr.datetime]="item.reservation.checkInDate">{{
                   item.reservation.checkInDate | date: "EEE, MMM d, y"
@@ -65,13 +73,16 @@
               </dd>
             </div>
             <div class="nights">
-              <dt>Duration</dt>
+              <dt>{{ 'reservationContent.duration' | transloco }}</dt>
               <dd>
-                {{ item.nights }} {{ item.nights === 1 ? "night" : "nights" }}
+                {{
+                  (item.nights === 1 ? 'common.nightsOne' : 'common.nightsMany')
+                    | transloco: { count: item.nights }
+                }}
               </dd>
             </div>
             <div>
-              <dt>Check-out</dt>
+              <dt>{{ 'reservationContent.checkOut' | transloco }}</dt>
               <dd>
                 <time [attr.datetime]="item.reservation.checkOutDate">{{
                   item.reservation.checkOutDate | date: "EEE, MMM d, y"
@@ -83,31 +94,39 @@
       }
       <section class="panel" aria-labelledby="room-title">
         <h2 id="room-title">
-          {{ item.reservation.roomTypeName ?? "Room details" }}
+          {{
+            item.reservation.roomTypeName ??
+              ('reservationContent.roomDetails' | transloco)
+          }}
         </h2>
         <dl class="facts">
           <div>
-            <dt>Room number</dt>
-            <dd>{{ item.reservation.roomNumber ?? "Not assigned" }}</dd>
+            <dt>{{ 'reservationContent.roomNumber' | transloco }}</dt>
+            <dd>
+              {{
+                item.reservation.roomNumber ??
+                  ('reservationContent.notAssigned' | transloco)
+              }}
+            </dd>
           </div>
           @if (item.roomFloor !== undefined) {
             <div>
-              <dt>Floor</dt>
+              <dt>{{ 'reservationContent.floor' | transloco }}</dt>
               <dd>{{ item.roomFloor }}</dd>
             </div>
           }
           <div>
-            <dt>Guests</dt>
+            <dt>{{ 'reservationContent.guests' | transloco }}</dt>
             <dd>{{ item.reservation.guestCount }}</dd>
           </div>
           @if (item.maxCapacity !== undefined) {
             <div>
-              <dt>Maximum capacity</dt>
+              <dt>{{ 'reservationContent.maxCapacity' | transloco }}</dt>
               <dd>{{ item.maxCapacity }}</dd>
             </div>
           }
           <div>
-            <dt>Nightly rate</dt>
+            <dt>{{ 'reservationContent.nightlyRate' | transloco }}</dt>
             <dd>
               {{ item.nightlyPrice | currency: "COP" : "symbol" : "1.0-2" }}
             </dd>
@@ -115,15 +134,15 @@
         </dl>
       </section>
       <section aria-labelledby="guest-title">
-        <h2 id="guest-title">Guest information</h2>
+        <h2 id="guest-title">{{ 'reservationContent.guestInfo' | transloco }}</h2>
         @if (client; as guest) {
           <app-client-info [client]="guest" />
         } @else {
-          <p>Guest contact information is unavailable.</p>
+          <p>{{ 'reservationContent.guestUnavailable' | transloco }}</p>
         }
       </section>
     </div>
-    <aside aria-label="Reservation pricing and payment history">
+    <aside [attr.aria-label]="'reservationContent.pricingLabel' | transloco">
       <ng-content select="[reservationPreview]" />
       <app-reservation-finance [detail]="item" />
     </aside>

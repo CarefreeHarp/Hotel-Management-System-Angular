@@ -1,9 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, Input, Output } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 @Component({
   selector: 'app-price-range',
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, TranslocoPipe],
   templateUrl: './price-range.component.html',
   styleUrl: './price-range.component.scss',
 })

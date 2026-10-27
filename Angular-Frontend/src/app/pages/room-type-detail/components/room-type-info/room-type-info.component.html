@@ -1,27 +1,32 @@
 @if (roomType; as roomType) {
-  <section class="detail-grid" aria-label="Room type information">
+  <section class="detail-grid" [attr.aria-label]="'roomTypes.detail.information' | transloco">
     <figure class="detail-visual">
       <img
         appImage
         imageWidth="960"
         [src]="roomType.mainPhoto"
-        [alt]="'Main photo for ' + roomType.name"
+        [alt]="'roomTypes.detail.mainPhotoAlt' | transloco: { name: roomType.name }"
       />
     </figure>
     <article class="detail-content">
-      <p class="card-eyebrow">Commercial information</p>
+      <p class="card-eyebrow">{{ 'roomTypes.detail.commercial' | transloco }}</p>
       <dl class="detail-list">
         <div>
-          <dt>Description</dt>
+          <dt>{{ 'roomTypes.fields.description' | transloco }}</dt>
           <dd class="description">{{ roomType.description }}</dd>
         </div>
         <div>
-          <dt>Price per night</dt>
-          <dd>COP {{ roomType.nightlyPrice | number: "1.0-2" }}</dd>
+          <dt>{{ 'roomTypes.fields.pricePerNight' | transloco }}</dt>
+          <dd>{{ roomType.nightlyPrice | currency: 'COP' : 'symbol' : '1.0-2' }}</dd>
         </div>
         <div>
-          <dt>Maximum capacity</dt>
-          <dd>{{ roomType.maxCapacity }} guests</dd>
+          <dt>{{ 'roomTypes.fields.maxCapacity' | transloco }}</dt>
+          <dd>
+            {{
+              (roomType.maxCapacity === 1 ? 'common.guestsOne' : 'common.guestsMany')
+                | transloco: { count: roomType.maxCapacity }
+            }}
+          </dd>
         </div>
       </dl>
       <div class="detail-actions">
@@ -31,7 +36,7 @@
           [routerLink]="adminArea ? [base, 'room-types'] : ['/']"
           [queryParams]="authParams"
           [fragment]="adminArea ? '' : 'rooms-section'"
-          >← Back to list</a
+          >← {{ 'common.actions.backToList' | transloco }}</a
         >
       </div>
     </article>

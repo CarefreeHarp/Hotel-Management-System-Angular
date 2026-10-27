@@ -1,19 +1,19 @@
-<section class="catalog-table" aria-label="Administrators">
+<section class="catalog-table" [attr.aria-label]="'administrators.list.title' | transloco">
   @if (administrators.length) {
     <div
       class="table-scroll"
       role="region"
-      aria-label="Administrators table"
+      [attr.aria-label]="'administrators.table.label' | transloco"
       tabindex="0"
     >
       <table>
         <thead>
           <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Administrator</th>
-            <th scope="col">Email</th>
-            <th scope="col">Operators</th>
-            <th scope="col">Actions</th>
+            <th scope="col">{{ 'common.fields.id' | transloco }}</th>
+            <th scope="col">{{ 'administrators.table.administrator' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.email' | transloco }}</th>
+            <th scope="col">{{ 'administrators.fields.operators' | transloco }}</th>
+            <th scope="col">{{ 'common.fields.actions' | transloco }}</th>
           </tr>
         </thead>
         <tbody>
@@ -30,19 +30,24 @@
                   >
                 </div>
               </th>
-              <td class="staff-email" data-label="Email">{{ item.email }}</td>
-              <td data-label="Operators in charge">
+              <td class="staff-email" [attr.data-label]="'common.fields.email' | transloco">
+                {{ item.email }}
+              </td>
+              <td [attr.data-label]="'administrators.fields.operatorsInCharge' | transloco">
                 <span class="count-badge">{{ item.operatorCount }}</span>
               </td>
               <td class="actions-cell">
                 <div class="actions">
                   <a [routerLink]="[base, 'administrators', item.adminId]"
-                    >View<span class="sr-only"> {{ item.name }}</span></a
+                    >{{ 'common.actions.view' | transloco
+                    }}<span class="sr-only"> {{ item.name }}</span></a
                   ><a
                     [routerLink]="[base, 'administrators', item.adminId, 'edit']"
-                    >Edit<span class="sr-only"> {{ item.name }}</span></a
+                    >{{ 'common.actions.edit' | transloco
+                    }}<span class="sr-only"> {{ item.name }}</span></a
                   ><button type="button" (click)="deleteSubject.next(item)">
-                    Delete<span class="sr-only"> {{ item.name }}</span>
+                    {{ 'common.actions.delete' | transloco
+                    }}<span class="sr-only"> {{ item.name }}</span>
                   </button>
                 </div>
               </td>
@@ -53,8 +58,8 @@
     </div>
   } @else {
     <div class="empty">
-      <h2>No administrators yet</h2>
-      <p>Create an administrator to get started.</p>
+      <h2>{{ 'administrators.table.emptyTitle' | transloco }}</h2>
+      <p>{{ 'administrators.table.emptyText' | transloco }}</p>
     </div>
   }
 </section>

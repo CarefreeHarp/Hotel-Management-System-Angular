@@ -181,6 +181,29 @@ class FrontDeskTest {
     }
 
     @Test
+    void priceIncreaseDuringStayKeepsGuestCheckedIn() {
+        Room room = room(9991, RoomStatus.AVAILABLE);
+        Operator operator = createOperator();
+        Integer id = book(today, 1, "150000");
+        reservations.checkIn(id);
+
+        // El personal alarga la estancia una noche: el saldo sube pero el huésped sigue alojado.
+        reservations.updateReservation(id, Reservation.builder().checkInDate(today)
+                .checkOutDate(today.plusDays(2)).guestCount(2).status(ReservationStatus.CHECKED_IN)
+                .room(Room.builder().roomType(type).build()).build());
+        assertEquals(ReservationStatus.CHECKED_IN, reservationStatus(id));
+        assertTrue(ids(frontDesk.readBoard().inHouse()).contains(id));
+        assertFalse(ids(frontDesk.readBoard().arrivals()).contains(id));
+
+        assertConflict("outstanding balance", () -> reservations.checkOut(id));
+        reservations.addOperatorCashPayment(id, operator.getOperatorId(),
+                Payment.builder().amount(money("150000")).build());
+        assertEquals(ReservationStatus.CHECKED_IN, reservationStatus(id));
+        reservations.checkOut(id);
+        assertEquals(RoomStatus.CLEANING, room.getStatus());
+    }
+
+    @Test
     void inHouseGuestCanPayOnDepartureDayButEndedStayCannot() {
         Room leavingRoom = room(9991, RoomStatus.OCCUPIED);
         Room missedRoom = room(9992, RoomStatus.AVAILABLE);

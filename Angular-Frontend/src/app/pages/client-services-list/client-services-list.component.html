@@ -5,12 +5,10 @@
     <!-- Presentación del catálogo para huéspedes -->
     <section class="services-hero">
       <div class="services-hero__content">
-        <p class="eyebrow">Atlan Suites · Experiences & Hospitality</p>
-        <h1 class="services-hero__title">Hotel Services</h1>
+        <p class="eyebrow">{{ 'catalog.eyebrow' | transloco }}</p>
+        <h1 class="services-hero__title">{{ 'catalog.title' | transloco }}</h1>
         <p class="services-hero__desc">
-          Explore our curated collection of signature dining, holistic wellness,
-          recreation and personalized assistance. Every service is designed to
-          enrich each moment of your stay.
+          {{ 'catalog.description' | transloco }}
         </p>
       </div>
     </section>
@@ -37,31 +35,31 @@
           <input
             type="search"
             class="search-input"
-            placeholder="Search services (e.g. Spa, Breakfast, Bicycle...)"
+            [placeholder]="'catalog.searchPlaceholder' | transloco"
             [ngModel]="state.searchQuery"
             (ngModelChange)="onSearchChange($event)"
-            aria-label="Search services"
+            [attr.aria-label]="'catalog.search' | transloco"
           />
           @if (state.searchQuery) {
             <button
               type="button"
               class="clear-search"
               (click)="onSearchChange('')"
-              aria-label="Clear search"
+              [attr.aria-label]="'catalog.clearSearch' | transloco"
             >
               ✕
             </button>
           }
         </div>
 
-        <nav class="category-pills" aria-label="Filter by category">
+        <nav class="category-pills" [attr.aria-label]="'catalog.filterByCategory' | transloco">
           <button
             type="button"
             class="pill-btn"
             [class.active]="state.selectedCategory === 'ALL'"
             (click)="selectCategory('ALL')"
           >
-            All ({{ state.services.length }})
+            {{ 'list.all' | transloco }} ({{ state.services.length }})
           </button>
           @for (cat of state.categories; track cat) {
             <button
@@ -78,7 +76,7 @@
 
       <!-- Loading state -->
       @if (state.isLoading) {
-        <app-skeleton variant="cards" label="Loading the service catalog..." />
+        <app-skeleton variant="cards" [label]="'catalog.loading' | transloco" />
       } @else {
         <!-- Cuadrícula de resultados -->
         @if (state.filteredServices.length > 0) {
@@ -104,7 +102,7 @@
                     <div class="card-price">
                       <span class="price-currency">COP</span>
                       <span class="price-amount"
-                        >${{ formatPrice(service.price) }}</span
+                        >${{ service.price | number: '1.0-0' }}</span
                       >
                     </div>
                   </header>
@@ -198,7 +196,7 @@
                       ]"
                       class="view-detail-btn"
                     >
-                      View details
+                      {{ 'catalog.viewDetails' | transloco }}
                     </a>
                   </footer>
                 </div>
@@ -207,16 +205,16 @@
           </div>
         } @else {
           <div class="empty-state">
-            <p class="empty-title">No services found</p>
+            <p class="empty-title">{{ 'catalog.emptyTitle' | transloco }}</p>
             <p class="empty-subtitle">
-              No services match the selected search criteria.
+              {{ 'catalog.emptyText' | transloco }}
             </p>
             <button
               appButton
               variant="secondary"
               (click)="selectCategory('ALL'); onSearchChange('')"
             >
-              Reset filters
+              {{ 'catalog.resetFilters' | transloco }}
             </button>
           </div>
         }

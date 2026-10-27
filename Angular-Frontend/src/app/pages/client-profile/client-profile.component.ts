@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import {
   EMPTY, Observable, Subject, catchError, concatMap, exhaustMap, finalize,
   forkJoin, of, switchMap, tap,
@@ -33,6 +34,7 @@ import { ReservationCancelDialogComponent } from './components/reservation-cance
     ClientInfoComponent,
     ReservationHistoryComponent,
     ReservationCancelDialogComponent,
+    TranslocoPipe,
   ],
   templateUrl: './client-profile.component.html',
   styleUrl: './client-profile.component.scss',
@@ -146,10 +148,7 @@ export class ClientProfileComponent implements OnInit {
       }),
       catchError((error: HttpErrorResponse) => {
         if (this.authParams.auth === clientId) {
-          this.cancellationError = apiErrorMessage(
-            error,
-            'Unable to cancel the reservation. Please try again.',
-          );
+          this.cancellationError = apiErrorMessage(error, 'profile.cancel.error');
         }
         return EMPTY;
       }),
@@ -167,7 +166,7 @@ export class ClientProfileComponent implements OnInit {
     if (
       !this.client ||
       this.isDeleting ||
-      !confirm('Delete your Atlan Suites account? This cannot be undone.')
+      !confirm(translate('profile.confirmDelete'))
     )
       return EMPTY;
     this.isDeleting = true;
@@ -179,10 +178,7 @@ export class ClientProfileComponent implements OnInit {
           void this.router.navigate(['/']);
         }),
         catchError((error: HttpErrorResponse) => {
-          this.errorMessage = apiErrorMessage(
-            error,
-            'Your account could not be deleted.',
-          );
+          this.errorMessage = apiErrorMessage(error, 'profile.deleteError');
           this.isDeleting = false;
 
           return EMPTY;

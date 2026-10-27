@@ -1,16 +1,19 @@
-<section class="list-controls" aria-label="Search and display controls">
+<section
+  class="list-controls"
+  [attr.aria-label]="'list.controls' | transloco"
+>
   <form (submit)="$event.preventDefault()">
     <label class="search-field"
-      >Search<input
+      >{{ 'list.search' | transloco }}<input
         type="search"
         name="search"
         [ngModel]="state.search"
         (ngModelChange)="update({ search: $event })"
-        placeholder="Search records…"
+        [placeholder]="'list.searchPlaceholder' | transloco"
     /></label>
     @for (item of filters; track item.key) {
       <label
-        >{{ item.label }}
+        >{{ item.labelKey | transloco }}
         @if (item.type) {
           <input
             [type]="item.type"
@@ -25,7 +28,7 @@
             [ngModel]="state.filters[item.key] ?? ''"
             (ngModelChange)="filter(item.key, $event)"
           >
-            <option value="">All</option>
+            <option value="">{{ 'list.all' | transloco }}</option>
             @for (option of item.options; track option.value) {
               <option [value]="option.value">{{ option.label }}</option>
             }
@@ -43,24 +46,28 @@
       />
     }
     <label
-      >Order by<select
+      >{{ 'list.orderBy' | transloco }}<select
         name="sort"
         [ngModel]="state.sort"
         (ngModelChange)="update({ sort: $event })"
       >
         @for (option of sortOptions; track option.value) {
-          <option [value]="option.value">{{ option.label }}</option>
+          <option [value]="option.value">
+            {{ option.labelKey | transloco }}
+          </option>
         }
       </select></label
-    ><button type="button" (click)="reset()">Clear</button>
+    ><button type="button" (click)="reset()">{{ 'list.clear' | transloco }}</button>
   </form>
   <footer>
-    <p role="status">{{ count }} of {{ total }} results</p>
-    <nav aria-label="Display mode">
+    <p role="status">
+      {{ 'list.results' | transloco: { count: count, total: total } }}
+    </p>
+    <nav [attr.aria-label]="'list.displayMode' | transloco">
       <button
         type="button"
-        aria-label="Table view"
-        title="Table view"
+        [attr.aria-label]="'list.tableView' | transloco"
+        [title]="'list.tableView' | transloco"
         [attr.aria-pressed]="state.view === 'table'"
         (click)="update({ view: 'table' })"
       >
@@ -78,8 +85,8 @@
         </svg></button
       ><button
         type="button"
-        aria-label="Grid view"
-        title="Grid view"
+        [attr.aria-label]="'list.gridView' | transloco"
+        [title]="'list.gridView' | transloco"
         [attr.aria-pressed]="state.view === 'cards'"
         (click)="update({ view: 'cards' })"
       >

@@ -2,23 +2,23 @@
 <main class="catalog-page">
   <div class="catalog-page__container">
     @if (isLoading) {
-      <app-skeleton variant="detail" label="Loading client…" />
+      <app-skeleton variant="detail" [label]="'clients.detail.loading' | transloco" />
     } @else if (client) {
       <app-page-heading
-        eyebrow="Client management"
+        [eyebrow]="'clients.detail.eyebrow' | transloco"
         [title]="client.name + ' ' + client.lastName"
-        description="Client profile and contact information."
+        [description]="'clients.detail.description' | transloco"
       >
         <a appButton [routerLink]="[base, 'clients', client.clientId, 'edit']"
-          >Edit client</a
+          >{{ 'clients.detail.edit' | transloco }}</a
         >
       </app-page-heading>
       @if (saved) {
-        <p class="saved-alert" role="status">Client saved successfully.</p>
+        <p class="saved-alert" role="status">{{ 'clients.detail.saved' | transloco }}</p>
       }
       <app-client-info [client]="client" [staff]="true" />
       @if (historyLoading) {
-        <app-skeleton variant="cards" label="Loading reservations…" />
+        <app-skeleton variant="cards" [label]="'reservationHistory.loading' | transloco" />
       } @else if (historyError) {
         <p role="alert">{{ historyError }}</p>
       } @else {

@@ -1,12 +1,12 @@
 @if (form; as form) {
   <section [formGroup]="form" aria-labelledby="information-title">
-    <h2 id="information-title">Room information</h2>
+    <h2 id="information-title">{{ 'rooms.detail.information' | transloco }}</h2>
     <p class="section-description">
-      All fields are required. The room number must be unique.
+      {{ 'rooms.form.fieldsDescription' | transloco }}
     </p>
     <div class="form-grid">
       <label class="select-field" for="activation-status"
-        >Activation<select
+        >{{ 'common.fields.activation' | transloco }}<select
           id="activation-status"
           formControlName="activationStatus"
           required
@@ -15,7 +15,7 @@
         >
           @for (status of activationStatuses; track status) {
             <option [ngValue]="status">
-              {{ status === "ACTIVE" ? "Active" : "Inactive" }}
+              {{ 'enums.activationStatus.' + status | transloco }}
             </option>
           }
         </select>
@@ -25,30 +25,32 @@
       >
       <app-form-field
         fieldId="number"
-        label="Room number"
+        [label]="'rooms.fields.roomNumber' | transloco"
         type="number"
         [control]="form.controls.number"
         [min]="1"
         [max]="9999"
         [step]="1"
-        hint="From 1 to 9999."
+        [hint]="'rooms.form.numberHint' | transloco"
         [submitted]="submitted"
         [messages]="messages.number"
       />
       <app-form-field
         fieldId="floor"
-        label="Floor"
+        [label]="'rooms.fields.floor' | transloco"
         type="number"
         [control]="form.controls.floor"
         [min]="0"
         [max]="200"
         [step]="1"
-        hint="From 0 to 200."
+        [hint]="'rooms.form.floorHint' | transloco"
         [submitted]="submitted"
         [messages]="messages.floor"
       />
       <div class="select-field">
-        <label for="status">Status <span aria-hidden="true">*</span></label>
+        <label for="status"
+          >{{ 'common.fields.status' | transloco }} <span aria-hidden="true">*</span></label
+        >
         <select
           id="status"
           formControlName="status"
@@ -57,18 +59,19 @@
           aria-describedby="status-error"
         >
           @for (status of statuses; track status) {
-            <option [ngValue]="status">{{ statusLabels[status] }}</option>
+            <option [ngValue]="status">{{ 'enums.roomStatus.' + status | transloco }}</option>
           }
         </select>
         @if (invalid(form.controls.status)) {
           <small id="status-error" role="alert">{{
-            form.controls.status.getError("server") ?? messages.status.required
+            form.controls.status.getError("server") ??
+              (messages.status.required | transloco)
           }}</small>
         }
       </div>
       <div class="select-field">
         <label for="roomTypeId"
-          >Room type <span aria-hidden="true">*</span></label
+          >{{ 'rooms.fields.roomType' | transloco }} <span aria-hidden="true">*</span></label
         >
         <select
           id="roomTypeId"
@@ -77,7 +80,7 @@
           [attr.aria-invalid]="invalid(form.controls.roomTypeId)"
           aria-describedby="roomTypeId-error"
         >
-          <option [ngValue]="null" disabled>Select a room type</option>
+          <option [ngValue]="null" disabled>{{ 'rooms.form.selectRoomType' | transloco }}</option>
           @for (type of roomTypes; track type.roomTypeId) {
             <option [ngValue]="type.roomTypeId">{{ type.name }}</option>
           }
@@ -85,7 +88,7 @@
         @if (invalid(form.controls.roomTypeId)) {
           <small id="roomTypeId-error" role="alert">{{
             form.controls.roomTypeId.getError("server") ??
-              messages.roomTypeId.required
+              (messages.roomTypeId.required | transloco)
           }}</small>
         }
       </div>

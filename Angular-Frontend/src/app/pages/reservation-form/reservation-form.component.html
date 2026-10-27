@@ -5,15 +5,17 @@
 }
 <main class="reservation-page">
   <div class="reservation-container">
-    <a appButton variant="secondary" [routerLink]="backUrl" [queryParams]="authParams">{{ staff ? 'Back to reservations' : 'Back to my reservations' }}</a>
+    <a appButton variant="secondary" [routerLink]="backUrl" [queryParams]="authParams">{{
+      (staff ? 'reservations.detail.backToReservations' : 'reservations.detail.backToMyReservations') | transloco
+    }}</a>
     @if (loading) {
-      <app-skeleton variant="detail" label="Loading reservation…" />
+      <app-skeleton variant="detail" [label]="'reservations.detail.loading' | transloco" />
     }
     @if (detail; as item) {
       <form [formGroup]="form" (ngSubmit)="save()" novalidate>
-        <app-reservation-content [detail]="item" [client]="client" [staffViewTitle]="staffViewTitle" [editing]="true">
+        <app-reservation-content [detail]="item" [client]="client" [staffViewTitleKey]="staffViewTitleKey" [editing]="true">
           <fieldset reservationEditor class="editor-panel" [disabled]="saving">
-            <legend class="eyebrow">{{ staff ? 'Edit stay, services and status' : 'Edit stay and services' }}</legend>
+            <legend class="eyebrow">{{ (staff ? 'reservations.form.legendStaff' : 'reservations.form.legend') | transloco }}</legend>
             <app-reservation-fields
               [form]="form"
               [roomTypes]="roomTypes"
@@ -23,30 +25,34 @@
               [clientMode]="!staff"
             />
             <div class="form-actions">
-              <button appButton type="submit" [disabled]="saving">{{ saving ? "Saving…" : "Save reservation" }}</button>
-              <a appButton variant="secondary" [routerLink]="detailUrl" [queryParams]="authParams">Cancel</a>
+              <button appButton type="submit" [disabled]="saving">{{
+                (saving ? 'common.saving' : 'reservations.form.save') | transloco
+              }}</button>
+              <a appButton variant="secondary" [routerLink]="detailUrl" [queryParams]="authParams">{{
+                'common.actions.cancel' | transloco
+              }}</a>
             </div>
             @if (submitted && form.invalid) {
-              <p class="form-alert" role="alert">Please check the highlighted fields before saving.</p>
+              <p class="form-alert" role="alert">{{ 'common.checkFields' | transloco }}</p>
             }
             @if (error) {
               <p class="form-alert" role="alert">{{ error }}</p>
             }
           </fieldset>
           <section reservationPreview class="preview-panel" aria-labelledby="preview-title">
-            <h2 id="preview-title">Price preview</h2>
+            <h2 id="preview-title">{{ 'reservations.form.preview' | transloco }}</h2>
             <dl>
-              <dt>Recalculated total</dt>
+              <dt>{{ 'reservations.form.recalculatedTotal' | transloco }}</dt>
               <dd>{{ previewTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
             </dl>
             <dl>
-              <dt>Already paid (after refunds)</dt>
+              <dt>{{ 'reservations.form.alreadyPaid' | transloco }}</dt>
               <dd>{{ item.paidTotal | currency: "COP" : "symbol" : "1.0-2" }}</dd>
-              <dt>Refund after saving</dt>
+              <dt>{{ 'reservations.form.refundAfterSaving' | transloco }}</dt>
               <dd>{{ refundPreview | currency: "COP" : "symbol" : "1.0-2" }}</dd>
             </dl>
-            <p>If the new total is lower than the amount already paid, the difference is refunded automatically. An increase may leave a new outstanding balance.</p>
-            <p>The price details below show the saved reservation until changes are saved.</p>
+            <p>{{ 'reservations.form.refundNote' | transloco }}</p>
+            <p>{{ 'reservations.form.savedNote' | transloco }}</p>
           </section>
         </app-reservation-content>
       </form>

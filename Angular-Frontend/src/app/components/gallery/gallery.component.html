@@ -1,6 +1,8 @@
 <section class="gallery-section" aria-labelledby="additional-photos-title">
-  <p class="card-eyebrow">Gallery</p>
-  <h2 class="gallery-title" id="additional-photos-title">Additional photos</h2>
+  <p class="card-eyebrow">{{ 'gallery.eyebrow' | transloco }}</p>
+  <h2 class="gallery-title" id="additional-photos-title">
+    {{ 'gallery.title' | transloco }}
+  </h2>
   <ul class="gallery-grid">
     @for (photo of photos; track $index) {
       <li>
@@ -8,7 +10,7 @@
           appImage
           imageWidth="1280"
           [src]="photo"
-          [alt]="name + ' — additional photo ' + ($index + 1)"
+          [alt]="'gallery.photoAlt' | transloco: { name: name, number: $index + 1 }"
           loading="lazy"
         />
       </li>

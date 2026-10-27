@@ -1,70 +1,68 @@
 <app-admin-header />
 <main class="room-types-page-main">
-  <span class="page-watermark" aria-hidden="true">Front desk</span>
+  <span class="page-watermark" aria-hidden="true">{{ 'adminHeader.frontDesk' | transloco }}</span>
   <div class="page-container">
     <header class="catalog-heading">
       <div>
-        <p class="eyebrow">Atlan Suites · Front desk</p>
-        <h1>Front desk</h1>
+        <p class="eyebrow">{{ 'frontDesk.eyebrow' | transloco }}</p>
+        <h1>{{ 'adminHeader.frontDesk' | transloco }}</h1>
         <p>
           @if (operator$ | async; as operator) {
-            Welcome, <strong>{{ operator.name }} {{ operator.lastName }}</strong>.
+            {{ 'adminPanel.greeting' | transloco }} <strong>{{ operator.name }} {{ operator.lastName }}</strong>.
           }
-          Today's arrivals, in-house guests, pending departures and rooms in
-          cleaning or maintenance.
+          {{ 'frontDesk.intro' | transloco }}
         </p>
       </div>
       <button appButton type="button" [disabled]="busy" (click)="refresh()">
-        Refresh
+        {{ 'common.actions.refresh' | transloco }}
       </button>
     </header>
 
     @if (state$ | async; as state) {
       @if (state.loading) {
-        <app-skeleton variant="table" label="Loading the front desk…" />
+        <app-skeleton variant="table" [label]="'frontDesk.loading' | transloco" />
       } @else if (state.board && state.summary) {
         @let board = state.board;
         @let summary = state.summary;
         <p class="desk-date">
           <time [attr.datetime]="board.date">{{
-            board.date | date: "EEEE, MMMM d, y"
+            board.date | date: "fullDate"
           }}</time>
         </p>
-        <nav class="desk-summary" aria-label="Today at the front desk">
+        <nav class="desk-summary" [attr.aria-label]="'frontDesk.summaryLabel' | transloco">
           <a class="desk-tile" [routerLink]="[]" fragment="arrivals">
-            <span class="desk-tile__label">Arrivals today</span>
+            <span class="desk-tile__label">{{ 'frontDesk.tiles.arrivals' | transloco }}</span>
             <strong>{{ board.arrivals.length }}</strong>
-            <small>{{ summary.readyArrivals }} ready to check in</small>
+            <small>{{ 'frontDesk.tiles.readyArrivals' | transloco: { count: summary.readyArrivals } }}</small>
           </a>
           <a class="desk-tile" [routerLink]="[]" fragment="in-house">
-            <span class="desk-tile__label">In-house guests</span>
+            <span class="desk-tile__label">{{ 'frontDesk.inHouse.title' | transloco }}</span>
             <strong>{{ summary.guests }}</strong>
-            <small
-              >{{ board.inHouse.length }}
-              {{ board.inHouse.length === 1 ? "occupied room" : "occupied rooms" }}</small
-            >
+            <small>{{
+              (board.inHouse.length === 1 ? 'frontDesk.tiles.occupiedOne' : 'frontDesk.tiles.occupiedMany')
+                | transloco: { count: board.inHouse.length }
+            }}</small>
           </a>
           <a class="desk-tile" [routerLink]="[]" fragment="departures">
-            <span class="desk-tile__label">Pending departures</span>
+            <span class="desk-tile__label">{{ 'frontDesk.departures.title' | transloco }}</span>
             <strong>{{ board.departures.length }}</strong>
-            <small>{{ summary.departuresWithBalance }} with a balance due</small>
+            <small>{{ 'frontDesk.tiles.withBalance' | transloco: { count: summary.departuresWithBalance } }}</small>
           </a>
           <a class="desk-tile" [routerLink]="[]" fragment="rooms">
-            <span class="desk-tile__label">Rooms to prepare</span>
+            <span class="desk-tile__label">{{ 'frontDesk.tiles.roomsToPrepare' | transloco }}</span>
             <strong>{{ board.rooms.length }}</strong>
-            <small
-              >{{ summary.cleaning }} cleaning ·
-              {{ summary.maintenance }} maintenance</small
-            >
+            <small>{{
+              'frontDesk.tiles.cleaningMaintenance'
+                | transloco: { cleaning: summary.cleaning, maintenance: summary.maintenance }
+            }}</small>
           </a>
         </nav>
 
         <section id="arrivals" class="desk-section" aria-labelledby="arrivals-title">
           <header class="desk-section__heading">
-            <h2 id="arrivals-title">Arrivals</h2>
+            <h2 id="arrivals-title">{{ 'frontDesk.arrivals.title' | transloco }}</h2>
             <p>
-              Pending and confirmed stays that start today, plus late arrivals
-              whose stay has not ended.
+              {{ 'frontDesk.arrivals.description' | transloco }}
             </p>
           </header>
           <app-front-desk-stays
@@ -79,8 +77,8 @@
 
         <section id="in-house" class="desk-section" aria-labelledby="in-house-title">
           <header class="desk-section__heading">
-            <h2 id="in-house-title">In-house guests</h2>
-            <p>Checked-in stays, with the nearest departures first.</p>
+            <h2 id="in-house-title">{{ 'frontDesk.inHouse.title' | transloco }}</h2>
+            <p>{{ 'frontDesk.inHouse.description' | transloco }}</p>
           </header>
           <app-front-desk-stays
             kind="in-house"
@@ -92,10 +90,9 @@
 
         <section id="departures" class="desk-section" aria-labelledby="departures-title">
           <header class="desk-section__heading">
-            <h2 id="departures-title">Pending departures</h2>
+            <h2 id="departures-title">{{ 'frontDesk.departures.title' | transloco }}</h2>
             <p>
-              Guests leaving today or overdue. Check-out requires a zero
-              balance and sends the room to cleaning.
+              {{ 'frontDesk.departures.description' | transloco }}
             </p>
           </header>
           <app-front-desk-stays
@@ -110,8 +107,8 @@
 
         <section id="rooms" class="desk-section" aria-labelledby="rooms-title">
           <header class="desk-section__heading">
-            <h2 id="rooms-title">Rooms in cleaning or maintenance</h2>
-            <p>Rooms with a guest arriving are listed first.</p>
+            <h2 id="rooms-title">{{ 'frontDesk.rooms.title' | transloco }}</h2>
+            <p>{{ 'frontDesk.rooms.description' | transloco }}</p>
           </header>
           <app-front-desk-rooms
             [rooms]="board.rooms"
@@ -122,7 +119,7 @@
       } @else {
         <section class="notice" role="alert">
           <p>{{ state.error }}</p>
-          <button appButton type="button" (click)="refresh()">Try again</button>
+          <button appButton type="button" (click)="refresh()">{{ 'common.actions.tryAgain' | transloco }}</button>
         </section>
       }
     }
@@ -144,7 +141,7 @@
       type="button"
       class="btn-dismiss-toast"
       (click)="dismissNotice()"
-      aria-label="Close notification"
+      [attr.aria-label]="'common.closeNotification' | transloco"
     >
       ✕
     </button>

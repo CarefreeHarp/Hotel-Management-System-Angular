@@ -110,9 +110,10 @@ public class ReservationBillingService {
         BigDecimal paid = previous.paidTotal();
         checkBalance(input.getStatus(), total, paid);
         ReservationStatus status = input.getStatus();
-        // Si una reserva pagada aumenta de precio, vuelve a quedar pendiente de pago.
+        // Si una reserva confirmada y pagada aumenta de precio, vuelve a quedar pendiente de pago.
+        // Un huésped ya alojado sigue CHECKED_IN: su nuevo saldo se cobra antes del check-out.
         if (financialChange && paid.signum() > 0 && previous.total().compareTo(paid) == 0
-                && total.compareTo(paid) > 0 && status != ReservationStatus.CANCELLED) {
+                && total.compareTo(paid) > 0 && status == ReservationStatus.CONFIRMED) {
             status = ReservationStatus.PENDING;
         }
         folioItemRepository.deleteAll(removed);

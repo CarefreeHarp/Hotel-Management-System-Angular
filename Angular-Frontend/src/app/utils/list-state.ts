@@ -1,10 +1,16 @@
+// Las propiedades que terminan en Key guardan una clave de traducción; la plantilla aplica el pipe transloco.
 export interface ListOption {
   value: string;
+  // Texto ya traducido o un dato, por ejemplo el nombre de un tipo de habitación.
   label: string;
+}
+export interface SortOption {
+  value: string;
+  labelKey: string;
 }
 export interface ListFilter {
   key: string;
-  label: string;
+  labelKey: string;
   options?: ListOption[];
   type?: 'number' | 'date';
 }
@@ -35,11 +41,11 @@ export function priceMatches(price: number, state: ListState): boolean {
   const max = state.filters['maxPrice'];
   return (!min || price >= Number(min)) && (!max || price <= Number(max));
 }
-export const defaultSortOptions: ListOption[] = [
-  { value: 'id-asc', label: 'ID: low to high' },
-  { value: 'id-desc', label: 'ID: high to low' },
-  { value: 'name-asc', label: 'Name: A–Z' },
-  { value: 'name-desc', label: 'Name: Z–A' },
+export const defaultSortOptions: SortOption[] = [
+  { value: 'id-asc', labelKey: 'list.sort.idAsc' },
+  { value: 'id-desc', labelKey: 'list.sort.idDesc' },
+  { value: 'name-asc', labelKey: 'list.sort.nameAsc' },
+  { value: 'name-desc', labelKey: 'list.sort.nameDesc' },
 ];
 /** El sufijo controla la dirección. El prefijo elige entre nombre e identificador. */
 export function compareRecords(

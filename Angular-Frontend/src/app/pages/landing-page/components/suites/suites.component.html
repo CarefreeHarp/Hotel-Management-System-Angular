@@ -1,18 +1,18 @@
 <section class="rooms-section" id="rooms-section" aria-labelledby="rooms-title">
   <span class="rooms-watermark" aria-hidden="true"
-    >Rooms<br />And<br />Suites</span
+    >{{ 'landing.suites.watermarkLine1' | transloco }}<br />{{ 'landing.suites.watermarkLine2' | transloco }}<br />{{ 'landing.suites.watermarkLine3' | transloco }}</span
   >
 
   <div class="rooms-heading-row">
     <header class="rooms-intro fade-in">
-      <p class="eyebrow">Rooms and suites</p>
+      <p class="eyebrow">{{ 'landing.suites.eyebrow' | transloco }}</p>
       <h2 class="section-title rooms-title" id="rooms-title">
-        Rooms and<br />Suites
+        {{ 'landing.suites.titleStart' | transloco }}<br />{{ 'landing.suites.titleEnd' | transloco }}
       </h2>
     </header>
     <aside class="rooms-description fade-in">
-      <span class="eyebrow">Rooms and suites description</span>
-      <p>{{ description }}</p>
+      <span class="eyebrow">{{ 'landing.suites.descriptionLabel' | transloco }}</span>
+      <p>{{ 'landing.suites.description' | transloco }}</p>
     </aside>
   </div>
 
@@ -20,11 +20,14 @@
     class="room-carousel fade-in"
     role="region"
     aria-roledescription="carousel"
-    aria-label="Suites carousel"
+    [attr.aria-label]="'landing.suites.carousel' | transloco"
   >
     <div class="carousel-inner">
       @if (isLoading) {
-        <app-skeleton variant="cards" label="Loading suites..." />
+        <app-skeleton
+          variant="cards"
+          [label]="'landing.suites.loading' | transloco"
+        />
       } @else {
         <div class="suite-carousel-track" [style.transform]="trackTransform">
           @for (roomType of roomTypes; track roomType.roomTypeId) {
@@ -42,18 +45,29 @@
                 <div class="room-card-face room-card-back">
                   <p class="room-card-back-text">{{ roomType.description }}</p>
                   <ul class="room-card-list">
-                    <li>{{ roomType.maxCapacity }} guests</li>
                     <li>
-                      From COP
-                      {{ roomType.nightlyPrice.toLocaleString("en-US") }} per
-                      night
+                      {{
+                        'landing.suites.guests'
+                          | transloco: { count: roomType.maxCapacity }
+                      }}
+                    </li>
+                    <li>
+                      {{
+                        'landing.suites.fromPrice'
+                          | transloco
+                            : {
+                                price:
+                                  (roomType.nightlyPrice
+                                  | currency: 'COP' : 'symbol' : '1.0-0'),
+                              }
+                      }}
                     </li>
                   </ul>
                   <a
                     class="room-card-link"
                     [routerLink]="['/room-types', roomType.roomTypeId]"
                     [queryParams]="authParams"
-                    >View details
+                    >{{ 'landing.suites.viewDetails' | transloco }}
                   </a>
                 </div>
               </div>
@@ -67,9 +81,9 @@
             </article>
           } @empty {
             @if (error) {
-              <p class="rooms-empty" role="alert">{{ error }}</p>
+              <p class="rooms-empty" role="alert">{{ error | transloco }}</p>
             } @else {
-              <p class="rooms-empty">No suites are available at the moment.</p>
+              <p class="rooms-empty">{{ 'landing.suites.empty' | transloco }}</p>
             }
           }
         </div>
@@ -79,7 +93,7 @@
     <button
       class="carousel-control-prev"
       type="button"
-      aria-label="Previous suite"
+      [attr.aria-label]="'landing.suites.previous' | transloco"
       [disabled]="suiteIndex === 0"
       (click)="previous()"
     >
@@ -88,7 +102,7 @@
     <button
       class="carousel-control-next"
       type="button"
-      aria-label="Next suite"
+      [attr.aria-label]="'landing.suites.next' | transloco"
       [disabled]="suiteIndex === maxIndex"
       (click)="next()"
     >

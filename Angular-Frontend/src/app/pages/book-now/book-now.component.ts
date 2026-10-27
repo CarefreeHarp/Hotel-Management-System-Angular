@@ -9,6 +9,7 @@ import {
   Router,
   RouterLink,
 } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import {
   catchError, EMPTY, exhaustMap, forkJoin,
   map, Observable, of, Subject, switchMap, tap
@@ -48,6 +49,7 @@ import { BookingServicesComponent } from './components/booking-services/booking-
     BookingServicesComponent,
     BookingCheckoutComponent,
     BookingPaymentComponent,
+    TranslocoPipe,
   ],
   templateUrl: './book-now.component.html',
   styleUrl: './book-now.component.scss',
@@ -189,10 +191,7 @@ export class BookNowComponent {
   }
 
   private bookingError(error: HttpErrorResponse): string {
-    return apiErrorMessage(
-      error,
-      'The booking request could not be completed. Please try again.',
-    );
+    return apiErrorMessage(error, 'booking.error');
   }
 
   private isStep(value: string | null): value is BookingStep {

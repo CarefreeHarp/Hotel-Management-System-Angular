@@ -7,6 +7,7 @@ import {
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import {
   Observable,
   Subject,
@@ -53,6 +54,7 @@ interface AccountingState {
     SkeletonComponent,
     AccountingOverviewComponent,
     AnalyticsChartComponent,
+    TranslocoPipe,
   ],
   templateUrl: './accounting.component.html',
   styleUrl: './accounting.component.scss',
@@ -89,7 +91,7 @@ export class AccountingComponent {
         catchError(() =>
           of({
             loading: false,
-            error: 'Unable to load accounting data. Please try again.',
+            error: translate('accounting.loadError'),
           }),
         ),
         startWith({ loading: true, error: '' }),

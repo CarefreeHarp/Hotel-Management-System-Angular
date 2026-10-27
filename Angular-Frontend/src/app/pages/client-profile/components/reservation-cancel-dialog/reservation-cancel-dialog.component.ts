@@ -1,12 +1,13 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import { ButtonComponent } from '../../../../components/button/button.component';
 
 /** Confirma la cancelación con texto exacto. El diálogo nativo limita el foco y permite salir con Escape. */
 @Component({
   selector: 'app-reservation-cancel-dialog',
-  imports: [ButtonComponent, FormsModule],
+  imports: [ButtonComponent, FormsModule, TranslocoPipe],
   templateUrl: './reservation-cancel-dialog.component.html',
   styleUrl: './reservation-cancel-dialog.component.scss',
 })
@@ -19,7 +20,8 @@ export class ReservationCancelDialogComponent implements AfterViewInit, OnDestro
   private readonly dismissedSubject = new Subject<void>();
   @Output() readonly confirmed = this.confirmedSubject.asObservable();
   @Output() readonly dismissed = this.dismissedSubject.asObservable();
-  readonly confirmationPhrase = 'Yes, I want to cancel';
+  // La frase cambia con el idioma; se traduce al crear el diálogo.
+  readonly confirmationPhrase = translate('profile.cancel.phrase');
   confirmationText = '';
 
   ngAfterViewInit(): void {

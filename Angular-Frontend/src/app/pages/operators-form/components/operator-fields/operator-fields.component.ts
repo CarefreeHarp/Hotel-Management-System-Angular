@@ -1,6 +1,7 @@
 import { Component, Input, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
 import { AdministratorDTO } from '../../../../models/dto/administrator-dto';
 import { basePath } from '../../../../utils/base-path';
@@ -9,7 +10,7 @@ import type { OperatorsFormComponent } from '../../operators-form.component';
 
 @Component({
   selector: 'app-operator-fields',
-  imports: [ReactiveFormsModule, RouterLink, FormFieldComponent],
+  imports: [ReactiveFormsModule, RouterLink, FormFieldComponent, TranslocoPipe],
   templateUrl: './operator-fields.component.html',
   styleUrl: './operator-fields.component.scss',
 })

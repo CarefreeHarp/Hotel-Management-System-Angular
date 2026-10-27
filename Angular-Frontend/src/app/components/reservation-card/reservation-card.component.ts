@@ -1,6 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { canModifyReservation, ReservationDetails } from '../../models/booking';
@@ -10,7 +11,7 @@ import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-reservation-card',
-  imports: [CurrencyPipe, DatePipe, OptimizedImageDirective, ButtonComponent],
+  imports: [CurrencyPipe, DatePipe, OptimizedImageDirective, ButtonComponent, TranslocoPipe],
   templateUrl: './reservation-card.component.html',
   styleUrl: './reservation-card.component.scss',
 })
@@ -77,12 +78,14 @@ export class ReservationCardComponent {
       ? this.services.slice(0, 50) + '...'
       : this.services;
   }
+  // El texto se arma en TS: translate usa el idioma con el que arrancó la página.
   get countdown(): string {
     const reservation = this.detail?.reservation;
     if (!reservation) return '';
-    if (reservation.status === 'CHECKED_IN') return 'In progress';
-    if (reservation.status === 'PENDING') return 'Awaiting payment';
-    if (reservation.status === 'CANCELLED') return 'Cancelled';
+    const t = (key: string, days = 0) => translate(`reservationCard.countdown.${key}`, { days });
+    if (reservation.status === 'CHECKED_IN') return t('inProgress');
+    if (reservation.status === 'PENDING') return t('awaitingPayment');
+    if (reservation.status === 'CANCELLED') return t('cancelled');
     const now = new Date();
     const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
     if (reservation.status === 'CHECKED_OUT') {
@@ -90,15 +93,14 @@ export class ReservationCardComponent {
         0,
         Math.round((today - Date.parse(reservation.checkOutDate)) / 86400000),
       );
-      return days === 0
-        ? 'Check-out today'
-        : `Check-out was ${days} ${days === 1 ? 'day' : 'days'} ago`;
+      if (days === 0) return t('checkOutToday');
+      return t(days === 1 ? 'checkOutAgoOne' : 'checkOutAgoMany', days);
     }
     const days = Math.round(
       (Date.parse(reservation.checkInDate) - today) / 86400000,
     );
-    if (days > 0) return `In ${days} ${days === 1 ? 'day' : 'days'}`;
-    if (days === 0) return 'Check-in today';
-    return `Check-in was ${Math.abs(days)} ${days === -1 ? 'day' : 'days'} ago`;
+    if (days > 0) return t(days === 1 ? 'inOne' : 'inMany', days);
+    if (days === 0) return t('checkInToday');
+    return t(days === -1 ? 'checkInAgoOne' : 'checkInAgoMany', Math.abs(days));
   }
 }

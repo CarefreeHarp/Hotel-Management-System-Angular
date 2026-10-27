@@ -1,5 +1,6 @@
 import { Component, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { ActivationStatus } from '../../models/enums/activation-status';
@@ -7,7 +8,8 @@ export interface RecordCard {
   id: number;
   title: string;
   image?: string;
-  details: { label: string; value: string }[];
+  // labelKey es una clave de traducción; value, el dato ya formateado o traducido.
+  details: { labelKey: string; value: string }[];
   detailUrl: string;
   editUrl: string;
   activationStatus?: ActivationStatus;
@@ -16,7 +18,7 @@ export interface RecordCard {
 /** Presenta tarjetas recibidas y emite acciones al padre. No consulta ni modifica el backend. */
 @Component({
   selector: 'app-record-cards',
-  imports: [OptimizedImageDirective, RouterLink],
+  imports: [OptimizedImageDirective, RouterLink, TranslocoPipe],
   templateUrl: './record-cards.component.html',
   styleUrl: './record-cards.component.scss',
 })

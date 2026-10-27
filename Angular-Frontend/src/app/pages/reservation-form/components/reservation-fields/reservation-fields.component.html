@@ -1,45 +1,47 @@
 <section [formGroup]="form" aria-labelledby="stay-title">
-  <h2 id="stay-title">{{ clientMode ? 'Your stay' : 'Stay and status' }}</h2>
+  <h2 id="stay-title">{{ (clientMode ? 'reservationContent.stay' : 'reservations.form.stayAndStatus') | transloco }}</h2>
   <p class="section-description">
-    A physical room is assigned automatically for the selected room type and
-    dates.
+    {{ 'reservations.form.roomAssigned' | transloco }}
   </p>
   <div class="form-grid">
     <app-form-field
       fieldId="check-in"
-      label="Check-in"
+      [label]="'reservationContent.checkIn' | transloco"
       type="date"
       [control]="form.controls.checkIn"
       [min]="today"
       [max]="lastCheckIn"
       [submitted]="submitted"
       [messages]="messages.checkIn"
+      [messageParams]="yearsAhead"
     />
     <app-form-field
       fieldId="check-out"
-      label="Check-out"
+      [label]="'reservationContent.checkOut' | transloco"
       type="date"
       [control]="form.controls.checkOut"
       [min]="firstCheckOut"
       [max]="lastCheckOut"
-      hint="A stay can last up to 90 nights."
+      [hint]="'reservations.form.maxNightsHint' | transloco: maxNights"
       [submitted]="submitted"
       [messages]="messages.checkOut"
+      [messageParams]="maxNights"
     />
     <app-form-field
       fieldId="guests"
-      label="Guests"
+      [label]="'reservationContent.guests' | transloco"
       type="number"
       [min]="1"
       [max]="capacity"
       [step]="1"
       [control]="form.controls.guests"
       [submitted]="submitted"
-      [messages]="guestMessages"
+      [messages]="messages.guests"
+      [messageParams]="{ capacity: capacity }"
     />
     @if (!clientMode) {
       <label class="select-field" for="room-type"
-        >Room type
+        >{{ 'rooms.fields.roomType' | transloco }}
         <select
           id="room-type"
           formControlName="roomTypeId"
@@ -47,22 +49,22 @@
           [attr.aria-invalid]="invalid(form.controls.roomTypeId)"
           aria-describedby="room-type-error"
         >
-          <option [ngValue]="0" disabled>Select a room type</option>
+          <option [ngValue]="0" disabled>{{ 'rooms.form.selectRoomType' | transloco }}</option>
           @for (type of roomTypes; track type.roomTypeId) {
             <option [ngValue]="type.roomTypeId">
-              {{ type.name }} · up to {{ type.maxCapacity }} guests
+              {{ type.name }} · {{ 'reservations.form.upToGuests' | transloco: { count: type.maxCapacity } }}
             </option>
           }
         </select>
         @if (invalid(form.controls.roomTypeId)) {
           <small id="room-type-error" role="alert">{{
             form.controls.roomTypeId.getError("server") ??
-              messages.roomTypeId.min
+              (messages.roomTypeId.min | transloco)
           }}</small>
         }
       </label>
       <label class="select-field" for="status"
-        >Status
+        >{{ 'common.fields.status' | transloco }}
         <select
           id="status"
           formControlName="status"
@@ -71,7 +73,7 @@
           aria-describedby="status-error"
         >
           @for (status of statuses; track status) {
-            <option [ngValue]="status">{{ status.replace("_", " ") }}</option>
+            <option [ngValue]="status">{{ 'enums.reservationStatus.' + status | transloco }}</option>
           }
         </select>
         @if (invalid(form.controls.status)) {
@@ -82,10 +84,9 @@
   </div>
 </section>
 <section aria-labelledby="services-title">
-  <h2 id="services-title">Services</h2>
+  <h2 id="services-title">{{ 'adminHeader.sections.services' | transloco }}</h2>
   <p class="section-description">
-    Previously contracted services keep their original prices. Inactive services
-    can only be retained if already included.
+    {{ 'reservations.form.servicesDescription' | transloco }}
   </p>
   @if (form.controls.serviceIds.getError("server"); as serviceError) {
     <p class="services-error" role="alert">{{ serviceError }}</p>
@@ -108,7 +109,7 @@
           <span
             >{{ service.name }}
             @if (service.activationStatus !== active) {
-              <small>Inactive · previously contracted</small>
+              <small>{{ 'reservations.form.inactiveContracted' | transloco }}</small>
             }
           </span>
           @if (!originalServiceIds.includes(service.serviceId)) {
@@ -116,12 +117,12 @@
               service.price | currency: "COP" : "symbol" : "1.0-0"
             }}</strong>
           } @else {
-            <small>Contracted price</small>
+            <small>{{ 'reservations.form.contractedPrice' | transloco }}</small>
           }
         </label>
       }
     } @empty {
-      <p>No services available.</p>
+      <p>{{ 'reservations.form.noServices' | transloco }}</p>
     }
   </div>
 </section>

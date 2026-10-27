@@ -1,6 +1,7 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { fromEvent } from 'rxjs';
 import { SkeletonComponent } from '../../../../components/skeleton/skeleton.component';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
@@ -15,6 +16,7 @@ import { ServiceCardComponent } from './components/service-card/service-card.com
     OptimizedImageDirective,
     RouterLink,
     ServiceCardComponent,
+    TranslocoPipe,
   ],
   templateUrl: './landing-services.component.html',
   styleUrl: './landing-services.component.scss',
@@ -26,6 +28,7 @@ export class LandingServicesComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   services: ServiceCatalogDTO[] = [];
   loading = true;
+  // Clave de traducción del aviso de error de la sección.
   error = '';
   index = 0;
   visibleCount = this.count();
@@ -53,7 +56,7 @@ export class LandingServicesComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.error = 'Services could not be loaded.';
+        this.error = 'landing.services.loadError';
         this.loading = false;
       },
     });

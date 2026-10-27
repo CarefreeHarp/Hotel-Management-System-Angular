@@ -1,5 +1,6 @@
 import { Component, Input, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { ButtonComponent } from '../../../../components/button/button.component';
 import { StaffAvatarComponent } from '../../../../components/staff-avatar/staff-avatar.component';
 import { OperatorDTO } from '../../../../models/dto/operator-dto';
@@ -7,7 +8,7 @@ import { basePath } from '../../../../utils/base-path';
 
 @Component({
   selector: 'app-assigned-operators',
-  imports: [RouterLink, ButtonComponent, StaffAvatarComponent],
+  imports: [RouterLink, ButtonComponent, StaffAvatarComponent, TranslocoPipe],
   templateUrl: './assigned-operators.component.html',
   styleUrl: './assigned-operators.component.scss',
 })

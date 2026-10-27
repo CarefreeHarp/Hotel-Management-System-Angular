@@ -1,5 +1,6 @@
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, Input, Output } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BehaviorSubject, combineLatest, map, Subject } from 'rxjs';
 import { OptimizedImageDirective } from '../../../../directives/optimized-image.directive';
 import { BookingQuote } from '../../../../models/booking';
@@ -7,7 +8,7 @@ import { ServiceCatalogDTO } from '../../../../models/dto/service-catalog-dto';
 /** Mantiene la selección local y emite sus identificadores al paso padre, sin guardar la reserva. */
 @Component({
   selector: 'app-booking-services',
-  imports: [OptimizedImageDirective, CurrencyPipe, AsyncPipe],
+  imports: [OptimizedImageDirective, CurrencyPipe, AsyncPipe, DatePipe, TranslocoPipe],
   templateUrl: './booking-services.component.html',
   styleUrl: './booking-services.component.scss',
 })

@@ -1,14 +1,14 @@
 <app-admin-header />
 <main class="room-types-page-main">
-  <span class="page-watermark" aria-hidden="true">Rooms</span>
+  <span class="page-watermark" aria-hidden="true">{{ 'rooms.list.title' | transloco }}</span>
   <div class="page-container">
     <header class="catalog-heading">
       <div>
-        <p class="eyebrow">Atlan Suites · Management</p>
-        <h1>Rooms</h1>
+        <p class="eyebrow">{{ 'common.managementEyebrow' | transloco }}</p>
+        <h1>{{ 'rooms.list.title' | transloco }}</h1>
       </div>
       <a appButton [create]="true" [routerLink]="[base, 'rooms', 'new']"
-        >+ Add room</a
+        >{{ 'rooms.list.create' | transloco }}</a
       >
     </header>
     @if (message) {
@@ -18,7 +18,10 @@
       <p class="notice is-error" role="alert">{{ error }}</p>
     }
     @if (loading) {
-      <app-skeleton [variant]="listState.view === 'table' ? 'table' : 'cards'" label="Loading rooms…" />
+      <app-skeleton
+        [variant]="listState.view === 'table' ? 'table' : 'cards'"
+        [label]="'rooms.list.loading' | transloco"
+      />
     } @else {
       <app-list-controls
         [state]="listState"
@@ -28,7 +31,7 @@
         [total]="items.length"
         (changed)="listState = $event"
       />
-      <section aria-label="Active rooms">
+      <section [attr.aria-label]="'rooms.list.active' | transloco">
         @if (listState.view === "table") {
           <app-room-table
             [rooms]="activeItems"
@@ -43,8 +46,10 @@
       </section>
       <section class="inactive-section" aria-labelledby="inactive-title">
         <header class="inactive-heading">
-          <h2 id="inactive-title">Inactive rooms</h2>
-          <p>{{ inactiveItems.length }} inactive records match your filters.</p>
+          <h2 id="inactive-title">{{ 'rooms.list.inactive' | transloco }}</h2>
+          <p>
+            {{ 'common.inactiveCount' | transloco: { count: inactiveItems.length } }}
+          </p>
         </header>
         @if (listState.view === "table") {
           <app-room-table

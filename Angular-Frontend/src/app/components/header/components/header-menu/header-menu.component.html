@@ -10,11 +10,11 @@
   (click)="closeFromBackdrop($event)"
 >
   <header class="menu-heading">
-    <h2 id="menu-title">Menú</h2>
+    <h2 id="menu-title">{{ 'header.menu' | transloco }}</h2>
     <button
       type="button"
       class="close-menu"
-      aria-label="Close menu"
+      [attr.aria-label]="'header.closeMenu' | transloco"
       (click)="close()"
       autofocus
     >
@@ -23,10 +23,16 @@
       </svg>
     </button>
   </header>
-  <nav id="main-nav" class="header-navigation" aria-label="Main navigation">
+  <nav
+    id="main-nav"
+    class="header-navigation"
+    [attr.aria-label]="'header.mainNavigation' | transloco"
+  >
     <ul class="main-nav">
       <li>
-        <a routerLink="/" [queryParams]="authParams" (click)="close()">Home</a>
+        <a routerLink="/" [queryParams]="authParams" (click)="close()">{{
+          'header.nav.home' | transloco
+        }}</a>
       </li>
       <li>
         <a
@@ -34,7 +40,7 @@
           [queryParams]="authParams"
           fragment="video-section"
           (click)="close()"
-          >The hotel</a
+          >{{ 'header.nav.hotel' | transloco }}</a
         >
       </li>
       <li>
@@ -43,7 +49,7 @@
           [queryParams]="authParams"
           fragment="rooms-section"
           (click)="close()"
-          >Suites</a
+          >{{ 'header.nav.suites' | transloco }}</a
         >
       </li>
       <li>
@@ -52,7 +58,7 @@
           [queryParams]="authParams"
           fragment="services-section"
           (click)="close()"
-          >Services</a
+          >{{ 'header.nav.services' | transloco }}</a
         >
       </li>
       <li>
@@ -61,8 +67,63 @@
           [queryParams]="authParams"
           routerLinkActive="active"
           (click)="close()"
-          >Service catalog</a
+          >{{ 'header.nav.catalog' | transloco }}</a
         >
+      </li>
+      <li class="language">
+        <button
+          type="button"
+          class="language-toggle"
+          [attr.aria-expanded]="languagesOpen"
+          aria-controls="language-list"
+          (click)="languagesOpen = !languagesOpen"
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
+          </svg>
+          <span>{{ 'header.language.button' | transloco }}</span>
+          <span class="language-current"
+            ><span class="sr-only">: </span>{{ currentLanguage.name }}</span
+          >
+        </button>
+        @if (languagesOpen) {
+          <ul
+            id="language-list"
+            class="language-list"
+            [attr.aria-label]="'header.language.list' | transloco"
+          >
+            @for (language of languages; track language.code) {
+              @let current = language.code === currentLanguage.code;
+              <li>
+                <button
+                  type="button"
+                  class="language-option"
+                  [class.is-current]="current"
+                  [attr.aria-current]="current ? 'true' : null"
+                  [attr.lang]="language.code"
+                  (click)="selectLanguage(language)"
+                >
+                  {{ language.name }}
+                  @if (current) {
+                    <span aria-hidden="true">✓</span>
+                    <span class="sr-only">
+                      ({{ 'header.language.current' | transloco }})</span
+                    >
+                  }
+                </button>
+              </li>
+            }
+          </ul>
+        }
       </li>
     </ul>
   </nav>

@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, Observable, Subject, catchError, exhaustMap, switchMap, takeUntil, tap, timer } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -25,6 +26,7 @@ import { RoomTypeTableComponent } from './components/room-type-table/room-type-t
     RouterLink,
     ButtonComponent,
     RoomTypeTableComponent,
+    TranslocoPipe,
   ],
   templateUrl: './room-type-table-page.component.html',
   styleUrl: './room-type-table-page.component.scss',
@@ -95,25 +97,17 @@ export class RoomTypeTablePageComponent implements OnInit {
   private performAction(id: number): Observable<unknown> {
     if (!this.adminArea) return EMPTY;
     const deletedItem = this.roomTypes.find((rt) => rt.roomTypeId === id);
-    if (
-      !confirm(
-        `Delete room type "${deletedItem?.name || id}"? This cannot be undone.`,
-      )
-    )
+    const name = deletedItem?.name || id;
+    if (!confirm(translate('roomTypes.list.confirmDelete', { name })))
       return EMPTY;
     return this.roomTypeService.delete(id).pipe(
       tap(() => {
         this.loadRoomTypes();
-        this.triggerToast(
-          `Room type "${deletedItem?.name || id}" was successfully removed.`,
-        );
+        this.triggerToast(translate('roomTypes.list.deleted', { name }));
       }),
       catchError((err: HttpErrorResponse) => {
         this.triggerToast(
-          apiErrorMessage(
-            err,
-            `Cannot delete room type "${deletedItem?.name || id}". Please try again.`,
-          ),
+          apiErrorMessage(err, 'roomTypes.list.deleteError', { name }),
         );
 
         return EMPTY;

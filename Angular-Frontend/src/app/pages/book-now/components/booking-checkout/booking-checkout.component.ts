@@ -1,10 +1,11 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, Input, Output } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subject } from 'rxjs';
 import { BookingQuote } from '../../../../models/booking';
 @Component({
   selector: 'app-booking-checkout',
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, TranslocoPipe],
   templateUrl: './booking-checkout.component.html',
   styleUrl: './booking-checkout.component.scss',
 })

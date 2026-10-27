@@ -1,57 +1,60 @@
 @if (room; as room) {
-  <section class="detail-grid" aria-label="Room information">
+  <section class="detail-grid" [attr.aria-label]="'rooms.detail.information' | transloco">
     <figure class="detail-visual">
       <img
         appImage
         imageWidth="960"
         [src]="room.roomType.mainPhoto"
-        [alt]="'Room ' + room.number"
+        [alt]="'rooms.roomNumber' | transloco: { number: room.number }"
       />
     </figure>
     <article class="detail-content">
       <header class="service-card-heading">
-        <p class="card-eyebrow">Room information</p>
-        <span class="service-id">ID #{{ room.roomId }}</span>
+        <p class="card-eyebrow">{{ 'rooms.detail.information' | transloco }}</p>
+        <span class="service-id">{{ 'common.idNumber' | transloco: { id: room.roomId } }}</span>
       </header>
       <dl class="detail-list">
         <div>
-          <dt>Activation</dt>
-          <dd>
-            {{ room.activationStatus === "ACTIVE" ? "Active" : "Inactive" }}
-          </dd>
+          <dt>{{ 'common.fields.activation' | transloco }}</dt>
+          <dd>{{ 'enums.activationStatus.' + room.activationStatus | transloco }}</dd>
         </div>
         <div>
-          <dt>Number</dt>
+          <dt>{{ 'rooms.fields.number' | transloco }}</dt>
           <dd>{{ room.number }}</dd>
         </div>
         <div>
-          <dt>Floor</dt>
+          <dt>{{ 'rooms.fields.floor' | transloco }}</dt>
           <dd>{{ room.floor }}</dd>
         </div>
         <div>
-          <dt>Physical status</dt>
-          <dd>{{ statusLabels[room.status] }}</dd>
+          <dt>{{ 'rooms.fields.physicalStatus' | transloco }}</dt>
+          <dd>{{ 'enums.roomStatus.' + room.status | transloco }}</dd>
         </div>
         <div>
-          <dt>Room type</dt>
+          <dt>{{ 'rooms.fields.roomType' | transloco }}</dt>
           <dd>{{ room.roomType.name }}</dd>
         </div>
         <div>
-          <dt>Description</dt>
+          <dt>{{ 'rooms.fields.description' | transloco }}</dt>
           <dd class="description">{{ room.roomType.description }}</dd>
         </div>
         <div>
-          <dt>Nightly price</dt>
-          <dd>COP {{ room.roomType.nightlyPrice | number: "1.0-2" }}</dd>
+          <dt>{{ 'rooms.fields.nightlyPrice' | transloco }}</dt>
+          <dd>{{ room.roomType.nightlyPrice | currency: 'COP' : 'symbol' : '1.0-2' }}</dd>
         </div>
         <div>
-          <dt>Maximum capacity</dt>
-          <dd>{{ room.roomType.maxCapacity }} guests</dd>
+          <dt>{{ 'rooms.fields.maxCapacity' | transloco }}</dt>
+          <dd>
+            {{
+              (room.roomType.maxCapacity === 1 ? 'common.guestsOne' : 'common.guestsMany')
+                | transloco: { count: room.roomType.maxCapacity }
+            }}
+          </dd>
         </div>
       </dl>
       <div class="detail-actions">
         <a appButton variant="secondary" [routerLink]="[base, 'rooms']"
-          >Back to list</a
+          >{{ 'common.actions.backToList' | transloco }}</a
         >
       </div>
     </article>

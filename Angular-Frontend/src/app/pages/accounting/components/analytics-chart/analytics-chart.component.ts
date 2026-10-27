@@ -3,13 +3,19 @@ import {
   Component,
   ElementRef,
   Input,
+  LOCALE_ID,
   NgZone,
   OnChanges,
   OnDestroy,
   ViewChild,
   inject,
 } from '@angular/core';
-import { init, use } from 'echarts/core';
+import { init, registerLocale, use } from 'echarts/core';
+import langAR from 'echarts/i18n/langAR-obj.js';
+import langES from 'echarts/i18n/langES-obj.js';
+import langFR from 'echarts/i18n/langFR-obj.js';
+import langPTbr from 'echarts/i18n/langPT-br-obj.js';
+import langRU from 'echarts/i18n/langRU-obj.js';
 import type { EChartsType } from 'echarts/core';
 import type { EChartsOption } from 'echarts';
 import { BarChart, LineChart, PieChart } from 'echarts/charts';
@@ -38,6 +44,14 @@ use([
   TooltipComponent,
   SVGRenderer,
 ]);
+// ECharts incluye inglés y chino (EN, ZH). Las demás traducciones de sus textos propios
+// (descripción accesible, meses) se registran con el código en mayúsculas que se pasa a init.
+// ECharts no trae hebreo: con un código sin registrar (HE) usa sus textos en inglés.
+registerLocale('ES', langES);
+registerLocale('FR', langFR);
+registerLocale('PT', langPTbr);
+registerLocale('RU', langRU);
+registerLocale('AR', langAR);
 
 /** Gestiona el lienzo y su ciclo de vida. Las opciones y datos pertenecen a la página. */
 @Component({
@@ -52,6 +66,8 @@ export class AnalyticsChartComponent
   @Input({ required: true }) label = '';
   @ViewChild('container') private container?: ElementRef<HTMLDivElement>;
   private readonly zone = inject(NgZone);
+  // es-CO → ES, en-US → EN, zh-Hans → ZH, ar → AR.
+  private readonly chartLocale = inject(LOCALE_ID).slice(0, 2).toUpperCase();
   private chart: EChartsType | undefined;
   private observer: ResizeObserver | undefined;
 
@@ -60,7 +76,7 @@ export class AnalyticsChartComponent
     if (!element) return;
     // El movimiento del puntero no necesita disparar detección de cambios en Angular.
     this.zone.runOutsideAngular(() => {
-      this.chart = init(element, undefined, { renderer: 'svg' });
+      this.chart = init(element, undefined, { renderer: 'svg', locale: this.chartLocale });
       this.render();
       this.observer = new ResizeObserver(() => this.chart?.resize());
       this.observer.observe(element);

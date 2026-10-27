@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, Observable, Subject, catchError, exhaustMap, finalize, map, of, switchMap, tap } from 'rxjs';
 import { AdminHeaderComponent } from '../../components/admin-header/admin-header.component';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -43,6 +44,7 @@ import { ServiceFieldsComponent } from './components/service-fields/service-fiel
     ButtonComponent,
     PhotoFieldsComponent,
     ServiceFieldsComponent,
+    TranslocoPipe,
   ],
   templateUrl: './services-form.component.html',
   styleUrl: './services-form.component.scss',

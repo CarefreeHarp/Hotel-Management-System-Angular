@@ -10,9 +10,11 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { translate, TranslocoPipe } from '@jsverse/transloco';
 import { FormFieldComponent } from '../../../../components/form-field/form-field.component';
 import {
   MAX_NIGHTS,
+  MAX_YEARS_AHEAD,
   addDays,
   latestCheckIn,
   localDate,
@@ -22,10 +24,7 @@ import { RoomTypeListDTO } from '../../../../models/dto/room-type-list-dto';
 import { ServiceListDTO } from '../../../../models/dto/service-list-dto';
 import { ActivationStatus } from '../../../../models/enums/activation-status';
 import { ReservationStatus } from '../../../../models/enums/reservation-status';
-import {
-  FieldMessages,
-  RESERVATION_MESSAGES,
-} from '../../../../utils/form-messages';
+import { RESERVATION_MESSAGES } from '../../../../utils/form-messages';
 import { wholeNumber } from '../../../../utils/form-validators';
 
 /** Datos de la reserva y de los tipos que las reglas necesitan al validar. */
@@ -139,7 +138,7 @@ export function createReservationForm(limits: ReservationLimits = noLimits) {
 
 @Component({
   selector: 'app-reservation-fields',
-  imports: [ReactiveFormsModule, FormFieldComponent, CurrencyPipe],
+  imports: [ReactiveFormsModule, FormFieldComponent, CurrencyPipe, TranslocoPipe],
   templateUrl: './reservation-fields.component.html',
   styleUrl: './reservation-fields.component.scss',
 })
@@ -153,6 +152,9 @@ export class ReservationFieldsComponent {
   readonly statuses = Object.values(ReservationStatus);
   readonly active = ActivationStatus.ACTIVE;
   protected readonly messages = RESERVATION_MESSAGES;
+  // Valores de los marcadores {{ years }} y {{ nights }} de los mensajes de fechas.
+  readonly yearsAhead = { years: MAX_YEARS_AHEAD };
+  readonly maxNights = { nights: MAX_NIGHTS };
   // El selector de fechas solo ofrece fechas que las reglas aceptan.
   readonly today = localDate();
   readonly lastCheckIn = latestCheckIn();
@@ -171,19 +173,13 @@ export class ReservationFieldsComponent {
         ?.maxCapacity ?? null
     );
   }
-  get guestMessages(): FieldMessages {
-    return {
-      ...this.messages.guests,
-      capacity: `This room type accommodates at most ${this.capacity} guests. Please reduce the number of guests or choose another room type.`,
-    };
-  }
   get statusMessage(): string {
     const control = this.form.controls.status;
     const serverMessage = control.getError('server');
     if (typeof serverMessage === 'string') return serverMessage;
-    if (control.hasError('pending')) return this.messages.status.pending;
-    if (control.hasError('unpaid')) return this.messages.status.unpaid;
-    return this.messages.status.required;
+    if (control.hasError('pending')) return translate(this.messages.status.pending);
+    if (control.hasError('unpaid')) return translate(this.messages.status.unpaid);
+    return translate(this.messages.status.required);
   }
   invalid(control: FormControl): boolean {
     return control.invalid && (control.touched || this.submitted);
