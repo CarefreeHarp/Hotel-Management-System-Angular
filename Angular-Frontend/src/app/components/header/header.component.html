@@ -8,7 +8,7 @@
     type="button"
     aria-haspopup="dialog"
     [attr.aria-expanded]="publicMenu.isOpen"
-    aria-controls="public-menu"
+    aria-controls="site-menu"
     (click)="publicMenu.open()"
   >
     <span class="menu-bars" aria-hidden="true"
@@ -34,7 +34,7 @@
       <ng-container [ngTemplateOutlet]="accountActions" />
     </div>
   }
-  <app-header-menu #publicMenu [authParams]="authParams">
+  <app-header-menu #publicMenu [links]="menuLinks" [queryParams]="authParams">
     @if (compactHeader) {
       <div class="drawer-actions">
         <ng-container [ngTemplateOutlet]="accountActions" />

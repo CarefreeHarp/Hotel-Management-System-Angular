@@ -374,8 +374,6 @@
   "adminHeader": {
     "frontDesk": "الاستقبال",
     "adminPanel": "لوحة الإدارة",
-    "openMenu": "فتح القائمة",
-    "closeMenu": "إغلاق القائمة",
     "navigation": "التنقل الإداري",
     "myProfile": "ملفي الشخصي",
     "logout": "تسجيل الخروج",

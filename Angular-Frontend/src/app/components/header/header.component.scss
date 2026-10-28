@@ -1,3 +1,5 @@
+@use "../../../styles/menu-toggle";
+
 :host {
   display: block;
   position: fixed;
@@ -59,33 +61,9 @@
 .is-scrolled .header-actions {
   transform: translateY(0);
 }
+@include menu-toggle.toggle;
 .nav-toggle {
   justify-self: start;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  min-height: 44px;
-  padding: 0.5rem 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font-size: 0.9rem;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-
-  &:hover {
-    color: var(--color-gold);
-  }
-}
-.menu-bars {
-  display: grid;
-  gap: 6px;
-  width: 25px;
-
-  span {
-    height: 2px;
-    background: currentColor;
-  }
 }
 .header-actions {
   grid-column: 3;
@@ -203,14 +181,6 @@
   }
   .is-scrolled .nav-toggle {
     transform: translateY(0);
-  }
-}
-@media (max-width: 479px) {
-  .nav-toggle {
-    flex-direction: column;
-    gap: 0.2rem;
-    min-width: 44px;
-    font-size: 0.75rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {

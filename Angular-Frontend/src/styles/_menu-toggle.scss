@@ -1,0 +1,38 @@
+// Botón "Menú" que abre el menú lateral. Lo usan la barra del sitio público y la del personal.
+@mixin toggle {
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-height: 44px;
+    padding: 0.5rem 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--color-gold);
+    }
+  }
+  .menu-bars {
+    display: grid;
+    gap: 6px;
+    width: 25px;
+
+    span {
+      height: 2px;
+      background: currentColor;
+    }
+  }
+  @media (max-width: 479px) {
+    .nav-toggle {
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 44px;
+      font-size: 0.75rem;
+    }
+  }
+}

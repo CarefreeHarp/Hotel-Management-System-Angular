@@ -374,8 +374,6 @@
   "adminHeader": {
     "frontDesk": "Réception",
     "adminPanel": "Panneau d'administration",
-    "openMenu": "Ouvrir le menu",
-    "closeMenu": "Fermer le menu",
     "navigation": "Navigation d'administration",
     "myProfile": "Mon profil",
     "logout": "Déconnexion",

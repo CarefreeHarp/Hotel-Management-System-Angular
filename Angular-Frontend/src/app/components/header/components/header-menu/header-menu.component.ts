@@ -8,10 +8,24 @@ import {
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Subject, switchMap, takeUntil, timer } from 'rxjs';
 import { AppLanguage, changeLanguage, LANGUAGES, savedLanguage } from '../../../../utils/language';
+
+/** Enlace del menú lateral. El sitio público y las áreas del personal pasan cada uno los suyos. */
+export interface MenuLink {
+  // Clave de traducción del texto.
+  labelKey: string;
+  path: string;
+  // Sección de la landing. Sin ella, RouterLink recibe undefined y arma la URL sin "#"
+  // (con exactOptionalPropertyTypes su tipo no lo admite, por eso la plantilla usa $any).
+  fragment?: string;
+  // Marca el enlace mientras se está en su página. Los que llevan a secciones de la landing no se marcan.
+  highlight?: boolean;
+  // Solo en esa dirección: el inicio de un área no queda marcado en todas sus secciones.
+  exact?: boolean;
+}
 
 @Component({
   selector: 'app-header-menu',
@@ -20,7 +34,9 @@ import { AppLanguage, changeLanguage, LANGUAGES, savedLanguage } from '../../../
   styleUrl: './header-menu.component.scss',
 })
 export class HeaderMenuComponent implements OnDestroy {
-  @Input({ required: true }) authParams: { auth?: number } = {};
+  @Input({ required: true }) links: MenuLink[] = [];
+  // Parámetros que conservan todos los enlaces: en el sitio público, auth del cliente.
+  @Input() queryParams: Params = {};
   @ViewChild('drawer') private drawer?: ElementRef<HTMLDialogElement>;
   private readonly document = inject(DOCUMENT);
   private previousOverflow: string | undefined;

@@ -1,4 +1,18 @@
-<header class="admin-header" (keydown.escape)="closeMenu()">
+<header class="admin-header">
+  <button
+    class="nav-toggle"
+    type="button"
+    aria-haspopup="dialog"
+    [attr.aria-expanded]="menu.isOpen"
+    aria-controls="site-menu"
+    (click)="menu.open()"
+  >
+    <span class="menu-bars" aria-hidden="true"
+      ><span></span><span></span><span></span
+    ></span>
+    <span>{{ 'header.menu' | transloco }}</span>
+  </button>
+
   <a
     class="admin-brand"
     [routerLink]="base"
@@ -15,53 +29,37 @@
     />
   </a>
 
-  <button
-    class="admin-menu-button"
-    type="button"
-    [attr.aria-label]="
-      (menuOpen ? 'adminHeader.closeMenu' : 'adminHeader.openMenu') | transloco
-    "
-    [attr.aria-expanded]="menuOpen"
-    aria-controls="admin-menu"
-    (click)="toggleMenu()"
-  >
-    <span aria-hidden="true"></span><span aria-hidden="true"></span
-    ><span aria-hidden="true"></span>
-  </button>
-
-  <div id="admin-menu" class="admin-menu" [class.is-open]="menuOpen">
+  @if (showSectionsBar) {
     <nav class="admin-nav" [attr.aria-label]="'adminHeader.navigation' | transloco">
-      @if (isOperator) {
+      @for (link of menuLinks; track link.labelKey) {
         <a
-          [routerLink]="base"
+          [routerLink]="link.path"
           routerLinkActive="is-active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          (click)="closeMenu()"
-          >{{ 'adminHeader.frontDesk' | transloco }}</a
-        >
-      } @else {
-        <a
-          [routerLink]="base"
-          routerLinkActive="is-active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          (click)="closeMenu()"
-          >{{ 'adminHeader.adminPanel' | transloco }}</a
-        >
-      }
-      @for (section of sections; track section.path) {
-        <a
-          [routerLink]="[base, section.path]"
-          routerLinkActive="is-active"
-          (click)="closeMenu()"
-          >{{ section.labelKey | transloco }}</a
+          [routerLinkActiveOptions]="{ exact: link.exact ?? false }"
+          >{{ link.labelKey | transloco }}</a
         >
       }
     </nav>
+  }
+  @if (!compactHeader) {
+    <div class="admin-actions">
+      <ng-container [ngTemplateOutlet]="accountActions" />
+    </div>
+  }
 
+  <app-header-menu #menu [links]="menuLinks">
+    @if (compactHeader) {
+      <div class="drawer-actions">
+        <ng-container [ngTemplateOutlet]="accountActions" />
+      </div>
+    }
+  </app-header-menu>
+
+  <ng-template #accountActions>
     <a
       class="admin-link"
       [routerLink]="isOperator ? [base, 'profile'] : [base, 'administrators', adminId]"
-      (click)="closeMenu()"
+      (click)="menu.close()"
       ><svg
         aria-hidden="true"
         viewBox="0 0 24 24"
@@ -75,7 +73,11 @@
         <path d="M4 22v-3a8 8 0 0 1 16 0v3" /></svg
       >{{ 'adminHeader.myProfile' | transloco }}</a
     >
-    <button class="admin-link admin-logout" type="button" (click)="logout()">
+    <button
+      class="admin-link admin-logout"
+      type="button"
+      (click)="menu.close(); logout()"
+    >
       <svg
         aria-hidden="true"
         viewBox="0 0 24 24"
@@ -88,6 +90,6 @@
         <path d="M9 4H4v16h5M14 7l5 5-5 5M8 12h11" /></svg
       >{{ 'adminHeader.logout' | transloco }}
     </button>
-    <a class="admin-exit" routerLink="/" (click)="closeMenu()">{{ 'adminHeader.goToHotel' | transloco }}</a>
-  </div>
+    <a class="admin-exit" routerLink="/" (click)="menu.close()">{{ 'adminHeader.goToHotel' | transloco }}</a>
+  </ng-template>
 </header>

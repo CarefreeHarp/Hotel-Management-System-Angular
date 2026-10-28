@@ -374,8 +374,6 @@
   "adminHeader": {
     "frontDesk": "Ресепшен",
     "adminPanel": "Панель администратора",
-    "openMenu": "Открыть меню",
-    "closeMenu": "Закрыть меню",
     "navigation": "Административная навигация",
     "myProfile": "Мой профиль",
     "logout": "Выйти",

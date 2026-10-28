@@ -374,8 +374,6 @@
   "adminHeader": {
     "frontDesk": "前台",
     "adminPanel": "管理面板",
-    "openMenu": "打开菜单",
-    "closeMenu": "关闭菜单",
     "navigation": "管理导航",
     "myProfile": "我的资料",
     "logout": "退出登录",

@@ -1,6 +1,6 @@
 <dialog
   #drawer
-  id="public-menu"
+  id="site-menu"
   class="menu-drawer"
   [class.is-closing]="isClosing"
   (transitionend)="finishClose($event)"
@@ -29,47 +29,19 @@
     [attr.aria-label]="'header.mainNavigation' | transloco"
   >
     <ul class="main-nav">
-      <li>
-        <a routerLink="/" [queryParams]="authParams" (click)="close()">{{
-          'header.nav.home' | transloco
-        }}</a>
-      </li>
-      <li>
-        <a
-          routerLink="/"
-          [queryParams]="authParams"
-          fragment="video-section"
-          (click)="close()"
-          >{{ 'header.nav.hotel' | transloco }}</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="/"
-          [queryParams]="authParams"
-          fragment="rooms-section"
-          (click)="close()"
-          >{{ 'header.nav.suites' | transloco }}</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="/"
-          [queryParams]="authParams"
-          fragment="services-section"
-          (click)="close()"
-          >{{ 'header.nav.services' | transloco }}</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="/services-catalog"
-          [queryParams]="authParams"
-          routerLinkActive="active"
-          (click)="close()"
-          >{{ 'header.nav.catalog' | transloco }}</a
-        >
-      </li>
+      @for (link of links; track link.labelKey) {
+        <li>
+          <a
+            [routerLink]="link.path"
+            [queryParams]="queryParams"
+            [fragment]="$any(link.fragment)"
+            [routerLinkActive]="link.highlight ? 'active' : ''"
+            [routerLinkActiveOptions]="{ exact: link.exact ?? false }"
+            (click)="close()"
+            >{{ link.labelKey | transloco }}</a
+          >
+        </li>
+      }
       <li class="language">
         <button
           type="button"

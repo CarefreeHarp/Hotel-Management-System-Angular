@@ -7,7 +7,16 @@ import { catchError, fromEvent, of, switchMap } from 'rxjs';
 import { OptimizedImageDirective } from '../../directives/optimized-image.directive';
 import { ClientService } from '../../services/client.service';
 import { clientQuery } from '../../utils/client-query';
-import { HeaderMenuComponent } from './components/header-menu/header-menu.component';
+import { HeaderMenuComponent, MenuLink } from './components/header-menu/header-menu.component';
+
+// Enlaces del menú lateral del sitio público. Todos conservan auth (ver authParams).
+const MENU_LINKS: MenuLink[] = [
+  { labelKey: 'header.nav.home', path: '/' },
+  { labelKey: 'header.nav.hotel', path: '/', fragment: 'video-section' },
+  { labelKey: 'header.nav.suites', path: '/', fragment: 'rooms-section' },
+  { labelKey: 'header.nav.services', path: '/', fragment: 'services-section' },
+  { labelKey: 'header.nav.catalog', path: '/services-catalog', highlight: true },
+];
 
 @Component({
   selector: 'app-header',
@@ -39,6 +48,7 @@ export class HeaderComponent {
     return clientQuery(this.route);
   }
   private readonly router = inject(Router);
+  readonly menuLinks = MENU_LINKS;
 
   // La landing lo oculta mientras el video del hotel ocupa toda la pantalla.
   @Input() isHidden = false;

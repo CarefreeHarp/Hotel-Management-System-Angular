@@ -374,8 +374,6 @@
   "adminHeader": {
     "frontDesk": "Front desk",
     "adminPanel": "Admin panel",
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
     "navigation": "Administrative navigation",
     "myProfile": "My profile",
     "logout": "Log out",
